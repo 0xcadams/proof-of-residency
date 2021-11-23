@@ -1,0 +1,49 @@
+{
+  "name": "@solidity-starter/contracts",
+  "version": "0.0.1",
+  "description": "A starter project with tools to test and deploy Solidity smart contracts.",
+  "main": "index.js",
+  "scripts": {
+    "build": "yarn clean && yarn compile",
+    "clean": "yarn hardhat clean",
+    "compile": "yarn hardhat compile",
+    "coverage": "yarn build && yarn hardhat coverage --temp artifacts --network coverage",
+    "deploy:rinkeby": "yarn hardhat run --network rinkeby scripts/deploy.ts",
+    "lint": "solhint 'contracts/**/*.sol' && prettier --list-different 'contracts/**/*.sol' && eslint . --ext .ts",
+    "postinstall": "yarn build",
+    "test": "yarn lint && yarn hardhat test"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-etherscan": "^2.1.7",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@openzeppelin/test-helpers": "^0.5.15",
+    "@typechain/ethers-v5": "^8.0.2",
+    "@typechain/hardhat": "^3.0.0",
+    "ethereum-waffle": "^3.4.0",
+    "ethers": "^5.5.1",
+    "hardhat": "^2.6.8",
+    "prettier-plugin-solidity": "^1.0.0-beta.19",
+    "solhint": "^3.3.6",
+    "solhint-plugin-prettier": "^0.0.5",
+    "solidity-coverage": "^0.7.17",
+    "typechain": "^6.0.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint:commit",
+      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "packageManager": "yarn@3.1.0",
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.3.3"
+  }
+}

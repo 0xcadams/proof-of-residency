@@ -1,0 +1,36 @@
+{
+  "name": "@solidity-starter/frontend",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "serve": "next start",
+    "start": "next dev",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^1.7.2",
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11",
+    "axios": "^0.24.0",
+    "framer-motion": "^4",
+    "haversine": "^1.1.1",
+    "lob": "^6.5.2",
+    "mapbox-gl": "^2.6.1",
+    "next": "12.0.4",
+    "next-seo": "^4.28.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-icons": "^4.3.1",
+    "react-mapbox-gl": "^5.1.1"
+  },
+  "devDependencies": {
+    "@types/haversine": "^1.1.5",
+    "@types/mapbox-gl": "^2.4.2",
+    "@types/node": "16.11.8",
+    "@types/react": "17.0.35",
+    "eslint": "7",
+    "eslint-config-next": "12.0.4",
+    "typescript": "4.5.2"
+  }
+}
