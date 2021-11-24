@@ -23,14 +23,14 @@ const handler = async (
         body.state,
         body.zipCode
       );
-      res.status(200).json(verifyResult);
-    } else {
-      res.setHeader('Allow', ['POST']);
-      res.status(405).end(`Method ${method} Not Allowed`);
+      return res.status(200).json(verifyResult);
     }
+
+    res.setHeader('Allow', ['POST']);
+    return res.status(405).end(`Method ${method} Not Allowed`);
   } catch (err) {
     console.error(err);
-    res.status(500).json(null);
+    return res.status(500).json(null);
   }
 };
 

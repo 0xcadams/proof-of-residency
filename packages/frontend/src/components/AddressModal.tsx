@@ -20,6 +20,7 @@ import { axiosClient } from '../axiosClient';
 export const AddressModal = (props: {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess: (address: VerifyUsAddressResponse) => void;
   geolocation: CoordinateLongitudeLatitude;
 }) => {
   const [primaryLine, setPrimaryLine] = useState<string>('');
@@ -51,20 +52,15 @@ export const AddressModal = (props: {
         );
 
         if (distance <= 500) {
-          toast({
-            title: 'Success',
-            description: 'Successful address.',
-            status: 'success'
-          });
-        } else {
-          toast({
-            title: 'Error',
-            description: `You are too far away from your claimed address. You are ${distance.toFixed(
-              0
-            )}m away - you must be within 500m of the address to claim it.`,
-            status: 'error'
-          });
+          return props.onSuccess(result.data);
         }
+        toast({
+          title: 'Error',
+          description: `You are too far away from your claimed address. You are ${distance.toFixed(
+            0
+          )}m away - you must be within 500m of the address to claim it.`,
+          status: 'error'
+        });
       } else {
         toast({
           title: 'Warning',

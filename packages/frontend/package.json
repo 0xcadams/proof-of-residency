@@ -6,13 +6,17 @@
     "build": "next build",
     "serve": "next start",
     "start": "next dev",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "cross-env NODE_ENV=test mocha -r ts-node/register test/**/*.test.ts"
   },
   "dependencies": {
     "@chakra-ui/react": "^1.7.2",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "axios": "^0.24.0",
+    "bip32": "^3.0.1",
+    "bip39": "^3.0.4",
+    "expect.js": "^0.3.1",
     "framer-motion": "^4",
     "haversine": "^1.1.1",
     "lob": "^6.5.2",
@@ -22,13 +26,16 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-icons": "^4.3.1",
-    "react-mapbox-gl": "^5.1.1"
+    "react-mapbox-gl": "^5.1.1",
+    "tiny-secp256k1": "^2.1.2"
   },
   "devDependencies": {
+    "@types/expect.js": "^0.3.29",
     "@types/haversine": "^1.1.5",
     "@types/mapbox-gl": "^2.4.2",
     "@types/node": "16.11.8",
     "@types/react": "17.0.35",
+    "cross-env": "^7.0.3",
     "eslint": "7",
     "eslint-config-next": "12.0.4",
     "typescript": "4.5.2"

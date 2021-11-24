@@ -7,6 +7,8 @@ import { FiGithub } from 'react-icons/fi';
 import { AddressModal } from '../src/components/AddressModal';
 import { InfoModal } from '../src/components/InfoModal';
 import { CoordinateLongitudeLatitude } from 'haversine';
+import { VerifyUsAddressResponse } from '../src/api/services/lob';
+import { ConfirmModal } from '../src/components/ConfirmModal';
 
 const Map = ReactMapboxGl({
   interactive: false,
@@ -16,19 +18,31 @@ const Map = ReactMapboxGl({
 const styles: { [key: string]: React.CSSProperties } = {
   marker: {
     cursor: 'pointer',
-    width: 25,
-    height: 25,
+    width: 15,
+    height: 15,
     borderRadius: '50%',
     backgroundColor: '#51D5A0',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     border: '2px solid #56C498'
+  },
+  markerAddress: {
+    cursor: 'pointer',
+    width: 15,
+    height: 15,
+    borderRadius: '50%',
+    backgroundColor: 'white',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    border: '2px solid black'
   }
 };
 
 const IndexPage = () => {
   const [latLng, setLatLng] = useState<CoordinateLongitudeLatitude | null>(null);
+  const [address, setAddress] = useState<VerifyUsAddressResponse | null>(null);
 
   const {
     isOpen: isOpenAddressModal,
@@ -39,6 +53,11 @@ const IndexPage = () => {
     isOpen: isOpenInfoModal,
     onOpen: onOpenInfoModal,
     onClose: onCloseInfoModal
+  } = useDisclosure();
+  const {
+    isOpen: isOpenConfirmModal,
+    onOpen: onOpenConfirmModal,
+    onClose: onCloseConfirmModal
   } = useDisclosure();
 
   const toast = useToast();
@@ -76,11 +95,20 @@ const IndexPage = () => {
     getLocation();
   }, []);
 
+  const onSuccess = (address: VerifyUsAddressResponse) => {
+    setAddress({
+      ...address
+    });
+
+    onCloseAddressModal();
+    onOpenConfirmModal();
+  };
+
   return (
     <>
       <Box zIndex={500} position="absolute" left={4} top={4}>
         <Link href="https://github.com/chase-adams/proof-of-residency" isExternal>
-          <Button size="lg" mr={2}>
+          <Button>
             <FiGithub />
           </Button>
         </Link>
@@ -107,15 +135,27 @@ const IndexPage = () => {
         ) : (
           <></>
         )}
+        {address ? (
+          <Marker
+            style={styles.markerAddress}
+            coordinates={[address.components.longitude, address.components.latitude]}
+          />
+        ) : (
+          <></>
+        )}
       </Map>
       {latLng && (
         <AddressModal
+          onSuccess={onSuccess}
           geolocation={latLng}
           isOpen={isOpenAddressModal}
           onClose={onCloseAddressModal}
         />
       )}
       <InfoModal isOpen={isOpenInfoModal} onClose={onCloseInfoModal} />
+      {address && (
+        <ConfirmModal isOpen={isOpenConfirmModal} onClose={onCloseConfirmModal} address={address} />
+      )}
     </>
   );
 };
