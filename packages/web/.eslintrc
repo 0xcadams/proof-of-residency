@@ -2,9 +2,6 @@
   "root": true,
   "extends": ["next", "prettier"],
   "plugins": ["@typescript-eslint", "unused-imports"],
-  "parserOptions": {
-    "project": "./packages/frontend/tsconfig.json"
-  },
   "parser": "@typescript-eslint/parser",
   "rules": {
     "curly": "off",

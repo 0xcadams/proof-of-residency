@@ -1,5 +1,5 @@
 {
-  "name": "@solidity-starter/frontend",
+  "name": "@solidity-starter/web",
   "version": "0.0.1",
   "private": true,
   "scripts": {
