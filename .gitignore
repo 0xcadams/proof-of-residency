@@ -5,3 +5,4 @@ typechain-types/
 artifacts/
 coverage*
 .env
+.DS_STORE

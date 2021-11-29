@@ -14,16 +14,16 @@ Lob is a centralized service which allows physical mail to be sent from an API c
 
 ### User Residency Proof
 
-First, in order to verify that a user resides at a longitude/latitude, we use multiple redundant services, to ensure that compromising one does not pose a risk of fraud. The user must first connect their wallet to the dapp, and then input an address which they would like to prove residency at. They must then allow the dapp to request geolocation using the browser. This will provide the dapp with a longitude/latitude, which must be within 500m of the address which they input.
+First, in order to verify that a user resides at a longitude/latitude, we attempt to use multiple services, to ensure that compromising one does not pose a risk of fraud. The user must first connect their wallet to the dapp, and then input an address which they would like to prove residency at. They must then allow the dapp to request geolocation using the browser. This will provide the dapp with a longitude/latitude, which must be within 500m of the address which they input.
 
-If they choose to continue to validate this physical address, they will be asked to input a password which will be hashed and used as a "seed extension" for a BIP39 mnemonic phrase.
+If they choose to continue to validate this physical address, they will be asked to input a password which will be used as a "seed extension" for a BIP39 mnemonic phrase.
 
-This password is sent to the centralized backend API, which generates a BIP39 mnemonic and uses the user-provided password as the BIP39 passphrase. This BIP39 mnemonic (without the user-provided password) is sent to Lob, while the BIP39 mnemonic + user-provided password is used to create a public/private keypair. No information is stored in a centralized database.
+This password is sent to the centralized backend API, which generates a BIP39 mnemonic and uses the user-provided password as the BIP39 passphrase. This BIP39 mnemonic (without the user-provided password) is sent to Lob, while the BIP39 mnemonic + user-provided password is used to create a public/private keypair. No information is stored in a centralized database. This ensures that Lob does not have enough information to be able to recreate the private/public key, since they are never aware of the password from the user. The centralized API does not record the user's password, so there is no way to verify the user's original request if they forget their password.
 
-The private key is then used to sign a hash of the recipient alongside the normalized city, state, and country information.
+The in-memory private key is then used to sign a hash of the recipient alongside the normalized city, state, and country information.
 
 ```javascript
-// privateKey would be generated from the above BIP39 mnemonic/password ( similar to 0x4c0883a69102937d6231471b5dbb6204fe5129617082792ae468d01a3f362318)
+// privateKey would be generated from the above BIP39 mnemonic/password (similar to 0x4c0883a69102937d6231471b5dbb6204fe5129617082792ae468d01a3f362318)
 // recipient is set to the current account (via Metamask)
 // city, state, and country are passed in from the response from Lob
 const signAddressVerification = (privateKey, city, state, country) => {
@@ -35,7 +35,7 @@ const signAddressVerification = (privateKey, city, state, country) => {
 };
 ```
 
-The signed message is then committed to a mapping on-chain which ties to the requesting address. The user pays a gas fee associated with the transaction, along with a minimal ETH amount to cover the costs of sending a letter through Lob and development costs of the platform.
+The signed message is then committed to a mapping on-chain, with a key that's set to the requesting address. To commit this transaction, the user pays a gas fee as well as a minimal ETH amount to cover the [costs of sending a letter through Lob](https://www.lob.com/pricing/print-mail) and development costs of the platform (this is a variable cost set by an owner of the contract, which is ideally as low as possible to support innovation on top of the platform).
 
 #### Physical Mail
 
@@ -47,15 +47,14 @@ If the signature is valid, then an NFT is minted with the city/state/country inf
 
 ### NFT
 
-An NFT is issued with the metadata stored in IPFS. The IPFS URL is passed as the `tokenUri` for the ERC721 implementation. The structure of this metadata is similar to:
+An NFT is issued with the metadata stored in IPFS. The IPFS URL is passed as the `tokenUri` for the ERC721 implementation. The structure of this metadata follows [OpenSea's standards](https://docs.opensea.io/docs/metadata-standards):
 
 ```json
 {
   "description": "",
-  "external_url": "https://proofofresidency.xyz/api/metadata/587/40965",
-  "image": "https://assets.poap.xyz/tim-roughgarden-an-economic-analysis-of-eip-1559-qa-with-vitalik-buterin-2020-logo-1608393082409.png",
+  "external_url": "ipfs://QmYoEmcoM23LqxUwza2erfopisrwErqWgTSgko34kWF7kA",
+  "image": "ipfs://YkdpqrjcM23LqxUwza2erfopisrwErqWgTSgko34kWF7kA",
   "name": "Phoenix, AZ, USA",
-  "year": 2020,
   "tags": ["proof-of-residency"],
   "attributes": [
     {
@@ -71,9 +70,9 @@ An NFT is issued with the metadata stored in IPFS. The IPFS URL is passed as the
       "value": "United States of America"
     },
     {
-      "display_type": "date",
       "trait_type": "Mail Sent Date",
-      "value": 1546360800
+      "value": 1546360800,
+      "display_type": "date"
     }
   ]
 }
@@ -85,6 +84,12 @@ https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
 http://s2geometry.io/
 https://www.lob.com/address-verification
 
+https://whimsical.com/zk-proof-of-residency-VaktYWDAAv72HmvSot3wBQ
+
 ```
 
 ```
+
+## Attack Vectors
+
+- The first attack vector
