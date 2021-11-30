@@ -1,15 +1,15 @@
 import {
   Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
   ModalBody,
-  ModalFooter
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay
 } from '@chakra-ui/modal';
-import { Button, Code, Flex, FormControl, Input, Text, useToast } from '@chakra-ui/react';
-import React, { useState } from 'react';
-
+import { Button, Flex, FormControl, Input, Text, useToast } from '@chakra-ui/react';
+import { name } from 'faker';
+import React, { useEffect, useState } from 'react';
 import { VerifyUsAddressResponse } from '../api/services/lob';
 
 export const ConfirmModal = (props: {
@@ -18,7 +18,12 @@ export const ConfirmModal = (props: {
   onClose: () => void;
 }) => {
   const [mnemonicPassword, setMnemonicPassword] = useState<string>('');
+  const [randomName, setRandomName] = useState<string>('');
   const toast = useToast();
+
+  useEffect(() => {
+    setRandomName(`${name.firstName()} ${name.lastName()}`);
+  }, []);
 
   const onSubmit = async () => {
     // TODO
@@ -35,13 +40,19 @@ export const ConfirmModal = (props: {
           <ModalCloseButton />
           <ModalBody pb={6}>
             <Text>
-              Please confirm the address shown below to continue submitting for Proof of Residency:
+              Please confirm the address shown below to continue submitting for Proof of Residency.
+              We use a <strong>randomly generated name</strong> so we can minimize the amount of
+              data we request, for maximum privacy/security. This is inconsequential with mail -
+              they will deliver the parcel regardless.
             </Text>
 
-            <Flex direction="column" mt={2}>
-              <Code>{props.address.primary_line}</Code>
-              {props.address.secondary_line && <Code>{props.address.secondary_line}</Code>}
-              {props.address.last_line && <Code>{props.address.last_line}</Code>}
+            <Flex direction="column" mt={6}>
+              <Text fontWeight="bold">{randomName}</Text>
+              <Text fontWeight="bold">{props.address.primary_line}</Text>
+              {props.address.secondary_line && (
+                <Text fontWeight="bold">{props.address.secondary_line}</Text>
+              )}
+              {props.address.last_line && <Text fontWeight="bold">{props.address.last_line}</Text>}
             </Flex>
 
             <Text mt={6}>
@@ -61,15 +72,12 @@ export const ConfirmModal = (props: {
           </ModalBody>
 
           <ModalFooter>
-            <Button
-              colorScheme="blue"
-              mr={3}
-              onClick={onSubmit}
-              disabled={mnemonicPassword?.length < 6}
-            >
+            <Button mr={3} variant="outline" onClick={props.onClose}>
+              Cancel
+            </Button>
+            <Button onClick={onSubmit} disabled={mnemonicPassword?.length < 6}>
               Send Letter
             </Button>
-            <Button onClick={props.onClose}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

@@ -1,9 +1,13 @@
 import React from 'react';
 
-import { ChakraProvider } from '@chakra-ui/react';
+import { Button, ChakraProvider, Flex, Heading, Link, Spacer } from '@chakra-ui/react';
 
 import { AppProps } from 'next/app';
 import { DefaultSeo } from 'next-seo';
+import theme from '../src/theme';
+
+import '@fontsource/shadows-into-light';
+import '@fontsource/josefin-sans';
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
@@ -19,7 +23,7 @@ const App = ({ Component, pageProps }: AppProps) => {
         }}
       />
       {/* <ApolloProvider client={apolloClient}> */}
-      <ChakraProvider resetCSS>
+      <ChakraProvider resetCSS theme={theme}>
         <Component {...pageProps} />
       </ChakraProvider>
       {/* </ApolloProvider> */}

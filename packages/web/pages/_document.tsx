@@ -12,13 +12,13 @@ export default class Document extends NextDocument {
           <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
           <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-          <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#003a52" />
-          <meta name="msapplication-TileColor" content="#003a52" />
-          <meta name="theme-color" content="#ffffff" />
+          <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#b69ccb" />
+          <meta name="msapplication-TileColor" content="#eaddf9" />
+          <meta name="theme-color" content="#eaddf9" />
         </Head>
         <body>
           {/* Make Color mode persist when you refresh the page. */}
-          <ColorModeScript />
+          <ColorModeScript initialColorMode="dark" />
           <Main />
           <NextScript />
         </body>
