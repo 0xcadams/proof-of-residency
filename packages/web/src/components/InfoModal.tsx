@@ -31,7 +31,7 @@ export const InfoModal = (props: { isOpen: boolean; onClose: () => void }) => {
               </Link>{' '}
               for more details on how the process preserves privacy.
             </Text>
-            <Text mt={2}>
+            <Text mt={4}>
               We designed this NFT as an art project as well as a proof-of-concept for an NFT lego,
               "Proof of Residency". The generative art designs are based upon your physical address
               (based on your home city/state). We send a letter through{' '}

@@ -1,25 +1,31 @@
-import React from 'react';
-
-import { Button, ChakraProvider, Flex, Heading, Link, Spacer } from '@chakra-ui/react';
-
-import { AppProps } from 'next/app';
-import { DefaultSeo } from 'next-seo';
-import theme from '../src/theme';
-
-import '@fontsource/shadows-into-light';
+import { ChakraProvider } from '@chakra-ui/react';
 import '@fontsource/josefin-sans';
+import '@fontsource/shadows-into-light';
+import { DefaultSeo } from 'next-seo';
+import { AppProps } from 'next/app';
+import React from 'react';
+import theme from '../src/theme';
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <DefaultSeo
         title="Proof of Residency"
-        description="Proof of residency in a geographical area, on the blockchain."
+        description="NFT collection inspired by the physical studies of hydrography and transportation."
         openGraph={{
           type: 'website',
-          url: 'https://proofofresidency.org',
+          url: 'https://proofofresidency.xyz',
           site_name: 'Proof of Residency',
-          description: 'Proof of residency in a geographical area, on the blockchain.'
+          description:
+            'NFT collection inspired by the physical studies of hydrography and transportation.',
+          images: [
+            {
+              url: 'https://proofofresidency.xyz/logo-og.png',
+              width: 1200,
+              height: 630,
+              alt: 'Proof of Residency Logo'
+            }
+          ]
         }}
       />
       {/* <ApolloProvider client={apolloClient}> */}

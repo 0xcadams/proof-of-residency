@@ -17,7 +17,7 @@ const IndexPage = () => {
           Inspired by the physical studies of hydrography and transportation.
         </Heading>
 
-        <Flex position="relative" height={frameHeight}>
+        <Flex mt={2} position="relative" height={frameHeight}>
           <Flex maxWidth={1000}>
             <Image
               objectFit="contain"
