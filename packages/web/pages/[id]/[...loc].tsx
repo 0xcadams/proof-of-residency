@@ -13,6 +13,7 @@ import {
   Text,
   Th,
   Thead,
+  Tooltip,
   Tr
 } from '@chakra-ui/react';
 import { promises as fs } from 'fs';
@@ -21,6 +22,8 @@ import Head from 'next/head';
 import path from 'path';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
+import numeral from 'numeral';
+
 import Footer from '../../src/components/Footer';
 import Header from '../../src/components/Header';
 
@@ -93,20 +96,27 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
   );
   const meta: MetadataResponse = await res.json();
 
+  const populationFile = path.join(process.cwd(), 'sources/population.json');
+  const populations: { name: string; population: number }[] = JSON.parse(
+    (await fs.readFile(populationFile, 'utf8')).toString()
+  );
+
+  const theoreticalLimit =
+    populations.find((p) => meta.attributes.some((a) => a.value === p.name))?.population ?? null;
+
   return {
     props: {
       ...meta,
       stateId,
       cityId,
-      tokenId
+      tokenId,
+      theoreticalLimit
     },
     revalidate: 60
   };
 };
 
 const NftDetailsPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const background = props.attributes.find((e) => e.trait_type === 'Background')?.value;
-
   const tags = [
     {
       name: 'License',
@@ -121,10 +131,27 @@ const NftDetailsPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =
       name: 'Created By',
       content: 'Generative Script'
     },
-    {
-      name: 'Owned By',
-      content: 'None'
-    }
+    ...(props.theoreticalLimit
+      ? [
+          {
+            name: 'Theoretical Mint Limit',
+            content: `${numeral(props.theoreticalLimit).format('0,0')}`,
+            link: 'https://en.wikipedia.org/wiki/Metropolitan_statistical_area',
+            tooltip: 'The population over 18 y.o. in the city in 2020.'
+          },
+          {
+            name: 'Likely Mint Limit',
+            content: `${numeral(props.theoreticalLimit * 0.028).format('0,0')}`,
+            link: 'https://www.finder.com/nft-statistics',
+            tooltip:
+              'The population over 18 y.o. in the city in 2020, who has historically bought/sold an NFT.'
+          }
+        ]
+      : [])
+    // {
+    //   name: 'Owned By',
+    //   content: 'None'
+    // }
   ];
 
   return (
@@ -175,19 +202,21 @@ const NftDetailsPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =
                   <Text fontWeight="bold" fontSize="lg">
                     {tag.name}
                   </Text>
-                  {tag.link ? (
-                    <Link mt={2} href={tag.link} isExternal>
-                      <Tag pt="3px" variant="solid" size="lg">
-                        {tag.content}
-                      </Tag>
-                    </Link>
-                  ) : (
-                    <Box mt={2}>
-                      <Tag pt="3px" variant="solid" size="lg">
-                        {tag.content}
-                      </Tag>
-                    </Box>
-                  )}
+                  <Tooltip label={tag.tooltip}>
+                    {tag.link ? (
+                      <Link mt={2} href={tag.link} isExternal>
+                        <Tag pt="3px" variant="solid" size="lg">
+                          {tag.content}
+                        </Tag>
+                      </Link>
+                    ) : (
+                      <Box mt={2}>
+                        <Tag pt="3px" variant="solid" size="lg">
+                          {tag.content}
+                        </Tag>
+                      </Box>
+                    )}
+                  </Tooltip>
                 </Flex>
               ))}
             </SimpleGrid>
@@ -203,7 +232,7 @@ const NftDetailsPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =
               </Thead>
               <Tbody>
                 {props.attributes.map((attribute) => (
-                  <Tr>
+                  <Tr key={attribute.trait_type}>
                     <Td>{attribute.trait_type}</Td>
                     <Td>{attribute.value}</Td>
                   </Tr>

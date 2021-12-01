@@ -11,13 +11,12 @@ const App = ({ Component, pageProps }: AppProps) => {
     <>
       <DefaultSeo
         title="Proof of Residency"
-        description="NFT collection inspired by the physical studies of hydrography and transportation."
+        description="NFT collection inspired by cartography."
         openGraph={{
           type: 'website',
           url: 'https://proofofresidency.xyz',
           site_name: 'Proof of Residency',
-          description:
-            'NFT collection inspired by the physical studies of hydrography and transportation.',
+          description: 'NFT collection inspired by cartography.',
           images: [
             {
               url: 'https://proofofresidency.xyz/logo-og.png',

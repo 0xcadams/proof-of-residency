@@ -18,16 +18,20 @@ const Header = (props: HeaderProps) => {
         <Link href="/">
           <Flex align="center">
             <Image src={Logo} alt="Proof of residency logo" width={48} height={48} />
-            {/* <Heading size="md" ml={3}>
-              Proof of Residency
-            </Heading> */}
           </Flex>
         </Link>
         <Spacer />
         {props.showAction && (
-          <Link href="/request">
-            <Button size="lg">launch</Button>
-          </Link>
+          <>
+            <Link href="/request">
+              <Button size="lg">mint</Button>
+            </Link>
+            <Link ml={3} href="/faq">
+              <Button variant="outline" size="lg">
+                faq
+              </Button>
+            </Link>
+          </>
         )}
         <Link ml={3} href="https://github.com/proof-of-residency/proof-of-residency" isExternal>
           <Button variant="outline" size="lg">

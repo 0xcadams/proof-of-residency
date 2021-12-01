@@ -10,6 +10,7 @@ import { VerifyUsAddressResponse } from '../src/api/services/lob';
 import { AddressModal } from '../src/components/AddressModal';
 import { ConfirmModal } from '../src/components/ConfirmModal';
 import { InfoModal } from '../src/components/InfoModal';
+// import { useEthers } from '../src/hooks/useEthers';
 
 const Map = ReactMapboxGl({
   interactive: false,
@@ -43,6 +44,8 @@ const styles: { [key: string]: React.CSSProperties } = {
 const RequestPage = () => {
   const [latLng, setLatLng] = useState<CoordinateLongitudeLatitude | null>(null);
   const [address, setAddress] = useState<VerifyUsAddressResponse | null>(null);
+
+  // const { provider, ethers } = useEthers();
 
   const {
     isOpen: isOpenAddressModal,
@@ -103,6 +106,20 @@ const RequestPage = () => {
     onCloseAddressModal();
     onOpenConfirmModal();
   };
+
+  // useEffect(() => {
+  //   (async () => {
+  //     const balance = await provider.getBalance('0xdb1fedb10b2495c539fc3f2c83d16601579a9c61');
+
+  //     const eth = ethers.utils.formatEther(balance);
+
+  //     toast({
+  //       title: 'Success',
+  //       description: `Ether: ${eth}`,
+  //       status: 'success'
+  //     });
+  //   })();
+  // }, []);
 
   return (
     <>
