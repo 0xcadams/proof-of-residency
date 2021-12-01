@@ -177,13 +177,13 @@ const NftDetailsPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =
                   </Text>
                   {tag.link ? (
                     <Link mt={2} href={tag.link} isExternal>
-                      <Tag variant="solid" size="lg">
+                      <Tag pt="3px" variant="solid" size="lg">
                         {tag.content}
                       </Tag>
                     </Link>
                   ) : (
                     <Box mt={2}>
-                      <Tag variant="solid" size="lg">
+                      <Tag pt="3px" variant="solid" size="lg">
                         {tag.content}
                       </Tag>
                     </Box>

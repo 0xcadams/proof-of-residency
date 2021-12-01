@@ -1,9 +1,11 @@
 import { Box, Button, Link, useDisclosure, useToast } from '@chakra-ui/react';
 import { CoordinateLongitudeLatitude } from 'haversine';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { FiGithub } from 'react-icons/fi';
 import ReactMapboxGl, { Marker } from 'react-mapbox-gl';
+import Logo from '../public/logo.svg';
 import { VerifyUsAddressResponse } from '../src/api/services/lob';
 import { AddressModal } from '../src/components/AddressModal';
 import { ConfirmModal } from '../src/components/ConfirmModal';
@@ -105,12 +107,20 @@ const RequestPage = () => {
   return (
     <>
       <Box zIndex={500} position="absolute" left={4} top={4}>
+        <Link href="/">
+          <Box align="center">
+            <Image src={Logo} alt="Proof of residency logo" width={48} height={48} />
+          </Box>
+        </Link>
+      </Box>
+      <Box zIndex={500} position="absolute" right={4} top={4}>
         <Link href="https://github.com/proof-of-residency/proof-of-residency" isExternal>
           <Button>
             <FiGithub />
           </Button>
         </Link>
       </Box>
+
       <Box zIndex={500} position="absolute" right={4} bottom={4}>
         <Button size="lg" colorScheme="gray" onClick={onOpenInfoModal} mr={2}>
           More Info

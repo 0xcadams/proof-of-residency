@@ -18,7 +18,7 @@ const breakpoints = createBreakpoints({
 const components = {
   Button: {
     baseStyle: {
-      pt: '2px'
+      pt: '3px'
     }
   }
 };
