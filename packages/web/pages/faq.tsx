@@ -52,7 +52,7 @@ const FaqPage = () => {
 
   return (
     <>
-      <Header showAction />
+      <Header />
 
       <Flex minHeight="100vh" pt="70px" width="100%" direction="column" px={4}>
         <Heading mt={20} size="4xl" textAlign="center">
@@ -82,7 +82,7 @@ const FaqPage = () => {
         >
           <Accordion defaultIndex={[0]} width="100%">
             {faqs.map((faq) => (
-              <AccordionItem>
+              <AccordionItem key={faq.q}>
                 <h2>
                   <AccordionButton>
                     <Heading flex="1" textAlign="left" size="lg" py={2}>

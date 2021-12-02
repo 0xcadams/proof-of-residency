@@ -83,16 +83,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-type DetailsProps = Mapping & {
-  tokenId: number;
-  description: string;
-  external_url: string;
-  background_color: string;
-  image: string;
-  name: string;
-  tags: string[];
-  attributes: Attribute[];
-};
+type DetailsProps = Mapping &
+  MetadataResponse & {
+    tokenId: number;
+  };
 
 export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) => {
   const tokenId = Number.parseInt(params?.id ?? '-1');
@@ -173,7 +167,7 @@ const NftDetailsPage = (props: DetailsProps) => {
 
   return (
     <>
-      <Header showAction />
+      <Header />
       <Flex pt="70px" width="100%" direction="column">
         <Head>
           <title>{props.name} | Proof of Residency</title>

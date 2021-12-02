@@ -131,7 +131,7 @@ const RequestPage = () => {
         </Link>
       </Box>
       <Box zIndex={500} position="absolute" right={4} top={4}>
-        <Link href="https://github.com/proof-of-residency/proof-of-residency" isExternal>
+        <Link href="https://github.com/proof-of-residency" isExternal>
           <Button>
             <FiGithub />
           </Button>

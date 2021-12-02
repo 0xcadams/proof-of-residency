@@ -10,7 +10,7 @@ const IndexPage = () => {
 
   return (
     <>
-      <Header showAction />
+      <Header />
 
       <Flex minHeight="90vh" pt="70px" width="100%" direction="column" px={4}>
         <Heading mt={20} size="2xl" textAlign="center">
