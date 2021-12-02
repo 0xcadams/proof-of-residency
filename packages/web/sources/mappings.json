@@ -1,0 +1,3202 @@
+[
+  {
+    "name": "New York-Newark-Jersey City, NY-NJ-PA",
+    "population": 15938725,
+    "state": "New York",
+    "limit": 200,
+    "price": 0.2
+  },
+  {
+    "name": "Los Angeles-Long Beach-Anaheim, CA",
+    "population": 10479449,
+    "state": "California",
+    "limit": 150,
+    "price": 0.2
+  },
+  {
+    "name": "Chicago-Naperville-Elgin, IL-IN-WI",
+    "population": 7488708,
+    "state": "Illinois",
+    "limit": 100,
+    "price": 0.2
+  },
+  {
+    "name": "Dallas-Fort Worth-Arlington, TX",
+    "population": 5708411,
+    "state": "Texas",
+    "limit": 50,
+    "price": 0.2
+  },
+  {
+    "name": "Houston-The Woodlands-Sugar Land, TX",
+    "population": 5285307,
+    "state": "Texas",
+    "limit": 50,
+    "price": 0.2
+  },
+  {
+    "name": "Washington-Arlington-Alexandria, DC-VA-MD-WV",
+    "population": 4939663,
+    "state": "Virginia",
+    "limit": 50,
+    "price": 0.2
+  },
+  {
+    "name": "Miami-Fort Lauderdale-Pompano Beach, FL",
+    "population": 4933282,
+    "state": "Florida",
+    "limit": 50,
+    "price": 0.2
+  },
+  {
+    "name": "Philadelphia-Camden-Wilmington, PA-NJ-DE-MD",
+    "population": 4920471,
+    "state": "Pennsylvania",
+    "limit": 50,
+    "price": 0.2
+  },
+  {
+    "name": "Atlanta-Sandy Springs-Alpharetta, GA",
+    "population": 4654322,
+    "state": "Georgia",
+    "limit": 50,
+    "price": 0.2
+  },
+  {
+    "name": "Boston-Cambridge-Newton, MA-NH",
+    "population": 3983267,
+    "state": "Massachusetts",
+    "limit": 50,
+    "price": 0.2
+  },
+  {
+    "name": "San Francisco-Oakland-Berkeley, CA",
+    "population": 3821485,
+    "state": "California",
+    "limit": 50,
+    "price": 0.2
+  },
+  {
+    "name": "Phoenix-Mesa-Chandler, AZ",
+    "population": 3708026,
+    "state": "Arizona",
+    "limit": 50,
+    "price": 0.2
+  },
+  {
+    "name": "Riverside-San Bernardino-Ontario, CA",
+    "population": 3452547,
+    "state": "California",
+    "limit": 50,
+    "price": 0.2
+  },
+  {
+    "name": "Detroit-Warren-Dearborn, MI",
+    "population": 3441067,
+    "state": "Michigan",
+    "limit": 50,
+    "price": 0.2
+  },
+  {
+    "name": "Seattle-Tacoma-Bellevue, WA",
+    "population": 3162633,
+    "state": "Washington",
+    "limit": 50,
+    "price": 0.2
+  },
+  {
+    "name": "Minneapolis-St. Paul-Bloomington, MN-WI",
+    "population": 2827768,
+    "state": "Minnesota",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "San Diego-Chula Vista-Carlsbad, CA",
+    "population": 2608768,
+    "state": "California",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "Tampa-St. Petersburg-Clearwater, FL",
+    "population": 2555842,
+    "state": "Florida",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "Denver-Aurora-Lakewood, CO",
+    "population": 2309918,
+    "state": "Colorado",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "Baltimore-Columbia-Towson, MD",
+    "population": 2224830,
+    "state": "Maryland",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "St. Louis, MO-IL",
+    "population": 2201587,
+    "state": "Missouri",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "Orlando-Kissimmee-Sanford, FL",
+    "population": 2096840,
+    "state": "Florida",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "Charlotte-Concord-Gastonia, NC-SC",
+    "population": 2037161,
+    "state": "North Carolina",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "Portland-Vancouver-Hillsboro, OR-WA",
+    "population": 1984240,
+    "state": "Washington",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "San Antonio-New Braunfels, TX",
+    "population": 1931398,
+    "state": "Texas",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "Pittsburgh, PA",
+    "population": 1928318,
+    "state": "Pennsylvania",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "Sacramento-Roseville-Folsom, CA",
+    "population": 1853765,
+    "state": "California",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "Austin-Round Rock-Georgetown, TX",
+    "population": 1762119,
+    "state": "Texas",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "Las Vegas-Henderson-Paradise, NV",
+    "population": 1751240,
+    "state": "Nevada",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "Cincinnati, OH-KY-IN",
+    "population": 1733472,
+    "state": "Kentucky",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "San Juan-Bayamón-Caguas, PR",
+    "population": 1725642,
+    "state": "Puerto Rico",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "Kansas City, MO-KS",
+    "population": 1667892,
+    "state": "Missouri",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "Cleveland-Elyria, OH",
+    "population": 1657635,
+    "state": "Ohio",
+    "limit": 25,
+    "price": 0.2
+  },
+  { "name": "Columbus, OH", "population": 1639554, "state": "Ohio", "limit": 25, "price": 0.2 },
+  {
+    "name": "Indianapolis-Carmel-Anderson, IN",
+    "population": 1594981,
+    "state": "Indiana",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "San Jose-Sunnyvale-Santa Clara, CA",
+    "population": 1577632,
+    "state": "California",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "Nashville-Davidson--Murfreesboro--Franklin, TN",
+    "population": 1533378,
+    "state": "Tennessee",
+    "limit": 25,
+    "price": 0.2
+  },
+  {
+    "name": "Virginia Beach-Norfolk-Newport News, VA-NC",
+    "population": 1408981,
+    "state": "Virginia",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Providence-Warwick, RI-MA",
+    "population": 1349470,
+    "state": "Rhode Island",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Jacksonville, FL",
+    "population": 1252167,
+    "state": "Florida",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Milwaukee-Waukesha, WI",
+    "population": 1217512,
+    "state": "Wisconsin",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Oklahoma City, OK",
+    "population": 1077799,
+    "state": "Oklahoma",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Raleigh-Cary, NC",
+    "population": 1073322,
+    "state": "North Carolina",
+    "limit": 10,
+    "price": 0.1
+  },
+  { "name": "Richmond, VA", "population": 1032323, "state": "Virginia", "limit": 10, "price": 0.1 },
+  {
+    "name": "Memphis, TN-MS-AR",
+    "population": 1015734,
+    "state": "Tennessee",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Louisville/Jefferson County, KY-IN",
+    "population": 998304,
+    "state": "Indiana",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "New Orleans-Metairie, LA",
+    "population": 989736,
+    "state": "Louisiana",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Hartford-East Hartford-Middletown, CT",
+    "population": 972992,
+    "state": "Connecticut",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Buffalo-Cheektowaga, NY",
+    "population": 932628,
+    "state": "New York",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Salt Lake City, UT",
+    "population": 923634,
+    "state": "Utah",
+    "limit": 10,
+    "price": 0.1
+  },
+  { "name": "Rochester, NY", "population": 868569, "state": "New York", "limit": 10, "price": 0.1 },
+  {
+    "name": "Birmingham-Hoover, AL",
+    "population": 864987,
+    "state": "Alabama",
+    "limit": 10,
+    "price": 0.1
+  },
+  { "name": "Tucson, AZ", "population": 834265, "state": "Arizona", "limit": 10, "price": 0.1 },
+  {
+    "name": "Grand Rapids-Kentwood, MI",
+    "population": 833039,
+    "state": "Michigan",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Urban Honolulu, HI",
+    "population": 809839,
+    "state": "Hawaii",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Worcester, MA-CT",
+    "population": 776855,
+    "state": "Massachusetts",
+    "limit": 10,
+    "price": 0.1
+  },
+  { "name": "Tulsa, OK", "population": 769291, "state": "Oklahoma", "limit": 10, "price": 0.1 },
+  {
+    "name": "Bridgeport-Stamford-Norwalk, CT",
+    "population": 743170,
+    "state": "Connecticut",
+    "limit": 10,
+    "price": 0.1
+  },
+  { "name": "Fresno, CA", "population": 730245, "state": "California", "limit": 10, "price": 0.1 },
+  {
+    "name": "Greenville-Anderson, SC",
+    "population": 724074,
+    "state": "South Carolina",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Albany-Schenectady-Troy, NY",
+    "population": 723194,
+    "state": "New York",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Omaha-Council Bluffs, NE-IA",
+    "population": 720776,
+    "state": "Nebraska",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Albuquerque, NM",
+    "population": 717799,
+    "state": "New Mexico",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "North Port-Sarasota-Bradenton, FL",
+    "population": 701097,
+    "state": "Florida",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Knoxville, TN",
+    "population": 698271,
+    "state": "Tennessee",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "New Haven-Milford, CT",
+    "population": 690994,
+    "state": "Connecticut",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Allentown-Bethlehem-Easton, PA-NJ",
+    "population": 683720,
+    "state": "Pennsylvania",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Baton Rouge, LA",
+    "population": 667617,
+    "state": "Louisiana",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Oxnard-Thousand Oaks-Ventura, CA",
+    "population": 656198,
+    "state": "California",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Bakersfield, CA",
+    "population": 651739,
+    "state": "California",
+    "limit": 10,
+    "price": 0.1
+  },
+  { "name": "El Paso, TX", "population": 647629, "state": "Texas", "limit": 10, "price": 0.1 },
+  {
+    "name": "Columbia, SC",
+    "population": 646816,
+    "state": "South Carolina",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Dayton-Kettering, OH",
+    "population": 636638,
+    "state": "Ohio",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Cape Coral-Fort Myers, FL",
+    "population": 628325,
+    "state": "Florida",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Charleston-North Charleston, SC",
+    "population": 623097,
+    "state": "South Carolina",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "Greensboro-High Point, NC",
+    "population": 608861,
+    "state": "North Carolina",
+    "limit": 10,
+    "price": 0.1
+  },
+  {
+    "name": "McAllen-Edinburg-Mission, TX",
+    "population": 608225,
+    "state": "Texas",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Colorado Springs, CO",
+    "population": 579255,
+    "state": "Colorado",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Little Rock-North Little Rock-Conway, AR",
+    "population": 574672,
+    "state": "Arkansas",
+    "limit": 5,
+    "price": 0.1
+  },
+  { "name": "Boise City, ID", "population": 574593, "state": "Idaho", "limit": 5, "price": 0.1 },
+  { "name": "Stockton, CA", "population": 573400, "state": "California", "limit": 5, "price": 0.1 },
+  {
+    "name": "Lakeland-Winter Haven, FL",
+    "population": 566436,
+    "state": "Florida",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Springfield, MA",
+    "population": 564652,
+    "state": "Massachusetts",
+    "limit": 5,
+    "price": 0.1
+  },
+  { "name": "Akron, OH", "population": 560546, "state": "Ohio", "limit": 5, "price": 0.1 },
+  {
+    "name": "Deltona-Daytona Beach-Ormond Beach, FL",
+    "population": 554509,
+    "state": "Florida",
+    "limit": 5,
+    "price": 0.1
+  },
+  { "name": "Madison, WI", "population": 541848, "state": "Wisconsin", "limit": 5, "price": 0.1 },
+  {
+    "name": "Poughkeepsie-Newburgh-Middletown, NY",
+    "population": 538926,
+    "state": "New York",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Des Moines-West Des Moines, IA",
+    "population": 532784,
+    "state": "Iowa",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Winston-Salem, NC",
+    "population": 528884,
+    "state": "North Carolina",
+    "limit": 5,
+    "price": 0.1
+  },
+  { "name": "Syracuse, NY", "population": 525443, "state": "New York", "limit": 5, "price": 0.1 },
+  {
+    "name": "Durham-Chapel Hill, NC",
+    "population": 519038,
+    "state": "North Carolina",
+    "limit": 5,
+    "price": 0.1
+  },
+  { "name": "Toledo, OH", "population": 505419, "state": "Ohio", "limit": 5, "price": 0.1 },
+  {
+    "name": "Palm Bay-Melbourne-Titusville, FL",
+    "population": 497095,
+    "state": "Florida",
+    "limit": 5,
+    "price": 0.1
+  },
+  { "name": "Wichita, KS", "population": 485778, "state": "Kansas", "limit": 5, "price": 0.1 },
+  {
+    "name": "Ogden-Clearfield, UT",
+    "population": 483383,
+    "state": "Utah",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Augusta-Richmond County, GA-SC",
+    "population": 471086,
+    "state": "Georgia",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Harrisburg-Carlisle, PA",
+    "population": 466943,
+    "state": "Pennsylvania",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Spokane-Spokane Valley, WA",
+    "population": 458159,
+    "state": "Washington",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Scranton--Wilkes-Barre, PA",
+    "population": 457125,
+    "state": "Pennsylvania",
+    "limit": 5,
+    "price": 0.1
+  },
+  { "name": "Jackson, MS", "population": 456600, "state": "Mississippi", "limit": 5, "price": 0.1 },
+  { "name": "Provo-Orem, UT", "population": 451022, "state": "Utah", "limit": 5, "price": 0.1 },
+  {
+    "name": "Portland-South Portland, ME",
+    "population": 450500,
+    "state": "Maine",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Chattanooga, TN-GA",
+    "population": 443098,
+    "state": "Tennessee",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Youngstown-Warren-Boardman, OH-PA",
+    "population": 434484,
+    "state": "Ohio",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Lansing-East Lansing, MI",
+    "population": 429210,
+    "state": "Michigan",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Lancaster, PA",
+    "population": 425314,
+    "state": "Pennsylvania",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Fayetteville-Springdale-Rogers, AR",
+    "population": 409023,
+    "state": "Arkansas",
+    "limit": 5,
+    "price": 0.1
+  },
+  { "name": "Modesto, CA", "population": 407908, "state": "California", "limit": 5, "price": 0.1 },
+  {
+    "name": "Myrtle Beach-Conway-North Myrtle Beach, SC-NC",
+    "population": 406688,
+    "state": "North Carolina",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Pensacola-Ferry Pass-Brent, FL",
+    "population": 403339,
+    "state": "Florida",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Lexington-Fayette, KY",
+    "population": 401907,
+    "state": "Kentucky",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Port St. Lucie, FL",
+    "population": 395996,
+    "state": "Florida",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Santa Rosa-Petaluma, CA",
+    "population": 393152,
+    "state": "California",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Fayetteville, NC",
+    "population": 390022,
+    "state": "North Carolina",
+    "limit": 5,
+    "price": 0.1
+  },
+  { "name": "Reno, NV", "population": 387332, "state": "Nevada", "limit": 5, "price": 0.1 },
+  { "name": "Huntsville, AL", "population": 383861, "state": "Alabama", "limit": 5, "price": 0.1 },
+  {
+    "name": "Asheville, NC",
+    "population": 382874,
+    "state": "North Carolina",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Springfield, MO",
+    "population": 368530,
+    "state": "Missouri",
+    "limit": 5,
+    "price": 0.1
+  },
+  { "name": "Lafayette, LA", "population": 362025, "state": "Louisiana", "limit": 5, "price": 0.1 },
+  {
+    "name": "York-Hanover, PA",
+    "population": 356368,
+    "state": "Pennsylvania",
+    "limit": 5,
+    "price": 0.1
+  },
+  { "name": "Vallejo, CA", "population": 354770, "state": "California", "limit": 5, "price": 0.1 },
+  {
+    "name": "Killeen-Temple, TX",
+    "population": 351625,
+    "state": "Texas",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Santa Maria-Santa Barbara, CA",
+    "population": 350805,
+    "state": "California",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Salisbury, MD-DE",
+    "population": 338511,
+    "state": "Maryland",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Manchester-Nashua, NH",
+    "population": 338264,
+    "state": "New Hampshire",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Reading, PA",
+    "population": 333658,
+    "state": "Pennsylvania",
+    "limit": 5,
+    "price": 0.1
+  },
+  { "name": "Mobile, AL", "population": 331508, "state": "Alabama", "limit": 5, "price": 0.1 },
+  { "name": "Visalia, CA", "population": 331093, "state": "California", "limit": 5, "price": 0.1 },
+  { "name": "Salem, OR", "population": 330394, "state": "Oregon", "limit": 5, "price": 0.1 },
+  { "name": "Salinas, CA", "population": 327777, "state": "California", "limit": 5, "price": 0.1 },
+  {
+    "name": "Corpus Christi, TX",
+    "population": 321433,
+    "state": "Texas",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Gulfport-Biloxi, MS",
+    "population": 319635,
+    "state": "Mississippi",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Canton-Massillon, OH",
+    "population": 316050,
+    "state": "Ohio",
+    "limit": 5,
+    "price": 0.1
+  },
+  { "name": "Flint, MI", "population": 315909, "state": "Michigan", "limit": 5, "price": 0.1 },
+  { "name": "Savannah, GA", "population": 313838, "state": "Georgia", "limit": 5, "price": 0.1 },
+  { "name": "Fort Wayne, IN", "population": 313573, "state": "Indiana", "limit": 5, "price": 0.1 },
+  {
+    "name": "Eugene-Springfield, OR",
+    "population": 313477,
+    "state": "Oregon",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Naples-Marco Island, FL",
+    "population": 313169,
+    "state": "Florida",
+    "limit": 5,
+    "price": 0.1
+  },
+  { "name": "Peoria, IL", "population": 310740, "state": "Illinois", "limit": 5, "price": 0.1 },
+  { "name": "Tallahassee, FL", "population": 310117, "state": "Florida", "limit": 5, "price": 0.1 },
+  { "name": "Ocala, FL", "population": 308357, "state": "Florida", "limit": 5, "price": 0.1 },
+  {
+    "name": "Trenton-Princeton, NJ",
+    "population": 304672,
+    "state": "New Jersey",
+    "limit": 5,
+    "price": 0.1
+  },
+  { "name": "Ann Arbor, MI", "population": 303933, "state": "Michigan", "limit": 5, "price": 0.1 },
+  {
+    "name": "Beaumont-Port Arthur, TX",
+    "population": 302788,
+    "state": "Texas",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Brownsville-Harlingen, TX",
+    "population": 301208,
+    "state": "Texas",
+    "limit": 5,
+    "price": 0.1
+  },
+  { "name": "Anchorage, AK", "population": 300996, "state": "Alaska", "limit": 5, "price": 0.1 },
+  { "name": "Montgomery, AL", "population": 299238, "state": "Alabama", "limit": 5, "price": 0.1 },
+  {
+    "name": "Shreveport-Bossier City, LA",
+    "population": 298723,
+    "state": "Louisiana",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Davenport-Moline-Rock Island, IA-IL",
+    "population": 296767,
+    "state": "Illinois",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Hickory-Lenoir-Morganton, NC",
+    "population": 290293,
+    "state": "North Carolina",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Fort Collins, CO",
+    "population": 289333,
+    "state": "Colorado",
+    "limit": 5,
+    "price": 0.1
+  },
+  {
+    "name": "Huntington-Ashland, WV-KY-OH",
+    "population": 283718,
+    "state": "Ohio",
+    "limit": 5,
+    "price": 0.1
+  },
+  { "name": "Gainesville, FL", "population": 276372, "state": "Florida", "limit": 1, "price": 0.1 },
+  { "name": "Boulder, CO", "population": 268640, "state": "Colorado", "limit": 1, "price": 0.1 },
+  { "name": "Lincoln, NE", "population": 262021, "state": "Nebraska", "limit": 1, "price": 0.1 },
+  { "name": "Rockford, IL", "population": 260138, "state": "Illinois", "limit": 1, "price": 0.1 },
+  {
+    "name": "Aguadilla-Isabela, PR",
+    "population": 257806,
+    "state": "Puerto Rico",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Green Bay, WI", "population": 253252, "state": "Wisconsin", "limit": 1, "price": 0.1 },
+  {
+    "name": "Spartanburg, SC",
+    "population": 252012,
+    "state": "South Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Roanoke, VA", "population": 251768, "state": "Virginia", "limit": 1, "price": 0.1 },
+  { "name": "Columbus, GA-AL", "population": 250985, "state": "Georgia", "limit": 1, "price": 0.1 },
+  {
+    "name": "South Bend-Mishawaka, IN-MI",
+    "population": 250714,
+    "state": "Michigan",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Kingsport-Bristol, TN-VA",
+    "population": 248691,
+    "state": "Virginia",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Lubbock, TX", "population": 245362, "state": "Texas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Evansville, IN-KY",
+    "population": 243564,
+    "state": "Kentucky",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Greeley, CO", "population": 241833, "state": "Colorado", "limit": 1, "price": 0.1 },
+  {
+    "name": "Clarksville, TN-KY",
+    "population": 236031,
+    "state": "Kentucky",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Duluth, MN-WI", "population": 234637, "state": "Minnesota", "limit": 1, "price": 0.1 },
+  {
+    "name": "San Luis Obispo-Paso Robles, CA",
+    "population": 231744,
+    "state": "California",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Olympia-Lacey-Tumwater, WA",
+    "population": 231089,
+    "state": "Washington",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Wilmington, NC",
+    "population": 230721,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Utica-Rome, NY", "population": 230181, "state": "New York", "limit": 1, "price": 0.1 },
+  {
+    "name": "Hagerstown-Martinsburg, MD-WV",
+    "population": 228444,
+    "state": "West Virginia",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Crestview-Fort Walton Beach-Destin, FL",
+    "population": 224410,
+    "state": "Florida",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Santa Cruz-Watsonville, CA",
+    "population": 219764,
+    "state": "California",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Bremerton-Silverdale-Port Orchard, WA",
+    "population": 219552,
+    "state": "Washington",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Kennewick-Richland, WA",
+    "population": 218946,
+    "state": "Washington",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Atlantic City-Hammonton, NJ",
+    "population": 217993,
+    "state": "New Jersey",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Longview, TX", "population": 217440, "state": "Texas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Norwich-New London, CT",
+    "population": 216922,
+    "state": "Connecticut",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Erie, PA", "population": 214341, "state": "Pennsylvania", "limit": 1, "price": 0.1 },
+  { "name": "Cedar Rapids, IA", "population": 212608, "state": "Iowa", "limit": 1, "price": 0.1 },
+  {
+    "name": "College Station-Bryan, TX",
+    "population": 212568,
+    "state": "Texas",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Tuscaloosa, AL", "population": 212024, "state": "Alabama", "limit": 1, "price": 0.1 },
+  { "name": "Waco, TX", "population": 210837, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Lynchburg, VA", "population": 209610, "state": "Virginia", "limit": 1, "price": 0.1 },
+  {
+    "name": "Charleston, WV",
+    "population": 206749,
+    "state": "West Virginia",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Sioux Falls, SD",
+    "population": 205410,
+    "state": "South Dakota",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Kalamazoo-Portage, MI",
+    "population": 204328,
+    "state": "Michigan",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Amarillo, TX", "population": 202408, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Merced, CA", "population": 200223, "state": "California", "limit": 1, "price": 0.1 },
+  { "name": "Binghamton, NY", "population": 199720, "state": "New York", "limit": 1, "price": 0.1 },
+  {
+    "name": "Prescott Valley-Prescott, AZ",
+    "population": 199136,
+    "state": "Arizona",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Barnstable Town, MA",
+    "population": 196284,
+    "state": "Massachusetts",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Fargo, ND-MN",
+    "population": 191768,
+    "state": "North Dakota",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Laredo, TX", "population": 186454, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Appleton, WI", "population": 185898, "state": "Wisconsin", "limit": 1, "price": 0.1 },
+  {
+    "name": "Fort Smith, AR-OK",
+    "population": 185713,
+    "state": "Arkansas",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Yakima, WA", "population": 184371, "state": "Washington", "limit": 1, "price": 0.1 },
+  { "name": "Ponce, PR", "population": 184281, "state": "Puerto Rico", "limit": 1, "price": 0.1 },
+  {
+    "name": "Burlington-South Burlington, VT",
+    "population": 183510,
+    "state": "Vermont",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Lebanon, NH-VT",
+    "population": 182989,
+    "state": "New Hampshire",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Bellingham, WA",
+    "population": 182483,
+    "state": "Washington",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Daphne-Fairhope-Foley, AL",
+    "population": 182471,
+    "state": "Alabama",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Macon-Bibb County, GA",
+    "population": 180585,
+    "state": "Georgia",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Champaign-Urbana, IL",
+    "population": 179379,
+    "state": "Illinois",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Charlottesville, VA",
+    "population": 178442,
+    "state": "Virginia",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Topeka, KS", "population": 178364, "state": "Kansas", "limit": 1, "price": 0.1 },
+  { "name": "Medford, OR", "population": 178032, "state": "Oregon", "limit": 1, "price": 0.1 },
+  {
+    "name": "Lake Havasu City-Kingman, AZ",
+    "population": 177461,
+    "state": "Arizona",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Tyler, TX", "population": 177458, "state": "Texas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Lafayette-West Lafayette, IN",
+    "population": 175592,
+    "state": "Indiana",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Hilton Head Island-Bluffton, SC",
+    "population": 174870,
+    "state": "South Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Rochester, MN", "population": 172418, "state": "Minnesota", "limit": 1, "price": 0.1 },
+  {
+    "name": "Athens-Clarke County, GA",
+    "population": 171802,
+    "state": "Georgia",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Chico, CA", "population": 168339, "state": "California", "limit": 1, "price": 0.1 },
+  {
+    "name": "Johnson City, TN",
+    "population": 168304,
+    "state": "Tennessee",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Lake Charles, LA",
+    "population": 167524,
+    "state": "Louisiana",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Las Cruces, NM",
+    "population": 167142,
+    "state": "New Mexico",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Columbia, MO", "population": 166451, "state": "Missouri", "limit": 1, "price": 0.1 },
+  { "name": "Punta Gorda, FL", "population": 164240, "state": "Florida", "limit": 1, "price": 0.1 },
+  {
+    "name": "Springfield, IL",
+    "population": 162695,
+    "state": "Illinois",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Hilo, HI", "population": 158711, "state": "Hawaii", "limit": 1, "price": 0.1 },
+  { "name": "Bend, OR", "population": 158167, "state": "Oregon", "limit": 1, "price": 0.1 },
+  {
+    "name": "Jacksonville, NC",
+    "population": 157467,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Houma-Thibodaux, LA",
+    "population": 157124,
+    "state": "Louisiana",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Monroe, LA", "population": 156894, "state": "Louisiana", "limit": 1, "price": 0.1 },
+  {
+    "name": "Florence, SC",
+    "population": 154840,
+    "state": "South Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Gainesville, GA", "population": 153844, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "Yuma, AZ", "population": 153169, "state": "Arizona", "limit": 1, "price": 0.1 },
+  { "name": "Racine, WI", "population": 153051, "state": "Wisconsin", "limit": 1, "price": 0.1 },
+  { "name": "Arecibo, PR", "population": 151886, "state": "Puerto Rico", "limit": 1, "price": 0.1 },
+  {
+    "name": "Torrington, CT",
+    "population": 151879,
+    "state": "Connecticut",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "St. Cloud, MN", "population": 151859, "state": "Minnesota", "limit": 1, "price": 0.1 },
+  {
+    "name": "Elkhart-Goshen, IN",
+    "population": 150481,
+    "state": "Indiana",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Kingston, NY", "population": 149457, "state": "New York", "limit": 1, "price": 0.1 },
+  { "name": "Saginaw, MI", "population": 148604, "state": "Michigan", "limit": 1, "price": 0.1 },
+  { "name": "Terre Haute, IN", "population": 146025, "state": "Indiana", "limit": 1, "price": 0.1 },
+  {
+    "name": "Warner Robins, GA",
+    "population": 144229,
+    "state": "Georgia",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Redding, CA", "population": 143512, "state": "California", "limit": 1, "price": 0.1 },
+  { "name": "Billings, MT", "population": 142168, "state": "Montana", "limit": 1, "price": 0.1 },
+  { "name": "Dover, DE", "population": 139805, "state": "Delaware", "limit": 1, "price": 0.1 },
+  { "name": "Panama City, FL", "population": 139659, "state": "Florida", "limit": 1, "price": 0.1 },
+  { "name": "Jackson, TN", "population": 139646, "state": "Tennessee", "limit": 1, "price": 0.1 },
+  { "name": "Iowa City, IA", "population": 139157, "state": "Iowa", "limit": 1, "price": 0.1 },
+  {
+    "name": "Blacksburg-Christiansburg, VA",
+    "population": 138635,
+    "state": "Virginia",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Bowling Green, KY",
+    "population": 137418,
+    "state": "Kentucky",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Joplin, MO", "population": 137057, "state": "Missouri", "limit": 1, "price": 0.1 },
+  {
+    "name": "Auburn-Opelika, AL",
+    "population": 136444,
+    "state": "Alabama",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Muskegon, MI", "population": 136303, "state": "Michigan", "limit": 1, "price": 0.1 },
+  {
+    "name": "Oshkosh-Neenah, WI",
+    "population": 136202,
+    "state": "Wisconsin",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Abilene, TX", "population": 135448, "state": "Texas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Eau Claire, WI",
+    "population": 135329,
+    "state": "Wisconsin",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "State College, PA",
+    "population": 134439,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Sebastian-Vero Beach, FL",
+    "population": 134386,
+    "state": "Florida",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "East Stroudsburg, PA",
+    "population": 134271,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Bloomington, IL",
+    "population": 134128,
+    "state": "Illinois",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Yuba City, CA",
+    "population": 134126,
+    "state": "California",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Burlington, NC",
+    "population": 133969,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Bloomington, IN", "population": 133347, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "St. George, UT", "population": 132737, "state": "Utah", "limit": 1, "price": 0.1 },
+  {
+    "name": "Greenville, NC",
+    "population": 132273,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Coeur d'Alene, ID", "population": 132205, "state": "Idaho", "limit": 1, "price": 0.1 },
+  {
+    "name": "El Centro, CA",
+    "population": 132200,
+    "state": "California",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Hattiesburg, MS",
+    "population": 132040,
+    "state": "Mississippi",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Homosassa Springs, FL",
+    "population": 131487,
+    "state": "Florida",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Waterloo-Cedar Falls, IA",
+    "population": 131055,
+    "state": "Iowa",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Pueblo, CO", "population": 130863, "state": "Colorado", "limit": 1, "price": 0.1 },
+  {
+    "name": "Wausau-Weston, WI",
+    "population": 129894,
+    "state": "Wisconsin",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Kahului-Wailuku-Lahaina, HI",
+    "population": 129739,
+    "state": "Hawaii",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Santa Fe, NM", "population": 127850, "state": "New Mexico", "limit": 1, "price": 0.1 },
+  { "name": "Midland, TX", "population": 126830, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Jackson, MI", "population": 126350, "state": "Michigan", "limit": 1, "price": 0.1 },
+  {
+    "name": "Janesville-Beloit, WI",
+    "population": 126282,
+    "state": "Wisconsin",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Concord, NH",
+    "population": 125255,
+    "state": "New Hampshire",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Tupelo, MS", "population": 124937, "state": "Mississippi", "limit": 1, "price": 0.1 },
+  { "name": "Bangor, ME", "population": 124474, "state": "Maine", "limit": 1, "price": 0.1 },
+  {
+    "name": "Traverse City, MI",
+    "population": 124185,
+    "state": "Michigan",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Grand Junction, CO",
+    "population": 123055,
+    "state": "Colorado",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Monroe, MI", "population": 122008, "state": "Michigan", "limit": 1, "price": 0.1 },
+  { "name": "Decatur, AL", "population": 121363, "state": "Alabama", "limit": 1, "price": 0.1 },
+  { "name": "Niles, MI", "population": 121067, "state": "Michigan", "limit": 1, "price": 0.1 },
+  {
+    "name": "Chambersburg-Waynesboro, PA",
+    "population": 120964,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "The Villages, FL",
+    "population": 120696,
+    "state": "Florida",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Florence-Muscle Shoals, AL",
+    "population": 119986,
+    "state": "Alabama",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Odessa, TX", "population": 119460, "state": "Texas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Vineland-Bridgeton, NJ",
+    "population": 118421,
+    "state": "New Jersey",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Elizabethtown-Fort Knox, KY",
+    "population": 117778,
+    "state": "Kentucky",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Ottawa, IL", "population": 117285, "state": "Illinois", "limit": 1, "price": 0.1 },
+  { "name": "Dothan, AL", "population": 117107, "state": "Alabama", "limit": 1, "price": 0.1 },
+  {
+    "name": "Jefferson City, MO",
+    "population": 116682,
+    "state": "Missouri",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Alexandria, LA",
+    "population": 116319,
+    "state": "Louisiana",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Flagstaff, AZ", "population": 115992, "state": "Arizona", "limit": 1, "price": 0.1 },
+  {
+    "name": "Pottsville, PA",
+    "population": 115932,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Morgantown, WV",
+    "population": 115841,
+    "state": "West Virginia",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Wichita Falls, TX", "population": 115448, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "London, KY", "population": 114935, "state": "Kentucky", "limit": 1, "price": 0.1 },
+  { "name": "Albany, GA", "population": 114590, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "Texarkana, TX-AR", "population": 113615, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Madera, CA", "population": 113229, "state": "California", "limit": 1, "price": 0.1 },
+  { "name": "Wheeling, WV-OH", "population": 112812, "state": "Ohio", "limit": 1, "price": 0.1 },
+  {
+    "name": "Rocky Mount, NC",
+    "population": 112763,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Morristown, TN",
+    "population": 111949,
+    "state": "Tennessee",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Hanford-Corcoran, CA",
+    "population": 111935,
+    "state": "California",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Valdosta, GA", "population": 111813, "state": "Georgia", "limit": 1, "price": 0.1 },
+  {
+    "name": "La Crosse-Onalaska, WI-MN",
+    "population": 111247,
+    "state": "Minnesota",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Winchester, VA-WV",
+    "population": 111242,
+    "state": "West Virginia",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Lebanon, PA",
+    "population": 111234,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Sioux City, IA-NE-SD",
+    "population": 110577,
+    "state": "Iowa",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Napa, CA", "population": 110473, "state": "California", "limit": 1, "price": 0.1 },
+  {
+    "name": "Eureka-Arcata, CA",
+    "population": 109809,
+    "state": "California",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Idaho Falls, ID", "population": 108499, "state": "Idaho", "limit": 1, "price": 0.1 },
+  {
+    "name": "Johnstown, PA",
+    "population": 108388,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Harrisonburg, VA",
+    "population": 107815,
+    "state": "Virginia",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Rapid City, SD",
+    "population": 107136,
+    "state": "South Dakota",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Pittsfield, MA",
+    "population": 106768,
+    "state": "Massachusetts",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Dalton, GA", "population": 106472, "state": "Georgia", "limit": 1, "price": 0.1 },
+  {
+    "name": "Sumter, SC",
+    "population": 106451,
+    "state": "South Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Carbondale-Marion, IL",
+    "population": 106272,
+    "state": "Illinois",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Springfield, OH", "population": 105692, "state": "Ohio", "limit": 1, "price": 0.1 },
+  {
+    "name": "San Germán, PR",
+    "population": 104344,
+    "state": "Puerto Rico",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Sherman-Denison, TX",
+    "population": 103923,
+    "state": "Texas",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Logan, UT-ID", "population": 103843, "state": "Utah", "limit": 1, "price": 0.1 },
+  {
+    "name": "Battle Creek, MI",
+    "population": 103647,
+    "state": "Michigan",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Manhattan, KS", "population": 103543, "state": "Kansas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Glens Falls, NY",
+    "population": 103495,
+    "state": "New York",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Ames, IA", "population": 102564, "state": "Iowa", "limit": 1, "price": 0.1 },
+  {
+    "name": "Bismarck, ND",
+    "population": 102400,
+    "state": "North Dakota",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Mount Vernon-Anacortes, WA",
+    "population": 101710,
+    "state": "Washington",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Hammond, LA", "population": 101491, "state": "Louisiana", "limit": 1, "price": 0.1 },
+  {
+    "name": "Jamestown-Dunkirk-Fredonia, NY",
+    "population": 101314,
+    "state": "New York",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Jonesboro, AR", "population": 101150, "state": "Arkansas", "limit": 1, "price": 0.1 },
+  { "name": "Staunton, VA", "population": 100446, "state": "Virginia", "limit": 1, "price": 0.1 },
+  {
+    "name": "Albany-Lebanon, OR",
+    "population": 100402,
+    "state": "Oregon",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Augusta-Waterville, ME",
+    "population": 100401,
+    "state": "Maine",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Sierra Vista-Douglas, AZ",
+    "population": 99330,
+    "state": "Arizona",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Cleveland, TN", "population": 99154, "state": "Tennessee", "limit": 1, "price": 0.1 },
+  { "name": "Altoona, PA", "population": 98475, "state": "Pennsylvania", "limit": 1, "price": 0.1 },
+  { "name": "Mansfield, OH", "population": 97883, "state": "Ohio", "limit": 1, "price": 0.1 },
+  {
+    "name": "New Bern, NC",
+    "population": 97742,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Lawton, OK", "population": 96386, "state": "Oklahoma", "limit": 1, "price": 0.1 },
+  { "name": "Lawrence, KS", "population": 96316, "state": "Kansas", "limit": 1, "price": 0.1 },
+  { "name": "Bozeman, MT", "population": 95459, "state": "Montana", "limit": 1, "price": 0.1 },
+  { "name": "Missoula, MT", "population": 95035, "state": "Montana", "limit": 1, "price": 0.1 },
+  {
+    "name": "Weirton-Steubenville, WV-OH",
+    "population": 94751,
+    "state": "Ohio",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "St. Joseph, MO-KS",
+    "population": 94612,
+    "state": "Missouri",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "San Angelo, TX", "population": 93954, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Wenatchee, WA", "population": 93604, "state": "Washington", "limit": 1, "price": 0.1 },
+  { "name": "Owensboro, KY", "population": 92525, "state": "Kentucky", "limit": 1, "price": 0.1 },
+  { "name": "Sheboygan, WI", "population": 92434, "state": "Wisconsin", "limit": 1, "price": 0.1 },
+  {
+    "name": "Anniston-Oxford, AL",
+    "population": 92289,
+    "state": "Alabama",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Holland, MI", "population": 91395, "state": "Michigan", "limit": 1, "price": 0.1 },
+  {
+    "name": "Beckley, WV",
+    "population": 91181,
+    "state": "West Virginia",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Williamsport, PA",
+    "population": 90800,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Goldsboro, NC",
+    "population": 90502,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Muncie, IN", "population": 90284, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Cookeville, TN", "population": 90256, "state": "Tennessee", "limit": 1, "price": 0.1 },
+  { "name": "Ithaca, NY", "population": 90048, "state": "New York", "limit": 1, "price": 0.1 },
+  {
+    "name": "Watertown-Fort Drum, NY",
+    "population": 90038,
+    "state": "New York",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Roseburg, OR", "population": 89959, "state": "Oregon", "limit": 1, "price": 0.1 },
+  {
+    "name": "Farmington, NM",
+    "population": 89664,
+    "state": "New Mexico",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Brunswick, GA", "population": 89200, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "Wooster, OH", "population": 88837, "state": "Ohio", "limit": 1, "price": 0.1 },
+  {
+    "name": "Michigan City-La Porte, IN",
+    "population": 88485,
+    "state": "Indiana",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Lumberton, NC",
+    "population": 88455,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Lewiston-Auburn, ME",
+    "population": 87871,
+    "state": "Maine",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "California-Lexington Park, MD",
+    "population": 86370,
+    "state": "Maryland",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Ogdensburg-Massena, NY",
+    "population": 86264,
+    "state": "New York",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Bluefield, WV-VA",
+    "population": 85814,
+    "state": "Virginia",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Longview, WA", "population": 85596, "state": "Washington", "limit": 1, "price": 0.1 },
+  { "name": "Whitewater, WI", "population": 84970, "state": "Wisconsin", "limit": 1, "price": 0.1 },
+  {
+    "name": "Richmond-Berea, KY",
+    "population": 84429,
+    "state": "Kentucky",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Truckee-Grass Valley, CA",
+    "population": 84331,
+    "state": "California",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Tullahoma-Manchester, TN",
+    "population": 84126,
+    "state": "Tennessee",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Sebring-Avon Park, FL",
+    "population": 83524,
+    "state": "Florida",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Bay City, MI", "population": 83217, "state": "Michigan", "limit": 1, "price": 0.1 },
+  {
+    "name": "Gettysburg, PA",
+    "population": 83005,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Kankakee, IL", "population": 82954, "state": "Illinois", "limit": 1, "price": 0.1 },
+  { "name": "Danville, VA", "population": 82552, "state": "Virginia", "limit": 1, "price": 0.1 },
+  { "name": "Twin Falls, ID", "population": 82346, "state": "Idaho", "limit": 1, "price": 0.1 },
+  {
+    "name": "Fond du Lac, WI",
+    "population": 82059,
+    "state": "Wisconsin",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Mankato, MN", "population": 81651, "state": "Minnesota", "limit": 1, "price": 0.1 },
+  { "name": "Kalispell, MT", "population": 81505, "state": "Montana", "limit": 1, "price": 0.1 },
+  { "name": "Salem, OH", "population": 81318, "state": "Ohio", "limit": 1, "price": 0.1 },
+  {
+    "name": "Grand Forks, ND-MN",
+    "population": 81299,
+    "state": "Minnesota",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Gadsden, AL", "population": 81121, "state": "Alabama", "limit": 1, "price": 0.1 },
+  { "name": "Decatur, IL", "population": 80964, "state": "Illinois", "limit": 1, "price": 0.1 },
+  { "name": "LaGrange, GA-AL", "population": 80372, "state": "Alabama", "limit": 1, "price": 0.1 },
+  { "name": "Hot Springs, AR", "population": 79730, "state": "Arkansas", "limit": 1, "price": 0.1 },
+  { "name": "Corvallis, OR", "population": 79692, "state": "Oregon", "limit": 1, "price": 0.1 },
+  { "name": "Show Low, AZ", "population": 79208, "state": "Arizona", "limit": 1, "price": 0.1 },
+  {
+    "name": "Ocean City, NJ",
+    "population": 78971,
+    "state": "New Jersey",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Adrian, MI", "population": 78518, "state": "Michigan", "limit": 1, "price": 0.1 },
+  { "name": "Lima, OH", "population": 78419, "state": "Ohio", "limit": 1, "price": 0.1 },
+  {
+    "name": "Sevierville, TN",
+    "population": 78359,
+    "state": "Tennessee",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Pinehurst-Southern Pines, NC",
+    "population": 78212,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Shelby, NC",
+    "population": 78032,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Cumberland, MD-WV",
+    "population": 77472,
+    "state": "West Virginia",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Paducah, KY-IL", "population": 77257, "state": "Illinois", "limit": 1, "price": 0.1 },
+  { "name": "Cheyenne, WY", "population": 77134, "state": "Wyoming", "limit": 1, "price": 0.1 },
+  { "name": "Dubuque, IA", "population": 76916, "state": "Iowa", "limit": 1, "price": 0.1 },
+  {
+    "name": "Cape Girardeau, MO-IL",
+    "population": 76780,
+    "state": "Missouri",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Ashtabula, OH", "population": 76412, "state": "Ohio", "limit": 1, "price": 0.1 },
+  { "name": "Rome, GA", "population": 76295, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "Brainerd, MN", "population": 75843, "state": "Minnesota", "limit": 1, "price": 0.1 },
+  { "name": "Meridian, MS", "population": 74790, "state": "Mississippi", "limit": 1, "price": 0.1 },
+  { "name": "Victoria, TX", "population": 74303, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Albertville, AL", "population": 73530, "state": "Alabama", "limit": 1, "price": 0.1 },
+  { "name": "Corning, NY", "population": 73447, "state": "New York", "limit": 1, "price": 0.1 },
+  { "name": "Sunbury, PA", "population": 73275, "state": "Pennsylvania", "limit": 1, "price": 0.1 },
+  { "name": "Ukiah, CA", "population": 72751, "state": "California", "limit": 1, "price": 0.1 },
+  { "name": "Fairbanks, AK", "population": 72748, "state": "Alaska", "limit": 1, "price": 0.1 },
+  {
+    "name": "New Philadelphia-Dover, OH",
+    "population": 72057,
+    "state": "Ohio",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Grants Pass, OR", "population": 71749, "state": "Oregon", "limit": 1, "price": 0.1 },
+  {
+    "name": "Clarksburg, WV",
+    "population": 71688,
+    "state": "West Virginia",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Beaver Dam, WI", "population": 71608, "state": "Wisconsin", "limit": 1, "price": 0.1 },
+  { "name": "Yauco, PR", "population": 71360, "state": "Puerto Rico", "limit": 1, "price": 0.1 },
+  {
+    "name": "Oak Harbor, WA",
+    "population": 71175,
+    "state": "Washington",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Parkersburg-Vienna, WV",
+    "population": 71029,
+    "state": "West Virginia",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Moses Lake, WA",
+    "population": 70900,
+    "state": "Washington",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Key West, FL", "population": 70617, "state": "Florida", "limit": 1, "price": 0.1 },
+  { "name": "Pine Bluff, AR", "population": 70073, "state": "Arkansas", "limit": 1, "price": 0.1 },
+  { "name": "Pocatello, ID", "population": 69857, "state": "Idaho", "limit": 1, "price": 0.1 },
+  {
+    "name": "Hermiston-Pendleton, OR",
+    "population": 69235,
+    "state": "Oregon",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "New Castle, PA",
+    "population": 69056,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Cullman, AL", "population": 68240, "state": "Alabama", "limit": 1, "price": 0.1 },
+  { "name": "Indiana, PA", "population": 67726, "state": "Pennsylvania", "limit": 1, "price": 0.1 },
+  {
+    "name": "Bloomsburg-Berwick, PA",
+    "population": 67491,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Zanesville, OH", "population": 66950, "state": "Ohio", "limit": 1, "price": 0.1 },
+  {
+    "name": "Meadville, PA",
+    "population": 66608,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Orangeburg, SC",
+    "population": 66567,
+    "state": "South Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Elmira, NY", "population": 66485, "state": "New York", "limit": 1, "price": 0.1 },
+  { "name": "Stillwater, OK", "population": 66441, "state": "Oklahoma", "limit": 1, "price": 0.1 },
+  {
+    "name": "Watertown-Fort Atkinson, WI",
+    "population": 66349,
+    "state": "Wisconsin",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "DuBois, PA", "population": 65948, "state": "Pennsylvania", "limit": 1, "price": 0.1 },
+  { "name": "Great Falls, MT", "population": 65587, "state": "Montana", "limit": 1, "price": 0.1 },
+  { "name": "Midland, MI", "population": 65392, "state": "Michigan", "limit": 1, "price": 0.1 },
+  { "name": "Helena, MT", "population": 65251, "state": "Montana", "limit": 1, "price": 0.1 },
+  { "name": "Kokomo, IN", "population": 65147, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Lufkin, TX", "population": 65058, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Plattsburgh, NY", "population": 65038, "state": "New York", "limit": 1, "price": 0.1 },
+  {
+    "name": "Talladega-Sylacauga, AL",
+    "population": 65024,
+    "state": "Alabama",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Athens, TX", "population": 64930, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Huntsville, TX", "population": 64843, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Manitowoc, WI", "population": 64596, "state": "Wisconsin", "limit": 1, "price": 0.1 },
+  {
+    "name": "Port Angeles, WA",
+    "population": 64588,
+    "state": "Washington",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Statesboro, GA", "population": 64494, "state": "Georgia", "limit": 1, "price": 0.1 },
+  {
+    "name": "Russellville, AR",
+    "population": 64299,
+    "state": "Arkansas",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Centralia, WA", "population": 64000, "state": "Washington", "limit": 1, "price": 0.1 },
+  {
+    "name": "Seneca, SC",
+    "population": 63579,
+    "state": "South Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Laurel, MS", "population": 63484, "state": "Mississippi", "limit": 1, "price": 0.1 },
+  { "name": "Keene, NH", "population": 62705, "state": "New Hampshire", "limit": 1, "price": 0.1 },
+  { "name": "Columbus, IN", "population": 62440, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Opelousas, LA", "population": 61811, "state": "Louisiana", "limit": 1, "price": 0.1 },
+  { "name": "Warsaw, IN", "population": 61326, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Auburn, NY", "population": 61212, "state": "New York", "limit": 1, "price": 0.1 },
+  {
+    "name": "Wilson, NC",
+    "population": 61055,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Chillicothe, OH", "population": 60804, "state": "Ohio", "limit": 1, "price": 0.1 },
+  {
+    "name": "Somerset, PA",
+    "population": 60695,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Glenwood Springs, CO",
+    "population": 60647,
+    "state": "Colorado",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Aberdeen, WA", "population": 60530, "state": "Washington", "limit": 1, "price": 0.1 },
+  { "name": "Sandusky, OH", "population": 60530, "state": "Ohio", "limit": 1, "price": 0.1 },
+  { "name": "Casper, WY", "population": 60437, "state": "Wyoming", "limit": 1, "price": 0.1 },
+  { "name": "Olean, NY", "population": 60217, "state": "New York", "limit": 1, "price": 0.1 },
+  { "name": "Hinesville, GA", "population": 59248, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "Searcy, AR", "population": 58935, "state": "Arkansas", "limit": 1, "price": 0.1 },
+  { "name": "Quincy, IL-MO", "population": 58931, "state": "Illinois", "limit": 1, "price": 0.1 },
+  { "name": "Frankfort, KY", "population": 58925, "state": "Kentucky", "limit": 1, "price": 0.1 },
+  { "name": "Minot, ND", "population": 58683, "state": "North Dakota", "limit": 1, "price": 0.1 },
+  {
+    "name": "Wisconsin Rapids-Marshfield, WI",
+    "population": 58544,
+    "state": "Wisconsin",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Findlay, OH", "population": 58460, "state": "Ohio", "limit": 1, "price": 0.1 },
+  { "name": "Palatka, FL", "population": 58184, "state": "Florida", "limit": 1, "price": 0.1 },
+  { "name": "Portsmouth, OH", "population": 58128, "state": "Ohio", "limit": 1, "price": 0.1 },
+  { "name": "Kapaa, HI", "population": 57544, "state": "Hawaii", "limit": 1, "price": 0.1 },
+  { "name": "Danville, IL", "population": 57211, "state": "Illinois", "limit": 1, "price": 0.1 },
+  { "name": "Guayama, PR", "population": 56830, "state": "Puerto Rico", "limit": 1, "price": 0.1 },
+  {
+    "name": "Grand Island, NE",
+    "population": 56604,
+    "state": "Nebraska",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Stevens Point, WI",
+    "population": 56525,
+    "state": "Wisconsin",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Jefferson, GA", "population": 56451, "state": "Georgia", "limit": 1, "price": 0.1 },
+  {
+    "name": "Mount Airy, NC",
+    "population": 56438,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Greeneville, TN",
+    "population": 56339,
+    "state": "Tennessee",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Heber, UT", "population": 56216, "state": "Utah", "limit": 1, "price": 0.1 },
+  {
+    "name": "Morehead City, NC",
+    "population": 56213,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Shawnee, OK", "population": 55464, "state": "Oklahoma", "limit": 1, "price": 0.1 },
+  { "name": "Klamath Falls, OR", "population": 54901, "state": "Oregon", "limit": 1, "price": 0.1 },
+  { "name": "Lake City, FL", "population": 54813, "state": "Florida", "limit": 1, "price": 0.1 },
+  {
+    "name": "Greenwood, SC",
+    "population": 54259,
+    "state": "South Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Clearlake, CA", "population": 54080, "state": "California", "limit": 1, "price": 0.1 },
+  { "name": "Fort Payne, AL", "population": 53920, "state": "Alabama", "limit": 1, "price": 0.1 },
+  { "name": "Marquette, MI", "population": 53919, "state": "Michigan", "limit": 1, "price": 0.1 },
+  { "name": "Coos Bay, OR", "population": 53383, "state": "Oregon", "limit": 1, "price": 0.1 },
+  {
+    "name": "Roanoke Rapids, NC",
+    "population": 53347,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Shelton, WA", "population": 53265, "state": "Washington", "limit": 1, "price": 0.1 },
+  {
+    "name": "Marinette, WI-MI",
+    "population": 53072,
+    "state": "Wisconsin",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Farmington, MO", "population": 52905, "state": "Missouri", "limit": 1, "price": 0.1 },
+  { "name": "Marion, IN", "population": 52856, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Hobbs, NM", "population": 52736, "state": "New Mexico", "limit": 1, "price": 0.1 },
+  { "name": "Gallup, NM", "population": 52680, "state": "New Mexico", "limit": 1, "price": 0.1 },
+  {
+    "name": "North Wilkesboro, NC",
+    "population": 52651,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Athens, OH", "population": 52633, "state": "Ohio", "limit": 1, "price": 0.1 },
+  {
+    "name": "Laconia, NH",
+    "population": 52453,
+    "state": "New Hampshire",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Alamogordo, NM",
+    "population": 52218,
+    "state": "New Mexico",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Faribault-Northfield, MN",
+    "population": 52206,
+    "state": "Minnesota",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Georgetown, SC",
+    "population": 52140,
+    "state": "South Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Mount Pleasant, MI",
+    "population": 52028,
+    "state": "Michigan",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Rexburg, ID", "population": 51839, "state": "Idaho", "limit": 1, "price": 0.1 },
+  {
+    "name": "Martinsville, VA",
+    "population": 51746,
+    "state": "Virginia",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Richmond, IN", "population": 51683, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Jasper, AL", "population": 51667, "state": "Alabama", "limit": 1, "price": 0.1 },
+  { "name": "Marion, OH", "population": 51628, "state": "Ohio", "limit": 1, "price": 0.1 },
+  {
+    "name": "Forest City, NC",
+    "population": 51419,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Baraboo, WI", "population": 51197, "state": "Wisconsin", "limit": 1, "price": 0.1 },
+  { "name": "Muskogee, OK", "population": 51051, "state": "Oklahoma", "limit": 1, "price": 0.1 },
+  { "name": "Hudson, NY", "population": 50848, "state": "New York", "limit": 1, "price": 0.1 },
+  { "name": "Lewiston, ID-WA", "population": 50771, "state": "Idaho", "limit": 1, "price": 0.1 },
+  { "name": "Somerset, KY", "population": 50635, "state": "Kentucky", "limit": 1, "price": 0.1 },
+  { "name": "Crossville, TN", "population": 50574, "state": "Tennessee", "limit": 1, "price": 0.1 },
+  {
+    "name": "Starkville, MS",
+    "population": 50407,
+    "state": "Mississippi",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Dublin, GA", "population": 50142, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "Rutland, VT", "population": 50012, "state": "Vermont", "limit": 1, "price": 0.1 },
+  { "name": "Nacogdoches, TX", "population": 50003, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Red Bluff, CA", "population": 49851, "state": "California", "limit": 1, "price": 0.1 },
+  {
+    "name": "Walla Walla, WA",
+    "population": 49597,
+    "state": "Washington",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Albemarle, NC",
+    "population": 49264,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Granbury, TX", "population": 49209, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Barre, VT", "population": 48717, "state": "Vermont", "limit": 1, "price": 0.1 },
+  { "name": "Oneonta, NY", "population": 48464, "state": "New York", "limit": 1, "price": 0.1 },
+  {
+    "name": "Sanford, NC",
+    "population": 48392,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Mount Vernon, OH", "population": 48296, "state": "Ohio", "limit": 1, "price": 0.1 },
+  { "name": "Hutchinson, KS", "population": 48143, "state": "Kansas", "limit": 1, "price": 0.1 },
+  { "name": "Roswell, NM", "population": 47971, "state": "New Mexico", "limit": 1, "price": 0.1 },
+  { "name": "Marietta, OH", "population": 47860, "state": "Ohio", "limit": 1, "price": 0.1 },
+  { "name": "Carson City, NV", "population": 47400, "state": "Nevada", "limit": 1, "price": 0.1 },
+  { "name": "Palestine, TX", "population": 47381, "state": "Texas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Fergus Falls, MN",
+    "population": 47036,
+    "state": "Minnesota",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Sayre, PA", "population": 46941, "state": "Pennsylvania", "limit": 1, "price": 0.1 },
+  { "name": "Batavia, NY", "population": 46834, "state": "New York", "limit": 1, "price": 0.1 },
+  {
+    "name": "Cullowhee, NC",
+    "population": 46765,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Boone, NC", "population": 46590, "state": "North Carolina", "limit": 1, "price": 0.1 },
+  { "name": "Enid, OK", "population": 46510, "state": "Oklahoma", "limit": 1, "price": 0.1 },
+  { "name": "Sonora, CA", "population": 46268, "state": "California", "limit": 1, "price": 0.1 },
+  { "name": "Salina, KS", "population": 46148, "state": "Kansas", "limit": 1, "price": 0.1 },
+  { "name": "Fernley, NV", "population": 46118, "state": "Nevada", "limit": 1, "price": 0.1 },
+  {
+    "name": "Rio Grande City-Roma, TX",
+    "population": 46110,
+    "state": "Texas",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Sturgis, MI", "population": 45987, "state": "Michigan", "limit": 1, "price": 0.1 },
+  { "name": "Fremont, OH", "population": 45950, "state": "Ohio", "limit": 1, "price": 0.1 },
+  {
+    "name": "Carlsbad-Artesia, NM",
+    "population": 45921,
+    "state": "New Mexico",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Charleston-Mattoon, IL",
+    "population": 45786,
+    "state": "Illinois",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Oxford, MS", "population": 45658, "state": "Mississippi", "limit": 1, "price": 0.1 },
+  { "name": "Columbus, MS", "population": 45651, "state": "Mississippi", "limit": 1, "price": 0.1 },
+  {
+    "name": "Fort Madison-Keokuk, IA-IL-MO",
+    "population": 45331,
+    "state": "Iowa",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Durango, CO", "population": 45269, "state": "Colorado", "limit": 1, "price": 0.1 },
+  {
+    "name": "Fairmont, WV",
+    "population": 44894,
+    "state": "West Virginia",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Norwalk, OH", "population": 44780, "state": "Ohio", "limit": 1, "price": 0.1 },
+  { "name": "Branson, MO", "population": 44701, "state": "Missouri", "limit": 1, "price": 0.1 },
+  { "name": "Gillette, WY", "population": 44667, "state": "Wyoming", "limit": 1, "price": 0.1 },
+  { "name": "Ardmore, OK", "population": 44511, "state": "Oklahoma", "limit": 1, "price": 0.1 },
+  { "name": "Sterling, IL", "population": 43617, "state": "Illinois", "limit": 1, "price": 0.1 },
+  {
+    "name": "Gaffney, SC",
+    "population": 43551,
+    "state": "South Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Calhoun, GA", "population": 43500, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "Picayune, MS", "population": 43337, "state": "Mississippi", "limit": 1, "price": 0.1 },
+  { "name": "Kerrville, TX", "population": 43270, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Edwards, CO", "population": 43263, "state": "Colorado", "limit": 1, "price": 0.1 },
+  {
+    "name": "Milledgeville, GA",
+    "population": 43219,
+    "state": "Georgia",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Pahrump, NV", "population": 43104, "state": "Nevada", "limit": 1, "price": 0.1 },
+  { "name": "Kearney, NE", "population": 43041, "state": "Nebraska", "limit": 1, "price": 0.1 },
+  { "name": "Tiffin, OH", "population": 43031, "state": "Ohio", "limit": 1, "price": 0.1 },
+  { "name": "Payson, AZ", "population": 43006, "state": "Arizona", "limit": 1, "price": 0.1 },
+  {
+    "name": "Kinston, NC",
+    "population": 42923,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Danville, KY", "population": 42902, "state": "Kentucky", "limit": 1, "price": 0.1 },
+  { "name": "Jasper, IN", "population": 42856, "state": "Indiana", "limit": 1, "price": 0.1 },
+  {
+    "name": "Gloversville, NY",
+    "population": 42718,
+    "state": "New York",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Waycross, GA", "population": 42687, "state": "Georgia", "limit": 1, "price": 0.1 },
+  {
+    "name": "Point Pleasant, WV-OH",
+    "population": 42647,
+    "state": "West Virginia",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Elizabeth City, NC",
+    "population": 42556,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Batesville, AR", "population": 42500, "state": "Arkansas", "limit": 1, "price": 0.1 },
+  { "name": "Ontario, OR-ID", "population": 42500, "state": "Oregon", "limit": 1, "price": 0.1 },
+  { "name": "Newport, OR", "population": 42380, "state": "Oregon", "limit": 1, "price": 0.1 },
+  { "name": "Athens, TN", "population": 42012, "state": "Tennessee", "limit": 1, "price": 0.1 },
+  { "name": "Warrensburg, MO", "population": 41848, "state": "Missouri", "limit": 1, "price": 0.1 },
+  { "name": "St. Marys, GA", "population": 41808, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "Scottsboro, AL", "population": 41768, "state": "Alabama", "limit": 1, "price": 0.1 },
+  {
+    "name": "Fort Leonard Wood, MO",
+    "population": 41753,
+    "state": "Missouri",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Glasgow, KY", "population": 41669, "state": "Kentucky", "limit": 1, "price": 0.1 },
+  {
+    "name": "Alexander City, AL",
+    "population": 41615,
+    "state": "Alabama",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Gardnerville Ranchos, NV",
+    "population": 41225,
+    "state": "Nevada",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Cañon City, CO", "population": 41204, "state": "Colorado", "limit": 1, "price": 0.1 },
+  { "name": "Cedar City, UT", "population": 41030, "state": "Utah", "limit": 1, "price": 0.1 },
+  { "name": "Eagle Pass, TX", "population": 40929, "state": "Texas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Platteville, WI",
+    "population": 40847,
+    "state": "Wisconsin",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Enterprise, AL", "population": 40774, "state": "Alabama", "limit": 1, "price": 0.1 },
+  { "name": "Ashland, OH", "population": 40638, "state": "Ohio", "limit": 1, "price": 0.1 },
+  {
+    "name": "Poplar Bluff, MO",
+    "population": 40589,
+    "state": "Missouri",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Pullman, WA", "population": 40521, "state": "Washington", "limit": 1, "price": 0.1 },
+  { "name": "Winona, MN", "population": 40382, "state": "Minnesota", "limit": 1, "price": 0.1 },
+  {
+    "name": "Oil City, PA",
+    "population": 40320,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Mason City, IA", "population": 40190, "state": "Iowa", "limit": 1, "price": 0.1 },
+  {
+    "name": "Bartlesville, OK",
+    "population": 40133,
+    "state": "Oklahoma",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Galesburg, IL", "population": 40028, "state": "Illinois", "limit": 1, "price": 0.1 },
+  { "name": "Rochelle, IL", "population": 39983, "state": "Illinois", "limit": 1, "price": 0.1 },
+  { "name": "Elko, NV", "population": 39857, "state": "Nevada", "limit": 1, "price": 0.1 },
+  { "name": "Greenville, OH", "population": 39608, "state": "Ohio", "limit": 1, "price": 0.1 },
+  { "name": "Corsicana, TX", "population": 39248, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "New Castle, IN", "population": 39055, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Ruston, LA", "population": 38655, "state": "Louisiana", "limit": 1, "price": 0.1 },
+  { "name": "Douglas, GA", "population": 38548, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "Paris, TX", "population": 38400, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Amsterdam, NY", "population": 38248, "state": "New York", "limit": 1, "price": 0.1 },
+  { "name": "Ozark, AL", "population": 38048, "state": "Alabama", "limit": 1, "price": 0.1 },
+  { "name": "Sandpoint, ID", "population": 37908, "state": "Idaho", "limit": 1, "price": 0.1 },
+  { "name": "Jacksonville, TX", "population": 37887, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Malone, NY", "population": 37865, "state": "New York", "limit": 1, "price": 0.1 },
+  { "name": "Cortland, NY", "population": 37850, "state": "New York", "limit": 1, "price": 0.1 },
+  { "name": "Montrose, CO", "population": 37791, "state": "Colorado", "limit": 1, "price": 0.1 },
+  { "name": "Natchez, MS-LA", "population": 37745, "state": "Louisiana", "limit": 1, "price": 0.1 },
+  {
+    "name": "Shelbyville, TN",
+    "population": 37654,
+    "state": "Tennessee",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Cadillac, MI", "population": 37526, "state": "Michigan", "limit": 1, "price": 0.1 },
+  {
+    "name": "Morgan City, LA",
+    "population": 37521,
+    "state": "Louisiana",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Red Wing, MN", "population": 36901, "state": "Minnesota", "limit": 1, "price": 0.1 },
+  { "name": "Norfolk, NE", "population": 36548, "state": "Nebraska", "limit": 1, "price": 0.1 },
+  { "name": "Sidney, OH", "population": 36270, "state": "Ohio", "limit": 1, "price": 0.1 },
+  {
+    "name": "Fort Polk South, LA",
+    "population": 36261,
+    "state": "Louisiana",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Menomonie, WI", "population": 36191, "state": "Wisconsin", "limit": 1, "price": 0.1 },
+  { "name": "Alice, TX", "population": 36142, "state": "Texas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Ellensburg, WA",
+    "population": 36115,
+    "state": "Washington",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Huntingdon, PA",
+    "population": 36075,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Lewistown, PA",
+    "population": 36057,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Washington, NC",
+    "population": 36005,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Tahlequah, OK", "population": 35989, "state": "Oklahoma", "limit": 1, "price": 0.1 },
+  { "name": "Clinton, IA", "population": 35887, "state": "Iowa", "limit": 1, "price": 0.1 },
+  { "name": "Cornelia, GA", "population": 35878, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "Bellefontaine, OH", "population": 35835, "state": "Ohio", "limit": 1, "price": 0.1 },
+  {
+    "name": "Marion, NC",
+    "population": 35805,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Bardstown, KY", "population": 35749, "state": "Kentucky", "limit": 1, "price": 0.1 },
+  {
+    "name": "Mount Sterling, KY",
+    "population": 35733,
+    "state": "Kentucky",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Burlington, IA-IL", "population": 35627, "state": "Iowa", "limit": 1, "price": 0.1 },
+  { "name": "Hillsdale, MI", "population": 35596, "state": "Michigan", "limit": 1, "price": 0.1 },
+  { "name": "Kendallville, IN", "population": 35539, "state": "Indiana", "limit": 1, "price": 0.1 },
+  {
+    "name": "Grand Rapids, MN",
+    "population": 35503,
+    "state": "Minnesota",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Rolla, MO", "population": 35493, "state": "Missouri", "limit": 1, "price": 0.1 },
+  { "name": "Clovis, NM", "population": 35463, "state": "New Mexico", "limit": 1, "price": 0.1 },
+  { "name": "Bedford, IN", "population": 35398, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Wapakoneta, OH", "population": 35366, "state": "Ohio", "limit": 1, "price": 0.1 },
+  { "name": "Durant, OK", "population": 35266, "state": "Oklahoma", "limit": 1, "price": 0.1 },
+  { "name": "Nogales, AZ", "population": 35215, "state": "Arizona", "limit": 1, "price": 0.1 },
+  {
+    "name": "Madisonville, KY",
+    "population": 35186,
+    "state": "Kentucky",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Freeport, IL", "population": 35131, "state": "Illinois", "limit": 1, "price": 0.1 },
+  { "name": "Shawano, WI", "population": 35050, "state": "Wisconsin", "limit": 1, "price": 0.1 },
+  { "name": "Thomasville, GA", "population": 35037, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "Harrison, AR", "population": 35011, "state": "Arkansas", "limit": 1, "price": 0.1 },
+  { "name": "Seymour, IN", "population": 34993, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Del Rio, TX", "population": 34971, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Bogalusa, LA", "population": 34951, "state": "Louisiana", "limit": 1, "price": 0.1 },
+  { "name": "Bemidji, MN", "population": 34776, "state": "Minnesota", "limit": 1, "price": 0.1 },
+  {
+    "name": "Lewisburg, PA",
+    "population": 34680,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Plymouth, IN", "population": 34639, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Paragould, AR", "population": 34486, "state": "Arkansas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Mountain Home, AR",
+    "population": 34358,
+    "state": "Arkansas",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Vicksburg, MS",
+    "population": 34312,
+    "state": "Mississippi",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Greenville, MS",
+    "population": 34277,
+    "state": "Mississippi",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Moultrie, GA", "population": 34193, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "McAlester, OK", "population": 34104, "state": "Oklahoma", "limit": 1, "price": 0.1 },
+  { "name": "Coldwater, MI", "population": 34007, "state": "Michigan", "limit": 1, "price": 0.1 },
+  { "name": "Stephenville, TX", "population": 33837, "state": "Texas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Lawrenceburg, TN",
+    "population": 33353,
+    "state": "Tennessee",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Blackfoot, ID", "population": 33315, "state": "Idaho", "limit": 1, "price": 0.1 },
+  { "name": "Astoria, OR", "population": 33262, "state": "Oregon", "limit": 1, "price": 0.1 },
+  {
+    "name": "Rockingham, NC",
+    "population": 33238,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Bucyrus-Galion, OH", "population": 33149, "state": "Ohio", "limit": 1, "price": 0.1 },
+  { "name": "Ponca City, OK", "population": 33077, "state": "Oklahoma", "limit": 1, "price": 0.1 },
+  { "name": "Duncan, OK", "population": 32922, "state": "Oklahoma", "limit": 1, "price": 0.1 },
+  {
+    "name": "Henderson, NC",
+    "population": 32871,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Willmar, MN", "population": 32859, "state": "Minnesota", "limit": 1, "price": 0.1 },
+  { "name": "Muscatine, IA", "population": 32767, "state": "Iowa", "limit": 1, "price": 0.1 },
+  { "name": "Auburn, IN", "population": 32726, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Alma, MI", "population": 32681, "state": "Michigan", "limit": 1, "price": 0.1 },
+  { "name": "Wilmington, OH", "population": 32671, "state": "Ohio", "limit": 1, "price": 0.1 },
+  { "name": "Burley, ID", "population": 32382, "state": "Idaho", "limit": 1, "price": 0.1 },
+  {
+    "name": "Bradford, PA",
+    "population": 32321,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Aberdeen, SD",
+    "population": 32315,
+    "state": "South Dakota",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Cedartown, GA", "population": 32238, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "Sedalia, MO", "population": 32204, "state": "Missouri", "limit": 1, "price": 0.1 },
+  {
+    "name": "Big Stone Gap, VA",
+    "population": 32046,
+    "state": "Virginia",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Mount Pleasant, TX", "population": 32000, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Española, NM", "population": 31787, "state": "New Mexico", "limit": 1, "price": 0.1 },
+  { "name": "Moscow, ID", "population": 31752, "state": "Idaho", "limit": 1, "price": 0.1 },
+  { "name": "Big Rapids, MI", "population": 31746, "state": "Michigan", "limit": 1, "price": 0.1 },
+  { "name": "Celina, OH", "population": 31679, "state": "Ohio", "limit": 1, "price": 0.1 },
+  { "name": "Houghton, MI", "population": 31591, "state": "Michigan", "limit": 1, "price": 0.1 },
+  { "name": "Gainesville, TX", "population": 31523, "state": "Texas", "limit": 1, "price": 0.1 },
+  {
+    "name": "McMinnville, TN",
+    "population": 31461,
+    "state": "Tennessee",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "El Campo, TX", "population": 31314, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Tifton, GA", "population": 31224, "state": "Georgia", "limit": 1, "price": 0.1 },
+  {
+    "name": "Selinsgrove, PA",
+    "population": 31144,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Warren, PA", "population": 31105, "state": "Pennsylvania", "limit": 1, "price": 0.1 },
+  { "name": "Rock Springs, WY", "population": 31070, "state": "Wyoming", "limit": 1, "price": 0.1 },
+  { "name": "Okeechobee, FL", "population": 30932, "state": "Florida", "limit": 1, "price": 0.1 },
+  { "name": "Laramie, WY", "population": 30852, "state": "Wyoming", "limit": 1, "price": 0.1 },
+  { "name": "Easton, MD", "population": 30682, "state": "Maryland", "limit": 1, "price": 0.1 },
+  { "name": "McComb, MS", "population": 30676, "state": "Mississippi", "limit": 1, "price": 0.1 },
+  { "name": "Alexandria, MN", "population": 30580, "state": "Minnesota", "limit": 1, "price": 0.1 },
+  {
+    "name": "Kill Devil Hills, NC",
+    "population": 30445,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Murray, KY", "population": 30297, "state": "Kentucky", "limit": 1, "price": 0.1 },
+  {
+    "name": "Jacksonville, IL",
+    "population": 30285,
+    "state": "Illinois",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "West Plains, MO", "population": 30281, "state": "Missouri", "limit": 1, "price": 0.1 },
+  { "name": "Blytheville, AR", "population": 30188, "state": "Arkansas", "limit": 1, "price": 0.1 },
+  { "name": "Bennington, VT", "population": 30185, "state": "Vermont", "limit": 1, "price": 0.1 },
+  { "name": "Pittsburg, KS", "population": 30158, "state": "Kansas", "limit": 1, "price": 0.1 },
+  { "name": "Cambridge, OH", "population": 30106, "state": "Ohio", "limit": 1, "price": 0.1 },
+  { "name": "Marshalltown, IA", "population": 30017, "state": "Iowa", "limit": 1, "price": 0.1 },
+  { "name": "Hannibal, MO", "population": 30014, "state": "Missouri", "limit": 1, "price": 0.1 },
+  { "name": "Garden City, KS", "population": 30009, "state": "Kansas", "limit": 1, "price": 0.1 },
+  { "name": "El Dorado, AR", "population": 30008, "state": "Arkansas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Sault Ste. Marie, MI",
+    "population": 29926,
+    "state": "Michigan",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Brownwood, TX", "population": 29878, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Urbana, OH", "population": 29878, "state": "Ohio", "limit": 1, "price": 0.1 },
+  { "name": "Austin, MN", "population": 29817, "state": "Minnesota", "limit": 1, "price": 0.1 },
+  {
+    "name": "Williston, ND",
+    "population": 29793,
+    "state": "North Dakota",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Escanaba, MI", "population": 29711, "state": "Michigan", "limit": 1, "price": 0.1 },
+  {
+    "name": "Newberry, SC",
+    "population": 29709,
+    "state": "South Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Selma, AL", "population": 29613, "state": "Alabama", "limit": 1, "price": 0.1 },
+  {
+    "name": "Lock Haven, PA",
+    "population": 29598,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Riverton, WY", "population": 29597, "state": "Wyoming", "limit": 1, "price": 0.1 },
+  { "name": "Clewiston, FL", "population": 29444, "state": "Florida", "limit": 1, "price": 0.1 },
+  { "name": "Defiance, OH", "population": 29420, "state": "Ohio", "limit": 1, "price": 0.1 },
+  {
+    "name": "Natchitoches, LA",
+    "population": 29349,
+    "state": "Louisiana",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Crawfordsville, IN",
+    "population": 29215,
+    "state": "Indiana",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Fort Dodge, IA", "population": 29204, "state": "Iowa", "limit": 1, "price": 0.1 },
+  { "name": "Centralia, IL", "population": 29147, "state": "Illinois", "limit": 1, "price": 0.1 },
+  {
+    "name": "Greenwood, MS",
+    "population": 29108,
+    "state": "Mississippi",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Ada, OK", "population": 28970, "state": "Oklahoma", "limit": 1, "price": 0.1 },
+  { "name": "Sikeston, MO", "population": 28941, "state": "Missouri", "limit": 1, "price": 0.1 },
+  { "name": "Newport, TN", "population": 28934, "state": "Tennessee", "limit": 1, "price": 0.1 },
+  {
+    "name": "Campbellsville, KY",
+    "population": 28859,
+    "state": "Kentucky",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Mount Vernon, IL",
+    "population": 28846,
+    "state": "Illinois",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Scottsbluff, NE", "population": 28787, "state": "Nebraska", "limit": 1, "price": 0.1 },
+  { "name": "Minden, LA", "population": 28753, "state": "Louisiana", "limit": 1, "price": 0.1 },
+  { "name": "Logansport, IN", "population": 28711, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Huntington, IN", "population": 28604, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Atmore, AL", "population": 28575, "state": "Alabama", "limit": 1, "price": 0.1 },
+  { "name": "Hutchinson, MN", "population": 28494, "state": "Minnesota", "limit": 1, "price": 0.1 },
+  { "name": "Taos, NM", "population": 28445, "state": "New Mexico", "limit": 1, "price": 0.1 },
+  { "name": "Coamo, PR", "population": 28371, "state": "Puerto Rico", "limit": 1, "price": 0.1 },
+  { "name": "Vincennes, IN", "population": 28289, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Brenham, TX", "population": 28261, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Bonham, TX", "population": 28127, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Peru, IN", "population": 28125, "state": "Indiana", "limit": 1, "price": 0.1 },
+  {
+    "name": "Butte-Silver Bow, MT",
+    "population": 28121,
+    "state": "Montana",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Owatonna, MN", "population": 28066, "state": "Minnesota", "limit": 1, "price": 0.1 },
+  { "name": "Fremont, NE", "population": 28050, "state": "Nebraska", "limit": 1, "price": 0.1 },
+  { "name": "Pontiac, IL", "population": 27963, "state": "Illinois", "limit": 1, "price": 0.1 },
+  { "name": "Dyersburg, TN", "population": 27943, "state": "Tennessee", "limit": 1, "price": 0.1 },
+  {
+    "name": "Sulphur Springs, TX",
+    "population": 27871,
+    "state": "Texas",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Mayfield, KY", "population": 27768, "state": "Kentucky", "limit": 1, "price": 0.1 },
+  { "name": "Safford, AZ", "population": 27715, "state": "Arizona", "limit": 1, "price": 0.1 },
+  { "name": "Coshocton, OH", "population": 27671, "state": "Ohio", "limit": 1, "price": 0.1 },
+  { "name": "Angola, IN", "population": 27504, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "DeRidder, LA", "population": 27489, "state": "Louisiana", "limit": 1, "price": 0.1 },
+  {
+    "name": "North Platte, NE",
+    "population": 27439,
+    "state": "Nebraska",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Dixon, IL", "population": 27405, "state": "Illinois", "limit": 1, "price": 0.1 },
+  { "name": "Lebanon, MO", "population": 27397, "state": "Missouri", "limit": 1, "price": 0.1 },
+  { "name": "Jackson, WY-ID", "population": 27370, "state": "Wyoming", "limit": 1, "price": 0.1 },
+  {
+    "name": "Brevard, NC",
+    "population": 27299,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Susanville, CA",
+    "population": 27226,
+    "state": "California",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Taylorville, IL", "population": 27218, "state": "Illinois", "limit": 1, "price": 0.1 },
+  { "name": "Bay City, TX", "population": 27147, "state": "Texas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Brookings, SD",
+    "population": 27141,
+    "state": "South Dakota",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Emporia, KS", "population": 27138, "state": "Kansas", "limit": 1, "price": 0.1 },
+  { "name": "Vidalia, GA", "population": 27053, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "Arcadia, FL", "population": 27008, "state": "Florida", "limit": 1, "price": 0.1 },
+  { "name": "Ottumwa, IA", "population": 26940, "state": "Iowa", "limit": 1, "price": 0.1 },
+  { "name": "Corinth, MS", "population": 26866, "state": "Mississippi", "limit": 1, "price": 0.1 },
+  { "name": "Big Spring, TX", "population": 26862, "state": "Texas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Laurinburg, NC",
+    "population": 26845,
+    "state": "North Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Seneca Falls, NY",
+    "population": 26820,
+    "state": "New York",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Troy, AL", "population": 26809, "state": "Alabama", "limit": 1, "price": 0.1 },
+  { "name": "Effingham, IL", "population": 26584, "state": "Illinois", "limit": 1, "price": 0.1 },
+  {
+    "name": "Brookhaven, MS",
+    "population": 26514,
+    "state": "Mississippi",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Martin, TN", "population": 26499, "state": "Tennessee", "limit": 1, "price": 0.1 },
+  { "name": "Winfield, KS", "population": 26392, "state": "Kansas", "limit": 1, "price": 0.1 },
+  { "name": "Americus, GA", "population": 26364, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "Lewisburg, TN", "population": 26287, "state": "Tennessee", "limit": 1, "price": 0.1 },
+  { "name": "Berlin, NH", "population": 26167, "state": "New Hampshire", "limit": 1, "price": 0.1 },
+  { "name": "Madison, IN", "population": 26165, "state": "Indiana", "limit": 1, "price": 0.1 },
+  {
+    "name": "Mount Gay-Shamrock, WV",
+    "population": 26129,
+    "state": "West Virginia",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Malvern, AR", "population": 26041, "state": "Arkansas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Watertown, SD",
+    "population": 25878,
+    "state": "South Dakota",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Breckenridge, CO",
+    "population": 25853,
+    "state": "Colorado",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Cambridge, MD", "population": 25733, "state": "Maryland", "limit": 1, "price": 0.1 },
+  {
+    "name": "Dickinson, ND",
+    "population": 25710,
+    "state": "North Dakota",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Dayton, TN", "population": 25634, "state": "Tennessee", "limit": 1, "price": 0.1 },
+  { "name": "Pella, IA", "population": 25620, "state": "Iowa", "limit": 1, "price": 0.1 },
+  { "name": "Paris, TN", "population": 25561, "state": "Tennessee", "limit": 1, "price": 0.1 },
+  { "name": "Las Vegas, NM", "population": 25410, "state": "New Mexico", "limit": 1, "price": 0.1 },
+  { "name": "Juneau, AK", "population": 25367, "state": "Alaska", "limit": 1, "price": 0.1 },
+  { "name": "Columbus, NE", "population": 25294, "state": "Nebraska", "limit": 1, "price": 0.1 },
+  {
+    "name": "St. Marys, PA",
+    "population": 25229,
+    "state": "Pennsylvania",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Beeville, TX", "population": 25022, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Jackson, OH", "population": 24906, "state": "Ohio", "limit": 1, "price": 0.1 },
+  {
+    "name": "Iron Mountain, MI-WI",
+    "population": 24644,
+    "state": "Michigan",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Decatur, IN", "population": 24641, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Frankfort, IN", "population": 24551, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Sheridan, WY", "population": 24303, "state": "Wyoming", "limit": 1, "price": 0.1 },
+  { "name": "Wabash, IN", "population": 24287, "state": "Indiana", "limit": 1, "price": 0.1 },
+  {
+    "name": "Central City, KY",
+    "population": 24260,
+    "state": "Kentucky",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Plainview, TX", "population": 24143, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Union City, TN", "population": 24096, "state": "Tennessee", "limit": 1, "price": 0.1 },
+  { "name": "Coffeyville, KS", "population": 24064, "state": "Kansas", "limit": 1, "price": 0.1 },
+  { "name": "Kingsville, TX", "population": 24058, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Jennings, LA", "population": 24039, "state": "Louisiana", "limit": 1, "price": 0.1 },
+  { "name": "Albert Lea, MN", "population": 24027, "state": "Minnesota", "limit": 1, "price": 0.1 },
+  { "name": "Vernal, UT", "population": 23846, "state": "Utah", "limit": 1, "price": 0.1 },
+  { "name": "Hastings, NE", "population": 23842, "state": "Nebraska", "limit": 1, "price": 0.1 },
+  { "name": "Washington, IN", "population": 23699, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Dodge City, KS", "population": 23674, "state": "Kansas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Cleveland, MS",
+    "population": 23662,
+    "state": "Mississippi",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "McPherson, KS", "population": 23584, "state": "Kansas", "limit": 1, "price": 0.1 },
+  { "name": "Alpena, MI", "population": 23539, "state": "Michigan", "limit": 1, "price": 0.1 },
+  { "name": "Kirksville, MO", "population": 23450, "state": "Missouri", "limit": 1, "price": 0.1 },
+  { "name": "Ludington, MI", "population": 23270, "state": "Michigan", "limit": 1, "price": 0.1 },
+  { "name": "Miami, OK", "population": 23192, "state": "Oklahoma", "limit": 1, "price": 0.1 },
+  { "name": "Jesup, GA", "population": 23105, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "Hays, KS", "population": 22952, "state": "Kansas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Silver City, NM",
+    "population": 22831,
+    "state": "New Mexico",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Elkins, WV", "population": 22746, "state": "West Virginia", "limit": 1, "price": 0.1 },
+  { "name": "Lincoln, IL", "population": 22539, "state": "Illinois", "limit": 1, "price": 0.1 },
+  { "name": "Bainbridge, GA", "population": 22443, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "Macomb, IL", "population": 22289, "state": "Illinois", "limit": 1, "price": 0.1 },
+  {
+    "name": "Washington Court House, OH",
+    "population": 22198,
+    "state": "Ohio",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Van Wert, OH", "population": 22063, "state": "Ohio", "limit": 1, "price": 0.1 },
+  {
+    "name": "Crescent City, CA",
+    "population": 22052,
+    "state": "California",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Mineral Wells, TX", "population": 22038, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Eufaula, AL-GA", "population": 22004, "state": "Alabama", "limit": 1, "price": 0.1 },
+  { "name": "Fredericksburg, TX", "population": 21921, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Thomaston, GA", "population": 21711, "state": "Georgia", "limit": 1, "price": 0.1 },
+  {
+    "name": "Bennettsville, SC",
+    "population": 21584,
+    "state": "South Carolina",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Camden, AR", "population": 21532, "state": "Arkansas", "limit": 1, "price": 0.1 },
+  { "name": "Weatherford, OK", "population": 21464, "state": "Oklahoma", "limit": 1, "price": 0.1 },
+  { "name": "Hope, AR", "population": 21457, "state": "Arkansas", "limit": 1, "price": 0.1 },
+  { "name": "Mountain Home, ID", "population": 21446, "state": "Idaho", "limit": 1, "price": 0.1 },
+  { "name": "Union, SC", "population": 21422, "state": "South Carolina", "limit": 1, "price": 0.1 },
+  { "name": "Fort Morgan, CO", "population": 21390, "state": "Colorado", "limit": 1, "price": 0.1 },
+  { "name": "Bluffton, IN", "population": 21349, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Kennett, MO", "population": 21317, "state": "Arkansas", "limit": 1, "price": 0.1 },
+  { "name": "Coco, PR", "population": 21304, "state": "Puerto Rico", "limit": 1, "price": 0.1 },
+  { "name": "Toccoa, GA", "population": 21163, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "North Vernon, IN", "population": 21054, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "The Dalles, OR", "population": 20973, "state": "Oregon", "limit": 1, "price": 0.1 },
+  {
+    "name": "Spearfish, SD",
+    "population": 20823,
+    "state": "South Dakota",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Grants, NM", "population": 20758, "state": "New Mexico", "limit": 1, "price": 0.1 },
+  {
+    "name": "Indianola, MS",
+    "population": 20456,
+    "state": "Mississippi",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "La Grande, OR", "population": 20379, "state": "Oregon", "limit": 1, "price": 0.1 },
+  { "name": "Greensburg, IN", "population": 20317, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "New Ulm, MN", "population": 20310, "state": "Minnesota", "limit": 1, "price": 0.1 },
+  { "name": "Brookings, OR", "population": 20121, "state": "Oregon", "limit": 1, "price": 0.1 },
+  {
+    "name": "Steamboat Springs, CO",
+    "population": 20060,
+    "state": "Colorado",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Hailey, ID", "population": 19981, "state": "Idaho", "limit": 1, "price": 0.1 },
+  { "name": "Ottawa, KS", "population": 19927, "state": "Kansas", "limit": 1, "price": 0.1 },
+  { "name": "Prineville, OR", "population": 19871, "state": "Oregon", "limit": 1, "price": 0.1 },
+  { "name": "Rockport, TX", "population": 19816, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Fallon, NV", "population": 19781, "state": "Nevada", "limit": 1, "price": 0.1 },
+  { "name": "Moberly, MO", "population": 19421, "state": "Missouri", "limit": 1, "price": 0.1 },
+  { "name": "Summerville, GA", "population": 19416, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "Great Bend, KS", "population": 19337, "state": "Kansas", "limit": 1, "price": 0.1 },
+  { "name": "Deming, NM", "population": 19118, "state": "New Mexico", "limit": 1, "price": 0.1 },
+  { "name": "Mexico, MO", "population": 19070, "state": "Missouri", "limit": 1, "price": 0.1 },
+  {
+    "name": "Middlesborough, KY",
+    "population": 18995,
+    "state": "Kentucky",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Marshall, MN", "population": 18861, "state": "Minnesota", "limit": 1, "price": 0.1 },
+  { "name": "Scottsburg, IN", "population": 18845, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Wauchula, FL", "population": 18840, "state": "Florida", "limit": 1, "price": 0.1 },
+  { "name": "Lexington, NE", "population": 18803, "state": "Nebraska", "limit": 1, "price": 0.1 },
+  { "name": "Altus, OK", "population": 18698, "state": "Oklahoma", "limit": 1, "price": 0.1 },
+  { "name": "Uvalde, TX", "population": 18480, "state": "Texas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Forrest City, AR",
+    "population": 18406,
+    "state": "Arkansas",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Woodward, OK", "population": 18398, "state": "Oklahoma", "limit": 1, "price": 0.1 },
+  { "name": "Yankton, SD", "population": 18382, "state": "South Dakota", "limit": 1, "price": 0.1 },
+  { "name": "Hood River, OR", "population": 18372, "state": "Oregon", "limit": 1, "price": 0.1 },
+  { "name": "Connersville, IN", "population": 18313, "state": "Indiana", "limit": 1, "price": 0.1 },
+  { "name": "Marshall, MO", "population": 18120, "state": "Missouri", "limit": 1, "price": 0.1 },
+  { "name": "Magnolia, AR", "population": 17954, "state": "Arkansas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Mitchell, SD",
+    "population": 17808,
+    "state": "South Dakota",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Wahpeton, ND-MN",
+    "population": 17805,
+    "state": "North Dakota",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Sterling, CO", "population": 17431, "state": "Colorado", "limit": 1, "price": 0.1 },
+  { "name": "Arkadelphia, AR", "population": 17401, "state": "Arkansas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Vineyard Haven, MA",
+    "population": 17281,
+    "state": "Massachusetts",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Jamestown, ND",
+    "population": 17254,
+    "state": "North Dakota",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Elk City, OK", "population": 17013, "state": "Oklahoma", "limit": 1, "price": 0.1 },
+  { "name": "Maryville, MO", "population": 17004, "state": "Missouri", "limit": 1, "price": 0.1 },
+  { "name": "Oskaloosa, IA", "population": 16933, "state": "Iowa", "limit": 1, "price": 0.1 },
+  { "name": "Beatrice, NE", "population": 16795, "state": "Nebraska", "limit": 1, "price": 0.1 },
+  { "name": "Pampa, TX", "population": 16728, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Grenada, MS", "population": 16697, "state": "Mississippi", "limit": 1, "price": 0.1 },
+  { "name": "Ruidoso, NM", "population": 16678, "state": "New Mexico", "limit": 1, "price": 0.1 },
+  {
+    "name": "Santa Isabel, PR",
+    "population": 16462,
+    "state": "Puerto Rico",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Worthington, MN",
+    "population": 16056,
+    "state": "Minnesota",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Levelland, TX", "population": 15937, "state": "Texas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Clarksdale, MS",
+    "population": 15915,
+    "state": "Mississippi",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Carroll, IA", "population": 15779, "state": "Iowa", "limit": 1, "price": 0.1 },
+  { "name": "Pierre, SD", "population": 15741, "state": "South Dakota", "limit": 1, "price": 0.1 },
+  { "name": "Fairmont, MN", "population": 15673, "state": "Minnesota", "limit": 1, "price": 0.1 },
+  { "name": "Cordele, GA", "population": 15570, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "Port Lavaca, TX", "population": 15502, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Raymondville, TX", "population": 15484, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Borger, TX", "population": 15430, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Storm Lake, IA", "population": 15327, "state": "Iowa", "limit": 1, "price": 0.1 },
+  { "name": "Liberal, KS", "population": 15257, "state": "Kansas", "limit": 1, "price": 0.1 },
+  { "name": "Huron, SD", "population": 15217, "state": "South Dakota", "limit": 1, "price": 0.1 },
+  { "name": "Price, UT", "population": 15185, "state": "Utah", "limit": 1, "price": 0.1 },
+  { "name": "Guymon, OK", "population": 15122, "state": "Oklahoma", "limit": 1, "price": 0.1 },
+  { "name": "Parsons, KS", "population": 15103, "state": "Kansas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Los Alamos, NM",
+    "population": 15050,
+    "state": "New Mexico",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Dumas, TX", "population": 14944, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Evanston, WY", "population": 14627, "state": "Wyoming", "limit": 1, "price": 0.1 },
+  {
+    "name": "West Point, MS",
+    "population": 14614,
+    "state": "Mississippi",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Portales, NM", "population": 14440, "state": "New Mexico", "limit": 1, "price": 0.1 },
+  { "name": "Spirit Lake, IA", "population": 14332, "state": "Iowa", "limit": 1, "price": 0.1 },
+  {
+    "name": "Brownsville, TN",
+    "population": 13841,
+    "state": "Tennessee",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Pearsall, TX", "population": 13825, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Othello, WA", "population": 13630, "state": "Washington", "limit": 1, "price": 0.1 },
+  { "name": "Maysville, KY", "population": 13245, "state": "Kentucky", "limit": 1, "price": 0.1 },
+  { "name": "Fitzgerald, GA", "population": 13165, "state": "Georgia", "limit": 1, "price": 0.1 },
+  { "name": "Hereford, TX", "population": 12949, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Andrews, TX", "population": 12948, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Winnemucca, NV", "population": 12756, "state": "Nevada", "limit": 1, "price": 0.1 },
+  { "name": "Atchison, KS", "population": 12749, "state": "Kansas", "limit": 1, "price": 0.1 },
+  { "name": "Fairfield, IA", "population": 12724, "state": "Iowa", "limit": 1, "price": 0.1 },
+  { "name": "Spencer, IA", "population": 12704, "state": "Iowa", "limit": 1, "price": 0.1 },
+  { "name": "Snyder, TX", "population": 12649, "state": "Texas", "limit": 1, "price": 0.1 },
+  {
+    "name": "Vermillion, SD",
+    "population": 12399,
+    "state": "South Dakota",
+    "limit": 1,
+    "price": 0.1
+  },
+  {
+    "name": "Helena-West Helena, AR",
+    "population": 12328,
+    "state": "Arkansas",
+    "limit": 1,
+    "price": 0.1
+  },
+  { "name": "Jayuya, PR", "population": 11939, "state": "Puerto Rico", "limit": 1, "price": 0.1 },
+  { "name": "Pecos, TX", "population": 11659, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Sweetwater, TX", "population": 11028, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Ketchikan, AK", "population": 10855, "state": "Alaska", "limit": 1, "price": 0.1 },
+  { "name": "Craig, CO", "population": 9993, "state": "Colorado", "limit": 1, "price": 0.1 },
+  { "name": "Vernon, TX", "population": 9921, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Zapata, TX", "population": 9592, "state": "Texas", "limit": 1, "price": 0.1 },
+  { "name": "Lamesa, TX", "population": 9450, "state": "Texas", "limit": 1, "price": 0.1 }
+]

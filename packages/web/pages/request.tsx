@@ -156,8 +156,8 @@ const RequestPage = () => {
           height: '100vh',
           width: '100vw'
         }}
-        zoom={[14]}
-        center={latLng ? [latLng.longitude, latLng.latitude] : undefined}
+        zoom={latLng ? [14] : [4]}
+        center={latLng ? [latLng.longitude, latLng.latitude] : [-98.5795, 39.8283]}
       >
         {latLng ? (
           <Marker style={styles.marker} coordinates={[latLng.longitude, latLng.latitude]} />
