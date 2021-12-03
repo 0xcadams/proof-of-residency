@@ -4,6 +4,8 @@ import '@fontsource/shadows-into-light';
 import { DefaultSeo } from 'next-seo';
 import { AppProps } from 'next/app';
 import React from 'react';
+import { UseWalletProvider } from 'use-wallet';
+
 import theme from '../src/theme';
 
 const App = ({ Component, pageProps }: AppProps) => {
@@ -29,7 +31,9 @@ const App = ({ Component, pageProps }: AppProps) => {
       />
       {/* <ApolloProvider client={apolloClient}> */}
       <ChakraProvider resetCSS theme={theme}>
-        <Component {...pageProps} />
+        <UseWalletProvider connectors={{}}>
+          <Component {...pageProps} />
+        </UseWalletProvider>
       </ChakraProvider>
       {/* </ApolloProvider> */}
     </>

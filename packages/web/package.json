@@ -6,13 +6,12 @@
     "build": "next build",
     "serve": "next start",
     "start": "next dev",
-    "start:network": "hardhat node",
     "lint": "next lint",
     "test": "cross-env NODE_ENV=test mocha -r ts-node/register test/**/*.test.ts"
   },
   "dependencies": {
     "@chakra-ui/react": "^1.7.2",
-    "@emotion/react": "^11",
+    "@emotion/react": "^11.7.0",
     "@emotion/styled": "^11",
     "@fontsource/josefin-sans": "^4.5.1",
     "@fontsource/shadows-into-light": "^4.5.0",
@@ -20,10 +19,10 @@
     "axios": "^0.24.0",
     "bip32": "^3.0.1",
     "bip39": "^3.0.4",
-    "ethers": "^5.5.1",
+    "ethers": "^5.5.2",
     "expect.js": "^0.3.1",
     "faker": "^5.5.3",
-    "framer-motion": "^4",
+    "framer-motion": "^5.3.3",
     "haversine": "^1.1.1",
     "lob": "^6.5.2",
     "mapbox-gl": "^2.6.1",
@@ -35,7 +34,8 @@
     "react-dom": "17.0.2",
     "react-icons": "^4.3.1",
     "react-mapbox-gl": "^5.1.1",
-    "tiny-secp256k1": "^2.1.2"
+    "tiny-secp256k1": "^2.1.2",
+    "use-wallet": "^0.13.1"
   },
   "devDependencies": {
     "@types/expect.js": "^0.3.29",
