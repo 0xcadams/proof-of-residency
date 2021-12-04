@@ -77,7 +77,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
     const props: CityDetailsProps = {
       ...mapping,
       cityId,
-      image: `https://generator.proofofresidency.xyz/previews/${cityId}.jpg`,
+      image: `https://generator.proofofresidency.xyz/previews/${cityId}.png`,
       minted: 0
     };
 
