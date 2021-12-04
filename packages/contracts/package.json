@@ -8,9 +8,10 @@
     "clean": "yarn hardhat clean",
     "compile": "yarn hardhat compile",
     "coverage": "yarn build && yarn hardhat coverage --temp artifacts --network coverage",
+    "deploy:local": "yarn hardhat run --network localhost scripts/deploy.ts",
     "deploy:rinkeby": "yarn hardhat run --network rinkeby scripts/deploy.ts",
     "lint": "solhint 'contracts/**/*.sol' && prettier --list-different 'contracts/**/*.sol' && eslint . --ext .ts",
-    "postinstall": "yarn build",
+    "start:network": "hardhat node",
     "test": "yarn lint && yarn hardhat test"
   },
   "license": "MIT",
@@ -19,8 +20,12 @@
     "@nomiclabs/hardhat-etherscan": "^2.1.7",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
     "@openzeppelin/test-helpers": "^0.5.15",
+    "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typechain/ethers-v5": "^8.0.2",
     "@typechain/hardhat": "^3.0.0",
+    "eslint": "^8.3.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-unused-imports": "^2.0.0",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.5.1",
     "hardhat": "^2.6.8",
@@ -30,20 +35,7 @@
     "solidity-coverage": "^0.7.17",
     "typechain": "^6.0.2"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint:commit",
-      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
-  "packageManager": "yarn@3.1.0",
   "dependencies": {
-    "@openzeppelin/contracts": "^4.3.3"
+    "@openzeppelin/contracts": "^4.4.0"
   }
 }

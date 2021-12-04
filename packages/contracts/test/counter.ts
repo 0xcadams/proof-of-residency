@@ -1,7 +1,7 @@
-import { ethers } from 'hardhat';
+import { ethers, network } from 'hardhat';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { Counter__factory as CounterFactory, Counter } from '../typechain-types';
+import { Counter__factory as CounterFactory, Counter } from '../../web/typechain-types';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;

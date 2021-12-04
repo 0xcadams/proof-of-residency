@@ -1,6 +1,6 @@
 import { Divider, Flex, Link, Spacer, Text } from '@chakra-ui/react';
 import React from 'react';
-import { FaDiscord } from 'react-icons/fa';
+import { FaDiscord, FaGithub } from 'react-icons/fa';
 
 const Footer = () => {
   return (
@@ -17,6 +17,10 @@ const Footer = () => {
         <Link mr={3} isExternal href="https://discord.gg/hhQfHqGTPk">
           <FaInstagram size={30} />
         </Link> */}
+        <Link mr={3} isExternal href="https://github.com/proof-of-residency">
+          <FaGithub size={30} />
+        </Link>
+
         <Link isExternal href="https://discord.gg/hhQfHqGTPk">
           <FaDiscord size={30} />
         </Link>
