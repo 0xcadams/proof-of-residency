@@ -3,7 +3,7 @@
     Proof of Residency
   </h1>
 
-  <img src="https://proofofresidency.xyz/washington.png" alt="Washington POR" width="500" />
+  <img src="https://proofofresidency.xyz/washington.png" alt="Seattle POR" width="100%" />
 
   <br />
 
