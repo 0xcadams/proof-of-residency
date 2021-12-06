@@ -16,13 +16,14 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-ethers": "^2.0.3",
     "@nomiclabs/hardhat-etherscan": "^2.1.7",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@openzeppelin/hardhat-upgrades": "^1.12.0",
     "@openzeppelin/test-helpers": "^0.5.15",
-    "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typechain/ethers-v5": "^8.0.2",
     "@typechain/hardhat": "^3.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.5.0",
     "eslint": "^8.3.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-unused-imports": "^2.0.0",
@@ -36,6 +37,6 @@
     "typechain": "^6.0.5"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.4.0"
+    "@openzeppelin/contracts-upgradeable": "^4.4.0"
   }
 }

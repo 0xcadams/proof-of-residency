@@ -1,9 +1,6 @@
 import NextDocument, { Html, Head, Main, NextScript } from 'next/document';
 import { ColorModeScript } from '@chakra-ui/react';
 
-const analyticsWriteKey = process.env.ANALYTICS_WRITE_KEY;
-const inclinedEnv = process.env.INCLINED_ENV;
-
 export default class Document extends NextDocument {
   render() {
     return (

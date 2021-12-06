@@ -2,6 +2,6 @@
 module.exports = {
   reactStrictMode: true,
   images: {
-    domains: ['generator.proofofresidency.xyz']
+    domains: ['cloudflare-ipfs.com']
   }
 };

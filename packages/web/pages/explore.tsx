@@ -27,13 +27,13 @@ export const getStaticProps = async () => {
     const mappings: Mapping[] = JSON.parse((await fs.readFile(mappingFile, 'utf8')).toString());
 
     const details = mappings.map((mapping, cityId) => {
-      if (!mapping) {
+      if (!mapping || !process.env.NEXT_PUBLIC_CID_CONTENT) {
         return { notFound: true };
       }
 
       const props: Details = {
         ...mapping,
-        image: `https://generator.proofofresidency.xyz/previews/${cityId}.png`,
+        image: `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/previews/${cityId}.png`,
         cityId,
         minted: 0
       };

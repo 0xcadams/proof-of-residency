@@ -91,12 +91,14 @@ type DetailsProps = Mapping &
 export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) => {
   const tokenId = Number.parseInt(params?.id ?? '-1');
 
-  if (tokenId === -1) {
+  if (tokenId === -1 || !process.env.NEXT_PUBLIC_CID_METADATA) {
     return { notFound: true };
   }
 
   try {
-    const res = await fetch(`https://generator.proofofresidency.xyz/api/${tokenId}`);
+    const res = await fetch(
+      `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_METADATA}/${tokenId}`
+    );
     const meta: MetadataResponse = await res.json();
 
     const mappingFile = path.join(process.cwd(), 'sources/mappings.json');

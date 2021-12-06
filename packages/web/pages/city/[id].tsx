@@ -70,14 +70,14 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
 
     const mapping = mappings[cityId];
 
-    if (!mapping) {
+    if (!mapping || !process.env.NEXT_PUBLIC_CID_CONTENT) {
       return { notFound: true };
     }
 
     const props: CityDetailsProps = {
       ...mapping,
       cityId,
-      image: `https://generator.proofofresidency.xyz/previews/${cityId}.png`,
+      image: `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/previews/${cityId}.png`,
       minted: 0
     };
 
