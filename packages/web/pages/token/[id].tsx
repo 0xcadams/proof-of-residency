@@ -52,71 +52,80 @@ export type MetadataResponse = {
   attributes: Attribute[];
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const mappingFile = path.join(process.cwd(), 'sources/mapping.json');
-  const mappings: { name: string; paths: string[] }[] = JSON.parse(
-    (await fs.readFile(mappingFile, 'utf8')).toString()
-  );
-
-  const locPaths: string[][] = [];
-
-  const tokenIds = [...Array(2)].map((_, i) => i);
-
-  mappings.forEach((mapping, index) =>
-    mapping.paths.forEach((path, pathIndex) => {
-      locPaths.push([index.toString(), pathIndex.toString()]);
-    })
-  );
-
-  return {
-    paths: tokenIds.flatMap((t, tokenId) =>
-      locPaths.map((locPath) => ({
-        params: { id: tokenId.toString(), loc: locPath }
-      }))
-    ),
-
-    fallback: 'blocking'
-  };
+export type Mapping = {
+  name: string;
+  population: number;
+  price: number;
+  limit: number;
+  state: string;
 };
 
 interface Params extends ParsedUrlQuery {
   id: string;
-  loc: string[];
 }
 
-export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) => {
-  const stateId = Number.parseInt(params?.loc?.[0]?.toString() ?? '0');
-
-  const cityId = Number.parseInt(params?.loc?.[1]?.toString() ?? '-1');
-
-  const tokenId = Number.parseInt(params?.id ?? '12');
-
-  const res = await fetch(
-    `https://generator.proofofresidency.xyz/api/${tokenId}/${stateId}/${cityId}`
-  );
-  const meta: MetadataResponse = await res.json();
-
-  const populationFile = path.join(process.cwd(), 'sources/population.json');
-  const populations: { name: string; population: number }[] = JSON.parse(
-    (await fs.readFile(populationFile, 'utf8')).toString()
-  );
-
-  const theoreticalLimit =
-    populations.find((p) => meta.attributes.some((a) => a.value === p.name))?.population ?? null;
+export const getStaticPaths: GetStaticPaths = async () => {
+  const mappingFile = path.join(process.cwd(), 'sources/mappings.json');
+  const mappings: Mapping[] = JSON.parse((await fs.readFile(mappingFile, 'utf8')).toString());
 
   return {
-    props: {
-      ...meta,
-      stateId,
-      cityId,
-      tokenId,
-      theoreticalLimit
-    },
-    revalidate: 60
+    paths: mappings.flatMap((mapping, cityId) => {
+      const tokenCounts = [...Array(mapping.limit)].map((_, i) => i + 1);
+
+      return tokenCounts.map((tokenCount) => {
+        const params: Params = { id: (cityId * 1e3 + tokenCount).toFixed(0) };
+
+        return { params };
+      });
+    }),
+
+    fallback: false
   };
 };
 
-const NftDetailsPage = (props: InferGetStaticPropsType<typeof getStaticProps>) => {
+type DetailsProps = Mapping &
+  MetadataResponse & {
+    tokenId: number;
+  };
+
+export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) => {
+  const tokenId = Number.parseInt(params?.id ?? '-1');
+
+  if (tokenId === -1) {
+    return { notFound: true };
+  }
+
+  try {
+    const res = await fetch(`https://generator.proofofresidency.xyz/api/${tokenId}`);
+    const meta: MetadataResponse = await res.json();
+
+    const mappingFile = path.join(process.cwd(), 'sources/mappings.json');
+    const mappings: Mapping[] = JSON.parse((await fs.readFile(mappingFile, 'utf8')).toString());
+
+    const mapping = mappings.find((p) => meta.attributes.some((a) => a.value === p.name)) ?? null;
+
+    if (!mapping) {
+      return { notFound: true };
+    }
+
+    const props: DetailsProps = {
+      ...meta,
+      ...mapping,
+      tokenId
+    };
+
+    return {
+      props,
+      revalidate: 60
+    };
+  } catch (e) {
+    return { notFound: true };
+  }
+};
+
+const NftDetailsPage = (props: DetailsProps) => {
+  // const mintRatio = 1 / 79693;
+
   const tags = [
     {
       name: 'License',
@@ -125,38 +134,40 @@ const NftDetailsPage = (props: InferGetStaticPropsType<typeof getStaticProps>) =
     },
     {
       name: 'Initial Price',
-      content: '0.1Ξ'
+      content: `${numeral(props.price).format('0.0')}Ξ`
     },
+    ...(props.population
+      ? [
+          {
+            name: 'Total Population',
+            content: `${numeral(props.population).format('0,0')}`,
+            link: 'https://en.wikipedia.org/wiki/Metropolitan_statistical_area',
+            tooltip: 'The population over 18 y.o. in the city in 2020.'
+          }
+        ]
+      : []),
+    ...(props.limit
+      ? [
+          {
+            name: 'Mint Limit',
+            content: `${numeral(props.limit).format('0,0')}`,
+            tooltip: 'The limit on number of tokens able to be minted for this city.'
+          }
+        ]
+      : []),
     {
       name: 'Created By',
       content: 'Generative Script'
-    },
-    ...(props.theoreticalLimit
-      ? [
-          {
-            name: 'Theoretical Mint Limit',
-            content: `${numeral(props.theoreticalLimit).format('0,0')}`,
-            link: 'https://en.wikipedia.org/wiki/Metropolitan_statistical_area',
-            tooltip: 'The population over 18 y.o. in the city in 2020.'
-          },
-          {
-            name: 'Likely Mint Limit',
-            content: `${numeral(props.theoreticalLimit * 0.028).format('0,0')}`,
-            link: 'https://www.finder.com/nft-statistics',
-            tooltip:
-              'The population over 18 y.o. in the city in 2020, who has historically bought/sold an NFT.'
-          }
-        ]
-      : [])
+    }
     // {
     //   name: 'Owned By',
-    //   content: 'None'
+    //   content: 'None' TODO
     // }
   ];
 
   return (
     <>
-      <Header showAction />
+      <Header />
       <Flex pt="70px" width="100%" direction="column">
         <Head>
           <title>{props.name} | Proof of Residency</title>

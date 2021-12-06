@@ -1,5 +1,5 @@
 {
-  "solidity.compileUsingRemoteVersion": "0.8.9",
+  "solidity.compileUsingRemoteVersion": "0.8.10",
 
   "editor.formatOnSave": true,
   "solidity.formatter": "prettier",

@@ -1,4 +1,4 @@
-import { ethers } from 'hardhat';
+import { network, ethers } from 'hardhat';
 
 async function main() {
   const factory = await ethers.getContractFactory('Counter');
@@ -14,6 +14,9 @@ async function main() {
 
   console.log('The contract is NOT deployed yet; we must wait until it is mined...');
   await contract.deployed();
+
+  console.log(`The transaction was deployed to the address: ${contract.address}`);
+
   console.log('Mined!');
 }
 

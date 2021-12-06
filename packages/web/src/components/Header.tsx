@@ -1,16 +1,12 @@
-import { Button, Flex, Heading, Link, Spacer } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
+import { Button, Flex, Link, Spacer, Tooltip, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
 import React from 'react';
 import { FiGithub } from 'react-icons/fi';
 import Logo from '../../public/logo.svg';
 
-export type HeaderProps = {
-  showAction?: boolean;
-};
-
-const Header = (props: HeaderProps) => {
-  const router = useRouter();
+const Header = () => {
+  const isMobile = useBreakpointValue({ base: true, sm: false });
+  const buttonSize = isMobile ? 'md' : 'lg';
 
   return (
     <Flex height="70px" position="absolute" left={0} top={0} right={0} px={4} shadow="sm">
@@ -21,23 +17,30 @@ const Header = (props: HeaderProps) => {
           </Flex>
         </Link>
         <Spacer />
-        {props.showAction && (
-          <>
-            <Link href="/request">
-              <Button size="lg">mint</Button>
-            </Link>
-            <Link ml={3} href="/faq">
-              <Button variant="outline" size="lg">
-                faq
-              </Button>
-            </Link>
-          </>
-        )}
-        <Link ml={3} href="https://github.com/proof-of-residency/proof-of-residency" isExternal>
-          <Button variant="outline" size="lg">
-            <FiGithub size={25} />
+
+        {/* <Link href="/request"> */}
+        <Button disabled size={buttonSize}>
+          mint
+        </Button>
+        {/* </Link> */}
+        <Link ml={3} href="/explore">
+          <Button variant="outline" size={buttonSize}>
+            explore
           </Button>
         </Link>
+        <Link ml={3} href="/faq">
+          <Button variant="outline" size={buttonSize}>
+            faq
+          </Button>
+        </Link>
+
+        {!isMobile && (
+          <Link ml={3} href="https://github.com/proof-of-residency" isExternal>
+            <Button variant="outline" size={buttonSize}>
+              <FiGithub size={25} />
+            </Button>
+          </Link>
+        )}
       </Flex>
     </Flex>
   );

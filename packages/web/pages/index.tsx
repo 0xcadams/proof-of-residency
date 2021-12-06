@@ -10,7 +10,7 @@ const IndexPage = () => {
 
   return (
     <>
-      <Header showAction />
+      <Header />
 
       <Flex minHeight="90vh" pt="70px" width="100%" direction="column" px={4}>
         <Heading mt={20} size="2xl" textAlign="center">
@@ -22,7 +22,7 @@ const IndexPage = () => {
             <Image
               objectFit="contain"
               layout="fill"
-              placeholder="blur"
+              placeholder="empty"
               src={WA}
               alt="Washington proof of residency image"
             />
@@ -31,18 +31,26 @@ const IndexPage = () => {
 
         <Flex mb={10} flexDirection="column" mx="auto" align="center" width="100%" maxWidth={800}>
           <Text fontSize="2xl" mt={10} textAlign="center">
-            Proof of Residency is an NFT project based on maps.
+            Proof of Residency is an NFT design project based on maps.
           </Text>
           <Text fontSize="lg" mt={6} textAlign="center">
-            Minting is limited to one NFT per mailing address and can only be performed after
-            physical mail is received, as an experiment into city-based limits on token supply.
+            Minting is limited to one NFT per mailing address and can only be completed after
+            physical mail is received, as a first-ever experiment into city-based limits on token
+            supply. Each US city has a mint cap based on population size; e.g. Boston is capped at
+            50.
           </Text>
           <Text fontSize="lg" mt={3} textAlign="center">
             Generative design draws upon real-world maps of hydrography and roads, with a provably
-            unique "seed" per NFT stored immutably on the Ethereum blockchain. This token can be
-            used as an NFT lego for other decentralized apps and serves as the first NFT to be built
-            on privacy-preserving residency verification. All of our non-art code is open-source on
-            Github.
+            unique "seed" per NFT stored immutably on the Ethereum blockchain. This is the first
+            token to limit issuance based on privacy-preserving residency verification. All of our
+            non-artistic code is open-source on Github, for future projects to build upon.
+          </Text>
+          <Text fontSize="md" mt={6} textAlign="center">
+            We dedicate 15% of the revenue from this project to be donated to the Make-A-Wish
+            Foundation.
+          </Text>
+          <Text fontSize="md" mt={1} textAlign="center">
+            Launching January 14th, 2022 at 9am PST.
           </Text>
         </Flex>
       </Flex>

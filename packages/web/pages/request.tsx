@@ -5,12 +5,15 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { FiGithub } from 'react-icons/fi';
 import ReactMapboxGl, { Marker } from 'react-mapbox-gl';
+import { useWallet } from 'use-wallet';
+
+// import { Counter__factory } from '../typechain-types';
 import Logo from '../public/logo.svg';
 import { VerifyUsAddressResponse } from '../src/api/services/lob';
 import { AddressModal } from '../src/components/AddressModal';
 import { ConfirmModal } from '../src/components/ConfirmModal';
 import { InfoModal } from '../src/components/InfoModal';
-// import { useEthers } from '../src/hooks/useEthers';
+// import { ethers } from 'ethers';
 
 const Map = ReactMapboxGl({
   interactive: false,
@@ -19,8 +22,8 @@ const Map = ReactMapboxGl({
 
 const styles: { [key: string]: React.CSSProperties } = {
   marker: {
-    width: 15,
-    height: 15,
+    width: 20,
+    height: 20,
     borderRadius: '50%',
     backgroundColor: '#eaddf9',
     display: 'flex',
@@ -30,8 +33,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   markerAddress: {
     cursor: 'pointer',
-    width: 15,
-    height: 15,
+    width: 20,
+    height: 20,
     borderRadius: '50%',
     backgroundColor: '#ffffff',
     display: 'flex',
@@ -45,7 +48,7 @@ const RequestPage = () => {
   const [latLng, setLatLng] = useState<CoordinateLongitudeLatitude | null>(null);
   const [address, setAddress] = useState<VerifyUsAddressResponse | null>(null);
 
-  // const { provider, ethers } = useEthers();
+  const wallet = useWallet();
 
   const {
     isOpen: isOpenAddressModal,
@@ -109,17 +112,34 @@ const RequestPage = () => {
 
   // useEffect(() => {
   //   (async () => {
-  //     const balance = await provider.getBalance('0xdb1fedb10b2495c539fc3f2c83d16601579a9c61');
+  //     await wallet.connect('injected');
+  //   })();
+  // }, []);
 
-  //     const eth = ethers.utils.formatEther(balance);
+  // const onSubmitRequest = async () => {
+  //   if (wallet.status === 'connected' && wallet.ethereum) {
+  //     const provider = new ethers.providers.Web3Provider(wallet.ethereum);
+
+  //     const eth = ethers.utils.formatEther(wallet.balance);
+
+  //     const signer = provider.getSigner();
+
+  //     const counter = Counter__factory.connect(
+  //       '0xC9a43158891282A2B1475592D5719c001986Aaec',
+  //       signer
+  //     );
+
+  //     await counter.countUp();
+
+  //     const count = await counter.getCount();
 
   //     toast({
   //       title: 'Success',
-  //       description: `Ether: ${eth}`,
+  //       description: `Count: ${count} eth: ${eth}`,
   //       status: 'success'
   //     });
-  //   })();
-  // }, []);
+  //   }
+  // };
 
   return (
     <>
@@ -131,7 +151,7 @@ const RequestPage = () => {
         </Link>
       </Box>
       <Box zIndex={500} position="absolute" right={4} top={4}>
-        <Link href="https://github.com/proof-of-residency/proof-of-residency" isExternal>
+        <Link href="https://github.com/proof-of-residency" isExternal>
           <Button>
             <FiGithub />
           </Button>
@@ -156,8 +176,8 @@ const RequestPage = () => {
           height: '100vh',
           width: '100vw'
         }}
-        zoom={[14]}
-        center={latLng ? [latLng.longitude, latLng.latitude] : undefined}
+        zoom={latLng ? [14] : [4]}
+        center={latLng ? [latLng.longitude, latLng.latitude] : [-98.5795, 39.8283]}
       >
         {latLng ? (
           <Marker style={styles.marker} coordinates={[latLng.longitude, latLng.latitude]} />

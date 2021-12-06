@@ -1,37 +1,40 @@
-import { ethers } from 'hardhat';
+import { ethers, network } from 'hardhat';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { Counter__factory as CounterFactory, Counter } from '../typechain-types';
+import {
+  ProofOfResidency__factory as ProofOfResidencyFactory,
+  ProofOfResidency
+} from '../../web/typechain-types';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
 
-describe('Counter', () => {
-  let counter: Counter;
+describe('ProofOfResidency', () => {
+  let proofOfResidency: ProofOfResidency;
 
   beforeEach(async () => {
     // 1
     const signers = await ethers.getSigners();
 
     // 2
-    const counterFactory = (await ethers.getContractFactory(
-      'Counter',
+    const proofOfResidencyFactory = (await ethers.getContractFactory(
+      'ProofOfResidency',
       signers[0]
-    )) as CounterFactory;
-    counter = await counterFactory.deploy();
-    await counter.deployed();
-    const initialCount = await counter.getCount();
+    )) as ProofOfResidencyFactory;
+    proofOfResidency = await proofOfResidencyFactory.deploy();
+    await proofOfResidency.deployed();
+    const initialCount = await proofOfResidency.getCount();
 
     // 3
     expect(initialCount).to.eq(0);
-    expect(counter.address).to.properAddress;
+    expect(proofOfResidency.address).to.properAddress;
   });
 
   // 4
   describe('count up', async () => {
     it('should count up', async () => {
-      await counter.countUp();
-      const count = await counter.getCount();
+      await proofOfResidency.safeMint();
+      const count = await proofOfResidency.getCount();
       expect(count).to.eq(1);
     });
   });
