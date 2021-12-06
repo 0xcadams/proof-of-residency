@@ -17,11 +17,16 @@ const Footer = () => {
         <Link mr={3} isExternal href="https://discord.gg/hhQfHqGTPk">
           <FaInstagram size={30} />
         </Link> */}
-        <Link mr={3} isExternal href="https://github.com/proof-of-residency">
+        <Link
+          aria-label="Check out the github code"
+          mr={3}
+          isExternal
+          href="https://github.com/proof-of-residency"
+        >
           <FaGithub size={30} />
         </Link>
 
-        <Link isExternal href="https://discord.gg/hhQfHqGTPk">
+        <Link aria-label="Join the discord server" isExternal href="https://discord.gg/hhQfHqGTPk">
           <FaDiscord size={30} />
         </Link>
       </Flex>
