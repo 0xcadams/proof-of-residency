@@ -77,7 +77,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
     const props: CityDetailsProps = {
       ...mapping,
       cityId,
-      image: `https://generator.proofofresidency.xyz/previews/${cityId}.jpg`,
+      image: `https://generator.proofofresidency.xyz/previews/${cityId}.png`,
       minted: 0
     };
 
@@ -165,10 +165,15 @@ const CityDetailsPage = (props: CityDetailsProps) => {
           mt={4}
         >
           {props.state && (
-            <Text fontSize="xl" textAlign="center" width="100%">
-              {props.state}
+            <Text mx="auto" fontSize="xl" textAlign="center" width="100%">
+              {`Art inspired by ${props.state} and its cities.`}
             </Text>
           )}
+
+          <Text mt={1} mx="auto" fontSize="md" textAlign="center" width="100%">
+            Designs for every minted NFT vary.
+          </Text>
+
           <SimpleGrid
             mx={{ base: 2, sm: 'auto' }}
             mt={8}

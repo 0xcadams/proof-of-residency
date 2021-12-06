@@ -1,4 +1,4 @@
-import { Button, Flex, Link, Spacer, useBreakpointValue } from '@chakra-ui/react';
+import { Button, Flex, Link, Spacer, Tooltip, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
 import React from 'react';
 import { FiGithub } from 'react-icons/fi';
@@ -18,9 +18,11 @@ const Header = () => {
         </Link>
         <Spacer />
 
-        <Link href="/request">
-          <Button size={buttonSize}>mint</Button>
-        </Link>
+        {/* <Link href="/request"> */}
+        <Button disabled size={buttonSize}>
+          mint
+        </Button>
+        {/* </Link> */}
         <Link ml={3} href="/explore">
           <Button variant="outline" size={buttonSize}>
             explore

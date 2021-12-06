@@ -4,21 +4,21 @@
     "population": 15938725,
     "state": "New York",
     "limit": 200,
-    "price": 0.2
+    "price": 0.4
   },
   {
     "name": "Los Angeles-Long Beach-Anaheim, CA",
     "population": 10479449,
     "state": "California",
     "limit": 150,
-    "price": 0.2
+    "price": 0.4
   },
   {
     "name": "Chicago-Naperville-Elgin, IL-IN-WI",
     "population": 7488708,
     "state": "Illinois",
     "limit": 100,
-    "price": 0.2
+    "price": 0.4
   },
   {
     "name": "Dallas-Fort Worth-Arlington, TX",

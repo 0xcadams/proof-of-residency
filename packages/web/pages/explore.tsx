@@ -32,9 +32,8 @@ export const getStaticProps = async () => {
       }
 
       const props: Details = {
-        // ...meta,
         ...mapping,
-        image: `https://generator.proofofresidency.xyz/previews/${cityId}.jpg`,
+        image: `https://generator.proofofresidency.xyz/previews/${cityId}.png`,
         cityId,
         minted: 0
       };
@@ -96,9 +95,6 @@ const ExplorePage = (props: ExploreProps) => {
                   </Flex>
                 </Box>
                 <Text fontWeight="bold">{detail.name}</Text>
-                {/* <Text mt={2} size="md">
-                  {detail.state}
-                </Text> */}
                 <Box mt={2}>
                   <Tag pt="3px" variant="solid" size="lg">
                     {detail.minted} of {detail.limit} minted

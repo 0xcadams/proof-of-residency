@@ -49,6 +49,9 @@ const IndexPage = () => {
             We dedicate 15% of the revenue from this project to be donated to the Make-A-Wish
             Foundation.
           </Text>
+          <Text fontSize="md" mt={1} textAlign="center">
+            Launching January 14th, 2022 at 9am PST.
+          </Text>
         </Flex>
       </Flex>
 
