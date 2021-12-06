@@ -22,8 +22,8 @@ const Map = ReactMapboxGl({
 
 const styles: { [key: string]: React.CSSProperties } = {
   marker: {
-    width: 15,
-    height: 15,
+    width: 20,
+    height: 20,
     borderRadius: '50%',
     backgroundColor: '#eaddf9',
     display: 'flex',
@@ -33,8 +33,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   markerAddress: {
     cursor: 'pointer',
-    width: 15,
-    height: 15,
+    width: 20,
+    height: 20,
     borderRadius: '50%',
     backgroundColor: '#ffffff',
     display: 'flex',
