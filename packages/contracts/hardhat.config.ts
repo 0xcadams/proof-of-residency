@@ -7,6 +7,7 @@ import '@nomiclabs/hardhat-ethers';
 import '@nomiclabs/hardhat-waffle';
 import '@typechain/hardhat';
 import '@nomiclabs/hardhat-etherscan';
+import '@openzeppelin/hardhat-upgrades';
 import 'solidity-coverage';
 
 const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;

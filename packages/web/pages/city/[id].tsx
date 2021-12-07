@@ -82,8 +82,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
     };
 
     return {
-      props,
-      revalidate: 60
+      props
     };
   } catch (e) {
     return { notFound: true };

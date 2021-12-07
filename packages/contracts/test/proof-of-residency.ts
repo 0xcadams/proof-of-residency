@@ -1,56 +1,57 @@
-import { ethers, network } from 'hardhat';
+import { ethers, upgrades } from 'hardhat';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {
-  ProofOfResidency__factory as ProofOfResidencyFactory,
-  ProofOfResidency
-} from '../../web/typechain-types';
+import { promises as fs } from 'fs';
+import path from 'path';
+
+import { ProofOfResidency } from '../../web/typechain-types';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
 
+type Mapping = {
+  name: string;
+  population: number;
+  price: number;
+  limit: number;
+  state: string;
+};
+
 describe('ProofOfResidency', () => {
   let proofOfResidency: ProofOfResidency;
+  let mappings: Mapping[];
 
   beforeEach(async () => {
-    // 1
-    const signers = await ethers.getSigners();
+    const mappingFile = path.join(process.cwd(), '../web/sources/mappings.json');
+    mappings = JSON.parse((await fs.readFile(mappingFile, 'utf8')).toString());
 
-    // 2
-    const proofOfResidencyFactory = (await ethers.getContractFactory(
-      'ProofOfResidency',
-      signers[0]
-    )) as ProofOfResidencyFactory;
-    proofOfResidency = await proofOfResidencyFactory.deploy();
+    const [owner] = await ethers.getSigners();
+
+    const ProofOfResidency = await ethers.getContractFactory('ProofOfResidency', owner);
+    proofOfResidency = (await upgrades.deployProxy(ProofOfResidency, [])) as ProofOfResidency;
     await proofOfResidency.deployed();
-    const initialCount = await proofOfResidency.getCount();
 
-    // 3
-    expect(initialCount).to.eq(0);
     expect(proofOfResidency.address).to.properAddress;
   });
 
-  // 4
-  describe('count up', async () => {
-    it('should count up', async () => {
-      await proofOfResidency.safeMint();
-      const count = await proofOfResidency.getCount();
-      expect(count).to.eq(1);
+  describe('values match mappings.json', async () => {
+    it('should match mint limit', async () => {
+      let index = 0;
+      for (const mapping of mappings) {
+        const count = await proofOfResidency.cityMintLimit(index);
+        expect(count, `${mapping.name} incorrect at index ${index}`).to.eq(mapping.limit);
+        index++;
+      }
     });
-  });
-
-  describe('count down', async () => {
-    // 5
-    it('should fail due to underflow exception', () => {
-      return expect(counter.countDown()).to.eventually.be.rejectedWith(Error);
-    });
-
-    it('should count down', async () => {
-      await counter.countUp();
-
-      await counter.countDown();
-      const count = await counter.getCount();
-      expect(count).to.eq(0);
+    it('should match required value', async () => {
+      let index = 0;
+      for (const mapping of mappings) {
+        const count = await proofOfResidency.cityValue(index);
+        expect(count, `${mapping.name} incorrect at index ${index}`).to.eq(
+          ethers.utils.parseEther(mapping.price.toString())
+        );
+        index++;
+      }
     });
   });
 });

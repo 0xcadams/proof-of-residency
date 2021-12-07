@@ -8,11 +8,11 @@
     "clean": "yarn hardhat clean",
     "compile": "yarn hardhat compile",
     "coverage": "yarn build && yarn hardhat coverage --temp artifacts --network coverage",
-    "deploy:local": "yarn hardhat run --network localhost scripts/deploy.ts",
-    "deploy:rinkeby": "yarn hardhat run --network rinkeby scripts/deploy.ts",
+    "deploy:local": "yarn hardhat run --network localhost scripts/initial-deploy.ts",
+    "deploy:rinkeby": "yarn hardhat run --network rinkeby scripts/initial-deploy.ts",
     "lint": "solhint 'contracts/**/*.sol' && prettier --list-different 'contracts/**/*.sol' && eslint . --ext .ts",
     "start:network": "hardhat node",
-    "test": "yarn lint && yarn hardhat test"
+    "test": "yarn hardhat test"
   },
   "license": "MIT",
   "devDependencies": {

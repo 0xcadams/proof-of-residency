@@ -6,3 +6,4 @@ artifacts/
 coverage*
 .env
 .DS_STORE
+.openzeppelin
