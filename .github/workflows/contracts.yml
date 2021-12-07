@@ -35,3 +35,5 @@ jobs:
         run: yarn build
       - name: Run tests
         run: yarn test
+        env:
+          ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
