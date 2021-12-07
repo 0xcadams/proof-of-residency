@@ -50,7 +50,7 @@ const IndexPage = () => {
             Foundation.
           </Text>
           <Text fontWeight="bold" fontSize="md" mt={1} textAlign="center">
-            Launching January 14th, 2022 at 9am PST.
+            Launching February 1st, 2022 at 9am PST.
           </Text>
         </Flex>
       </Flex>
