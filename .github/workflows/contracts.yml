@@ -3,7 +3,7 @@ name: contracts
 on:
   push:
     branches:
-      - "*"
+      - "main"
     paths-ignore:
       - "packages/web/**"
   pull_request:

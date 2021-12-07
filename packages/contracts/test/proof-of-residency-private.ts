@@ -55,6 +55,7 @@ describe('ProofOfResidencyTest', () => {
         index++;
       }
     });
+
     it('should match required value', async () => {
       let index = 0;
       for (const mapping of mappings) {
