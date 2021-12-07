@@ -27,7 +27,7 @@ export const getStaticProps = async () => {
     const mappings: Mapping[] = JSON.parse((await fs.readFile(mappingFile, 'utf8')).toString());
 
     const details = mappings.map((mapping, cityId) => {
-      if (!mapping || !process.env.NEXT_PUBLIC_CID_CONTENT) {
+      if (!mapping) {
         return { notFound: true };
       }
 

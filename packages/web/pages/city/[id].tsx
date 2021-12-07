@@ -70,7 +70,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
 
     const mapping = mappings[cityId];
 
-    if (!mapping || !process.env.NEXT_PUBLIC_CID_CONTENT) {
+    if (!mapping) {
       return { notFound: true };
     }
 
