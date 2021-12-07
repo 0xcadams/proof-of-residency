@@ -4,13 +4,13 @@ on:
   push:
     branches:
       - "*"
-    paths:
-      - "!packages/web/**"
+    paths-ignore:
+      - "packages/web/**"
   pull_request:
     branches:
       - "*"
-    paths:
-      - "!packages/web/**"
+    paths-ignore:
+      - "packages/web/**"
 
 defaults:
   run:
