@@ -113,6 +113,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
     const props: DetailsProps = {
       ...meta,
       ...mapping,
+      image: `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/${tokenId}.html`,
       tokenId
     };
 

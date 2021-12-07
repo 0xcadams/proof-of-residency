@@ -51,28 +51,45 @@ An NFT is issued with the metadata stored in IPFS. The IPFS URL is passed as the
 
 ```json
 {
-  "description": "",
-  "external_url": "ipfs://QmYoEmcoM23LqxUwza2erfopisrwErqWgTSgko34kWF7kA",
-  "image": "ipfs://YkdpqrjcM23LqxUwza2erfopisrwErqWgTSgko34kWF7kA",
-  "name": "Phoenix, AZ, USA",
-  "tags": ["proof-of-residency"],
+  "name": "New York-Newark-Jersey City, NY-NJ-PA: #1",
+  "description": "Inspired by the study of cartography in New York. Proof of Residency is an NFT generative art project based on maps; every design is created from content stored immutably on the Ethereum blockchain. Minting is limited to one NFT per mailing address and can only be completed after physical mail is received, as a first-ever experiment into city-based limits on token supply. Designs are inspired by real-world maps of hydrography and transportation networks.",
+  "background_color": "aadaee",
+  "external_url": "https://proofofresidency.xyz/token/1",
+  "image": "ipfs://bafybeid6qz46vjlncd4o7mepaazbnvpakcifedkbnrui5hly4xjajev554/token/1.png",
+  "animation_url": "ipfs://bafybeid6qz46vjlncd4o7mepaazbnvpakcifedkbnrui5hly4xjajev554/1.html",
+  "tags": ["proof-of-residency", "generative-art"],
   "attributes": [
     {
+      "trait_type": "Type",
+      "value": "Rivers/Lakes"
+    },
+    {
+      "trait_type": "Background",
+      "value": "Light"
+    },
+    {
+      "trait_type": "Theme",
+      "value": "Blue Sky"
+    },
+    {
+      "trait_type": "Type Iterations",
+      "value": 1
+    },
+    {
+      "trait_type": "State Iterations",
+      "value": 3
+    },
+    {
       "trait_type": "State",
-      "value": "Arizona"
+      "value": "New York"
     },
     {
       "trait_type": "City",
-      "value": "Phoenix"
+      "value": "New York-Newark-Jersey City, NY-NJ-PA"
     },
     {
       "trait_type": "Country",
       "value": "United States of America"
-    },
-    {
-      "trait_type": "Mail Sent Date",
-      "value": 1546360800,
-      "display_type": "date"
     }
   ]
 }

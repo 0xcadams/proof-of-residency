@@ -33,7 +33,7 @@ export const getStaticProps = async () => {
 
       const props: Details = {
         ...mapping,
-        image: `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/previews/${cityId}.png`,
+        image: `/previews/${cityId}.png`,
         cityId,
         minted: 0
       };
@@ -89,7 +89,7 @@ const ExplorePage = (props: ExploreProps) => {
                       layout="fill"
                       placeholder="empty"
                       src={detail.image}
-                      alt={`fsd`}
+                      alt={detail.name}
                     />
                   </Flex>
                 </Box>

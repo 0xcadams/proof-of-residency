@@ -77,7 +77,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
     const props: CityDetailsProps = {
       ...mapping,
       cityId,
-      image: `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/previews/${cityId}.png`,
+      image: `/previews/${cityId}.png`,
       minted: 0
     };
 
@@ -142,7 +142,7 @@ const CityDetailsPage = (props: CityDetailsProps) => {
               layout="fill"
               placeholder="empty"
               src={props.image}
-              alt={`fsd`}
+              alt={props.name}
             />
           </Flex>
         </Box>
