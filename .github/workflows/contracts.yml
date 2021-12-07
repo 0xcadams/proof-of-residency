@@ -4,13 +4,13 @@ on:
   push:
     branches:
       - "*"
-    paths:
-      - "!packages/web/**"
+    paths-ignore:
+      - "packages/web/**"
   pull_request:
     branches:
       - "*"
-    paths:
-      - "!packages/web/**"
+    paths-ignore:
+      - "packages/web/**"
 
 defaults:
   run:
@@ -35,3 +35,5 @@ jobs:
         run: yarn build
       - name: Run tests
         run: yarn test
+        env:
+          ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
