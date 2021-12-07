@@ -106,7 +106,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
 
     const mapping = mappings.find((p) => meta.attributes.some((a) => a.value === p.name)) ?? null;
 
-    if (!mapping) {
+    if (!mapping || !process.env.NEXT_PUBLIC_CID_CONTENT) {
       return { notFound: true };
     }
 

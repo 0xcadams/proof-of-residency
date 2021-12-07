@@ -8,7 +8,7 @@ import '@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol'
 import '@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
 
-// import '@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol';
+import 'hardhat/console.sol';
 
 /// @custom:security-contact security@proofofresidency.xyz
 contract ProofOfResidency is
@@ -19,8 +19,8 @@ contract ProofOfResidency is
   AccessControlUpgradeable,
   ERC721BurnableUpgradeable
 {
-  mapping(address => uint256) private _addressCityCommitments;
-  mapping(uint256 => uint256) private _citiesTokenIds;
+  mapping(address => bytes32) private _addressCommitments;
+  mapping(uint256 => uint256) private _citiesTokenCounts;
 
   bytes32 public constant PAUSER_ROLE = keccak256('PAUSER_ROLE');
   bytes32 public constant COMMITTER_ROLE = keccak256('COMMITTER_ROLE');
@@ -52,42 +52,42 @@ contract ProofOfResidency is
     _unpause();
   }
 
-  function safeMint(address to, uint256 city) public payable returns (uint256) {
-    require(msg.value < cityValue(city), 'Not enough eth sent to mint.');
-    require(currentCityCount(city) >= cityMintLimit(city), 'City has reached maximum mint limit.');
-    // TODO require address to have committed to the city
+  function grantCommitterRole(address to) public onlyRole(COMMITTER_ROLE) {
+    _grantRole(COMMITTER_ROLE, to);
+  }
 
-    incrementCityCount(city); // increment before minting so count starts at 1
-    uint256 tokenId = currentCityCount(city);
-    _safeMint(to, tokenId);
+  function safeMint(uint256 city, string memory secret) public payable returns (uint256) {
+    require(msg.value == _cityValue(city), 'Not enough ETH sent to mint.');
+    require(_currentCityCount(city) < _cityMintLimit(city), 'City has reached maximum mint limit.');
+    require(
+      _addressCommitments[msg.sender] == keccak256(abi.encode(msg.sender, city, secret)),
+      'Commitment is incorrect.'
+    );
+
+    _incrementCityCount(city); // increment before minting so count starts at 1
+    uint256 tokenId = city * 1e3 + _currentCityCount(city);
+    _safeMint(msg.sender, tokenId);
 
     return tokenId;
   }
 
-  function commitAddressToCity(address to, uint256 city)
-    public
-    view
-    onlyRole(COMMITTER_ROLE)
-    returns (uint256)
-  {
-    require(_addressCityCommitments[to] == 0, 'Address has already committed to a city.');
+  function commitAddress(address to, bytes32 commitment) public onlyRole(COMMITTER_ROLE) {
+    require(_addressCommitments[to] == 0, 'Address has already committed to another city.');
 
-    _addressCityCommitments[to] == city;
-
-    return address(this).balance;
+    _addressCommitments[to] = commitment;
   }
 
   // Internal functions
 
-  function currentCityCount(uint256 city) internal view returns (uint256) {
-    return _citiesTokenIds[city];
+  function _currentCityCount(uint256 city) internal view returns (uint256) {
+    return _citiesTokenCounts[city];
   }
 
-  function incrementCityCount(uint256 city) internal {
-    _citiesTokenIds[city] += 1;
+  function _incrementCityCount(uint256 city) internal {
+    _citiesTokenCounts[city] += 1;
   }
 
-  function cityValue(uint256 city) internal pure returns (uint256) {
+  function _cityValue(uint256 city) internal pure returns (uint256) {
     if (city < 3) {
       return 400000000000000000; // 0.4 ether
     } else if (city < 37) {
@@ -97,7 +97,7 @@ contract ProofOfResidency is
     return 100000000000000000; // 0.1 ether
   }
 
-  function cityMintLimit(uint256 city) internal pure returns (uint256) {
+  function _cityMintLimit(uint256 city) internal pure returns (uint256) {
     if (city < 1) {
       return 200;
     } else if (city < 2) {
