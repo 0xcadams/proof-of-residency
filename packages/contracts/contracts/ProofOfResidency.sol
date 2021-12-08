@@ -8,8 +8,6 @@ import '@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol'
 import '@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
 
-import 'hardhat/console.sol';
-
 /// @custom:security-contact security@proofofresidency.xyz
 contract ProofOfResidency is
   Initializable,
@@ -57,7 +55,7 @@ contract ProofOfResidency is
   }
 
   function safeMint(uint256 city, string memory secret) public payable returns (uint256) {
-    require(msg.value == _cityValue(city), 'Not enough ETH sent to mint.');
+    require(msg.value >= _cityValue(city), 'Not enough ETH sent to mint.');
     require(_currentCityCount(city) < _cityMintLimit(city), 'City has reached maximum mint limit.');
     require(
       _addressCommitments[msg.sender] == keccak256(abi.encode(msg.sender, city, secret)),
