@@ -2,20 +2,16 @@
 pragma solidity ^0.8.2;
 
 import '@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol';
-import '@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol';
-import '@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
 
 /// @custom:security-contact security@proofofresidency.xyz
 contract ProofOfResidency is
   Initializable,
   ERC721Upgradeable,
-  ERC721EnumerableUpgradeable,
   PausableUpgradeable,
-  AccessControlUpgradeable,
-  ERC721BurnableUpgradeable
+  AccessControlUpgradeable
 {
   mapping(address => bytes32) private _addressCommitments;
   mapping(uint256 => uint256) private _citiesTokenCounts;
@@ -23,15 +19,15 @@ contract ProofOfResidency is
   bytes32 public constant PAUSER_ROLE = keccak256('PAUSER_ROLE');
   bytes32 public constant COMMITTER_ROLE = keccak256('COMMITTER_ROLE');
 
+  event Commitment(address indexed _to, bytes32 _commitment);
+
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() initializer {}
 
   function initialize() public initializer {
     __ERC721_init('Proof of Residency', 'POR');
-    __ERC721Enumerable_init();
     __Pausable_init();
     __AccessControl_init();
-    __ERC721Burnable_init();
 
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     _grantRole(PAUSER_ROLE, msg.sender);
@@ -73,6 +69,8 @@ contract ProofOfResidency is
     require(_addressCommitments[to] == 0, 'Address has already committed to another city.');
 
     _addressCommitments[to] = commitment;
+
+    emit Commitment(to, commitment);
   }
 
   // Internal functions
@@ -119,7 +117,7 @@ contract ProofOfResidency is
     address from,
     address to,
     uint256 tokenId
-  ) internal override(ERC721Upgradeable, ERC721EnumerableUpgradeable) whenNotPaused {
+  ) internal override whenNotPaused {
     super._beforeTokenTransfer(from, to, tokenId);
   }
 
@@ -128,7 +126,7 @@ contract ProofOfResidency is
   function supportsInterface(bytes4 interfaceId)
     public
     view
-    override(ERC721Upgradeable, ERC721EnumerableUpgradeable, AccessControlUpgradeable)
+    override(ERC721Upgradeable, AccessControlUpgradeable)
     returns (bool)
   {
     return super.supportsInterface(interfaceId);
