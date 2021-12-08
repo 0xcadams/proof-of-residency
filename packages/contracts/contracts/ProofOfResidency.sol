@@ -2,6 +2,7 @@
 pragma solidity ^0.8.2;
 
 import '@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol';
+import '@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
@@ -10,6 +11,7 @@ import '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
 contract ProofOfResidency is
   Initializable,
   ERC721Upgradeable,
+  ERC721EnumerableUpgradeable,
   PausableUpgradeable,
   AccessControlUpgradeable
 {
@@ -35,7 +37,7 @@ contract ProofOfResidency is
   }
 
   function _baseURI() internal pure override returns (string memory) {
-    return 'ipfs://bafybeihu5xtkokpi2nlzaguprjjut5mu7tndl7zx6gqdhurqnitqn7rwfi/';
+    return 'ipfs://bafybeihrbi6ghrxckdzlitupwnxzicocrfeuqqoavktxp7oruw2bbejdhu/';
   }
 
   function pause() public onlyRole(PAUSER_ROLE) {
@@ -71,6 +73,10 @@ contract ProofOfResidency is
     _addressCommitments[to] = commitment;
 
     emit Commitment(to, commitment);
+  }
+
+  function currentCityMintedCount(uint256 city) public view returns (uint256) {
+    return _currentCityCount(city);
   }
 
   // Internal functions
@@ -117,7 +123,7 @@ contract ProofOfResidency is
     address from,
     address to,
     uint256 tokenId
-  ) internal override whenNotPaused {
+  ) internal override(ERC721Upgradeable, ERC721EnumerableUpgradeable) whenNotPaused {
     super._beforeTokenTransfer(from, to, tokenId);
   }
 
@@ -126,7 +132,7 @@ contract ProofOfResidency is
   function supportsInterface(bytes4 interfaceId)
     public
     view
-    override(ERC721Upgradeable, AccessControlUpgradeable)
+    override(ERC721Upgradeable, ERC721EnumerableUpgradeable, AccessControlUpgradeable)
     returns (bool)
   {
     return super.supportsInterface(interfaceId);

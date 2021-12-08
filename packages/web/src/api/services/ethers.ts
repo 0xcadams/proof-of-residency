@@ -1,8 +1,10 @@
 import { ContractTransaction, ethers } from 'ethers';
 import { ProofOfResidency__factory as ProofOfResidencyFactory } from '../../../typechain-types';
 
-if (!process.env.PRIVATE_KEY || !process.env.CONTRACT_ADDRESS) {
-  throw new Error('Must define process.env.PRIVATE_KEY and process.env.CONTRACT_ADDRESS');
+if (!process.env.PRIVATE_KEY || !process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) {
+  throw new Error(
+    'Must define process.env.PRIVATE_KEY and process.env.NEXT_PUBLIC_CONTRACT_ADDRESS'
+  );
 }
 
 const provider = new ethers.providers.JsonRpcProvider();
@@ -11,7 +13,7 @@ const wallet = new ethers.Wallet(process.env.PRIVATE_KEY);
 const connectedWallet = wallet.connect(provider);
 
 const proofOfResidency = ProofOfResidencyFactory.connect(
-  process.env.CONTRACT_ADDRESS,
+  process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
   connectedWallet
 );
 

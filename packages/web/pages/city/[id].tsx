@@ -5,12 +5,14 @@ import {
   Heading,
   Link,
   SimpleGrid,
+  Skeleton,
   Tag,
   Text,
   Tooltip
 } from '@chakra-ui/react';
 import { promises as fs } from 'fs';
 import { GetStaticPaths, GetStaticPropsContext } from 'next';
+import { NextSeo } from 'next-seo';
 import Head from 'next/head';
 import Image from 'next/image';
 import numeral from 'numeral';
@@ -19,6 +21,32 @@ import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
 import Footer from '../../src/components/Footer';
 import Header from '../../src/components/Header';
+import { getMintedCount, getOwnerOfToken, TokenOwner } from '../../src/ethers';
+
+export type Attribute = {
+  trait_type:
+    | 'State'
+    | 'City'
+    | 'Country'
+    | 'State Iterations'
+    | 'State Color'
+    | 'Outline Color'
+    | 'Background'
+    | 'Type'
+    | 'Type Iterations';
+  value: string | number;
+  display_type?: 'date';
+};
+
+export type MetadataResponse = {
+  description: string;
+  external_url: string;
+  background_color: string;
+  image: string;
+  name: string;
+  tags: string[];
+  attributes: Attribute[];
+};
 
 export type Mapping = {
   name: string;
@@ -32,6 +60,12 @@ type CityDetailsProps = Mapping & {
   cityId: number;
   image: string;
   minted: number;
+  tokens: {
+    tokenId: string;
+    link: string;
+    image: string;
+    owner: TokenOwner;
+  }[];
 };
 
 interface Params extends ParsedUrlQuery {
@@ -74,15 +108,40 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
       return { notFound: true };
     }
 
+    const mintedCount = await getMintedCount(cityId);
+
+    const tokens = await Promise.all(
+      [...Array(mintedCount.toNumber() ?? 0)]
+        .map((_, tokenNumber) => cityId * 1e3 + (tokenNumber + 1))
+        .map(async (tokenId) => {
+          // const res = await fetch(
+          //   `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_METADATA}/${tokenId}`
+          // );
+          // const meta: MetadataResponse = await res.json();
+
+          const owner = await getOwnerOfToken(tokenId);
+
+          return {
+            // ...meta,
+            owner,
+            tokenId: tokenId.toFixed(0),
+            link: `/token/${tokenId}`,
+            image: `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/token/${tokenId}.png`
+          };
+        })
+    );
+
     const props: CityDetailsProps = {
       ...mapping,
       cityId,
       image: `/previews/${cityId}.png`,
-      minted: 0
+      minted: mintedCount?.toNumber() ?? 0,
+      tokens
     };
 
     return {
-      props
+      props,
+      revalidate: 60
     };
   } catch (e) {
     return { notFound: true };
@@ -121,21 +180,27 @@ const CityDetailsPage = (props: CityDetailsProps) => {
       name: 'Created By',
       content: 'Generative Script'
     }
-    // {
-    //   name: 'Owned By',
-    //   content: 'None' TODO
-    // }
   ];
 
   return (
     <>
       <Header />
       <Flex pt="70px" width="100%" direction="column">
-        <Head>
-          <title>{props.name} | Proof of Residency</title>
-        </Head>
+        <NextSeo
+          title={`${props.name} | Proof of Residency`}
+          openGraph={{
+            images: [
+              {
+                url: `https://proofofresidency.xyz${props.image}`,
+                width: 1000,
+                height: 1000,
+                alt: props.name
+              }
+            ]
+          }}
+        />
         <Box>
-          <Flex mx="auto" position="relative" height={500}>
+          <Flex mx="auto" position="relative" height={600}>
             <Image
               priority
               objectFit="contain"
@@ -147,7 +212,7 @@ const CityDetailsPage = (props: CityDetailsProps) => {
           </Flex>
         </Box>
 
-        <Divider mx={4} />
+        <Divider />
 
         <Heading size="lg" mt={6} textAlign="center">
           {props.name}
@@ -204,6 +269,53 @@ const CityDetailsPage = (props: CityDetailsProps) => {
               </Flex>
             ))}
           </SimpleGrid>
+
+          {props.tokens.length > 0 && (
+            <>
+              <Divider />
+              <Heading textAlign="center" mt={4} size="lg">
+                Minted Tokens
+              </Heading>
+
+              <SimpleGrid
+                mx="auto"
+                align="center"
+                width="100%"
+                maxWidth={1200}
+                mt={4}
+                mb={8}
+                columns={{ base: 1, md: 2, lg: 3 }}
+                spacing={8}
+              >
+                {props.tokens.map((token, i) => (
+                  <Link key={token.tokenId} href={token.link}>
+                    <Flex direction="column">
+                      <Box>
+                        <Flex mt={2} mx="auto" position="relative" height={400}>
+                          <Image
+                            priority={i < 6}
+                            objectFit="contain"
+                            layout="fill"
+                            placeholder="empty"
+                            src={token.image}
+                            alt={token.tokenId}
+                          />
+                        </Flex>
+                      </Box>
+                      <Text mt={2} fontWeight="bold">
+                        Token #{token.tokenId}
+                      </Text>
+                      <Box mt={2}>
+                        <Tag pt="3px" variant="solid" size="lg">
+                          Owned by: {token.owner.content}
+                        </Tag>
+                      </Box>
+                    </Flex>
+                  </Link>
+                ))}
+              </SimpleGrid>
+            </>
+          )}
         </Flex>
       </Flex>
       <Footer />
