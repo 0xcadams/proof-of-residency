@@ -157,7 +157,7 @@ const RequestPage = () => {
         )}
         {address ? (
           <Marker
-            onClick={onOpenConfirmModal}
+            onClick={!letterSent ? onOpenConfirmModal : () => {}}
             style={styles.markerAddress}
             coordinates={[address.components.longitude, address.components.latitude]}
           />

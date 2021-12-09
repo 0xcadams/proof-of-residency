@@ -51,8 +51,16 @@ export const ConfirmModal = (props: {
       const address = await signer.getAddress();
 
       const payload: SubmitAddressPayload = {
-        walletAddress: address,
+        walletAddress: address
+      };
 
+      const message = JSON.stringify(payload, null, 2);
+
+      const signature = await signer.signMessage(message);
+
+      const body: SubmitAddressRequest = {
+        payload,
+        signature,
         latitude: props.address.components.latitude,
         longitude: props.address.components.longitude,
 
@@ -65,13 +73,6 @@ export const ConfirmModal = (props: {
         lobAddressId: props.address.id
       };
 
-      const message = JSON.stringify(payload, null, 2);
-
-      const signature = await signer.signMessage(message);
-
-      console.log({ message, signature });
-
-      const body: SubmitAddressRequest = { payload, signature };
       try {
         const result = await axiosClient.post<SubmitAddressResponse>('/request', body);
 

@@ -2,10 +2,7 @@ import { ethers, upgrades } from 'hardhat';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-import {
-  ProofOfResidency,
-  ProofOfResidency__factory as ProofOfResidencyFactory
-} from '../../web/typechain-types';
+import { ProofOfResidency } from '../../web/typechain-types';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 
 chai.use(chaiAsPromised);
@@ -25,14 +22,9 @@ describe('ProofOfResidencyCommitReveal', () => {
     const [owner, address1] = await ethers.getSigners();
     addr1 = address1;
 
-    // const ProofOfResidency = await ethers.getContractFactory('ProofOfResidency', owner);
-    // proofOfResidency = (await upgrades.deployProxy(ProofOfResidency, [])) as ProofOfResidency;
-    // await proofOfResidency.deployed();
-
-    const proofOfResidency = ProofOfResidencyFactory.connect(
-      process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '',
-      owner
-    );
+    const ProofOfResidency = await ethers.getContractFactory('ProofOfResidency', owner);
+    proofOfResidency = (await upgrades.deployProxy(ProofOfResidency, [])) as ProofOfResidency;
+    await proofOfResidency.deployed();
 
     expect(proofOfResidency.address).to.properAddress;
 

@@ -9,6 +9,13 @@ import { findMappingIndexForPoint } from '../../src/api/services/city';
 
 export type SubmitAddressPayload = {
   walletAddress: string;
+};
+
+export type SubmitAddressRequest = {
+  payload: SubmitAddressPayload;
+  signature: string;
+
+  lobAddressId: string;
 
   latitude: number;
   longitude: number;
@@ -19,14 +26,6 @@ export type SubmitAddressPayload = {
   secondaryLine: string;
   city: string;
   state: string;
-
-  lobAddressId: string;
-};
-
-export type SubmitAddressRequest = {
-  payload: SubmitAddressPayload;
-
-  signature: string;
 };
 
 export type SubmitAddressResponse = {
@@ -64,7 +63,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
 
       const keygen = await generatePublicPrivateKey(signatureHash);
 
-      const city = findMappingIndexForPoint(body.payload.latitude, body.payload.longitude);
+      const city = findMappingIndexForPoint(body.latitude, body.longitude);
 
       if (city === -1) {
         return res.status(404).end('City does not exist for latitude and longitude.');
@@ -82,6 +81,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
       if (!commitmentTransaction.events?.some((e) => e.event === 'Commitment')) {
         return res.status(400).end('The transaction could not be successfully submitted.');
       }
+
+      console.log(`Mnemonic: ${keygen.mnemonic}`);
 
       // TODO add Lob sending
 

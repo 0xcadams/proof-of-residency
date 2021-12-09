@@ -5,7 +5,6 @@ import {
   Heading,
   Link,
   SimpleGrid,
-  Skeleton,
   Tag,
   Text,
   Tooltip
@@ -13,7 +12,6 @@ import {
 import { promises as fs } from 'fs';
 import { GetStaticPaths, GetStaticPropsContext } from 'next';
 import { NextSeo } from 'next-seo';
-import Head from 'next/head';
 import Image from 'next/image';
 import numeral from 'numeral';
 import path from 'path';
