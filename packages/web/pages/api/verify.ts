@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { verifyUsAddress, VerifyUsAddressResponse } from 'src/api/lob';
-import { VerifyAddressRequest } from 'types';
+import { verifyUsAddress } from 'src/api/lob';
+import { VerifyAddressRequest, VerifyUsAddressResponse } from 'types';
 
 const handler = async (
   req: NextApiRequest,

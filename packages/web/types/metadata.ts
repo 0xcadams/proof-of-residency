@@ -1,11 +1,10 @@
-type Attribute = {
+export type Attribute = {
   trait_type:
     | 'State'
     | 'City'
     | 'Country'
     | 'State Iterations'
-    | 'State Color'
-    | 'Outline Color'
+    | 'Theme'
     | 'Background'
     | 'Type'
     | 'Type Iterations';
@@ -16,6 +15,7 @@ type Attribute = {
 export type MetadataResponse = {
   description: string;
   external_url: string;
+  animation_url: string;
   background_color: string;
   image: string;
   name: string;
