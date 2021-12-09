@@ -1,12 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { VerifyUsAddressResponse, verifyUsAddress } from '../../src/api/lob';
-
-export type VerifyAddressRequest = {
-  primaryLine: string;
-  city: string;
-  state: string;
-  zipCode: string;
-};
+import { verifyUsAddress, VerifyUsAddressResponse } from 'src/api/lob';
+import { VerifyAddressRequest } from 'types';
 
 const handler = async (
   req: NextApiRequest,

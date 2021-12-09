@@ -1,4 +1,4 @@
-import { Button, Flex, Link, Spacer, useBreakpointValue, Badge } from '@chakra-ui/react';
+import { Button, Flex, Link, Spacer, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
 import React from 'react';
 import { FiGithub } from 'react-icons/fi';
@@ -19,11 +19,11 @@ const Header = () => {
             <Image src={Logo} alt="Proof of residency logo" width={48} height={48} />
           </Flex>
         </Link>
-        {network !== 'homestead' && (
+        {/* {network !== 'homestead' && (
           <Badge fontSize="xl" ml={3}>
             {network}
           </Badge>
-        )}
+        )} */}
 
         <Spacer />
 

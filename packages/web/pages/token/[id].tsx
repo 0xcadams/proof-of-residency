@@ -24,35 +24,10 @@ import numeral from 'numeral';
 import path from 'path';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
+import { Mapping, MetadataResponse } from 'types';
 import Footer from '../../src/web/components/Footer';
 import Header from '../../src/web/components/Header';
 import { getOwnerOfToken, TokenOwner } from '../../src/web/ethers';
-import { Mapping } from '../../types/mapping';
-
-export type Attribute = {
-  trait_type:
-    | 'State'
-    | 'City'
-    | 'Country'
-    | 'State Iterations'
-    | 'State Color'
-    | 'Outline Color'
-    | 'Background'
-    | 'Type'
-    | 'Type Iterations';
-  value: string | number;
-  display_type?: 'date';
-};
-
-export type MetadataResponse = {
-  description: string;
-  external_url: string;
-  background_color: string;
-  image: string;
-  name: string;
-  tags: string[];
-  attributes: Attribute[];
-};
 
 interface Params extends ParsedUrlQuery {
   id: string;

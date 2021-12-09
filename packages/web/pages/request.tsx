@@ -5,9 +5,10 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { FiGithub } from 'react-icons/fi';
 import ReactMapboxGl, { Marker } from 'react-mapbox-gl';
+import { VerifyUsAddressResponse } from 'types';
 
 import Logo from '../public/logo.svg';
-import { VerifyUsAddressResponse } from '../src/api/lob';
+
 import { AddressModal } from '../src/web/components/AddressModal';
 import { ConfirmModal } from '../src/web/components/ConfirmModal';
 import { InfoModal } from '../src/web/components/InfoModal';

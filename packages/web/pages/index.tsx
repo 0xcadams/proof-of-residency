@@ -14,7 +14,7 @@ const IndexPage = () => {
 
       <Flex minHeight="90vh" pt="70px" width="100%" direction="column" px={4}>
         <Heading mt={20} size="2xl" textAlign="center">
-          NFT art inspired by cartography.
+          Rep your city with NFT art.
         </Heading>
 
         <Box>

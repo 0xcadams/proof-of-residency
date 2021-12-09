@@ -7,20 +7,20 @@ import {
   ModalHeader,
   ModalOverlay
 } from '@chakra-ui/modal';
-import { Button, Flex, FormControl, Input, Text, useToast } from '@chakra-ui/react';
+import { Button, Flex, Text, useToast } from '@chakra-ui/react';
 import { name } from 'faker';
 import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 
 import { useWallet } from 'use-wallet';
 
-import { VerifyUsAddressResponse } from '../../api/lob';
 import { axiosClient } from '../axios';
 import {
   SubmitAddressPayload,
   SubmitAddressRequest,
   SubmitAddressResponse
 } from '../../../types/submit-address';
+import { VerifyUsAddressResponse } from 'types';
 
 export const ConfirmModal = (props: {
   address: VerifyUsAddressResponse;

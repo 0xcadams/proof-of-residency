@@ -10,9 +10,11 @@ import { useWallet } from 'use-wallet';
 
 import Footer from '../src/web/components/Footer';
 import Header from '../src/web/components/Header';
-import { Mapping } from '../types/mapping';
-import { SubmitAddressPayload } from '../types/submit-address';
-import { ProofOfResidency__factory as ProofOfResidencyFactory } from '../types';
+import {
+  Mapping,
+  ProofOfResidency__factory as ProofOfResidencyFactory,
+  SubmitAddressPayload
+} from '../types';
 
 const bip32 = BIP32Factory(ecc);
 

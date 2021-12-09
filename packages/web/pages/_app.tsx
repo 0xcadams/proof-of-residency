@@ -13,13 +13,12 @@ const App = ({ Component, pageProps }: AppProps) => {
     <>
       <DefaultSeo
         title="Proof of Residency"
-        description="NFT collection inspired by cartography."
+        description="Rep your city with NFT art."
         openGraph={{
           type: 'website',
           url: 'https://proofofresidency.xyz',
           // eslint-disable-next-line camelcase
           site_name: 'Proof of Residency',
-          description: 'NFT collection inspired by cartography.',
           images: [
             {
               url: 'https://proofofresidency.xyz/logo-og.png',
@@ -30,13 +29,11 @@ const App = ({ Component, pageProps }: AppProps) => {
           ]
         }}
       />
-      {/* <ApolloProvider client={apolloClient}> */}
       <ChakraProvider resetCSS theme={theme}>
         <UseWalletProvider connectors={{}}>
           <Component {...pageProps} />
         </UseWalletProvider>
       </ChakraProvider>
-      {/* </ApolloProvider> */}
     </>
   );
 };

@@ -6,7 +6,7 @@ if (!process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) {
 }
 
 const provider = ethers.getDefaultProvider(
-  process.env.VERCEL_ENV === 'production' ? 'homestead' : 'goerli',
+  process.env.VERCEL_ENV === 'production' ? 'goerli' : 'goerli',
   {
     etherscan: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY,
     infura: process.env.NEXT_PUBLIC_INFURA_PROJECT_ID,
