@@ -9,7 +9,7 @@
 
 Proof of Residency is an NFT design project based on maps, built with Solidity/Typescript. This stack uses [Hardhat](https://hardhat.org) to orchestrate tasks and [Ethers](https://docs.ethers.io/v5/) for all Ethereum interactions and testing. There are also shared types between the tests and smart contract layer using [Typechain](https://github.com/dethcrypto/TypeChain).
 
-[![Coverage Status](https://coveralls.io/repos/github/proof-of-residency/proof-of-residency/badge.svg?branch=main)](https://coveralls.io/github/proof-of-residency/proof-of-residency?branch=main)
+[![codecov](https://codecov.io/gh/proof-of-residency/proof-of-residency/branch/main/graph/badge.svg?token=SO2ERYVI0O)](https://codecov.io/gh/proof-of-residency/proof-of-residency)
 
 </div>
 

@@ -1,9 +1,12 @@
 {
-  "name": "@solidity-starter/main",
-  "private": true,
+  "name": "@proof-of-residency/main",
   "version": "0.0.1",
+  "description": "The Proof of Residency NextJS decentralized app/api and Ethereum contracts.",
+  "private": true,
+  "license": "MIT",
   "scripts": {
     "lint": "lerna run lint --parallel",
+    "postinstall": "lerna run build --scope @proof-of-residency/contracts",
     "prepare": "husky install",
     "start": "lerna run start --parallel --stream"
   },

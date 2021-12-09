@@ -1,8 +1,10 @@
 {
-  "name": "@solidity-starter/contracts",
+  "name": "@proof-of-residency/contracts",
   "version": "0.0.1",
-  "description": "A starter project with tools to test and deploy Solidity smart contracts.",
+  "description": "The Solidity smart contracts for Proof of Residency.",
+  "private": true,
   "main": "index.js",
+  "license": "MIT",
   "scripts": {
     "build": "yarn clean && yarn compile",
     "clean": "yarn hardhat clean",
@@ -15,7 +17,6 @@
     "start": "hardhat node",
     "test": "yarn hardhat test"
   },
-  "license": "MIT",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.3",
     "@nomiclabs/hardhat-etherscan": "^2.1.7",

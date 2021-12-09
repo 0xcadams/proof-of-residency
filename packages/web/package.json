@@ -1,7 +1,9 @@
 {
-  "name": "@solidity-starter/web",
+  "name": "@proof-of-residency/web",
   "version": "0.0.1",
+  "description": "The decentralized app and API for Proof of Residency.",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "build": "dotenv -e ../../.env next build",
     "serve": "dotenv -e ../../.env next start",
