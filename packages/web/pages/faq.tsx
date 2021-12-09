@@ -14,8 +14,8 @@ import {
 import Image from 'next/image';
 import React from 'react';
 import BST from '../public/boston.png';
-import Footer from '../src/components/Footer';
-import Header from '../src/components/Header';
+import Footer from '../src/web/components/Footer';
+import Header from '../src/web/components/Header';
 
 const FaqPage = () => {
   const frameHeight = useBreakpointValue({ base: 300, md: 400 });
@@ -99,7 +99,7 @@ const FaqPage = () => {
           <Link isExternal href="mailto:hello@proofofresidency.xyz">
             hello@proofofresidency.xyz
           </Link>
-          . We're looking forward to supporting your city soon!
+          {". We're looking forward to supporting your city soon!"}
         </>
       )
     },

@@ -1,19 +1,13 @@
 import { Box, Flex, Heading, Link, SimpleGrid, Tag, Text } from '@chakra-ui/react';
 import { promises as fs } from 'fs';
-import Head from 'next/head';
+import { NextSeo } from 'next-seo';
 import Image from 'next/image';
 import path from 'path';
 import React from 'react';
-import Footer from '../src/components/Footer';
-import Header from '../src/components/Header';
-
-export type Mapping = {
-  name: string;
-  population: number;
-  price: number;
-  limit: number;
-  state: string;
-};
+import Footer from '../src/web/components/Footer';
+import Header from '../src/web/components/Header';
+import { getMintedCount } from '../src/web/ethers';
+import { Mapping } from '../types/mapping';
 
 type Details = Mapping & {
   cityId: number;
@@ -26,25 +20,30 @@ export const getStaticProps = async () => {
     const mappingFile = path.join(process.cwd(), 'sources/mappings.json');
     const mappings: Mapping[] = JSON.parse((await fs.readFile(mappingFile, 'utf8')).toString());
 
-    const details = mappings.map((mapping, cityId) => {
-      if (!mapping) {
-        return { notFound: true };
-      }
+    const details = await Promise.all(
+      mappings.map(async (mapping, cityId) => {
+        if (!mapping) {
+          return { notFound: true };
+        }
 
-      const props: Details = {
-        ...mapping,
-        image: `/previews/${cityId}.png`,
-        cityId,
-        minted: 0
-      };
+        const mintedCount = await getMintedCount(cityId);
 
-      return props;
-    });
+        const props: Details = {
+          ...mapping,
+          image: `/previews/${cityId}.png`,
+          cityId,
+          minted: mintedCount.toNumber()
+        };
+
+        return props;
+      })
+    );
 
     return {
       props: {
         details
-      }
+      },
+      revalidate: 600
     };
   } catch (e) {
     return { notFound: true };
@@ -60,9 +59,7 @@ const ExplorePage = (props: ExploreProps) => {
     <>
       <Header />
       <Flex pt="70px" width="100%" direction="column">
-        <Head>
-          <title>Explore | Proof of Residency</title>
-        </Head>
+        <NextSeo title={`Explore | Proof of Residency`} />
 
         <Heading size="2xl" mt={6} textAlign="center">
           Explore

@@ -2,6 +2,9 @@
   "root": true,
   "plugins": ["@typescript-eslint", "unused-imports"],
   "parser": "@typescript-eslint/parser",
+  "env": {
+    "jest": true
+  },
   "rules": {
     "curly": "off",
     "comma-dangle": "off",
@@ -14,7 +17,6 @@
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/ban-ts-comment": "warn",
-    "@typescript-eslint/switch-exhaustiveness-check": "warn",
     "no-extra-boolean-cast": "warn",
     "no-template-curly-in-string": "warn",
     "camelcase": "warn",

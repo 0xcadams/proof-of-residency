@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [16]
+        node: [14]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -31,7 +31,13 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Build
         run: yarn build
-      - name: Run tests
-        run: yarn test
+      - name: Run test coverage
+        run: yarn coverage
         env:
-          ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
+          NEXT_PUBLIC_ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
+      - name: Upload to codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          name: contracts # optional
+          fail_ci_if_error: true

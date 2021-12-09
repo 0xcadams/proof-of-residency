@@ -5,10 +5,7 @@ import '@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol';
-import '@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
-
-import 'hardhat/console.sol';
 
 /// @custom:security-contact security@proofofresidency.xyz
 contract ProofOfResidency is
@@ -16,8 +13,7 @@ contract ProofOfResidency is
   ERC721Upgradeable,
   ERC721EnumerableUpgradeable,
   PausableUpgradeable,
-  AccessControlUpgradeable,
-  ERC721BurnableUpgradeable
+  AccessControlUpgradeable
 {
   mapping(address => bytes32) private _addressCommitments;
   mapping(uint256 => uint256) private _citiesTokenCounts;
@@ -25,15 +21,15 @@ contract ProofOfResidency is
   bytes32 public constant PAUSER_ROLE = keccak256('PAUSER_ROLE');
   bytes32 public constant COMMITTER_ROLE = keccak256('COMMITTER_ROLE');
 
+  event Commitment(address indexed _to, bytes32 _commitment);
+
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() initializer {}
 
   function initialize() public initializer {
     __ERC721_init('Proof of Residency', 'POR');
-    __ERC721Enumerable_init();
     __Pausable_init();
     __AccessControl_init();
-    __ERC721Burnable_init();
 
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     _grantRole(PAUSER_ROLE, msg.sender);
@@ -41,7 +37,11 @@ contract ProofOfResidency is
   }
 
   function _baseURI() internal pure override returns (string memory) {
-    return 'ipfs://bafybeihu5xtkokpi2nlzaguprjjut5mu7tndl7zx6gqdhurqnitqn7rwfi/';
+    return 'ipfs://bafybeihrbi6ghrxckdzlitupwnxzicocrfeuqqoavktxp7oruw2bbejdhu/';
+  }
+
+  function contractURI() public pure returns (string memory) {
+    return string(abi.encodePacked(_baseURI(), 'contract'));
   }
 
   function pause() public onlyRole(PAUSER_ROLE) {
@@ -57,7 +57,7 @@ contract ProofOfResidency is
   }
 
   function safeMint(uint256 city, string memory secret) public payable returns (uint256) {
-    require(msg.value == _cityValue(city), 'Not enough ETH sent to mint.');
+    require(msg.value >= _cityValue(city), 'Not enough ETH sent to mint.');
     require(_currentCityCount(city) < _cityMintLimit(city), 'City has reached maximum mint limit.');
     require(
       _addressCommitments[msg.sender] == keccak256(abi.encode(msg.sender, city, secret)),
@@ -75,6 +75,12 @@ contract ProofOfResidency is
     require(_addressCommitments[to] == 0, 'Address has already committed to another city.');
 
     _addressCommitments[to] = commitment;
+
+    emit Commitment(to, commitment);
+  }
+
+  function currentCityMintedCount(uint256 city) public view returns (uint256) {
+    return _currentCityCount(city);
   }
 
   // Internal functions

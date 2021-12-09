@@ -14,51 +14,20 @@ import {
   Th,
   Thead,
   Tooltip,
-  Tr
+  Tr,
+  useBreakpointValue
 } from '@chakra-ui/react';
 import { promises as fs } from 'fs';
-import { GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from 'next';
-import Head from 'next/head';
+import { GetStaticPaths, GetStaticPropsContext } from 'next';
+import { NextSeo } from 'next-seo';
+import numeral from 'numeral';
 import path from 'path';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
-import numeral from 'numeral';
-
-import Footer from '../../src/components/Footer';
-import Header from '../../src/components/Header';
-
-export type Attribute = {
-  trait_type:
-    | 'State'
-    | 'City'
-    | 'Country'
-    | 'State Iterations'
-    | 'State Color'
-    | 'Outline Color'
-    | 'Background'
-    | 'Type'
-    | 'Type Iterations';
-  value: string | number;
-  display_type?: 'date';
-};
-
-export type MetadataResponse = {
-  description: string;
-  external_url: string;
-  background_color: string;
-  image: string;
-  name: string;
-  tags: string[];
-  attributes: Attribute[];
-};
-
-export type Mapping = {
-  name: string;
-  population: number;
-  price: number;
-  limit: number;
-  state: string;
-};
+import { Mapping, MetadataResponse } from 'types';
+import Footer from '../../src/web/components/Footer';
+import Header from '../../src/web/components/Header';
+import { getOwnerOfToken, TokenOwner } from '../../src/web/ethers';
 
 interface Params extends ParsedUrlQuery {
   id: string;
@@ -86,6 +55,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 type DetailsProps = Mapping &
   MetadataResponse & {
     tokenId: number;
+    owner: TokenOwner;
+    imagePng: string;
   };
 
 export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) => {
@@ -110,23 +81,31 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
       return { notFound: true };
     }
 
+    const owner = await getOwnerOfToken(tokenId);
+
     const props: DetailsProps = {
-      ...meta,
       ...mapping,
+      ...meta,
+
       image: `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/${tokenId}.html`,
-      tokenId
+      imagePng: `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/token/${tokenId}.png`,
+      tokenId,
+      owner
     };
 
     return {
-      props
+      props,
+      revalidate: 60
     };
   } catch (e) {
+    console.error(e);
+
     return { notFound: true };
   }
 };
 
 const NftDetailsPage = (props: DetailsProps) => {
-  // const mintRatio = 1 / 79693;
+  const imageHeight = useBreakpointValue({ base: 400, md: 650 });
 
   const tags = [
     {
@@ -160,34 +139,45 @@ const NftDetailsPage = (props: DetailsProps) => {
     {
       name: 'Created By',
       content: 'Generative Script'
+    },
+    {
+      name: 'Owned By',
+      content: props.owner.content,
+      link: props.owner.link
     }
-    // {
-    //   name: 'Owned By',
-    //   content: 'None' TODO
-    // }
   ];
 
   return (
     <>
+      <NextSeo
+        title={`${props.name} | Proof of Residency`}
+        description={props.description}
+        openGraph={{
+          images: [
+            {
+              url: props.imagePng,
+              width: 1000,
+              height: 1000,
+              alt: props.name
+            }
+          ]
+        }}
+      />
       <Header />
       <Flex pt="70px" width="100%" direction="column">
-        <Head>
-          <title>{props.name} | Proof of Residency</title>
-        </Head>
-
         {typeof window === 'undefined' ? (
-          <Skeleton height={450} width="100%" />
+          <Skeleton height={imageHeight} width="100%" />
         ) : (
           <iframe
             sandbox="allow-scripts allow-downloads"
             allowFullScreen={false}
             allow="xr-spatial-tracking"
             src={props.image}
-            style={{ height: 450, width: '100%' }}
+            style={{ height: imageHeight, width: '100%' }}
           />
         )}
 
-        <Divider mx={4} />
+        <Divider />
 
         <Heading size="lg" mt={6} textAlign="center">
           {props.name}

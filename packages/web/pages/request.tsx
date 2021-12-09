@@ -5,15 +5,13 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { FiGithub } from 'react-icons/fi';
 import ReactMapboxGl, { Marker } from 'react-mapbox-gl';
-import { useWallet } from 'use-wallet';
+import { VerifyUsAddressResponse } from 'types';
 
-// import { Counter__factory } from '../typechain-types';
 import Logo from '../public/logo.svg';
-import { VerifyUsAddressResponse } from '../src/api/services/lob';
-import { AddressModal } from '../src/components/AddressModal';
-import { ConfirmModal } from '../src/components/ConfirmModal';
-import { InfoModal } from '../src/components/InfoModal';
-// import { ethers } from 'ethers';
+
+import { AddressModal } from '../src/web/components/AddressModal';
+import { ConfirmModal } from '../src/web/components/ConfirmModal';
+import { InfoModal } from '../src/web/components/InfoModal';
 
 const Map = ReactMapboxGl({
   interactive: false,
@@ -47,8 +45,13 @@ const styles: { [key: string]: React.CSSProperties } = {
 const RequestPage = () => {
   const [latLng, setLatLng] = useState<CoordinateLongitudeLatitude | null>(null);
   const [address, setAddress] = useState<VerifyUsAddressResponse | null>(null);
+  const [letterSent, setLetterSent] = useState<boolean>(false);
 
-  const wallet = useWallet();
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setLetterSent(Boolean(localStorage.getItem('letterSent')));
+    }
+  }, [typeof window]);
 
   const {
     isOpen: isOpenAddressModal,
@@ -110,37 +113,6 @@ const RequestPage = () => {
     onOpenConfirmModal();
   };
 
-  // useEffect(() => {
-  //   (async () => {
-  //     await wallet.connect('injected');
-  //   })();
-  // }, []);
-
-  // const onSubmitRequest = async () => {
-  //   if (wallet.status === 'connected' && wallet.ethereum) {
-  //     const provider = new ethers.providers.Web3Provider(wallet.ethereum);
-
-  //     const eth = ethers.utils.formatEther(wallet.balance);
-
-  //     const signer = provider.getSigner();
-
-  //     const counter = Counter__factory.connect(
-  //       '0xC9a43158891282A2B1475592D5719c001986Aaec',
-  //       signer
-  //     );
-
-  //     await counter.countUp();
-
-  //     const count = await counter.getCount();
-
-  //     toast({
-  //       title: 'Success',
-  //       description: `Count: ${count} eth: ${eth}`,
-  //       status: 'success'
-  //     });
-  //   }
-  // };
-
   return (
     <>
       <Box zIndex={500} position="absolute" left={4} top={4}>
@@ -159,13 +131,13 @@ const RequestPage = () => {
       </Box>
 
       <Box zIndex={500} position="absolute" right={4} bottom={4}>
-        <Button size="lg" colorScheme="gray" onClick={onOpenInfoModal} mr={2}>
+        <Button size="lg" colorScheme="gray" onClick={onOpenInfoModal} mr={2} disabled={letterSent}>
           More Info
         </Button>
         <Button
           size="lg"
           onClick={address ? onOpenConfirmModal : onOpenAddressModal}
-          disabled={!latLng}
+          disabled={!latLng || letterSent}
         >
           {address ? 'Confirm your Address' : 'Add your Address'}
         </Button>
@@ -186,7 +158,7 @@ const RequestPage = () => {
         )}
         {address ? (
           <Marker
-            onClick={onOpenConfirmModal}
+            onClick={!letterSent ? onOpenConfirmModal : () => {}}
             style={styles.markerAddress}
             coordinates={[address.components.longitude, address.components.latitude]}
           />
@@ -204,7 +176,14 @@ const RequestPage = () => {
       )}
       <InfoModal isOpen={isOpenInfoModal} onClose={onCloseInfoModal} />
       {address && (
-        <ConfirmModal isOpen={isOpenConfirmModal} onClose={onCloseConfirmModal} address={address} />
+        <ConfirmModal
+          isOpen={isOpenConfirmModal}
+          onClose={(success) => {
+            onCloseConfirmModal();
+            setLetterSent(success);
+          }}
+          address={address}
+        />
       )}
     </>
   );

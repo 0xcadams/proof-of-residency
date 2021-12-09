@@ -4,20 +4,12 @@ import chaiAsPromised from 'chai-as-promised';
 import { promises as fs } from 'fs';
 import path from 'path';
 
-import { ProofOfResidencyTest } from '../../web/typechain-types/ProofOfResidencyTest';
+import { Mapping, ProofOfResidencyTest } from '../../web/types';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
 
-type Mapping = {
-  name: string;
-  population: number;
-  price: number;
-  limit: number;
-  state: string;
-};
-
-describe('ProofOfResidencyTest', () => {
+describe('ProofOfResidencyPrivate', () => {
   let proofOfResidency: ProofOfResidencyTest;
   let mappings: Mapping[];
 
@@ -43,6 +35,18 @@ describe('ProofOfResidencyTest', () => {
       await proofOfResidency.incrementCityCount(9);
       const count = await proofOfResidency.currentCityCount(9);
       expect(count).to.eq(1);
+    });
+    it('should handle multiple cities at once', async () => {
+      await proofOfResidency.incrementCityCount(80);
+      await proofOfResidency.incrementCityCount(90);
+      await proofOfResidency.incrementCityCount(0);
+      await proofOfResidency.incrementCityCount(90);
+      const count1 = await proofOfResidency.currentCityCount(90);
+      const count2 = await proofOfResidency.currentCityCount(80);
+      const count3 = await proofOfResidency.currentCityCount(0);
+      expect(count1).to.eq(2);
+      expect(count2).to.eq(1);
+      expect(count3).to.eq(1);
     });
   });
 

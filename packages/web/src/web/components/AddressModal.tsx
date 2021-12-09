@@ -13,9 +13,8 @@ import { Button, Link, Text, useToast } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import haversine, { CoordinateLongitudeLatitude } from 'haversine';
 
-import { VerifyAddressRequest } from '../../pages/api/verify';
-import { VerifyUsAddressResponse } from '../api/services/lob';
-import { axiosClient } from '../axiosClient';
+import { axiosClient } from '../axios';
+import { VerifyAddressRequest, VerifyUsAddressResponse } from 'types';
 
 export const AddressModal = (props: {
   isOpen: boolean;

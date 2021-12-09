@@ -2,8 +2,8 @@ import { Box, Flex, Heading, Text, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
 import React from 'react';
 import WA from '../public/washington.png';
-import Footer from '../src/components/Footer';
-import Header from '../src/components/Header';
+import Footer from '../src/web/components/Footer';
+import Header from '../src/web/components/Header';
 
 const IndexPage = () => {
   const frameHeight = useBreakpointValue({ base: 300, md: 500 });
@@ -14,7 +14,7 @@ const IndexPage = () => {
 
       <Flex minHeight="90vh" pt="70px" width="100%" direction="column" px={4}>
         <Heading mt={20} size="2xl" textAlign="center">
-          NFT art inspired by cartography.
+          Rep your city with NFT art.
         </Heading>
 
         <Box>
@@ -40,10 +40,10 @@ const IndexPage = () => {
             50.
           </Text>
           <Text fontSize="lg" mt={3} textAlign="center">
-            Generative design draws upon real-world maps of hydrography and roads, with a provably
+            {`Generative design draws upon real-world maps of hydrography and roads, with a provably
             unique "seed" per NFT stored immutably on the Ethereum blockchain. This is the first
             token to limit issuance based on privacy-preserving residency verification. All of our
-            non-artistic code is open-source on Github, for future projects to build upon.
+            non-artistic code is open-source on Github, for future projects to build upon.`}
           </Text>
           <Text fontSize="md" mt={6} textAlign="center">
             We dedicate 15% of the revenue from this project to be donated to the Make-A-Wish

@@ -1,5 +1,5 @@
 import { config as dotEnvConfig } from 'dotenv';
-dotEnvConfig();
+dotEnvConfig({ path: '../../.env' });
 
 import { HardhatUserConfig } from 'hardhat/types';
 
@@ -9,11 +9,13 @@ import '@typechain/hardhat';
 import '@nomiclabs/hardhat-etherscan';
 import '@openzeppelin/hardhat-upgrades';
 import 'solidity-coverage';
+import 'hardhat-contract-sizer';
 
-const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
-const INFURA_PROJECT_ID = process.env.INFURA_PROJECT_ID;
-const RINKEBY_MNEMONIC = process.env.RINKEBY_MNEMONIC || '';
-const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
+const ALCHEMY_API_KEY = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
+const INFURA_PROJECT_ID = process.env.NEXT_PUBLIC_INFURA_PROJECT_ID;
+const ETHERSCAN_API_KEY = process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY;
+
+const PRIVATE_KEY = process.env.PRIVATE_KEY || '';
 
 const config: HardhatUserConfig = {
   defaultNetwork: 'hardhat',
@@ -25,13 +27,15 @@ const config: HardhatUserConfig = {
       chainId: 1337,
       forking: {
         url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
-        blockNumber: 13756931
+        blockNumber: 13762650
       }
     },
-    localhost: {},
-    rinkeby: {
-      url: `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`,
-      accounts: { mnemonic: RINKEBY_MNEMONIC }
+    localhost: {
+      // accounts: [`${PRIVATE_KEY}`]
+    },
+    goerli: {
+      url: `https://goerli.infura.io/v3/${INFURA_PROJECT_ID}`,
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
     },
     coverage: {
       url: 'http://127.0.0.1:8555' // Coverage launches its own ganache-cli client
@@ -43,7 +47,7 @@ const config: HardhatUserConfig = {
     apiKey: ETHERSCAN_API_KEY
   },
   typechain: {
-    outDir: '../web/typechain-types'
+    outDir: '../web/types/typechain-types'
   }
 };
 
