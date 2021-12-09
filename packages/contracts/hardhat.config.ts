@@ -34,8 +34,8 @@ const config: HardhatUserConfig = {
       // accounts: [`${PRIVATE_KEY}`]
     },
     rinkeby: {
-      url: `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`,
-      accounts: [`${PRIVATE_KEY}`]
+      url: `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`
+      // accounts: [`${PRIVATE_KEY}`]
     },
     coverage: {
       url: 'http://127.0.0.1:8555' // Coverage launches its own ganache-cli client
