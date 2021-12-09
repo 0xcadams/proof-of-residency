@@ -28,3 +28,9 @@ export const commitAddress = async (
 
   return proofOfResidency.commitAddress(address, hash);
 };
+
+export const validateSignature = async (payload: string, signature: string): Promise<string> => {
+  const address = ethers.utils.verifyMessage(payload, signature);
+
+  return address;
+};

@@ -10,30 +10,115 @@ import {
 import { Button, Flex, FormControl, Input, Text, useToast } from '@chakra-ui/react';
 import { name } from 'faker';
 import React, { useEffect, useState } from 'react';
+import { ethers } from 'ethers';
+
+import { useWallet } from 'use-wallet';
+
 import { VerifyUsAddressResponse } from '../api/services/lob';
+import {
+  SubmitAddressPayload,
+  SubmitAddressRequest,
+  SubmitAddressResponse
+} from '../../pages/api/request';
+import { axiosClient } from '../axiosClient';
 
 export const ConfirmModal = (props: {
   address: VerifyUsAddressResponse;
   isOpen: boolean;
-  onClose: () => void;
+  onClose: (success: boolean) => void;
 }) => {
-  const [mnemonicPassword, setMnemonicPassword] = useState<string>('');
   const [randomName, setRandomName] = useState<string>('');
   const toast = useToast();
+
+  const wallet = useWallet();
 
   useEffect(() => {
     setRandomName(`${name.firstName()} ${name.lastName()}`);
   }, []);
 
-  const onSubmit = async () => {
-    // TODO
+  useEffect(() => {
+    (async () => {
+      await wallet.connect('injected');
+    })();
+  }, []);
 
-    props.onClose();
+  const onSubmit = async () => {
+    if (wallet.status === 'connected' && wallet.ethereum) {
+      const provider = new ethers.providers.Web3Provider(wallet.ethereum);
+
+      const signer = provider.getSigner();
+
+      const address = await signer.getAddress();
+
+      const payload: SubmitAddressPayload = {
+        walletAddress: address,
+
+        latitude: props.address.components.latitude,
+        longitude: props.address.components.longitude,
+
+        name: randomName,
+        primaryLine: props.address.primary_line,
+        secondaryLine: props.address.secondary_line,
+        city: props.address.components.city,
+        state: props.address.components.state,
+
+        lobAddressId: props.address.id
+      };
+
+      const message = JSON.stringify(payload, null, 2);
+
+      const signature = await signer.signMessage(message);
+
+      console.log({ message, signature });
+
+      const body: SubmitAddressRequest = { payload, signature };
+      try {
+        const result = await axiosClient.post<SubmitAddressResponse>('/request', body);
+
+        if (result.status === 200) {
+          toast({
+            title: 'Success',
+            description: `Successfully initiated sending a physical letter to your address. Please wait 4-6 business days for your request for ${result.data.city}.`,
+            status: 'success'
+          });
+
+          localStorage.setItem('letterSent', 'true');
+
+          return props.onClose(true);
+        } else if (result.status === 400) {
+          toast({
+            title: 'Error',
+            description: 'The transaction could not be successfully submitted.',
+            status: 'error'
+          });
+        } else if (result.status === 404) {
+          toast({
+            title: 'Error',
+            description: 'There was no city found associated with your address.',
+            status: 'error'
+          });
+        } else {
+          toast({
+            title: 'Error',
+            description: 'There was a problem with the request, please try again in a few minutes.',
+            status: 'error'
+          });
+        }
+      } catch (e) {
+        toast({
+          title: 'Error',
+          description: 'There was a problem with the request, please try again in a few minutes.',
+          status: 'error'
+        });
+      }
+
+      props.onClose(false);
+    }
   };
 
   return (
     <>
-      <Modal isOpen={props.isOpen} onClose={props.onClose}>
+      <Modal isOpen={props.isOpen} onClose={() => props.onClose(false)}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Submit confirmation</ModalHeader>
@@ -54,30 +139,13 @@ export const ConfirmModal = (props: {
               )}
               {props.address.last_line && <Text fontWeight="bold">{props.address.last_line}</Text>}
             </Flex>
-
-            <Text mt={6}>
-              You also must provide a mnemonic password longer than 6 characters, which will be
-              required to verify your address once you receive your{' '}
-              <strong>Address Confirmation Letter</strong> in the mail:
-            </Text>
-
-            <FormControl mt={2}>
-              <Input
-                type="password"
-                onChange={(e) => setMnemonicPassword(e.target.value)}
-                value={mnemonicPassword}
-                placeholder="Mnemonic Password"
-              />
-            </FormControl>
           </ModalBody>
 
           <ModalFooter>
-            <Button mr={3} variant="outline" onClick={props.onClose}>
+            <Button mr={3} variant="outline" onClick={() => props.onClose(false)}>
               Cancel
             </Button>
-            <Button onClick={onSubmit} disabled={mnemonicPassword?.length < 6}>
-              Send Letter
-            </Button>
+            <Button onClick={onSubmit}>Send Letter</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
