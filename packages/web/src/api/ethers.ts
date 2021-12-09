@@ -7,14 +7,19 @@ if (!process.env.PRIVATE_KEY || !process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) {
   );
 }
 
-const provider = new ethers.providers.JsonRpcProvider();
-const wallet = new ethers.Wallet(process.env.PRIVATE_KEY);
-
-const connectedWallet = wallet.connect(provider);
+const provider = ethers.getDefaultProvider(
+  process.env.VERCEL_ENV === 'production' ? 'homestead' : 'goerli',
+  {
+    etherscan: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY,
+    infura: process.env.NEXT_PUBLIC_INFURA_PROJECT_ID,
+    alchemy: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY
+  }
+);
+const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
 const proofOfResidency = ProofOfResidencyFactory.connect(
   process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-  connectedWallet
+  wallet
 );
 
 export const commitAddress = async (

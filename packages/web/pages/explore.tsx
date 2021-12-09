@@ -43,7 +43,7 @@ export const getStaticProps = async () => {
       props: {
         details
       },
-      revalidate: 180
+      revalidate: 600
     };
   } catch (e) {
     return { notFound: true };

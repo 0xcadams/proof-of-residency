@@ -1,12 +1,15 @@
-import { Button, Flex, Link, Spacer, useBreakpointValue } from '@chakra-ui/react';
+import { Button, Flex, Link, Spacer, useBreakpointValue, Badge } from '@chakra-ui/react';
 import Image from 'next/image';
 import React from 'react';
 import { FiGithub } from 'react-icons/fi';
 import Logo from '../../../public/logo.svg';
+import { getCurrentNetwork } from '../ethers';
 
 const Header = () => {
   const isMobile = useBreakpointValue({ base: true, sm: false });
   const buttonSize = isMobile ? 'md' : 'lg';
+
+  const network = getCurrentNetwork();
 
   return (
     <Flex height="70px" position="absolute" left={0} top={0} right={0} px={4} shadow="sm">
@@ -16,6 +19,12 @@ const Header = () => {
             <Image src={Logo} alt="Proof of residency logo" width={48} height={48} />
           </Flex>
         </Link>
+        {network !== 'homestead' && (
+          <Badge fontSize="xl" ml={3}>
+            {network}
+          </Badge>
+        )}
+
         <Spacer />
 
         {/* <Link href="/request"> */}

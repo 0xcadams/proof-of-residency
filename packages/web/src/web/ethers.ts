@@ -5,12 +5,23 @@ if (!process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) {
   throw new Error('Must define process.env.NEXT_PUBLIC_CONTRACT_ADDRESS');
 }
 
-const provider = new ethers.providers.JsonRpcProvider();
+const provider = ethers.getDefaultProvider(
+  process.env.VERCEL_ENV === 'production' ? 'homestead' : 'goerli',
+  {
+    etherscan: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY,
+    infura: process.env.NEXT_PUBLIC_INFURA_PROJECT_ID,
+    alchemy: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY
+  }
+);
 
 const proofOfResidency = ProofOfResidencyFactory.connect(
   process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
   provider
 );
+
+export const getCurrentNetwork = (): string => {
+  return provider.network.name;
+};
 
 export const getMintedCount = async (cityId: number): Promise<BigNumber> => {
   try {

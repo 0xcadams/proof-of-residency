@@ -34,7 +34,7 @@ jobs:
       - name: Run test coverage
         run: yarn coverage
         env:
-          ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
+          NEXT_PUBLIC_ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
       - name: Upload to codecov
         uses: codecov/codecov-action@v2
         with:
