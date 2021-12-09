@@ -6,8 +6,7 @@
   "license": "MIT",
   "scripts": {
     "lint": "lerna run lint --parallel",
-    "postinstall": "lerna run build --scope @proof-of-residency/contracts",
-    "prepare": "husky install",
+    "postinstall": "husky install",
     "start": "lerna run start --parallel --stream"
   },
   "devDependencies": {
