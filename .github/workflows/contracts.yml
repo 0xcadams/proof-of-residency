@@ -31,7 +31,11 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Build
         run: yarn build
-      - name: Run tests
-        run: yarn test
+      - name: Run test coverage
+        run: yarn coverage
         env:
           ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
+      - name: Upload to coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

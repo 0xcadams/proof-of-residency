@@ -6,7 +6,7 @@ import { AppProps } from 'next/app';
 import React from 'react';
 import { UseWalletProvider } from 'use-wallet';
 
-import theme from '../src/theme';
+import theme from '../src/web/theme';
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
@@ -17,6 +17,7 @@ const App = ({ Component, pageProps }: AppProps) => {
         openGraph={{
           type: 'website',
           url: 'https://proofofresidency.xyz',
+          // eslint-disable-next-line camelcase
           site_name: 'Proof of Residency',
           description: 'NFT collection inspired by cartography.',
           images: [

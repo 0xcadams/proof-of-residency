@@ -14,13 +14,13 @@ import { ethers } from 'ethers';
 
 import { useWallet } from 'use-wallet';
 
-import { VerifyUsAddressResponse } from '../api/services/lob';
+import { VerifyUsAddressResponse } from '../../api/lob';
+import { axiosClient } from '../axios';
 import {
   SubmitAddressPayload,
   SubmitAddressRequest,
   SubmitAddressResponse
-} from '../../pages/api/request';
-import { axiosClient } from '../axiosClient';
+} from '../../../types/submit-address';
 
 export const ConfirmModal = (props: {
   address: VerifyUsAddressResponse;

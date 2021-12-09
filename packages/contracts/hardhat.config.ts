@@ -47,7 +47,7 @@ const config: HardhatUserConfig = {
     apiKey: ETHERSCAN_API_KEY
   },
   typechain: {
-    outDir: '../web/typechain-types'
+    outDir: '../web/types/typechain-types'
   }
 };
 

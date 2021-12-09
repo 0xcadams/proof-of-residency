@@ -3,7 +3,7 @@ import { config as dotEnvConfig } from 'dotenv';
 dotEnvConfig({ path: '../../.env' });
 
 import expect from 'expect.js';
-import { commitAddress } from '../src/api/services/ethers';
+import { commitAddress } from 'src/api/ethers';
 
 describe('ethers interactions', () => {
   it('commits an address', async () => {

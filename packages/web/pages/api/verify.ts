@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { VerifyUsAddressResponse, verifyUsAddress } from '../../src/api/services/lob';
+import { VerifyUsAddressResponse, verifyUsAddress } from '../../src/api/lob';
 
 export type VerifyAddressRequest = {
   primaryLine: string;

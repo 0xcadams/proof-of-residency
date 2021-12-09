@@ -17,9 +17,10 @@ import numeral from 'numeral';
 import path from 'path';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
-import Footer from '../../src/components/Footer';
-import Header from '../../src/components/Header';
-import { getMintedCount, getOwnerOfToken, TokenOwner } from '../../src/ethers';
+import Footer from '../../src/web/components/Footer';
+import Header from '../../src/web/components/Header';
+import { TokenOwner, getMintedCount, getOwnerOfToken } from '../../src/web/ethers';
+import { Mapping } from '../../types/mapping';
 
 export type Attribute = {
   trait_type:
@@ -44,14 +45,6 @@ export type MetadataResponse = {
   name: string;
   tags: string[];
   attributes: Attribute[];
-};
-
-export type Mapping = {
-  name: string;
-  population: number;
-  price: number;
-  limit: number;
-  state: string;
 };
 
 type CityDetailsProps = Mapping & {

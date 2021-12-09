@@ -2,7 +2,7 @@ import lob from 'lob';
 
 const Lob = lob(process.env.LOB_API_KEY);
 
-export interface Components {
+export type Components = {
   primary_number: string;
   street_predirection: string;
   street_name: string;
@@ -29,9 +29,9 @@ export interface Components {
   carrier_route_type: string;
   latitude: number;
   longitude: number;
-}
+};
 
-export interface DeliverabilityAnalysis {
+export type DeliverabilityAnalysis = {
   dpv_confirmation: string;
   dpv_cmra: string;
   dpv_vacant: string;
@@ -41,14 +41,14 @@ export interface DeliverabilityAnalysis {
   lacs_indicator: string;
   lacs_return_code: string;
   suite_return_code: string;
-}
+};
 
-export interface LobConfidenceScore {
+export type LobConfidenceScore = {
   score?: any;
   level: string;
-}
+};
 
-export interface VerifyUsAddressResponse {
+export type VerifyUsAddressResponse = {
   id: string;
   recipient: string;
   primary_line: string;
@@ -65,7 +65,7 @@ export interface VerifyUsAddressResponse {
   deliverability_analysis: DeliverabilityAnalysis;
   lob_confidence_score: LobConfidenceScore;
   object: string;
-}
+};
 
 export const verifyUsAddress = async (
   primaryLine: string,

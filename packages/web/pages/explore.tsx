@@ -1,21 +1,13 @@
 import { Box, Flex, Heading, Link, SimpleGrid, Tag, Text } from '@chakra-ui/react';
 import { promises as fs } from 'fs';
 import { NextSeo } from 'next-seo';
-import Head from 'next/head';
 import Image from 'next/image';
 import path from 'path';
 import React from 'react';
-import Footer from '../src/components/Footer';
-import Header from '../src/components/Header';
-import { getMintedCount } from '../src/ethers';
-
-export type Mapping = {
-  name: string;
-  population: number;
-  price: number;
-  limit: number;
-  state: string;
-};
+import Footer from '../src/web/components/Footer';
+import Header from '../src/web/components/Header';
+import { getMintedCount } from '../src/web/ethers';
+import { Mapping } from '../types/mapping';
 
 type Details = Mapping & {
   cityId: number;

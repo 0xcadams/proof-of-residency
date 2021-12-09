@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "next build",
-    "serve": "next start",
+    "build": "dotenv -e ../../.env next build",
+    "serve": "dotenv -e ../../.env next start",
     "start": "dotenv -e ../../.env next dev",
     "lint": "next lint",
     "test": "cross-env NODE_ENV=test mocha -r ts-node/register test/**/*.test.ts"

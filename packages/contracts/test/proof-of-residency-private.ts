@@ -4,18 +4,10 @@ import chaiAsPromised from 'chai-as-promised';
 import { promises as fs } from 'fs';
 import path from 'path';
 
-import { ProofOfResidencyTest } from '../../web/typechain-types/ProofOfResidencyTest';
+import { Mapping, ProofOfResidencyTest } from '../../web/types';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
-
-type Mapping = {
-  name: string;
-  population: number;
-  price: number;
-  limit: number;
-  state: string;
-};
 
 describe('ProofOfResidencyPrivate', () => {
   let proofOfResidency: ProofOfResidencyTest;

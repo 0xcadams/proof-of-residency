@@ -1,8 +1,8 @@
-import { Button, Flex, Link, Spacer, Tooltip, useBreakpointValue } from '@chakra-ui/react';
+import { Button, Flex, Link, Spacer, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
 import React from 'react';
 import { FiGithub } from 'react-icons/fi';
-import Logo from '../../public/logo.svg';
+import Logo from '../../../public/logo.svg';
 
 const Header = () => {
   const isMobile = useBreakpointValue({ base: true, sm: false });

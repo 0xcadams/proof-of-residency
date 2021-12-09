@@ -1,5 +1,5 @@
 import { BigNumber, ethers } from 'ethers';
-import { ProofOfResidency__factory as ProofOfResidencyFactory } from '../typechain-types';
+import { ProofOfResidency__factory as ProofOfResidencyFactory } from '../../types';
 
 if (!process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) {
   throw new Error('Must define process.env.NEXT_PUBLIC_CONTRACT_ADDRESS');

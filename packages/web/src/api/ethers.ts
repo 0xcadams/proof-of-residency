@@ -1,5 +1,5 @@
 import { ContractTransaction, ethers } from 'ethers';
-import { ProofOfResidency__factory as ProofOfResidencyFactory } from '../../../typechain-types';
+import { ProofOfResidency__factory as ProofOfResidencyFactory } from '../../types';
 
 if (!process.env.PRIVATE_KEY || !process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) {
   throw new Error(

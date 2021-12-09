@@ -3,42 +3,11 @@ import { ethers } from 'ethers';
 import path from 'path';
 import { promises as fs } from 'fs';
 
-import { generatePublicPrivateKey } from '../../src/api/services/bip';
-import { commitAddress, validateSignature } from '../../src/api/services/ethers';
-import { findMappingIndexForPoint } from '../../src/api/services/city';
-
-export type SubmitAddressPayload = {
-  walletAddress: string;
-};
-
-export type SubmitAddressRequest = {
-  payload: SubmitAddressPayload;
-  signature: string;
-
-  lobAddressId: string;
-
-  latitude: number;
-  longitude: number;
-
-  name: string;
-
-  primaryLine: string;
-  secondaryLine: string;
-  city: string;
-  state: string;
-};
-
-export type SubmitAddressResponse = {
-  city: string;
-};
-
-type Mapping = {
-  name: string;
-  population: number;
-  price: number;
-  limit: number;
-  state: string;
-};
+import { SubmitAddressResponse, SubmitAddressRequest } from '../../types/submit-address';
+import { Mapping } from '../../types/mapping';
+import { generatePublicPrivateKey } from '../../src/api/bip';
+import { findMappingIndexForPoint } from '../../src/api/city';
+import { validateSignature, commitAddress } from '../../src/api/ethers';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressResponse | null>) => {
   try {

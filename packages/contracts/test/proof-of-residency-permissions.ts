@@ -2,7 +2,7 @@ import { ethers, upgrades } from 'hardhat';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-import { ProofOfResidency } from '../../web/typechain-types';
+import { ProofOfResidency } from '../../web/types';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 
 chai.use(chaiAsPromised);

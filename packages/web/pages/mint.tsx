@@ -7,11 +7,12 @@ import path from 'path';
 import React, { useEffect, useState } from 'react';
 import * as ecc from 'tiny-secp256k1';
 import { useWallet } from 'use-wallet';
-import Footer from '../src/components/Footer';
-import Header from '../src/components/Header';
-import { ProofOfResidency__factory as ProofOfResidencyFactory } from '../typechain-types';
-import { SubmitAddressPayload } from './api/request';
-import { Mapping } from './explore';
+
+import Footer from '../src/web/components/Footer';
+import Header from '../src/web/components/Header';
+import { Mapping } from '../types/mapping';
+import { SubmitAddressPayload } from '../types/submit-address';
+import { ProofOfResidency__factory as ProofOfResidencyFactory } from '../types';
 
 const bip32 = BIP32Factory(ecc);
 

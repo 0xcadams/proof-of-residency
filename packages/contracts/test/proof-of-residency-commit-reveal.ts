@@ -2,7 +2,7 @@ import { ethers, upgrades } from 'hardhat';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-import { ProofOfResidency } from '../../web/typechain-types';
+import { ProofOfResidency } from '../../web/types';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 
 chai.use(chaiAsPromised);
@@ -42,6 +42,10 @@ describe('ProofOfResidencyCommitReveal', () => {
 
   describe('commit reveal scheme functions correctly', async () => {
     it('should succeed for public (happy path)', async () => {
+      const mintedCount1 = await proofOfResidencyPublic.currentCityMintedCount(cityCommitment);
+
+      expect(mintedCount1.toNumber()).to.equal(0);
+
       await expect(
         proofOfResidencyPublic.safeMint(cityCommitment, secretCommitment, {
           value: value
@@ -49,6 +53,10 @@ describe('ProofOfResidencyCommitReveal', () => {
       )
         .to.emit(proofOfResidencyPublic, 'Transfer')
         .withArgs('0x0000000000000000000000000000000000000000', addr1.address, 4001);
+
+      const mintedCount2 = await proofOfResidencyPublic.currentCityMintedCount(cityCommitment);
+
+      expect(mintedCount2.toNumber()).to.equal(1);
     });
     it('should initialize token uri', async () => {
       await (
@@ -60,6 +68,16 @@ describe('ProofOfResidencyCommitReveal', () => {
       const tokenUri = await proofOfResidency.tokenURI(4001);
 
       expect(tokenUri).to.contain('ipfs://baf').and.to.contain('/4001');
+    });
+    it('should initialize contract metadata uri', async () => {
+      const contractURI = await proofOfResidency.contractURI();
+
+      expect(contractURI).to.contain('ipfs://baf').and.to.contain('/contract');
+    });
+    it('should support erc721 interface ID', async () => {
+      const supportsErc721 = await proofOfResidency.supportsInterface('0x80ac58cd');
+
+      expect(supportsErc721).to.be.true;
     });
 
     it('should fail for duplicate commitment (already committed to another city)', async () => {

@@ -40,6 +40,10 @@ contract ProofOfResidency is
     return 'ipfs://bafybeihrbi6ghrxckdzlitupwnxzicocrfeuqqoavktxp7oruw2bbejdhu/';
   }
 
+  function contractURI() public pure returns (string memory) {
+    return string(abi.encodePacked(_baseURI(), 'contract'));
+  }
+
   function pause() public onlyRole(PAUSER_ROLE) {
     _pause();
   }

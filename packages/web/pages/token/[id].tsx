@@ -18,17 +18,16 @@ import {
   useBreakpointValue
 } from '@chakra-ui/react';
 import { promises as fs } from 'fs';
-import { GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from 'next';
-import Head from 'next/head';
+import { GetStaticPaths, GetStaticPropsContext } from 'next';
+import { NextSeo } from 'next-seo';
+import numeral from 'numeral';
 import path from 'path';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
-import numeral from 'numeral';
-
-import Footer from '../../src/components/Footer';
-import Header from '../../src/components/Header';
-import { getOwnerOfToken, TokenOwner } from '../../src/ethers';
-import { NextSeo } from 'next-seo';
+import Footer from '../../src/web/components/Footer';
+import Header from '../../src/web/components/Header';
+import { getOwnerOfToken, TokenOwner } from '../../src/web/ethers';
+import { Mapping } from '../../types/mapping';
 
 export type Attribute = {
   trait_type:
@@ -53,14 +52,6 @@ export type MetadataResponse = {
   name: string;
   tags: string[];
   attributes: Attribute[];
-};
-
-export type Mapping = {
-  name: string;
-  population: number;
-  price: number;
-  limit: number;
-  state: string;
 };
 
 interface Params extends ParsedUrlQuery {
