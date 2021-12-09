@@ -13,7 +13,11 @@ const proofOfResidency = ProofOfResidencyFactory.connect(
 );
 
 export const getMintedCount = async (cityId: number): Promise<BigNumber> => {
-  return proofOfResidency.currentCityMintedCount(cityId);
+  try {
+    return proofOfResidency.currentCityMintedCount(cityId);
+  } catch (e) {
+    return BigNumber.from(0);
+  }
 };
 
 export type TokenOwner = { content: string; link: string | null };
