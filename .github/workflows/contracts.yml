@@ -35,7 +35,9 @@ jobs:
         run: yarn coverage
         env:
           ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
-      - name: Upload to coveralls
-        uses: coverallsapp/github-action@master
+      - name: Upload to codecov
+        uses: codecov/codecov-action@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          name: contracts # optional
+          fail_ci_if_error: true
