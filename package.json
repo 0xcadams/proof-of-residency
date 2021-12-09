@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "lint": "lerna run lint --parallel",
-    "postinstall": "husky install",
+    "lint:commit": "yarn lint",
+    "postinstall": "simple-git-hooks",
     "start": "lerna run start --parallel --stream"
   },
   "devDependencies": {
@@ -23,18 +24,17 @@
     "cz-conventional-changelog": "3.3.0",
     "dotenv": "^10.0.0",
     "eslint-utils": "^3.0.0",
-    "husky": "^7.0.1",
+    "git-cz": "^4.8.0",
     "lerna": "^4.0.0",
     "prettier": "^2.5.0",
+    "simple-git-hooks": "^2.7.0",
     "ts-node": "^10.4.0",
     "typescript": "^4.4.4"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint:commit",
-      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
+  "simple-git-hooks": {
+    "pre-commit": "yarn lint:commit",
+    "prepare-commit-msg": "exec < /dev/tty && yarn cz --hook || true",
+    "commit-msg": "npx --no -- commitlint --edit \"$1\""
   },
   "config": {
     "commitizen": {
