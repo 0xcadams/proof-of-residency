@@ -3,12 +3,27 @@ import '@fontsource/josefin-sans';
 import '@fontsource/shadows-into-light';
 import { DefaultSeo } from 'next-seo';
 import { AppProps } from 'next/app';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
+import { trackEvent } from 'src/web/mixpanel';
 import { UseWalletProvider } from 'use-wallet';
 
 import theme from '../src/web/theme';
 
 const App = ({ Component, pageProps }: AppProps) => {
+  const router = useRouter();
+
+  const handleRouteChange = (url: string) => {
+    trackEvent('Page view', { url: url });
+  };
+
+  useEffect(() => {
+    router.events.on('routeChangeComplete', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [router.events]);
+
   return (
     <>
       <DefaultSeo
