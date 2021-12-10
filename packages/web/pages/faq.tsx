@@ -7,12 +7,13 @@ import {
   Box,
   Flex,
   Heading,
-  Link,
   Text,
   useBreakpointValue
 } from '@chakra-ui/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
+import { trackEvent } from 'src/web/mixpanel';
 import BST from '../public/boston.png';
 import Footer from '../src/web/components/Footer';
 import Header from '../src/web/components/Header';
@@ -39,10 +40,7 @@ const FaqPage = () => {
           We are pioneering a novel way of minting NFTs, and the first step to the process is
           verifying that you are minting for the city you reside in. The technical details of the
           process can be seen on our public{' '}
-          <Link
-            isExternal
-            href="https://github.com/proof-of-residency/proof-of-residency/blob/main/WHITEPAPER.md"
-          >
+          <Link href="https://github.com/proof-of-residency/proof-of-residency/blob/main/WHITEPAPER.md">
             Github
           </Link>
           , and can be freely copied/built upon. We preserve privacy by gathering a minimal amount
@@ -69,12 +67,10 @@ const FaqPage = () => {
       a: (
         <>
           We create each NFT with a generative script using{' '}
-          <Link isExternal href="https://p5js.org/">
-            p5js
-          </Link>
-          . These designs are carefully based on real-world maps of cities, with seed parameters for
-          each NFT stored immutably on the blockchain. We are inspired by the incredible designs
-          derived from man-made land boundaries which have evolved over the past few centuries.
+          <Link href="https://p5js.org/">p5js</Link>. These designs are carefully based on
+          real-world maps of cities, with seed parameters for each NFT stored immutably on the
+          blockchain. We are inspired by the incredible designs derived from man-made land
+          boundaries which have evolved over the past few centuries.
         </>
       )
     },
@@ -96,9 +92,7 @@ const FaqPage = () => {
           We are actively working on cities/countries outside of the US. There is a massive amount
           of artwork required for all of the great cities of the world. To show your support for a
           city which is not represented yet, please email{' '}
-          <Link isExternal href="mailto:hello@proofofresidency.xyz">
-            hello@proofofresidency.xyz
-          </Link>
+          <Link href="mailto:hello@proofofresidency.xyz">hello@proofofresidency.xyz</Link>
           {". We're looking forward to supporting your city soon!"}
         </>
       )
@@ -108,7 +102,7 @@ const FaqPage = () => {
       a: (
         <>
           We give all token-holders{' '}
-          <Link isExternal href="https://creativecommons.org/share-your-work/public-domain/cc0/">
+          <Link href="https://creativecommons.org/share-your-work/public-domain/cc0/">
             exclusive permissive copyright (CC0)
           </Link>{' '}
           if they own the NFT artwork. The token-holder of each piece of art may freely build upon,
@@ -130,6 +124,7 @@ const FaqPage = () => {
         <Box>
           <Flex mt={2} mx="auto" position="relative" height={frameHeight}>
             <Image
+              priority
               objectFit="contain"
               layout="fill"
               placeholder="empty"
@@ -151,17 +146,27 @@ const FaqPage = () => {
           <Accordion defaultIndex={[0]} width="100%">
             {faqs.map((faq) => (
               <AccordionItem key={faq.q}>
-                <h2>
-                  <AccordionButton>
-                    <Heading flex="1" textAlign="left" size="lg" py={2}>
-                      {faq.q}
-                    </Heading>
-                    <AccordionIcon />
-                  </AccordionButton>
-                </h2>
-                <AccordionPanel py={4}>
-                  <Text>{faq.a}</Text>
-                </AccordionPanel>
+                {({ isExpanded }) => {
+                  if (isExpanded) {
+                    trackEvent('Faq viewed', { question: faq.q });
+                  }
+
+                  return (
+                    <>
+                      <h2>
+                        <AccordionButton>
+                          <Heading flex="1" textAlign="left" size="lg" py={2}>
+                            {faq.q}
+                          </Heading>
+                          <AccordionIcon />
+                        </AccordionButton>
+                      </h2>
+                      <AccordionPanel py={4}>
+                        <Text>{faq.a}</Text>
+                      </AccordionPanel>{' '}
+                    </>
+                  );
+                }}
               </AccordionItem>
             ))}
           </Accordion>

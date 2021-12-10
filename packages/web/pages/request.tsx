@@ -1,7 +1,8 @@
-import { Box, Button, Link, useDisclosure, useToast } from '@chakra-ui/react';
+import { Box, Button, useDisclosure, useToast } from '@chakra-ui/react';
 import { CoordinateLongitudeLatitude } from 'haversine';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { FiGithub } from 'react-icons/fi';
 import ReactMapboxGl, { Marker } from 'react-mapbox-gl';
@@ -115,15 +116,15 @@ const RequestPage = () => {
 
   return (
     <>
-      <Box zIndex={500} position="absolute" left={4} top={4}>
-        <Link href="/">
+      <Box cursor="pointer" zIndex={500} position="absolute" left={4} top={4}>
+        <Link href="/" passHref>
           <Box align="center">
             <Image src={Logo} alt="Proof of residency logo" width={48} height={48} />
           </Box>
         </Link>
       </Box>
       <Box zIndex={500} position="absolute" right={4} top={4}>
-        <Link href="https://github.com/proof-of-residency" isExternal>
+        <Link href="https://github.com/proof-of-residency" passHref>
           <Button>
             <FiGithub />
           </Button>

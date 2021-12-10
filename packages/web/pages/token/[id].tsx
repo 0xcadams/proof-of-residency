@@ -3,7 +3,6 @@ import {
   Divider,
   Flex,
   Heading,
-  Link,
   SimpleGrid,
   Skeleton,
   Table,
@@ -20,6 +19,7 @@ import {
 import { promises as fs } from 'fs';
 import { GetStaticPaths, GetStaticPropsContext } from 'next';
 import { NextSeo } from 'next-seo';
+import Link from 'next/link';
 import numeral from 'numeral';
 import path from 'path';
 import { ParsedUrlQuery } from 'querystring';
@@ -207,11 +207,13 @@ const NftDetailsPage = (props: DetailsProps) => {
                   </Text>
                   <Tooltip label={tag.tooltip}>
                     {tag.link ? (
-                      <Link mt={2} href={tag.link} isExternal>
-                        <Tag pt="3px" variant="solid" size="lg">
-                          {tag.content}
-                        </Tag>
-                      </Link>
+                      <Box cursor="pointer" mt={2}>
+                        <Link href={tag.link} passHref>
+                          <Tag pt="3px" variant="solid" size="lg">
+                            {tag.content}
+                          </Tag>
+                        </Link>
+                      </Box>
                     ) : (
                       <Box mt={2}>
                         <Tag pt="3px" variant="solid" size="lg">

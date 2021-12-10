@@ -13,16 +13,17 @@ import theme from '../src/web/theme';
 const App = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
 
-  const handleRouteChange = (url: string) => {
-    trackEvent('Page view', { url: url });
-  };
-
   useEffect(() => {
+    const handleRouteChange = (url: string) => {
+      trackEvent('Page view', { url: url });
+    };
+
     router.events.on('routeChangeComplete', handleRouteChange);
+
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange);
     };
-  }, [router.events]);
+  }, []);
 
   return (
     <>

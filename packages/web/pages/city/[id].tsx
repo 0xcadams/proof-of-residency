@@ -1,18 +1,9 @@
-import {
-  Box,
-  Divider,
-  Flex,
-  Heading,
-  Link,
-  SimpleGrid,
-  Tag,
-  Text,
-  Tooltip
-} from '@chakra-ui/react';
+import { Box, Divider, Flex, Heading, SimpleGrid, Tag, Text, Tooltip } from '@chakra-ui/react';
 import { promises as fs } from 'fs';
 import { GetStaticPaths, GetStaticPropsContext } from 'next';
 import { NextSeo } from 'next-seo';
 import Image from 'next/image';
+import Link from 'next/link';
 import numeral from 'numeral';
 import path from 'path';
 import { ParsedUrlQuery } from 'querystring';
@@ -219,11 +210,13 @@ const CityDetailsPage = (props: CityDetailsProps) => {
                 </Text>
                 <Tooltip label={tag.tooltip}>
                   {tag.link ? (
-                    <Link mt={1} href={tag.link} isExternal>
-                      <Tag pt="3px" variant="solid" size="lg">
-                        {tag.content}
-                      </Tag>
-                    </Link>
+                    <Box cursor="pointer">
+                      <Link href={tag.link} passHref>
+                        <Tag mt={1} pt="3px" variant="solid" size="lg">
+                          {tag.content}
+                        </Tag>
+                      </Link>
+                    </Box>
                   ) : (
                     <Box mt={1}>
                       <Tag pt="3px" variant="solid" size="lg">
@@ -254,8 +247,8 @@ const CityDetailsPage = (props: CityDetailsProps) => {
                 spacing={8}
               >
                 {props.tokens.map((token, i) => (
-                  <Link key={token.tokenId} href={token.link}>
-                    <Flex direction="column">
+                  <Link key={token.tokenId} href={token.link} passHref>
+                    <Flex cursor="pointer" direction="column">
                       <Box>
                         <Flex mt={2} mx="auto" position="relative" height={400}>
                           <Image

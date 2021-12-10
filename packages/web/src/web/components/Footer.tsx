@@ -1,6 +1,7 @@
-import { Divider, Flex, Link, Spacer, Text } from '@chakra-ui/react';
+import { Box, Divider, Flex, Spacer, Text } from '@chakra-ui/react';
+import Link from 'next/link';
 import React from 'react';
-import { FaDiscord, FaGithub } from 'react-icons/fa';
+import { FaDiscord, FaGithub, FaInstagram, FaTwitter } from 'react-icons/fa';
 
 const Footer = () => {
   return (
@@ -11,24 +12,36 @@ const Footer = () => {
           Copyright © 2021 by Inclined Finance, Inc. All rights reserved.
         </Text>
         <Spacer />
-        {/* <Link mr={3} isExternal href="https://discord.gg/hhQfHqGTPk">
-          <FaTwitter size={30} />
-        </Link>
-        <Link mr={3} isExternal href="https://discord.gg/hhQfHqGTPk">
-          <FaInstagram size={30} />
-        </Link> */}
-        <Link
-          aria-label="Check out the github code"
-          mr={3}
-          isExternal
-          href="https://github.com/proof-of-residency"
-        >
-          <FaGithub size={30} />
-        </Link>
+        <Box cursor={'pointer'} mr={3}>
+          <Link
+            passHref
+            aria-label="Check out our insta"
+            href="https://www.instagram.com/proofofres/"
+          >
+            <FaInstagram size={30} />
+          </Link>
+        </Box>
+        <Box cursor={'pointer'} mr={3}>
+          <Link passHref aria-label="Check out our twitter" href="https://twitter.com/proofofres">
+            <FaTwitter size={30} />
+          </Link>
+        </Box>
 
-        <Link aria-label="Join the discord server" isExternal href="https://discord.gg/hhQfHqGTPk">
-          <FaDiscord size={30} />
-        </Link>
+        <Box cursor={'pointer'}>
+          <Link aria-label="Join the discord server" passHref href="https://discord.gg/hhQfHqGTPk">
+            <FaDiscord size={30} />
+          </Link>
+        </Box>
+
+        <Box cursor={'pointer'} ml={3}>
+          <Link
+            aria-label="Check out the github code"
+            passHref
+            href="https://github.com/proof-of-residency"
+          >
+            <FaGithub size={30} />
+          </Link>
+        </Box>
       </Flex>
     </Flex>
   );

@@ -1,5 +1,6 @@
-import { Button, Flex, Link, Spacer, useBreakpointValue } from '@chakra-ui/react';
+import { Box, Button, Flex, Spacer, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 import { FiGithub } from 'react-icons/fi';
 import Logo from '../../../public/logo.svg';
@@ -14,11 +15,13 @@ const Header = () => {
   return (
     <Flex height="70px" position="absolute" left={0} top={0} right={0} px={4} shadow="sm">
       <Flex mx="auto" align="center" width="100%" maxWidth={1200}>
-        <Link href="/">
-          <Flex align="center">
-            <Image src={Logo} alt="Proof of residency logo" width={48} height={48} />
-          </Flex>
-        </Link>
+        <Box cursor="pointer">
+          <Link href="/" passHref>
+            <Flex align="center">
+              <Image src={Logo} alt="Proof of residency logo" width={48} height={48} />
+            </Flex>
+          </Link>
+        </Box>
         {/* {network !== 'homestead' && (
           <Badge fontSize="xl" ml={3}>
             {network}
@@ -32,20 +35,20 @@ const Header = () => {
           mint
         </Button>
         {/* </Link> */}
-        <Link ml={3} href="/explore">
-          <Button variant="outline" size={buttonSize}>
+        <Link href="/explore" passHref>
+          <Button ml={3} variant="outline" size={buttonSize}>
             explore
           </Button>
         </Link>
-        <Link ml={3} href="/faq">
-          <Button variant="outline" size={buttonSize}>
+        <Link href="/faq" passHref>
+          <Button ml={3} variant="outline" size={buttonSize}>
             faq
           </Button>
         </Link>
 
         {!isMobile && (
-          <Link ml={3} href="https://github.com/proof-of-residency" isExternal>
-            <Button variant="outline" size={buttonSize}>
+          <Link href="https://github.com/proof-of-residency" passHref>
+            <Button ml={3} variant="outline" size={buttonSize}>
               <FiGithub size={25} />
             </Button>
           </Link>

@@ -1,7 +1,8 @@
-import { Box, Flex, Heading, Link, SimpleGrid, Tag, Text } from '@chakra-ui/react';
+import { Box, Flex, Heading, SimpleGrid, Tag, Text } from '@chakra-ui/react';
 import { promises as fs } from 'fs';
 import { NextSeo } from 'next-seo';
 import Image from 'next/image';
+import Link from 'next/link';
 import path from 'path';
 import React from 'react';
 import Footer from '../src/web/components/Footer';
@@ -76,8 +77,8 @@ const ExplorePage = (props: ExploreProps) => {
           spacing={8}
         >
           {props.details.map((detail, i) => (
-            <Link key={detail.cityId} href={`/city/${detail.cityId}`}>
-              <Flex direction="column">
+            <Link key={detail.cityId} href={`/city/${detail.cityId}`} passHref>
+              <Flex cursor="pointer" direction="column">
                 <Box>
                   <Flex mt={2} mx="auto" position="relative" height={400}>
                     <Image

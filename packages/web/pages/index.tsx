@@ -20,6 +20,7 @@ const IndexPage = () => {
         <Box>
           <Flex mt={2} mx="auto" position="relative" height={frameHeight}>
             <Image
+              priority
               objectFit="contain"
               layout="fill"
               placeholder="empty"

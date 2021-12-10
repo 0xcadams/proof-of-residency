@@ -9,12 +9,13 @@ import {
   ModalBody,
   ModalFooter
 } from '@chakra-ui/modal';
-import { Button, Link, Text, useToast } from '@chakra-ui/react';
+import { Button, Text, useToast } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import haversine, { CoordinateLongitudeLatitude } from 'haversine';
 
 import { axiosClient } from '../axios';
 import { VerifyAddressRequest, VerifyUsAddressResponse } from 'types';
+import Link from 'next/link';
 
 export const AddressModal = (props: {
   isOpen: boolean;
@@ -93,17 +94,11 @@ export const AddressModal = (props: {
           <ModalBody pb={6}>
             <Text mb={3}>
               In order to request to mint a Proof of Residency NFT, you must provide your address so
-              we can send a letter through{' '}
-              <Link isExternal href="https://www.lob.com/">
-                Lob
-              </Link>
+              we can send a letter through <Link href="https://www.lob.com/">Lob</Link>
               {', '} a physical mail service, to validate your address. We ensure that Lob (as well
               as our own platform) is not provided with enough information to tie your request back
               to your wallet address. Please refer to our{' '}
-              <Link
-                isExternal
-                href="https://github.com/proof-of-residency/proof-of-residency/blob/main/WHITEPAPER.md"
-              >
+              <Link href="https://github.com/proof-of-residency/proof-of-residency/blob/main/WHITEPAPER.md">
                 whitepaper
               </Link>{' '}
               to answer any other questions about our security considerations.
