@@ -1,5 +1,4 @@
 import { BigNumber, ethers } from 'ethers';
-import { ProofOfResidency__factory as ProofOfResidencyFactory } from '../../types';
 
 if (!process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) {
   throw new Error('Must define process.env.NEXT_PUBLIC_CONTRACT_ADDRESS');
@@ -14,38 +13,39 @@ const provider = ethers.getDefaultProvider(
   }
 );
 
-const proofOfResidency = ProofOfResidencyFactory.connect(
-  process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-  provider
-);
+// const proofOfResidency = ProofOfResidencyFactory.connect(
+//   process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+//   provider
+// );
 
 export const getCurrentNetwork = (): string => {
   return provider.network.name;
 };
 
 export const getMintedCount = async (cityId: number): Promise<BigNumber> => {
-  try {
-    return proofOfResidency.currentCityMintedCount(cityId);
-  } catch (e) {
-    return BigNumber.from(0);
-  }
+  return BigNumber.from(0);
+  // try {
+  //   return proofOfResidency.currentCityMintedCount(cityId);
+  // } catch (e) {
+  //   return BigNumber.from(0);
+  // }
 };
 
 export type TokenOwner = { content: string; link: string | null };
 
 export const getOwnerOfToken = async (tokenId: number): Promise<TokenOwner> => {
-  const count = await proofOfResidency.currentCityMintedCount(Math.round(tokenId / 1e3));
+  // const count = await proofOfResidency.currentCityMintedCount(Math.round(tokenId / 1e3));
 
-  try {
-    if (count.toNumber() >= tokenId % 1000) {
-      const owner = await proofOfResidency.ownerOf(tokenId);
+  // try {
+  //   if (count.toNumber() >= tokenId % 1000) {
+  //     const owner = await proofOfResidency.ownerOf(tokenId);
 
-      return {
-        content: owner?.slice(0, 8) || 'None',
-        link: owner ? `https://etherscan.io/address/${owner}` : null
-      };
-    }
-  } catch (e) {}
+  //     return {
+  //       content: owner?.slice(0, 8) || 'None',
+  //       link: owner ? `https://etherscan.io/address/${owner}` : null
+  //     };
+  //   }
+  // } catch (e) {}
 
   return {
     content: 'None',
