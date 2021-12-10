@@ -14,6 +14,8 @@ const App = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
 
   useEffect(() => {
+    trackEvent('Page view', { url: router.route });
+
     const handleRouteChange = (url: string) => {
       trackEvent('Page view', { url: url });
     };
