@@ -1,7 +1,6 @@
 import { Button, Flex, Heading, Select, Text, Textarea } from '@chakra-ui/react';
 import BIP32Factory from 'bip32';
-import * as bip39 from 'bip39';
-import { ethers } from 'ethers';
+// import { ethers } from 'ethers';
 import { promises as fs } from 'fs';
 import path from 'path';
 import React, { useEffect, useState } from 'react';
@@ -10,11 +9,7 @@ import { useWallet } from 'use-wallet';
 
 import Footer from '../src/web/components/Footer';
 import Header from '../src/web/components/Header';
-import {
-  Mapping,
-  ProofOfResidency__factory as ProofOfResidencyFactory,
-  SubmitAddressPayload
-} from '../types';
+import { Mapping } from '../types';
 
 const bip32 = BIP32Factory(ecc);
 
@@ -60,40 +55,30 @@ const MintPage = (props: MintProps) => {
   }, []);
 
   const onSubmit = async () => {
-    if (wallet.status === 'connected' && wallet.ethereum) {
-      const provider = new ethers.providers.Web3Provider(wallet.ethereum);
-
-      const signer = provider.getSigner();
-
-      const proofOfResidency = ProofOfResidencyFactory.connect(
-        process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '',
-        signer
-      );
-
-      const address = await signer.getAddress();
-
-      const payload: SubmitAddressPayload = {
-        walletAddress: address
-      };
-
-      const message = JSON.stringify(payload, null, 2);
-
-      const signature = await signer.signMessage(message);
-
-      const password = ethers.utils.keccak256(signature);
-
-      const seedBuffer = await bip39.mnemonicToSeed(mnemonic, password);
-
-      const node = bip32.fromSeed(seedBuffer);
-
-      const transaction = await proofOfResidency.safeMint(
-        selectedCity,
-        node?.privateKey?.toString('hex') ?? '',
-        {
-          value: ethers.utils.parseEther(props.cities?.[selectedCity]?.value?.toString() ?? '0')
-        }
-      );
-    }
+    //   if (wallet.status === 'connected' && wallet.ethereum) {
+    //     const provider = new ethers.providers.Web3Provider(wallet.ethereum);
+    //     const signer = provider.getSigner();
+    //     const proofOfResidency = ProofOfResidencyFactory.connect(
+    //       process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '',
+    //       signer
+    //     );
+    //     const address = await signer.getAddress();
+    //     const payload: SubmitAddressPayload = {
+    //       walletAddress: address
+    //     };
+    //     const message = JSON.stringify(payload, null, 2);
+    //     const signature = await signer.signMessage(message);
+    //     const password = ethers.utils.keccak256(signature);
+    //     const seedBuffer = await bip39.mnemonicToSeed(mnemonic, password);
+    //     const node = bip32.fromSeed(seedBuffer);
+    //     const transaction = await proofOfResidency.safeMint(
+    //       selectedCity,
+    //       node?.privateKey?.toString('hex') ?? '',
+    //       {
+    //         value: ethers.utils.parseEther(props.cities?.[selectedCity]?.value?.toString() ?? '0')
+    //       }
+    //     );
+    //   }
   };
 
   return (
