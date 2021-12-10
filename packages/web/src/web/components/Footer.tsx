@@ -1,7 +1,7 @@
 import { Box, Divider, Flex, Spacer, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import React from 'react';
-import { FaDiscord, FaGithub, FaInstagram, FaTwitter } from 'react-icons/fa';
+import { FaGithub, FaInstagram, FaTwitter } from 'react-icons/fa';
 
 const Footer = () => {
   return (
@@ -27,13 +27,13 @@ const Footer = () => {
           </Link>
         </Box>
 
-        <Box cursor={'pointer'}>
+        {/* <Box cursor={'pointer'} mr={3}>
           <Link aria-label="Join the discord server" passHref href="https://discord.gg/hhQfHqGTPk">
             <FaDiscord size={30} />
           </Link>
-        </Box>
+        </Box> */}
 
-        <Box cursor={'pointer'} ml={3}>
+        <Box cursor={'pointer'}>
           <Link
             aria-label="Check out the github code"
             passHref
