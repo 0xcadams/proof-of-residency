@@ -1,18 +1,19 @@
-import { upgrades, ethers } from 'hardhat';
+import { ethers } from 'hardhat';
 
 async function main() {
-  const ProofOfResidency = await ethers.getContractFactory('ProofOfResidency');
+  const gnosis = '0x16Fbd8615EFc888Ffa70579E885feD853Ed94273';
+  const committer = '0x615b1012097Db45fc4d7458125B03B148F71de97';
 
-  // If we had initializer arguments, they would be passed in here
-  const contract = await upgrades.deployProxy(ProofOfResidency, []);
+  const ProofOfResidency = await ethers.getContractFactory('ProofOfResidency');
+  const proofOfResidencyOwner = await ProofOfResidency.deploy(committer, gnosis);
 
   console.log(
-    `The transaction that was sent to the network to deploy the Contract: ${contract.deployTransaction.hash}. Waiting to be mined...`
+    `Transaction to deploy the Contract: ${proofOfResidencyOwner.deployTransaction.hash}. Waiting to be mined...`
   );
 
-  await contract.deployed();
+  await proofOfResidencyOwner.deployed();
 
-  console.log(`--- Deployed to the address: ${contract.address}`);
+  console.log(`--- Deployed to the address: ${proofOfResidencyOwner.address}`);
 }
 
 main()

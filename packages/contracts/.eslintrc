@@ -3,7 +3,8 @@
   "plugins": ["@typescript-eslint", "unused-imports"],
   "parser": "@typescript-eslint/parser",
   "env": {
-    "jest": true
+    "jest": true,
+    "node": true
   },
   "rules": {
     "curly": "off",

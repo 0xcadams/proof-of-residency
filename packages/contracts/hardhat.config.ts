@@ -20,21 +20,31 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY || '';
 const config: HardhatUserConfig = {
   defaultNetwork: 'hardhat',
   solidity: {
-    compilers: [{ version: '0.8.10', settings: {} }]
+    compilers: [
+      {
+        version: '0.8.7',
+        settings: {
+          optimizer: {
+            enabled: true
+            // runs: 200
+          }
+        }
+      }
+    ]
   },
   networks: {
     hardhat: {
-      chainId: 1337,
-      forking: {
-        url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
-        blockNumber: 13762650
-      }
+      // chainId: 1337,
+      // forking: {
+      //   url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
+      //   blockNumber: 13762650
+      // }
     },
     localhost: {
       // accounts: [`${PRIVATE_KEY}`]
     },
-    goerli: {
-      url: `https://goerli.infura.io/v3/${INFURA_PROJECT_ID}`,
+    rinkeby: {
+      url: `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
     },
     coverage: {
@@ -47,7 +57,7 @@ const config: HardhatUserConfig = {
     apiKey: ETHERSCAN_API_KEY
   },
   typechain: {
-    outDir: '../web/types/typechain-types'
+    outDir: '../web/types/'
   }
 };
 
