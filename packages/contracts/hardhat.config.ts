@@ -46,9 +46,6 @@ const config: HardhatUserConfig = {
     rinkeby: {
       url: `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
-    },
-    coverage: {
-      url: 'http://127.0.0.1:8555' // Coverage launches its own ganache-cli client
     }
   },
   etherscan: {
@@ -57,7 +54,7 @@ const config: HardhatUserConfig = {
     apiKey: ETHERSCAN_API_KEY
   },
   typechain: {
-    outDir: '../web/types/'
+    outDir: '../web/types/typechain-types'
   }
 };
 

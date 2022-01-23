@@ -4,6 +4,7 @@ import chaiAsPromised from 'chai-as-promised';
 
 import { ProofOfResidency } from '../../web/types';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import { signCommitment, timeTravel, timeTravelToPastValid, timeTravelToValid } from './util';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -48,14 +49,25 @@ describe('Proof of Residency: commit/reveal scheme', () => {
       )
     );
 
-    await expect(proofOfResidencyCommitter.commitAddress(requester1.address, hash))
+    const { v, r, s } = await signCommitment(
+      proofOfResidencyOwner.address,
+      requester1.address,
+      hash,
+      committer
+    );
+
+    await expect(proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s))
       .to.emit(proofOfResidencyCommitter, 'CommitmentCreated')
-      .withArgs(requester1.address, hash);
+      .withArgs(requester1.address, committer.address, hash);
   });
 
   describe('PoR functions correctly (happy paths)', async () => {
-    it('should succeed for public (happy path)', async () => {
-      const mintedCount1 = await proofOfResidencyRequester1.currentCountryCount(countryCommitment);
+    it('should succeed for public', async () => {
+      await timeTravelToValid();
+
+      const mintedCount1 = await proofOfResidencyRequester1.getCurrentCountryCount(
+        countryCommitment
+      );
 
       expect(mintedCount1.toNumber()).to.equal(0);
 
@@ -71,14 +83,85 @@ describe('Proof of Residency: commit/reveal scheme', () => {
           ethers.BigNumber.from('444000000000000001')
         );
 
-      const mintedCount2 = await proofOfResidencyRequester1.currentCountryCount(countryCommitment);
+      const mintedCount2 = await proofOfResidencyRequester1.getCurrentCountryCount(
+        countryCommitment
+      );
 
       expect(mintedCount2.toNumber()).to.equal(1);
+    });
+
+    it('should succeed to recommit + mint after first commitment expires', async () => {
+      await timeTravelToPastValid();
+
+      const hash = ethers.utils.keccak256(
+        ethers.utils.defaultAbiCoder.encode(
+          ['address', 'uint256', 'string'],
+          [requester1.address, countryCommitment, 'secret2']
+        )
+      );
+
+      const { v, r, s } = await signCommitment(
+        proofOfResidencyOwner.address,
+        requester1.address,
+        hash,
+        committer
+      );
+
+      await expect(proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s))
+        .to.emit(proofOfResidencyCommitter, 'CommitmentCreated')
+        .withArgs(requester1.address, committer.address, hash);
+
+      const lastBlock = await ethers.provider.getBlock(ethers.provider.getBlockNumber());
+
+      const oneWeekInSeconds = 7 * 24 * 60 * 60;
+
+      // within 5 seconds of the expected 1 week validAt
+      expect(await proofOfResidencyRequester1.getCommitmentValidAt()).to.be.closeTo(
+        ethers.BigNumber.from(lastBlock.timestamp + oneWeekInSeconds),
+        5000
+      );
+
+      await timeTravelToValid();
+
+      await expect(
+        proofOfResidencyRequester1.mint(countryCommitment, 'secret2', {
+          value: value
+        })
+      )
+        .to.emit(proofOfResidencyRequester1, 'Transfer')
+        .withArgs(
+          ethers.constants.AddressZero,
+          requester1.address,
+          ethers.BigNumber.from('444000000000000001')
+        );
     });
   });
 
   describe('PoR functions correctly (sad paths)', async () => {
-    it('should fail for duplicate commitment (already committed to another city)', async () => {
+    it('should fail for early minting', async () => {
+      // time travel only 3 days
+      await timeTravel(3);
+
+      await expect(
+        proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
+          value: value
+        })
+      ).to.be.revertedWith('Cannot mint yet');
+    });
+
+    it('should fail for expired commitment', async () => {
+      await timeTravelToPastValid();
+
+      await expect(
+        proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
+          value: value
+        })
+      ).to.be.revertedWith('Commitment expired');
+    });
+
+    it('should fail for duplicate commitment (already committed to another country)', async () => {
+      await timeTravelToValid();
+
       const hash2 = ethers.utils.keccak256(
         ethers.utils.defaultAbiCoder.encode(
           ['address', 'uint256', 'string'],
@@ -86,8 +169,15 @@ describe('Proof of Residency: commit/reveal scheme', () => {
         )
       );
 
+      const { v, r, s } = await signCommitment(
+        proofOfResidencyOwner.address,
+        requester1.address,
+        hash2,
+        committer
+      );
+
       await expect(
-        proofOfResidencyCommitter.commitAddress(requester1.address, hash2)
+        proofOfResidencyRequester1.commitAddress(requester1.address, hash2, v, r, s)
       ).to.be.revertedWith('Address has existing commitment');
     });
 

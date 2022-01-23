@@ -4,6 +4,7 @@ import chaiAsPromised from 'chai-as-promised';
 
 import { ProofOfResidency } from '../../web/types';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import { signCommitment, timeTravelToValid } from './util';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -48,13 +49,22 @@ describe('Proof of Residency: edge cases', () => {
       )
     );
 
-    await expect(proofOfResidencyCommitter.commitAddress(requester1.address, hash))
+    const { v, r, s } = await signCommitment(
+      proofOfResidencyOwner.address,
+      requester1.address,
+      hash,
+      committer
+    );
+
+    await expect(proofOfResidencyCommitter.commitAddress(requester1.address, hash, v, r, s))
       .to.emit(proofOfResidencyCommitter, 'CommitmentCreated')
-      .withArgs(requester1.address, hash);
+      .withArgs(requester1.address, committer.address, hash);
   });
 
   describe('PoR functions correctly (happy paths)', async () => {
     it('should initialize token uri', async () => {
+      await timeTravelToValid();
+
       await expect(
         proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
           value: value

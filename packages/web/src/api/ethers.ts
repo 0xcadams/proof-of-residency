@@ -1,4 +1,4 @@
-import { ContractTransaction, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import { ProofOfResidency__factory as ProofOfResidencyFactory } from '../../types';
 
 if (!process.env.PRIVATE_KEY || !process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) {
@@ -22,16 +22,45 @@ const proofOfResidency = ProofOfResidencyFactory.connect(
   wallet
 );
 
-export const commitAddress = async (
-  address: string,
-  city: number,
-  secret: string
-): Promise<ContractTransaction> => {
+const getEip712Domain = async (contractAddress: string, chainId: number) => ({
+  name: 'Proof of Residency Protocol',
+  version: '1',
+  chainId,
+  verifyingContract: contractAddress
+});
+
+export const hashAndSignEip712 = async (
+  walletAddress: string,
+  country: number,
+  publicKey: string
+) => {
   const hash = ethers.utils.keccak256(
-    ethers.utils.defaultAbiCoder.encode(['address', 'uint256', 'string'], [address, city, secret])
+    ethers.utils.defaultAbiCoder.encode(
+      ['address', 'uint256', 'string'],
+      [walletAddress, country, publicKey]
+    )
   );
 
-  return proofOfResidency.commitAddress(address, hash);
+  const domain = await getEip712Domain(
+    process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '',
+    await wallet.getChainId()
+  );
+
+  const types = {
+    Commitment: [
+      { name: 'to', type: 'address' },
+      { name: 'commitment', type: 'bytes32' }
+    ]
+  };
+
+  const signature = await wallet._signTypedData(domain, types, {
+    to: walletAddress,
+    commitment: hash
+  });
+
+  const { v, r, s } = ethers.utils.splitSignature(signature);
+
+  return { v, r, s };
 };
 
 export const validateSignature = async (payload: string, signature: string): Promise<string> => {

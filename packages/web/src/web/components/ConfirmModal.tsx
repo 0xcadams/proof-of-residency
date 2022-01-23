@@ -15,11 +15,7 @@ import { ethers } from 'ethers';
 import { useWallet } from 'use-wallet';
 
 import { axiosClient } from '../axios';
-import {
-  SubmitAddressPayload,
-  SubmitAddressRequest,
-  SubmitAddressResponse
-} from '../../../types/submit-address';
+import { SubmitAddressPayload, SubmitAddressRequest, SubmitAddressResponse } from '../../../types';
 import { VerifyUsAddressResponse } from 'types';
 
 export const ConfirmModal = (props: {

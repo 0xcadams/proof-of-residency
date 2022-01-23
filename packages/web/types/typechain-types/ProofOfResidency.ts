@@ -20,14 +20,18 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface ProofOfResidencyInterface extends utils.Interface {
   functions: {
+    "COMMITMENT_TYPEHASH()": FunctionFragment;
+    "DOMAIN_TYPEHASH()": FunctionFragment;
+    "VERSION()": FunctionFragment;
+    "addCommitter(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "burn(uint256)": FunctionFragment;
-    "commitAddress(address,bytes32)": FunctionFragment;
-    "committer()": FunctionFragment;
+    "commitAddress(address,bytes32,uint8,bytes32,bytes32)": FunctionFragment;
     "contractURI()": FunctionFragment;
-    "currentCountryCount(uint256)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getCommitmentValidAt()": FunctionFragment;
+    "getCurrentCountryCount(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "mint(uint256,string)": FunctionFragment;
     "mintPrice()": FunctionFragment;
@@ -36,12 +40,11 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     "ownerOf(uint256)": FunctionFragment;
     "pause()": FunctionFragment;
     "paused()": FunctionFragment;
+    "removeCommitter(address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
-    "setCommitter(address)": FunctionFragment;
     "setPrice(uint256)": FunctionFragment;
-    "setTreasury(address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenByIndex(uint256)": FunctionFragment;
@@ -50,11 +53,23 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "treasury()": FunctionFragment;
     "unpause()": FunctionFragment;
     "withdraw(uint256)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "COMMITMENT_TYPEHASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "DOMAIN_TYPEHASH",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "VERSION", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "addCommitter",
+    values: [string, string]
+  ): string;
   encodeFunctionData(
     functionFragment: "approve",
     values: [string, BigNumberish]
@@ -63,19 +78,22 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "burn", values: [BigNumberish]): string;
   encodeFunctionData(
     functionFragment: "commitAddress",
-    values: [string, BytesLike]
+    values: [string, BytesLike, BigNumberish, BytesLike, BytesLike]
   ): string;
-  encodeFunctionData(functionFragment: "committer", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "contractURI",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "currentCountryCount",
+    functionFragment: "getApproved",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getApproved",
+    functionFragment: "getCommitmentValidAt",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getCurrentCountryCount",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -96,6 +114,10 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "pause", values?: undefined): string;
   encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "removeCommitter",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
@@ -108,14 +130,9 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     values: [string, boolean]
   ): string;
   encodeFunctionData(
-    functionFragment: "setCommitter",
-    values: [string]
-  ): string;
-  encodeFunctionData(
     functionFragment: "setPrice",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "setTreasury", values: [string]): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
@@ -145,13 +162,25 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "treasury", values?: undefined): string;
   encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "withdraw",
     values: [BigNumberish]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "COMMITMENT_TYPEHASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "DOMAIN_TYPEHASH",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "VERSION", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "addCommitter",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
@@ -159,17 +188,20 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     functionFragment: "commitAddress",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "committer", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "contractURI",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "currentCountryCount",
+    functionFragment: "getApproved",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getApproved",
+    functionFragment: "getCommitmentValidAt",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getCurrentCountryCount",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -184,6 +216,10 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "removeCommitter",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
@@ -195,15 +231,7 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     functionFragment: "setApprovalForAll",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "setCommitter",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "setPrice", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setTreasury",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
@@ -230,16 +258,18 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "treasury", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
-    "CommitmentCreated(address,bytes32)": EventFragment;
+    "CommitmentCreated(address,address,bytes32)": EventFragment;
+    "CommitterAdded(address)": EventFragment;
+    "CommitterRemoved(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
+    "PriceChanged(uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
     "Unpaused(address)": EventFragment;
   };
@@ -247,8 +277,11 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "CommitmentCreated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "CommitterAdded"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "CommitterRemoved"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PriceChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
 }
@@ -268,12 +301,21 @@ export type ApprovalForAllEvent = TypedEvent<
 export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
 
 export type CommitmentCreatedEvent = TypedEvent<
-  [string, string],
-  { _to: string; _commitment: string }
+  [string, string, string],
+  { to: string; committer: string; commitment: string }
 >;
 
 export type CommitmentCreatedEventFilter =
   TypedEventFilter<CommitmentCreatedEvent>;
+
+export type CommitterAddedEvent = TypedEvent<[string], { committer: string }>;
+
+export type CommitterAddedEventFilter = TypedEventFilter<CommitterAddedEvent>;
+
+export type CommitterRemovedEvent = TypedEvent<[string], { committer: string }>;
+
+export type CommitterRemovedEventFilter =
+  TypedEventFilter<CommitterRemovedEvent>;
 
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string],
@@ -286,6 +328,13 @@ export type OwnershipTransferredEventFilter =
 export type PausedEvent = TypedEvent<[string], { account: string }>;
 
 export type PausedEventFilter = TypedEventFilter<PausedEvent>;
+
+export type PriceChangedEvent = TypedEvent<
+  [BigNumber],
+  { newPrice: BigNumber }
+>;
+
+export type PriceChangedEventFilter = TypedEventFilter<PriceChangedEvent>;
 
 export type TransferEvent = TypedEvent<
   [string, string, BigNumber],
@@ -325,6 +374,18 @@ export interface ProofOfResidency extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    COMMITMENT_TYPEHASH(overrides?: CallOverrides): Promise<[string]>;
+
+    DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<[string]>;
+
+    VERSION(overrides?: CallOverrides): Promise<[string]>;
+
+    addCommitter(
+      newCommitter: string,
+      newTreasury: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -341,22 +402,25 @@ export interface ProofOfResidency extends BaseContract {
     commitAddress(
       to: string,
       commitment: BytesLike,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    committer(overrides?: CallOverrides): Promise<[string]>;
-
     contractURI(overrides?: CallOverrides): Promise<[string]>;
-
-    currentCountryCount(
-      country: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
 
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    getCommitmentValidAt(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getCurrentCountryCount(
+      country: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     isApprovedForAll(
       owner: string,
@@ -366,7 +430,7 @@ export interface ProofOfResidency extends BaseContract {
 
     mint(
       country: BigNumberish,
-      secret: string,
+      publicKey: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -386,6 +450,11 @@ export interface ProofOfResidency extends BaseContract {
     ): Promise<ContractTransaction>;
 
     paused(overrides?: CallOverrides): Promise<[boolean]>;
+
+    removeCommitter(
+      removedCommitter: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -412,18 +481,8 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setCommitter(
-      newCommitter: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     setPrice(
       newPrice: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    setTreasury(
-      newTreasury: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -464,8 +523,6 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    treasury(overrides?: CallOverrides): Promise<[string]>;
-
     unpause(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -475,6 +532,18 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
+
+  COMMITMENT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
+
+  DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<string>;
+
+  VERSION(overrides?: CallOverrides): Promise<string>;
+
+  addCommitter(
+    newCommitter: string,
+    newTreasury: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   approve(
     to: string,
@@ -492,22 +561,25 @@ export interface ProofOfResidency extends BaseContract {
   commitAddress(
     to: string,
     commitment: BytesLike,
+    v: BigNumberish,
+    r: BytesLike,
+    s: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  committer(overrides?: CallOverrides): Promise<string>;
-
   contractURI(overrides?: CallOverrides): Promise<string>;
-
-  currentCountryCount(
-    country: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   getApproved(
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  getCommitmentValidAt(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getCurrentCountryCount(
+    country: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   isApprovedForAll(
     owner: string,
@@ -517,7 +589,7 @@ export interface ProofOfResidency extends BaseContract {
 
   mint(
     country: BigNumberish,
-    secret: string,
+    publicKey: string,
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -534,6 +606,11 @@ export interface ProofOfResidency extends BaseContract {
   ): Promise<ContractTransaction>;
 
   paused(overrides?: CallOverrides): Promise<boolean>;
+
+  removeCommitter(
+    removedCommitter: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -560,18 +637,8 @@ export interface ProofOfResidency extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setCommitter(
-    newCommitter: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   setPrice(
     newPrice: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  setTreasury(
-    newTreasury: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -609,8 +676,6 @@ export interface ProofOfResidency extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  treasury(overrides?: CallOverrides): Promise<string>;
-
   unpause(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -621,6 +686,18 @@ export interface ProofOfResidency extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    COMMITMENT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
+
+    DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<string>;
+
+    VERSION(overrides?: CallOverrides): Promise<string>;
+
+    addCommitter(
+      newCommitter: string,
+      newTreasury: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -634,22 +711,25 @@ export interface ProofOfResidency extends BaseContract {
     commitAddress(
       to: string,
       commitment: BytesLike,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    committer(overrides?: CallOverrides): Promise<string>;
-
     contractURI(overrides?: CallOverrides): Promise<string>;
-
-    currentCountryCount(
-      country: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getCommitmentValidAt(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getCurrentCountryCount(
+      country: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     isApprovedForAll(
       owner: string,
@@ -659,7 +739,7 @@ export interface ProofOfResidency extends BaseContract {
 
     mint(
       country: BigNumberish,
-      secret: string,
+      publicKey: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -674,6 +754,11 @@ export interface ProofOfResidency extends BaseContract {
     pause(overrides?: CallOverrides): Promise<void>;
 
     paused(overrides?: CallOverrides): Promise<boolean>;
+
+    removeCommitter(
+      removedCommitter: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -698,14 +783,7 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setCommitter(
-      newCommitter: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     setPrice(newPrice: BigNumberish, overrides?: CallOverrides): Promise<void>;
-
-    setTreasury(newTreasury: string, overrides?: CallOverrides): Promise<void>;
 
     supportsInterface(
       interfaceId: BytesLike,
@@ -741,8 +819,6 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    treasury(overrides?: CallOverrides): Promise<string>;
-
     unpause(overrides?: CallOverrides): Promise<void>;
 
     withdraw(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
@@ -771,14 +847,26 @@ export interface ProofOfResidency extends BaseContract {
       approved?: null
     ): ApprovalForAllEventFilter;
 
-    "CommitmentCreated(address,bytes32)"(
-      _to?: string | null,
-      _commitment?: null
+    "CommitmentCreated(address,address,bytes32)"(
+      to?: string | null,
+      committer?: string | null,
+      commitment?: null
     ): CommitmentCreatedEventFilter;
     CommitmentCreated(
-      _to?: string | null,
-      _commitment?: null
+      to?: string | null,
+      committer?: string | null,
+      commitment?: null
     ): CommitmentCreatedEventFilter;
+
+    "CommitterAdded(address)"(
+      committer?: string | null
+    ): CommitterAddedEventFilter;
+    CommitterAdded(committer?: string | null): CommitterAddedEventFilter;
+
+    "CommitterRemoved(address)"(
+      committer?: string | null
+    ): CommitterRemovedEventFilter;
+    CommitterRemoved(committer?: string | null): CommitterRemovedEventFilter;
 
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,
@@ -791,6 +879,11 @@ export interface ProofOfResidency extends BaseContract {
 
     "Paused(address)"(account?: null): PausedEventFilter;
     Paused(account?: null): PausedEventFilter;
+
+    "PriceChanged(uint256)"(
+      newPrice?: BigNumberish | null
+    ): PriceChangedEventFilter;
+    PriceChanged(newPrice?: BigNumberish | null): PriceChangedEventFilter;
 
     "Transfer(address,address,uint256)"(
       from?: string | null,
@@ -808,6 +901,18 @@ export interface ProofOfResidency extends BaseContract {
   };
 
   estimateGas: {
+    COMMITMENT_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
+
+    DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
+
+    VERSION(overrides?: CallOverrides): Promise<BigNumber>;
+
+    addCommitter(
+      newCommitter: string,
+      newTreasury: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -824,20 +929,23 @@ export interface ProofOfResidency extends BaseContract {
     commitAddress(
       to: string,
       commitment: BytesLike,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    committer(overrides?: CallOverrides): Promise<BigNumber>;
-
     contractURI(overrides?: CallOverrides): Promise<BigNumber>;
-
-    currentCountryCount(
-      country: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     getApproved(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getCommitmentValidAt(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getCurrentCountryCount(
+      country: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -849,7 +957,7 @@ export interface ProofOfResidency extends BaseContract {
 
     mint(
       country: BigNumberish,
-      secret: string,
+      publicKey: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -869,6 +977,11 @@ export interface ProofOfResidency extends BaseContract {
     ): Promise<BigNumber>;
 
     paused(overrides?: CallOverrides): Promise<BigNumber>;
+
+    removeCommitter(
+      removedCommitter: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -895,18 +1008,8 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setCommitter(
-      newCommitter: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     setPrice(
       newPrice: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setTreasury(
-      newTreasury: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -947,8 +1050,6 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    treasury(overrides?: CallOverrides): Promise<BigNumber>;
-
     unpause(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -960,6 +1061,20 @@ export interface ProofOfResidency extends BaseContract {
   };
 
   populateTransaction: {
+    COMMITMENT_TYPEHASH(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    VERSION(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    addCommitter(
+      newCommitter: string,
+      newTreasury: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -979,20 +1094,25 @@ export interface ProofOfResidency extends BaseContract {
     commitAddress(
       to: string,
       commitment: BytesLike,
+      v: BigNumberish,
+      r: BytesLike,
+      s: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    committer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     contractURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    currentCountryCount(
-      country: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     getApproved(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getCommitmentValidAt(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getCurrentCountryCount(
+      country: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1004,7 +1124,7 @@ export interface ProofOfResidency extends BaseContract {
 
     mint(
       country: BigNumberish,
-      secret: string,
+      publicKey: string,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1024,6 +1144,11 @@ export interface ProofOfResidency extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    removeCommitter(
+      removedCommitter: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1050,18 +1175,8 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setCommitter(
-      newCommitter: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     setPrice(
       newPrice: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setTreasury(
-      newTreasury: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1101,8 +1216,6 @@ export interface ProofOfResidency extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
-
-    treasury(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     unpause(
       overrides?: Overrides & { from?: string | Promise<string> }

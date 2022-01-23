@@ -51,14 +51,14 @@ export const AddressModal = (props: {
           { unit: 'meter' }
         );
 
-        if (distance <= 500) {
+        if (distance <= 2000) {
           return props.onSuccess(result.data);
         }
         toast({
           title: 'Error',
           description: `You are too far away from your claimed address. You are ${distance.toFixed(
             0
-          )}m away - you must be within 500m of the address to claim it.`,
+          )}m away - you must be within 2km of the address to claim it.`,
           status: 'error'
         });
       } else {

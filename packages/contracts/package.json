@@ -10,7 +10,7 @@
     "build": "yarn clean && yarn compile",
     "clean": "yarn hardhat clean",
     "compile": "yarn hardhat compile",
-    "coverage": "yarn build && yarn hardhat coverage --temp artifacts --network coverage",
+    "coverage": "yarn build && yarn hardhat coverage --temp artifacts",
     "deploy:rinkeby": "yarn hardhat run --network rinkeby scripts/initial-deploy.ts",
     "deploy:local": "yarn hardhat run --network localhost scripts/initial-deploy.ts",
     "test:rinkeby": "yarn hardhat run --network rinkeby scripts/test-deployed.ts",
