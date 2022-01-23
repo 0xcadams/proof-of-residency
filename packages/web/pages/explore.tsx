@@ -7,7 +7,7 @@ import path from 'path';
 import React from 'react';
 import Footer from '../src/web/components/Footer';
 import Header from '../src/web/components/Header';
-import { getMintedCount } from '../src/web/ethers';
+import { getMintedCount } from '../src/web/hooks/useProofOfResidency';
 import { Mapping } from '../types/mapping';
 
 type Details = Mapping & {

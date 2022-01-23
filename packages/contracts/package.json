@@ -13,7 +13,7 @@
     "coverage": "yarn build && yarn hardhat coverage --temp artifacts",
     "deploy:rinkeby": "yarn hardhat run --network rinkeby scripts/initial-deploy.ts",
     "deploy:local": "yarn hardhat run --network localhost scripts/initial-deploy.ts",
-    "test:rinkeby": "yarn hardhat run --network rinkeby scripts/test-deployed.ts",
+    "test:local": "yarn hardhat run --network localhost scripts/test.ts",
     "lint": "solhint 'contracts/**/*.sol' && prettier --list-different 'contracts/**/*.sol' && eslint . --ext .ts",
     "size": "yarn hardhat size-contracts",
     "start": "hardhat node",

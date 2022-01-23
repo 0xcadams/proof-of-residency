@@ -11,9 +11,13 @@ import React from 'react';
 import { Mapping } from 'types';
 import Footer from '../../src/web/components/Footer';
 import Header from '../../src/web/components/Header';
-import { TokenOwner, getMintedCount, getOwnerOfToken } from '../../src/web/ethers';
+import {
+  TokenOwner,
+  getMintedCount,
+  getOwnerOfToken
+} from '../../src/web/hooks/useProofOfResidency';
 
-type CityDetailsProps = Mapping & {
+type CountryDetailsProps = Mapping & {
   cityId: number;
   image: string;
   minted: number;
@@ -88,7 +92,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
         })
     );
 
-    const props: CityDetailsProps = {
+    const props: CountryDetailsProps = {
       ...mapping,
       cityId,
       image: `/previews/${cityId}.png`,
@@ -105,7 +109,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
   }
 };
 
-const CityDetailsPage = (props: CityDetailsProps) => {
+const CountryDetailsPage = (props: CountryDetailsProps) => {
   const tags = [
     {
       name: 'License',

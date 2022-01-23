@@ -14,7 +14,7 @@ const IndexPage = () => {
 
       <Flex minHeight="90vh" pt="70px" width="100%" direction="column" px={4}>
         <Heading mt={20} size="2xl" textAlign="center">
-          Rep your city with NFT art.
+          Proof of personhood based on physical mail
         </Heading>
 
         <Box>
@@ -32,26 +32,21 @@ const IndexPage = () => {
 
         <Flex mb={10} flexDirection="column" mx="auto" align="center" width="100%" maxWidth={800}>
           <Text fontSize="2xl" mt={10} textAlign="center">
-            Proof of Residency is an NFT design project based on maps.
+            Proof of Residency is a protocol to support decentralized governance, Universal Basic
+            Income, unique identity, and many other projects.
           </Text>
+
           <Text fontSize="lg" mt={6} textAlign="center">
-            Minting is limited to one NFT per mailing address and can only be completed after
-            physical mail is received, as a first-ever experiment into city-based limits on token
-            supply. Each US city has a mint cap based on population size; e.g. Boston is capped at
-            50.
+            This project is a novel attempt at proving personhood - we send physical mail with a
+            secret phrase, and use a <strong>commit-reveal scheme</strong> to ensure that the
+            recipient resides at the provided address. The address is kept private and names are not
+            requested. Addresses can only be requested ...TODO
           </Text>
-          <Text fontSize="lg" mt={3} textAlign="center">
-            {`Generative design draws upon real-world maps of hydrography and roads, with a provably
-            unique "seed" per NFT stored immutably on the Ethereum blockchain. This is the first
-            token to limit issuance based on privacy-preserving residency verification. All of our
-            non-artistic code is open-source on Github, for future projects to build upon.`}
-          </Text>
+
           <Text fontSize="md" mt={6} textAlign="center">
-            We dedicate 15% of the revenue from this project to be donated to the Make-A-Wish
-            Foundation.
-          </Text>
-          <Text fontWeight="bold" fontSize="md" mt={1} textAlign="center">
-            Launching February 1st, 2022 at 9am PST.
+            All of our code is open-source on Github under an MIT license for future projects to
+            build upon. We dedicate 15% of the revenue from this project to be donated to the
+            Make-A-Wish Foundation.
           </Text>
         </Flex>
       </Flex>

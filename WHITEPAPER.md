@@ -4,9 +4,9 @@
 
 The web3 ecosystem has benefited from the anonymity and transparency of the underlying smart contracts. Many of the current protocols being developed are moving towards integrating real-world identity into web3, while maintaining privacy of the participating users.
 
-There has been an explosion of DAOs in the recent years, solving complex organizational problems with the backing of the blockchain. Many of these projects have experimented with [coin voting governance](https://vitalik.ca/general/2021/08/16/voting3.html), which has been criticized for misaligned incentives and conflicts of interest. One of the notable solutions to governance (and many other problems) are Proof of Personhood protocols which . There have been [recent reviews](https://arxiv.org/abs/2008.05300) of the notable projects which have made attempts at Proof of Personhood and their approaches to the problem.
+There has been an explosion of DAOs in the recent years, solving complex organizational problems with the backing of the blockchain. Many of these projects have experimented with [coin voting governance](https://vitalik.ca/general/2021/08/16/voting3.html), which has been criticized for misaligned incentives and conflicts of interest. One of the most common solutions to governance (and many other problems) are Proof of Personhood protocols. There have been [recent reviews](https://arxiv.org/abs/2008.05300) of the notable projects which have made attempts at proof of personhood and their approaches to the problem.
 
-This project is a novel attempt at Proof of Personhood - we prove humanness by sending physical mail with a secret phrase, and use a **commit-reveal scheme** to ensure that the recipient resides at the provided address. The physical address is kept private and names are not requested.
+This project is a novel attempt at "proof of personhood" - we send physical mail with a secret phrase, and use a **commit-reveal scheme** to ensure that the recipient resides at the provided address. The physical address is kept private and names are not requested.
 
 ## Approach
 

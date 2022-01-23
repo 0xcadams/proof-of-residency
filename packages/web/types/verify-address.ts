@@ -44,6 +44,40 @@ export type LobConfidenceScore = {
   level: string;
 };
 
+export interface IntlComponents {
+  primary_number: string;
+  street_name: string;
+  city: string;
+  state: string;
+  postal_code: string;
+}
+
+export type VerifyIntlAddressResponse = {
+  recipient: string;
+  primary_line: string;
+  secondary_line: string;
+  last_line: string;
+  country: string;
+  coverage: 'SUBBUILDING' | 'HOUSENUMBER/BUILDING' | 'STREET' | 'LOCALITY' | 'SPARSE';
+  deliverability: 'deliverable' | 'deliverable_missing_info' | 'undeliverable' | 'no_match';
+  status:
+    | 'LV4'
+    | 'LV3'
+    | 'LV2'
+    | 'LV1'
+    | 'LF4'
+    | 'LF3'
+    | 'LF2'
+    | 'LF1'
+    | 'LM4'
+    | 'LM3'
+    | 'LM2'
+    | 'LU1';
+  components: Partial<IntlComponents>;
+  object: 'intl_verification';
+  id: string;
+};
+
 export type VerifyUsAddressResponse = {
   id: string;
   recipient: string;
@@ -57,15 +91,19 @@ export type VerifyUsAddressResponse = {
     | 'deliverable_incorrect_unit'
     | 'deliverable_missing_unit'
     | 'undeliverable';
-  components: Components;
+  components: Partial<Components>;
   deliverability_analysis: DeliverabilityAnalysis;
   lob_confidence_score: LobConfidenceScore;
-  object: string;
+  object: 'us_verification';
 };
+
+export type VerifyAddressResponse = VerifyUsAddressResponse | VerifyIntlAddressResponse;
 
 export type VerifyAddressRequest = {
   primaryLine: string;
+  secondaryLine?: string;
   city: string;
   state: string;
-  zipCode: string;
+  postalCode: string;
+  country: string;
 };

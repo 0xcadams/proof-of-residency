@@ -27,7 +27,6 @@ import React from 'react';
 import { Mapping, MetadataResponse } from 'types';
 import Footer from '../../src/web/components/Footer';
 import Header from '../../src/web/components/Header';
-import { getOwnerOfToken, TokenOwner } from '../../src/web/ethers';
 
 interface Params extends ParsedUrlQuery {
   id: string;

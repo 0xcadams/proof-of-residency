@@ -1,12 +1,10 @@
-import { ethers } from 'ethers';
 import { NextApiRequest, NextApiResponse } from 'next';
-import * as fs from 'fs';
-import path from 'path';
 import { generatePublicPrivateKey } from 'src/api/bip';
-import { findMappingIndexForPoint } from 'src/api/city';
 import { hashAndSignEip712, validateSignature } from 'src/api/ethers';
 
-import { SubmitAddressResponse, SubmitAddressRequest, Mapping } from '../../types';
+import iso from 'iso-3166-1';
+
+import { SubmitAddressResponse, SubmitAddressRequest } from '../../types';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressResponse | null>) => {
   try {
@@ -23,40 +21,48 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
         body.signature
       );
 
-      if (signatureAddress !== body.payload.walletAddress) {
-        return res.status(500).end('Signature address does not match input address.');
+      const countryIso = iso.whereAlpha2(body.payload.address.country);
+
+      if (!countryIso) {
+        return res.status(500).end('Country code was incorrect');
       }
 
-      const signatureHash = ethers.utils.keccak256(body.signature);
+      // TODO
+      // const distance = haversine(
+      //   props.geolocation,
+      //   {
+      //     latitude: result.data.components.latitude,
+      //     longitude: result.data.components.longitude
+      //   },
+      //   { unit: 'meter' }
+      // );
 
-      const keygen = await generatePublicPrivateKey(signatureHash);
+      // if (distance <= 2000) {
 
-      const country = findMappingIndexForPoint(body.latitude, body.longitude);
+      // }
 
-      if (country === -1) {
-        return res.status(404).end('City does not exist for latitude and longitude.');
-      }
+      const keygen = await generatePublicPrivateKey(body.payload.hashedPassword);
 
-      const { v, r, s } = await hashAndSignEip712(
+      const countryId = Number(countryIso.numeric);
+      const countryName = countryIso.country;
+
+      const { commitment, v, r, s } = await hashAndSignEip712(
         signatureAddress,
-        country,
+        countryId,
         keygen.publicKey.toString('hex')
       );
 
       console.log(`Mnemonic: ${keygen.mnemonic}`);
 
-      // TODO add Lob sending
-
-      const mappingFile = path.join(process.cwd(), 'sources/mappings.json');
-      const mappings: Mapping[] = JSON.parse(
-        (await fs.readFileSync(mappingFile, 'utf8')).toString()
-      );
+      // body.payload.addressId
+      // TODO add Lob sending and limit to only one letter per address
 
       return res.status(200).json({
         v,
         r,
         s,
-        country: mappings?.[country]?.name ?? ''
+        country: countryName,
+        commitment
       });
     }
 

@@ -172,6 +172,8 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     _countriesTokenCounts[country] += 1; // increment before minting so count starts at 1
     uint256 tokenId = country * LOCATION_MULTIPLIER + _countriesTokenCounts[country];
 
+    delete _commitments[_msgSender()];
+
     _safeMint(_msgSender(), tokenId);
 
     return tokenId;
@@ -223,16 +225,25 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   }
 
   /**
-   * @notice Gets when the commitment for the sender's address becomes able to mint.
+   * @notice Gets if the commitment for the sender's address exists or they already have a token.
    */
-  function getCommitmentValidAt() external view returns (uint256) {
+  function getCommitmentExists() public view returns (bool) {
     Commitment storage existingCommitment = _commitments[_msgSender()];
 
-    return existingCommitment.validAt;
+    return existingCommitment.validAt != 0;
   }
 
   /**
-   * @notice Withdraws a specified amount of funds from the contract to the treasury.
+   * @notice Gets if the commitment for the sender's address is able to mint.
+   */
+  function getCommitmentIsReady() external view returns (bool) {
+    Commitment storage existingCommitment = _commitments[_msgSender()];
+
+    return getCommitmentExists() && block.timestamp >= existingCommitment.validAt;
+  }
+
+  /**
+   * @notice Gets the current country count for a country ID.
    */
   function getCurrentCountryCount(uint256 country) external view returns (uint256) {
     return _countriesTokenCounts[country];

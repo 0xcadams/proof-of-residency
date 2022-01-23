@@ -30,7 +30,8 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     "commitAddress(address,bytes32,uint8,bytes32,bytes32)": FunctionFragment;
     "contractURI()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "getCommitmentValidAt()": FunctionFragment;
+    "getCommitmentExists()": FunctionFragment;
+    "getCommitmentIsReady()": FunctionFragment;
     "getCurrentCountryCount(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "mint(uint256,string)": FunctionFragment;
@@ -89,7 +90,11 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getCommitmentValidAt",
+    functionFragment: "getCommitmentExists",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getCommitmentIsReady",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -197,7 +202,11 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getCommitmentValidAt",
+    functionFragment: "getCommitmentExists",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getCommitmentIsReady",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -415,7 +424,9 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    getCommitmentValidAt(overrides?: CallOverrides): Promise<[BigNumber]>;
+    getCommitmentExists(overrides?: CallOverrides): Promise<[boolean]>;
+
+    getCommitmentIsReady(overrides?: CallOverrides): Promise<[boolean]>;
 
     getCurrentCountryCount(
       country: BigNumberish,
@@ -574,7 +585,9 @@ export interface ProofOfResidency extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  getCommitmentValidAt(overrides?: CallOverrides): Promise<BigNumber>;
+  getCommitmentExists(overrides?: CallOverrides): Promise<boolean>;
+
+  getCommitmentIsReady(overrides?: CallOverrides): Promise<boolean>;
 
   getCurrentCountryCount(
     country: BigNumberish,
@@ -724,7 +737,9 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getCommitmentValidAt(overrides?: CallOverrides): Promise<BigNumber>;
+    getCommitmentExists(overrides?: CallOverrides): Promise<boolean>;
+
+    getCommitmentIsReady(overrides?: CallOverrides): Promise<boolean>;
 
     getCurrentCountryCount(
       country: BigNumberish,
@@ -942,7 +957,9 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getCommitmentValidAt(overrides?: CallOverrides): Promise<BigNumber>;
+    getCommitmentExists(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getCommitmentIsReady(overrides?: CallOverrides): Promise<BigNumber>;
 
     getCurrentCountryCount(
       country: BigNumberish,
@@ -1107,7 +1124,11 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getCommitmentValidAt(
+    getCommitmentExists(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getCommitmentIsReady(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

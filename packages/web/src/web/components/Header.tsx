@@ -1,16 +1,17 @@
-import { Box, Button, Flex, Spacer, useBreakpointValue } from '@chakra-ui/react';
+import { Badge, Box, Button, Flex, Spacer, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { FiGithub } from 'react-icons/fi';
+
 import Logo from '../../../public/logo.svg';
-import { getCurrentNetwork } from '../ethers';
+import { useNetworkName } from '../hooks';
 
 const Header = () => {
   const isMobile = useBreakpointValue({ base: true, sm: false });
   const buttonSize = isMobile ? 'md' : 'lg';
 
-  const network = getCurrentNetwork();
+  const network = useNetworkName();
 
   return (
     <Flex height="70px" position="absolute" left={0} top={0} right={0} px={4} shadow="sm">
@@ -22,11 +23,11 @@ const Header = () => {
             </Flex>
           </Link>
         </Box>
-        {/* {network !== 'homestead' && (
-          <Badge fontSize="xl" ml={3}>
-            {network}
+        {network !== 'homestead' && (
+          <Badge fontSize="md" ml={3}>
+            Connected to {network ?? 'Unknown'}
           </Badge>
-        )} */}
+        )}
 
         <Spacer />
 

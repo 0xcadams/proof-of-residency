@@ -1,12 +1,24 @@
+export type AddressComponents = {
+  primaryLine: string;
+  secondaryLine: string;
+  lastLine: string;
+  country: string;
+};
+
 export type SubmitAddressPayload = {
-  walletAddress: string;
+  address: AddressComponents;
+  geolocation: {
+    latitude: number;
+    longitude: number;
+  };
+  hashedPassword: string;
 };
 
 export type SubmitAddressRequest = {
   payload: SubmitAddressPayload;
   signature: string;
 
-  lobAddressId: string;
+  name: string;
 
   latitude: number;
   longitude: number;
@@ -18,4 +30,5 @@ export type SubmitAddressResponse = {
   s: string;
 
   country: string;
+  commitment: string;
 };

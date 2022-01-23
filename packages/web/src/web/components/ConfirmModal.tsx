@@ -7,47 +7,60 @@ import {
   ModalHeader,
   ModalOverlay
 } from '@chakra-ui/modal';
-import { Button, Flex, Text, useToast } from '@chakra-ui/react';
-import { name } from 'faker';
+import { Button, Flex, Input, Text, useToast } from '@chakra-ui/react';
+import faker from 'faker';
 import React, { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
-
-import { useWallet } from 'use-wallet';
 
 import { axiosClient } from '../axios';
 import { SubmitAddressPayload, SubmitAddressRequest, SubmitAddressResponse } from '../../../types';
-import { VerifyUsAddressResponse } from 'types';
+import { VerifyAddressResponse } from 'types';
+import { useCommitAddress, useSigner } from '../hooks';
+import { ethers } from 'ethers';
+import { CoordinateLongitudeLatitude } from 'haversine';
+import { useRouter } from 'next/router';
 
 export const ConfirmModal = (props: {
-  address: VerifyUsAddressResponse;
+  address: VerifyAddressResponse;
+  geolocation: CoordinateLongitudeLatitude;
   isOpen: boolean;
   onClose: (success: boolean) => void;
 }) => {
+  const [password, setPassword] = useState<string>('');
   const [randomName, setRandomName] = useState<string>('');
   const toast = useToast();
 
-  const wallet = useWallet();
+  const router = useRouter();
 
-  useEffect(() => {
-    setRandomName(`${name.firstName()} ${name.lastName()}`);
-  }, []);
+  const signer = useSigner();
+  const commitAddress = useCommitAddress();
 
   useEffect(() => {
     (async () => {
-      await wallet.connect('injected');
+      faker.seed((await signer?.getTransactionCount()) ?? 11);
+      setRandomName(`${faker.name.firstName()} ${faker.name.lastName()}`);
     })();
   }, []);
 
   const onSubmit = async () => {
-    if (wallet.status === 'connected' && wallet.ethereum) {
-      const provider = new ethers.providers.Web3Provider(wallet.ethereum);
-
-      const signer = provider.getSigner();
-
+    if (signer && commitAddress) {
       const address = await signer.getAddress();
 
+      const hashedPassword = ethers.utils.keccak256(
+        ethers.utils.toUtf8Bytes(`${address}${password}`)
+      );
+
       const payload: SubmitAddressPayload = {
-        walletAddress: address
+        address: {
+          primaryLine: props.address.primary_line,
+          secondaryLine: props.address.secondary_line,
+          lastLine: props.address.last_line,
+          country: props.address.object === 'us_verification' ? 'US' : props.address.country
+        },
+        geolocation: {
+          latitude: props.geolocation.latitude,
+          longitude: props.geolocation.longitude
+        },
+        hashedPassword
       };
 
       const message = JSON.stringify(payload, null, 2);
@@ -57,29 +70,43 @@ export const ConfirmModal = (props: {
       const body: SubmitAddressRequest = {
         payload,
         signature,
-        latitude: props.address.components.latitude,
-        longitude: props.address.components.longitude,
+        latitude: -1,
+        longitude: -1,
 
-        name: randomName,
-        primaryLine: props.address.primary_line,
-        secondaryLine: props.address.secondary_line,
-        city: props.address.components.city,
-        state: props.address.components.state,
-
-        lobAddressId: props.address.id
+        name: randomName
       };
 
       try {
         const result = await axiosClient.post<SubmitAddressResponse>('/request', body);
 
         if (result.status === 200) {
-          toast({
-            title: 'Success',
-            description: `Successfully initiated sending a physical letter to your address. Please wait 4-6 business days for your request for ${result.data.city}.`,
-            status: 'success'
-          });
+          const transaction = await commitAddress(
+            address,
+            result.data.commitment,
+            result.data.v,
+            result.data.r,
+            result.data.s
+          );
 
-          localStorage.setItem('letterSent', 'true');
+          const transactionResult = await transaction.wait();
+
+          if (transactionResult.events?.some((event) => event.event === 'CommitmentCreated')) {
+            toast({
+              title: 'Success',
+              description: `Successfully mailed a letter and committed your country to the blockchain. Please wait ${
+                props.address.object === 'us_verification' ? 'one week' : 'two weeks'
+              } for your letter to arrive.`,
+              status: 'success'
+            });
+          } else {
+            toast({
+              title: 'Error',
+              description: 'Request was not successful. Please try again in a few minutes.',
+              status: 'error'
+            });
+          }
+
+          await router.push('/');
 
           return props.onClose(true);
         } else if (result.status === 400) {
@@ -124,11 +151,10 @@ export const ConfirmModal = (props: {
             <Text>
               Please confirm the address shown below to continue submitting for Proof of Residency.
               We use a <strong>randomly generated name</strong> so we can minimize the amount of
-              data we request, for maximum privacy/security. This is inconsequential with mail -
-              they will deliver the parcel regardless.
+              data we request.
             </Text>
 
-            <Flex direction="column" mt={6}>
+            <Flex direction="column" mb={6} mt={6}>
               <Text fontWeight="bold">{randomName}</Text>
               <Text fontWeight="bold">{props.address.primary_line}</Text>
               {props.address.secondary_line && (
@@ -136,16 +162,33 @@ export const ConfirmModal = (props: {
               )}
               {props.address.last_line && <Text fontWeight="bold">{props.address.last_line}</Text>}
             </Flex>
+
+            <Text mb={3}>
+              We require a password to securely generate your letter. Please use a{' '}
+              <strong>secure</strong> password and remember the value.
+            </Text>
+
+            <Input
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              type="password"
+              placeholder="Password"
+            />
           </ModalBody>
 
           <ModalFooter>
             <Button mr={3} variant="outline" onClick={() => props.onClose(false)}>
               Cancel
             </Button>
-            <Button onClick={onSubmit}>Send Letter</Button>
+            <Button disabled={password.length < 6} onClick={onSubmit}>
+              Sign Payload
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
     </>
   );
 };
+function useProofOfResidency() {
+  throw new Error('Function not implemented.');
+}

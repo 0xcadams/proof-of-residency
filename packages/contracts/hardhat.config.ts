@@ -34,14 +34,14 @@ const config: HardhatUserConfig = {
   },
   networks: {
     hardhat: {
-      // chainId: 1337,
+      chainId: 1337
       // forking: {
       //   url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
       //   blockNumber: 13762650
       // }
     },
     localhost: {
-      // accounts: [`${PRIVATE_KEY}`]
+      accounts: [`${PRIVATE_KEY}`]
     },
     rinkeby: {
       url: `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`,
