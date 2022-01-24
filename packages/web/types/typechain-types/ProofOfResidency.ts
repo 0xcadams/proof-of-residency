@@ -47,6 +47,7 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     "renounceOwnership()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
+    "setBaseURI(string)": FunctionFragment;
     "setPrice(uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
@@ -144,6 +145,7 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     functionFragment: "setApprovalForAll",
     values: [string, boolean]
   ): string;
+  encodeFunctionData(functionFragment: "setBaseURI", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setPrice",
     values: [BigNumberish]
@@ -258,6 +260,7 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     functionFragment: "setApprovalForAll",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setBaseURI", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setPrice", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
@@ -536,6 +539,11 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setBaseURI(
+      newBaseUri: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     setPrice(
       newPrice: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -705,6 +713,11 @@ export interface ProofOfResidency extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setBaseURI(
+    newBaseUri: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   setPrice(
     newPrice: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -863,6 +876,8 @@ export interface ProofOfResidency extends BaseContract {
       approved: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    setBaseURI(newBaseUri: string, overrides?: CallOverrides): Promise<void>;
 
     setPrice(newPrice: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
@@ -1111,6 +1126,11 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setBaseURI(
+      newBaseUri: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     setPrice(
       newPrice: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1290,6 +1310,11 @@ export interface ProofOfResidency extends BaseContract {
     setApprovalForAll(
       operator: string,
       approved: boolean,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setBaseURI(
+      newBaseUri: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

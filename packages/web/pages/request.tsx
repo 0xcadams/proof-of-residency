@@ -164,13 +164,11 @@ const RequestPage = () => {
         ) : (
           <></>
         )}
-        {address?.object === 'us_verification' &&
-        address?.components?.longitude &&
-        address?.components?.latitude ? (
+        {address?.longitude && address?.latitude ? (
           <Marker
             onClick={!commitmentExists ? onOpenConfirmModal : () => {}}
             style={styles.markerAddress}
-            coordinates={[address.components.longitude, address.components.latitude]}
+            coordinates={[address.longitude, address.latitude]}
           />
         ) : (
           <></>
@@ -180,7 +178,10 @@ const RequestPage = () => {
         <AddressModal
           onSuccess={onSuccess}
           isOpen={isOpenAddressModal}
-          onClose={onCloseAddressModal}
+          onClose={() => {
+            setLatLng(null);
+            onCloseAddressModal();
+          }}
         />
       )}
       <InfoModal isOpen={isOpenInfoModal} onClose={onCloseInfoModal} />

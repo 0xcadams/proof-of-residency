@@ -2,8 +2,6 @@ import { Button, Flex, Heading, Input, Text, Textarea, useToast } from '@chakra-
 import BIP32Factory from 'bip32';
 import { ethers } from 'ethers';
 import * as bip39 from 'bip39';
-import { promises as fs } from 'fs';
-import path from 'path';
 import React, { useState } from 'react';
 import {
   useGetCommitmentPeriodIsValid,
@@ -17,42 +15,13 @@ import iso from 'iso-3166-1';
 
 import Footer from '../src/web/components/Footer';
 import Header from '../src/web/components/Header';
-import { Mapping } from '../types';
+
 import { CountrySelect } from 'src/web/components/CountrySelect';
 import { useRouter } from 'next/router';
 
 const bip32 = BIP32Factory(ecc);
 
-type MintProps = {
-  cities: {
-    name: string;
-    index: number;
-    value: number;
-  }[];
-};
-
-export const getStaticProps = async () => {
-  try {
-    const mappingFile = path.join(process.cwd(), 'sources/mappings.json');
-    const mappings: Mapping[] = JSON.parse((await fs.readFile(mappingFile, 'utf8')).toString());
-
-    if (!mappings) {
-      return { notFound: true };
-    }
-
-    const props: MintProps = {
-      cities: mappings.map((city, index) => ({ name: city.name, index: index, value: city.price }))
-    };
-
-    return {
-      props
-    };
-  } catch (e) {
-    return { notFound: true };
-  }
-};
-
-const MintPage = (props: MintProps) => {
+const MintPage = () => {
   const [mnemonic, setMnemonic] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [selectedCountry, setSelectedCountry] = useState<string>('');

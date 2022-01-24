@@ -8,6 +8,7 @@ pragma solidity ^0.8.7;
  *
  * This is not deployed to mainnet.
  */
+// slither-disable-next-line all
 contract FailingTreasuryTest {
   // Sending Ether to this contract will cause an exception,
   // because the fallback function does not have the `payable`

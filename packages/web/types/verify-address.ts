@@ -107,6 +107,9 @@ export type VerifyAddressResponse = {
     | VerifyUsAddressResponse['deliverability']
     | VerifyIntlAddressResponse['deliverability'];
 
+  latitude?: number;
+  longitude?: number;
+
   signature: string;
 };
 

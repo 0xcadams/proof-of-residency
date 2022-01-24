@@ -42,6 +42,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<VerifyAddressRe
           country: body.country,
           signature,
 
+          latitude: verifyResult.components.latitude,
+          longitude: verifyResult.components.longitude,
+
           deliverability: verifyResult.deliverability
         });
       }

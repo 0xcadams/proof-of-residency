@@ -7,8 +7,6 @@ import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 import './ERC721NonTransferable.sol';
 
-import 'hardhat/console.sol';
-
 /**
  * @title Proof of Residency
  * @custom:security-contact security@proofofresidency.xyz
@@ -36,6 +34,9 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   /// @notice Mint price for tokens to contribute to the protocol
   uint256 public mintPrice;
 
+  /// @notice The baseURI for the metadata of this contract
+  string private baseUri;
+
   /// @notice Committer addresses responsible for managing secret commitments to an address
   /// @dev Maps to treasury accounts for a committer for transferring out contributions
   mapping(address => address) private _committerTreasuries;
@@ -60,8 +61,6 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
 
   /// @notice Total contributions for each committer
   mapping(address => uint256) private _committerContributions;
-  /// @notice Total withdrawn from the contract
-  uint256 private _totalWithdrawn;
 
   /// @notice Event emitted when a commitment is made to an address
   event CommitmentCreated(
@@ -86,10 +85,10 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   constructor(address initialCommitter, address initialTreasury)
     ERC721NonTransferable('Proof of Residency Protocol', 'PORP')
   {
-    // slither-disable-next-line missing-zero-check
     _committerTreasuries[initialCommitter] = initialTreasury;
 
     mintPrice = BASE_PRICE;
+    baseUri = 'ipfs://bafybeihrbi6ghrxckdzlitupwnxzicocrfeuqqoavktxp7oruw2bbejdhu/';
   }
 
   /**
@@ -103,22 +102,29 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   /**
    * @notice Contract URI for OpenSea and other NFT services.
    */
-  function contractURI() external pure returns (string memory) {
+  function contractURI() external view returns (string memory) {
     return string(abi.encodePacked(_baseURI(), 'contract'));
   }
 
   /**
    * @dev Base URI override for the contract.
    */
-  function _baseURI() internal pure override returns (string memory) {
-    return 'ipfs://bafybeihrbi6ghrxckdzlitupwnxzicocrfeuqqoavktxp7oruw2bbejdhu/';
+  function _baseURI() internal view override returns (string memory) {
+    return baseUri;
+  }
+
+  /**
+   * @notice Sets the base URI for the metadata.
+   */
+  function setBaseURI(string memory newBaseUri) external onlyOwner {
+    baseUri = newBaseUri;
   }
 
   /**
    * @notice Adds a new committer address with their treasury.
    */
   function addCommitter(address newCommitter, address newTreasury) external onlyOwner {
-    // slither-disable-next-line missing-zero-check
+    // -disable-next-line missing-zero-check
     _committerTreasuries[newCommitter] = newTreasury;
 
     emit CommitterAdded(newCommitter);
@@ -128,14 +134,14 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
    * @notice Removes a new committer address with their treasury.
    */
   function removeCommitter(address removedCommitter) external onlyOwner {
-    // slither-disable-next-line missing-zero-check
+    // -disable-next-line missing-zero-check
     delete _committerTreasuries[removedCommitter];
 
     emit CommitterRemoved(removedCommitter);
   }
 
   /**
-   * @notice Blacklists a mailing address from being used. This is only to be used in cases of fraud.
+   * @notice Blacklists a mailing address from being used. This is for cases of fraud.
    */
   function blacklistMailingAddress(uint256 mailingAddressId) external onlyOwner {
     _mailingAddressBlacklist[mailingAddressId] = true;
@@ -144,8 +150,8 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   }
 
   /**
-   * @notice Sets the value required to mint an NFT. Deliberately as low as possible,
-   * this may be changed to be higher/lower.
+   * @notice Sets the value required to mint an NFT. Deliberately as low as possible to
+   * incentivize committers, this may be changed to be lower/higher.
    */
   function setPrice(uint256 newPrice) external onlyOwner {
     mintPrice = newPrice;
@@ -156,14 +162,14 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   /**
    * @notice Pauses the contract's commit-reveal functions.
    */
-  function pause() public onlyOwner {
+  function pause() external onlyOwner {
     _pause();
   }
 
   /**
    * @notice Unpauses the contract's commit-reveal functions.
    */
-  function unpause() public onlyOwner {
+  function unpause() external onlyOwner {
     _unpause();
   }
 
@@ -240,7 +246,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   }
 
   /**
-   * @notice Withdraws a specified amount of funds from the contract to its treasury.
+   * @notice Withdraws a specified amount of funds from the contract to the committer's treasury.
    */
   function withdraw(uint256 amount) external onlyCommitter nonReentrant {
     require(_committerContributions[_msgSender()] >= amount, 'Withdrawal amount not available');
@@ -255,7 +261,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   /**
    * @notice Gets if the commitment for the sender's address exists or they already have a token.
    */
-  function getCommitmentExists() public view returns (bool) {
+  function getCommitmentExists() external view returns (bool) {
     Commitment storage existingCommitment = _commitments[_msgSender()];
 
     return existingCommitment.validAt != 0;
@@ -268,6 +274,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   function getCommitmentPeriodIsValid() external view returns (bool) {
     Commitment storage existingCommitment = _commitments[_msgSender()];
 
+    // slither-disable-next-line timestamp
     return
       block.timestamp >= existingCommitment.validAt &&
       block.timestamp <= existingCommitment.invalidAt;

@@ -10,6 +10,7 @@ import '../ProofOfResidency.sol';
  *
  * This is not deployed to mainnet.
  */
+// slither-disable-next-line all
 contract ReentrantTreasuryTest {
   ProofOfResidency por;
 
