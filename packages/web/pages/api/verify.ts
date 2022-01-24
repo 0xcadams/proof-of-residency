@@ -28,6 +28,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<VerifyAddressRe
           body.postalCode
         );
 
+        console.log({ verifyResult });
+
         const signature = await signAddressEip712(
           verifyResult.primary_line,
           verifyResult.secondary_line,

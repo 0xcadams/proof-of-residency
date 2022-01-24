@@ -40,7 +40,7 @@ const IndexPage = () => {
             This project is a novel attempt at proving personhood - we send physical mail with a
             secret phrase, and use a <strong>commit-reveal scheme</strong> to ensure that the
             recipient resides at the provided address. The address is kept private and names are not
-            requested. Addresses can only be requested ...TODO
+            requested.
           </Text>
 
           <Text fontSize="md" mt={6} textAlign="center">

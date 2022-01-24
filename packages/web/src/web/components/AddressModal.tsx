@@ -61,6 +61,8 @@ export const AddressModal = (props: {
               ? 'Unnecessary unit for address, please try again.'
               : result.data.deliverability === 'deliverable_missing_unit'
               ? 'Missing unit for address, please try again.'
+              : result.data.deliverability === 'deliverable_missing_info'
+              ? 'Missing information for address, please try again.'
               : 'Undeliverable address, please try again.',
           status: 'warning'
         });
