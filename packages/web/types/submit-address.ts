@@ -1,24 +1,33 @@
-export type SubmitAddressPayload = {
-  walletAddress: string;
+export type AddressComponents = {
+  primaryLine: string;
+  secondaryLine: string;
+  lastLine: string;
+  country: string;
+};
+
+export type SubmitAddressPasswordPayload = {
+  hashedPassword: string;
 };
 
 export type SubmitAddressRequest = {
-  payload: SubmitAddressPayload;
-  signature: string;
+  passwordPayload: SubmitAddressPasswordPayload;
+  passwordSignature: string;
 
-  lobAddressId: string;
-
-  latitude: number;
-  longitude: number;
+  addressPayload: AddressComponents;
+  addressSignature: string;
 
   name: string;
 
-  primaryLine: string;
-  secondaryLine: string;
-  city: string;
-  state: string;
+  latitude: number;
+  longitude: number;
 };
 
 export type SubmitAddressResponse = {
-  city: string;
+  v: number;
+  r: string;
+  s: string;
+
+  country: string;
+  commitment: string;
+  hashedMailingAddress: string;
 };

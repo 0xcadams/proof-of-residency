@@ -27,10 +27,24 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: yarn
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          sudo snap install solc
+          pip3 install slither-analyzer
       - name: Install
         run: yarn --frozen-lockfile
       - name: Build
         run: yarn build
+      - name: Run code analysis
+        # this is dumb, but slither has a problem with yarn workspaces and it's not worth the time
+        run: |
+          cp -r ../../node_modules/@openzeppelin/ ./node_modules/@openzeppelin/
+          yarn analyze
+
       - name: Run test coverage
         run: yarn coverage
         env:

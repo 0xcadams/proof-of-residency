@@ -6,12 +6,14 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "analyze": "yarn lint && slither . --filter-paths \"@openzeppelin\"",
     "build": "yarn clean && yarn compile",
     "clean": "yarn hardhat clean",
     "compile": "yarn hardhat compile",
-    "coverage": "yarn build && yarn hardhat coverage --temp artifacts --network coverage",
-    "deploy:goerli": "yarn hardhat run --network goerli scripts/initial-deploy.ts",
+    "coverage": "yarn build && yarn hardhat coverage --temp artifacts",
+    "deploy:rinkeby": "yarn hardhat run --network rinkeby scripts/initial-deploy.ts",
     "deploy:local": "yarn hardhat run --network localhost scripts/initial-deploy.ts",
+    "time-travel:local": "yarn hardhat run --network localhost scripts/time-travel.ts",
     "lint": "solhint 'contracts/**/*.sol' && prettier --list-different 'contracts/**/*.sol' && eslint . --ext .ts",
     "size": "yarn hardhat size-contracts",
     "start": "hardhat node",
@@ -33,6 +35,7 @@
     "ethers": "^5.5.2",
     "hardhat": "^2.7.0",
     "hardhat-contract-sizer": "^2.1.1",
+    "hardhat-gas-reporter": "^1.0.7",
     "prettier-plugin-solidity": "^1.0.0-beta.19",
     "solhint": "^3.3.6",
     "solhint-plugin-prettier": "^0.0.5",
@@ -40,6 +43,6 @@
     "typechain": "^6.0.5"
   },
   "dependencies": {
-    "@openzeppelin/contracts-upgradeable": "^4.4.0"
+    "@openzeppelin/contracts": "^4.4.2"
   }
 }

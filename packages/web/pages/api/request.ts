@@ -1,60 +1,103 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { generatePublicPrivateKey } from 'src/api/bip';
+import {
+  getCurrentWalletAddress,
+  hashAndSignCommitmentEip712,
+  validateMailingAddressSignature,
+  validateSignature
+} from 'src/api/ethers';
 
-import { SubmitAddressResponse, SubmitAddressRequest } from '../../types/submit-address';
+import iso from 'iso-3166-1';
+
+import { SubmitAddressResponse, SubmitAddressRequest } from '../../types';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressResponse | null>) => {
   try {
     const method = req.method;
     const body: SubmitAddressRequest = req.body;
 
-    // if (method === 'POST') {
-    //   if (!body.signature) {
-    //     return res.status(500).end('Signature must be supplied');
-    //   }
+    if (method === 'POST') {
+      if (!body.addressSignature || !body.passwordSignature) {
+        return res.status(500).end('Signatures must be supplied');
+      }
 
-    //   const signatureAddress = await validateSignature(
-    //     JSON.stringify(body.payload, null, 2),
-    //     body.signature
-    //   );
+      const signaturePasswordAddress = await validateSignature(
+        JSON.stringify(body.passwordPayload, null, 2),
+        body.passwordSignature
+      );
 
-    //   if (signatureAddress !== body.payload.walletAddress) {
-    //     return res.status(500).end('Signature address does not match input address.');
-    //   }
+      // ensure that the address was sent from this backend
+      const signatureMailAddress = await validateMailingAddressSignature(
+        body.addressPayload.primaryLine,
+        body.addressPayload.secondaryLine,
+        body.addressPayload.lastLine,
+        body.addressPayload.country,
+        body.addressSignature
+      );
 
-    //   const signatureHash = ethers.utils.keccak256(body.signature);
+      if (signatureMailAddress !== getCurrentWalletAddress()) {
+        return res.status(500).end('Mailing address signature was incorrect');
+      }
 
-    //   const keygen = await generatePublicPrivateKey(signatureHash);
+      const countryIso = iso.whereAlpha2(body.addressPayload.country);
 
-    //   const city = findMappingIndexForPoint(body.latitude, body.longitude);
+      if (!countryIso) {
+        return res.status(500).end('Country code was incorrect');
+      }
 
-    //   if (city === -1) {
-    //     return res.status(404).end('City does not exist for latitude and longitude.');
-    //   }
+      // TODO
+      // const distance = haversine(
+      //   props.geolocation,
+      //   {
+      //     latitude: result.data.components.latitude,
+      //     longitude: result.data.components.longitude
+      //   },
+      //   { unit: 'meter' }
+      // );
 
-    //   const commitment = await commitAddress(
-    //     signatureAddress,
-    //     city,
-    //     keygen.privateKey.toString('hex')
-    //   );
+      // if (distance <= 2000) {
 
-    //   const commitmentTransaction = await commitment.wait();
+      // }
 
-    //   // if there is no commitment event, return an error and do not send a letter
-    //   if (!commitmentTransaction.events?.some((e) => e.event === 'Commitment')) {
-    //     return res.status(400).end('The transaction could not be successfully submitted.');
-    //   }
+      const keygen = await generatePublicPrivateKey(body.passwordPayload.hashedPassword);
 
-    //   console.log(`Mnemonic: ${keygen.mnemonic}`);
+      const countryId = Number(countryIso.numeric);
+      const countryName = countryIso.country;
 
-    //   // TODO add Lob sending
+      const { commitment, hashedMailingAddress, v, r, s } = await hashAndSignCommitmentEip712(
+        signaturePasswordAddress,
+        countryId,
+        keygen.publicKey.toString('hex'),
+        body.addressPayload.primaryLine,
+        body.addressPayload.secondaryLine,
+        body.addressPayload.lastLine,
+        body.addressPayload.country
+      );
 
-    //   const mappingFile = path.join(process.cwd(), 'sources/mappings.json');
-    //   const mappings: Mapping[] = JSON.parse((await fs.readFile(mappingFile, 'utf8')).toString());
+      // TODO add Lob sending and limit to only one letter per address
+      // await sendLetter(
+      //   body.name,
+      //   body.addressPayload.primaryLine,
+      //   body.addressPayload.secondaryLine,
+      //   body.addressPayload.lastLine,
+      //   body.addressPayload.country,
 
-    //   return res.status(200).json({
-    //     city: mappings?.[city]?.name ?? ''
-    //   });
-    // }
+      //   keygen.mnemonic,
+
+      //   signaturePasswordAddress
+      // );
+
+      console.log({ mnemonic: keygen.mnemonic });
+
+      return res.status(200).json({
+        v,
+        r,
+        s,
+        country: countryName,
+        commitment,
+        hashedMailingAddress
+      });
+    }
 
     res.setHeader('Allow', ['POST']);
     return res.status(405).end(`Method ${method} Not Allowed`);

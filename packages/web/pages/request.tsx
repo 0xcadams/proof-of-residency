@@ -6,7 +6,8 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { FiGithub } from 'react-icons/fi';
 import ReactMapboxGl, { Marker } from 'react-mapbox-gl';
-import { VerifyUsAddressResponse } from 'types';
+import { useGetCommitmentPeriodIsUpcoming } from 'src/web/hooks';
+import { VerifyAddressResponse } from 'types';
 
 import Logo from '../public/logo.svg';
 
@@ -45,14 +46,9 @@ const styles: { [key: string]: React.CSSProperties } = {
 
 const RequestPage = () => {
   const [latLng, setLatLng] = useState<CoordinateLongitudeLatitude | null>(null);
-  const [address, setAddress] = useState<VerifyUsAddressResponse | null>(null);
-  const [letterSent, setLetterSent] = useState<boolean>(false);
+  const [address, setAddress] = useState<VerifyAddressResponse | null>(null);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setLetterSent(Boolean(localStorage.getItem('letterSent')));
-    }
-  }, [typeof window]);
+  const commitmentPeriodIsUpcoming = useGetCommitmentPeriodIsUpcoming();
 
   const {
     isOpen: isOpenAddressModal,
@@ -86,7 +82,7 @@ const RequestPage = () => {
 
           toast({
             title: 'Success',
-            description: 'Geolocation was successful, please continue to add an address.',
+            description: 'Geolocation was successful.',
             status: 'success'
           });
         },
@@ -102,10 +98,12 @@ const RequestPage = () => {
   };
 
   useEffect(() => {
-    getLocation();
+    if (!commitmentPeriodIsUpcoming) {
+      getLocation();
+    }
   }, []);
 
-  const onSuccess = (address: VerifyUsAddressResponse) => {
+  const onSuccess = (address: VerifyAddressResponse) => {
     setAddress({
       ...address
     });
@@ -132,13 +130,19 @@ const RequestPage = () => {
       </Box>
 
       <Box zIndex={500} position="absolute" right={4} bottom={4}>
-        <Button size="lg" colorScheme="gray" onClick={onOpenInfoModal} mr={2} disabled={letterSent}>
+        <Button
+          size="lg"
+          colorScheme="gray"
+          onClick={onOpenInfoModal}
+          mr={2}
+          disabled={Boolean(commitmentPeriodIsUpcoming)}
+        >
           More Info
         </Button>
         <Button
           size="lg"
           onClick={address ? onOpenConfirmModal : onOpenAddressModal}
-          disabled={!latLng || letterSent}
+          disabled={!latLng || Boolean(commitmentPeriodIsUpcoming)}
         >
           {address ? 'Confirm your Address' : 'Add your Address'}
         </Button>
@@ -157,11 +161,11 @@ const RequestPage = () => {
         ) : (
           <></>
         )}
-        {address ? (
+        {address?.longitude && address?.latitude ? (
           <Marker
-            onClick={!letterSent ? onOpenConfirmModal : () => {}}
+            onClick={!commitmentPeriodIsUpcoming ? onOpenConfirmModal : () => {}}
             style={styles.markerAddress}
-            coordinates={[address.components.longitude, address.components.latitude]}
+            coordinates={[address.longitude, address.latitude]}
           />
         ) : (
           <></>
@@ -170,18 +174,20 @@ const RequestPage = () => {
       {latLng && (
         <AddressModal
           onSuccess={onSuccess}
-          geolocation={latLng}
           isOpen={isOpenAddressModal}
-          onClose={onCloseAddressModal}
+          onClose={() => {
+            setLatLng(null);
+            onCloseAddressModal();
+          }}
         />
       )}
       <InfoModal isOpen={isOpenInfoModal} onClose={onCloseInfoModal} />
-      {address && (
+      {address && latLng && (
         <ConfirmModal
+          geolocation={latLng}
           isOpen={isOpenConfirmModal}
-          onClose={(success) => {
+          onClose={async () => {
             onCloseConfirmModal();
-            setLetterSent(success);
           }}
           address={address}
         />

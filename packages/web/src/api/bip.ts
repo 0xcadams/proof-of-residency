@@ -1,5 +1,5 @@
 import * as bip39 from 'bip39';
-import BIP32Factory from 'bip32';
+import BIP32Factory, { BIP32Interface } from 'bip32';
 import * as ecc from 'tiny-secp256k1';
 
 const bip32 = BIP32Factory(ecc);
@@ -12,11 +12,11 @@ export type PublicPrivateKey = {
 };
 
 export const generatePublicPrivateKey = async (password: string): Promise<PublicPrivateKey> => {
-  const mnemonic = bip39.generateMnemonic();
+  const mnemonic: string = bip39.generateMnemonic();
 
-  const seedBuffer = await bip39.mnemonicToSeed(mnemonic, password);
+  const seedBuffer: Buffer = await bip39.mnemonicToSeed(mnemonic, password);
 
-  const node = bip32.fromSeed(seedBuffer);
+  const node: BIP32Interface = bip32.fromSeed(seedBuffer);
 
   if (!node.privateKey) {
     throw new Error('No private key generated!');

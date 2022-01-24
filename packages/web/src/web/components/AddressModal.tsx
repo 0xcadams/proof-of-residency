@@ -11,29 +11,37 @@ import {
 } from '@chakra-ui/modal';
 import { Button, Text, useToast } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import haversine, { CoordinateLongitudeLatitude } from 'haversine';
 
 import { axiosClient } from '../axios';
-import { VerifyAddressRequest, VerifyUsAddressResponse } from 'types';
+import { VerifyAddressRequest, VerifyAddressResponse } from 'types';
 import Link from 'next/link';
+import { CountrySelect } from './CountrySelect';
 
 export const AddressModal = (props: {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: (address: VerifyUsAddressResponse) => void;
-  geolocation: CoordinateLongitudeLatitude;
+  onSuccess: (address: VerifyAddressResponse) => void;
 }) => {
   const [primaryLine, setPrimaryLine] = useState<string>('');
+  const [secondaryLine, setSecondaryLine] = useState<string>('');
   const [city, setCity] = useState<string>('');
   const [state, setState] = useState<string>('');
-  const [zipCode, setZipCode] = useState<string>('');
+  const [postalCode, setPostalCode] = useState<string>('');
+  const [country, setCountry] = useState<string>('');
 
   const toast = useToast();
 
   const onSubmit = async () => {
-    if (primaryLine && city && state && zipCode) {
-      const body: VerifyAddressRequest = { primaryLine, city, state, zipCode };
-      const result = await axiosClient.post<VerifyUsAddressResponse>('/verify', body);
+    if (primaryLine && city && state && postalCode && country) {
+      const body: VerifyAddressRequest = {
+        primaryLine,
+        secondaryLine,
+        city,
+        state,
+        postalCode,
+        country
+      };
+      const result = await axiosClient.post<VerifyAddressResponse>('/verify', body);
 
       if (result.status !== 200) {
         toast({
@@ -42,25 +50,7 @@ export const AddressModal = (props: {
           status: 'error'
         });
       } else if (result.data.deliverability === 'deliverable') {
-        const distance = haversine(
-          props.geolocation,
-          {
-            latitude: result.data.components.latitude,
-            longitude: result.data.components.longitude
-          },
-          { unit: 'meter' }
-        );
-
-        if (distance <= 500) {
-          return props.onSuccess(result.data);
-        }
-        toast({
-          title: 'Error',
-          description: `You are too far away from your claimed address. You are ${distance.toFixed(
-            0
-          )}m away - you must be within 500m of the address to claim it.`,
-          status: 'error'
-        });
+        return props.onSuccess(result.data);
       } else {
         toast({
           title: 'Warning',
@@ -71,6 +61,8 @@ export const AddressModal = (props: {
               ? 'Unnecessary unit for address, please try again.'
               : result.data.deliverability === 'deliverable_missing_unit'
               ? 'Missing unit for address, please try again.'
+              : result.data.deliverability === 'deliverable_missing_info'
+              ? 'Missing information for address, please try again.'
               : 'Undeliverable address, please try again.',
           status: 'warning'
         });
@@ -89,57 +81,78 @@ export const AddressModal = (props: {
       <Modal isOpen={props.isOpen} onClose={props.onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Submit your claimed address</ModalHeader>
+          <ModalHeader>Claim an address</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <Text mb={3}>
-              In order to request to mint a Proof of Residency NFT, you must provide your address so
-              we can send a letter through <Link href="https://www.lob.com/">Lob</Link>
-              {', '} a physical mail service, to validate your address. We ensure that Lob (as well
-              as our own platform) is not provided with enough information to tie your request back
-              to your wallet address. Please refer to our{' '}
-              <Link href="https://github.com/proof-of-residency/proof-of-residency/blob/main/WHITEPAPER.md">
-                whitepaper
-              </Link>{' '}
+              You must provide your address so we can mail a letter to validate your personhood.
+              Please refer to our{' '}
+              <strong>
+                <Link href="https://github.com/proof-of-residency/proof-of-residency/blob/main/WHITEPAPER.md">
+                  whitepaper
+                </Link>
+              </strong>{' '}
               to answer any other questions about our security considerations.
             </Text>
 
-            <Text>
-              We only support US addresses at this time! This is due to the massive amount of effort
-              put into design for each state. We look forward to supporting more countries in the
-              future.
-            </Text>
-            <FormControl mt={4}>
-              <Input
-                onChange={(e) => setPrimaryLine(e.target.value)}
-                value={primaryLine}
-                placeholder="Street Address"
-              />
-            </FormControl>
+            <CountrySelect onChange={(country) => setCountry(country)} />
 
-            <FormControl mt={1}>
-              <Input onChange={(e) => setCity(e.target.value)} value={city} placeholder="City" />
-            </FormControl>
+            {country && (
+              <>
+                <FormControl mt={4}>
+                  <Input
+                    autocomplete="shipping address-line1"
+                    onChange={(e) => setPrimaryLine(e.target.value)}
+                    value={primaryLine}
+                    placeholder="Primary Line"
+                  />
+                </FormControl>
 
-            <FormControl mt={1}>
-              <Input onChange={(e) => setState(e.target.value)} value={state} placeholder="State" />
-            </FormControl>
+                <FormControl mt={2}>
+                  <Input
+                    autocomplete="shipping address-line2"
+                    onChange={(e) => setSecondaryLine(e.target.value)}
+                    value={secondaryLine}
+                    placeholder={`Secondary Line (optional)`}
+                  />
+                </FormControl>
 
-            <FormControl mt={1}>
-              <Input
-                onChange={(e) => setZipCode(e.target.value)}
-                value={zipCode}
-                placeholder="ZIP"
-              />
-            </FormControl>
+                <FormControl mt={2}>
+                  <Input
+                    autocomplete="shipping locality"
+                    onChange={(e) => setCity(e.target.value)}
+                    value={city}
+                    placeholder="City"
+                  />
+                </FormControl>
+
+                <FormControl mt={2}>
+                  <Input
+                    autocomplete="shipping region"
+                    onChange={(e) => setState(e.target.value)}
+                    value={state}
+                    placeholder={`State${country !== 'US' ? ' (optional)' : ''}`}
+                  />
+                </FormControl>
+
+                <FormControl mt={2}>
+                  <Input
+                    autocomplete="shipping postal-code"
+                    onChange={(e) => setPostalCode(e.target.value)}
+                    value={postalCode}
+                    placeholder={`ZIP/Postal Code ${country !== 'US' ? ' (optional)' : ''}`}
+                  />
+                </FormControl>
+              </>
+            )}
           </ModalBody>
 
           <ModalFooter>
             <Button mr={3} variant="outline" onClick={props.onClose}>
               Cancel
             </Button>
-            <Button disabled={!(primaryLine && city && state && zipCode)} onClick={onSubmit}>
-              Submit
+            <Button disabled={!(primaryLine && city && country)} onClick={onSubmit}>
+              Verify Address
             </Button>
           </ModalFooter>
         </ModalContent>

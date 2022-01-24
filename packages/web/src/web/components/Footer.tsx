@@ -1,7 +1,8 @@
 import { Box, Divider, Flex, Spacer, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import React from 'react';
-import { FaGithub, FaInstagram, FaTwitter } from 'react-icons/fa';
+import { FaDiscord, FaGithub, FaTwitter } from 'react-icons/fa';
+import { HiOutlineNewspaper } from 'react-icons/hi';
 
 const Footer = () => {
   return (
@@ -9,29 +10,31 @@ const Footer = () => {
       <Divider />
       <Flex mt={4} align="center" mx="auto" width="100%" maxWidth={1200}>
         <Text mr={4} size="md">
-          Copyright © 2021 by Inclined Finance, Inc. All rights reserved.
+          Copyright © {new Date().getFullYear()} by Inclined Finance, Inc. All rights reserved.
         </Text>
         <Spacer />
+
         <Box cursor={'pointer'} mr={3}>
           <Link
             passHref
-            aria-label="Check out our insta"
-            href="https://www.instagram.com/proofofres/"
+            aria-label="Check out our whitepaper"
+            href="https://github.com/proof-of-residency/proof-of-residency/blob/main/WHITEPAPER.md"
           >
-            <FaInstagram size={30} />
+            <HiOutlineNewspaper size={30} />
           </Link>
         </Box>
+
         <Box cursor={'pointer'} mr={3}>
           <Link passHref aria-label="Check out our twitter" href="https://twitter.com/proofofres">
             <FaTwitter size={30} />
           </Link>
         </Box>
 
-        {/* <Box cursor={'pointer'} mr={3}>
+        <Box cursor={'pointer'} mr={3}>
           <Link aria-label="Join the discord server" passHref href="https://discord.gg/hhQfHqGTPk">
             <FaDiscord size={30} />
           </Link>
-        </Box> */}
+        </Box>
 
         <Box cursor={'pointer'}>
           <Link

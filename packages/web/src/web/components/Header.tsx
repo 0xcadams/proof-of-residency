@@ -1,16 +1,32 @@
-import { Box, Button, Flex, Spacer, useBreakpointValue } from '@chakra-ui/react';
+import { Badge, Box, Button, Flex, Spacer, useBreakpointValue, useToast } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FiGithub } from 'react-icons/fi';
+import { useWallet } from 'use-wallet';
+
 import Logo from '../../../public/logo.svg';
-import { getCurrentNetwork } from '../ethers';
+import { useNetworkName } from '../hooks';
 
 const Header = () => {
   const isMobile = useBreakpointValue({ base: true, sm: false });
   const buttonSize = isMobile ? 'md' : 'lg';
 
-  const network = getCurrentNetwork();
+  const network = useNetworkName();
+
+  const wallet = useWallet();
+  const toast = useToast();
+
+  useEffect(() => {
+    if (wallet.error && !wallet.connector) {
+      toast({
+        title: 'Error',
+        description:
+          'You must have a Ethereum wallet browser extension like Metamask to use this app.',
+        status: 'error'
+      });
+    }
+  }, [wallet.error, wallet.connector]);
 
   return (
     <Flex height="70px" position="absolute" left={0} top={0} right={0} px={4} shadow="sm">
@@ -22,11 +38,11 @@ const Header = () => {
             </Flex>
           </Link>
         </Box>
-        {/* {network !== 'homestead' && (
-          <Badge fontSize="xl" ml={3}>
-            {network}
+        {!wallet.error && wallet.isConnected && network !== 'homestead' && (
+          <Badge fontSize="md" ml={3}>
+            Connected to {network ?? 'Unknown'}
           </Badge>
-        )} */}
+        )}
 
         <Spacer />
 
