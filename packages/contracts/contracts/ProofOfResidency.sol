@@ -253,7 +253,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
 
     _committerContributions[_msgSender()] -= amount;
 
-    // slither-disable-next-line low-level-calls
+    // slther-disable-next-line low-level-calls
     (bool success, ) = _committerTreasuries[_msgSender()].call{ value: amount }('');
     require(success, 'Unable to withdraw');
   }
