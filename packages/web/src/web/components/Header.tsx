@@ -38,11 +38,14 @@ const Header = () => {
             </Flex>
           </Link>
         </Box>
-        {!wallet.error && wallet.isConnected && network !== 'homestead' && (
-          <Badge fontSize="md" ml={3}>
-            Connected to {network ?? 'Unknown'}
-          </Badge>
-        )}
+        {process.env.NODE_ENV === 'development' &&
+          !wallet.error &&
+          wallet.isConnected &&
+          network !== 'homestead' && (
+            <Badge fontSize="md" ml={3}>
+              Connected to {network ?? 'Unknown'}
+            </Badge>
+          )}
 
         <Spacer />
 
