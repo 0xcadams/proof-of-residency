@@ -15,7 +15,7 @@ const ALCHEMY_API_KEY = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
 const INFURA_PROJECT_ID = process.env.NEXT_PUBLIC_INFURA_PROJECT_ID;
 const ETHERSCAN_API_KEY = process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY;
 
-const PRIVATE_KEY = process.env.PRIVATE_KEY || '';
+const PRIVATE_KEY = process.env.PRIVATE_KEY || undefined;
 
 const config: HardhatUserConfig = {
   defaultNetwork: 'hardhat',
@@ -41,7 +41,7 @@ const config: HardhatUserConfig = {
       // }
     },
     localhost: {
-      accounts: [`${PRIVATE_KEY}`]
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
     },
     rinkeby: {
       url: `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`,
