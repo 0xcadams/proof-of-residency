@@ -10,7 +10,6 @@ import {
 import iso from 'iso-3166-1';
 
 import { SubmitAddressResponse, SubmitAddressRequest } from '../../types';
-import { sendLetter } from 'src/api/lob';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressResponse | null>) => {
   try {
@@ -76,17 +75,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
       );
 
       // TODO add Lob sending and limit to only one letter per address
-      await sendLetter(
-        body.name,
-        body.addressPayload.primaryLine,
-        body.addressPayload.secondaryLine,
-        body.addressPayload.lastLine,
-        body.addressPayload.country,
+      // await sendLetter(
+      //   body.name,
+      //   body.addressPayload.primaryLine,
+      //   body.addressPayload.secondaryLine,
+      //   body.addressPayload.lastLine,
+      //   body.addressPayload.country,
 
-        keygen.mnemonic,
+      //   keygen.mnemonic,
 
-        signaturePasswordAddress
-      );
+      //   signaturePasswordAddress
+      // );
+
+      console.log({ mnemonic: keygen.mnemonic });
 
       return res.status(200).json({
         v,

@@ -1,5 +1,6 @@
 import { Box, Flex, Heading, Text, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 import WA from '../public/washington.png';
 import Footer from '../src/web/components/Footer';
@@ -14,7 +15,7 @@ const IndexPage = () => {
 
       <Flex minHeight="90vh" pt="70px" width="100%" direction="column" px={4}>
         <Heading mt={20} size="2xl" textAlign="center">
-          Proof of personhood based on physical mail
+          Proof of personhood using physical mail
         </Heading>
 
         <Box>
@@ -36,14 +37,23 @@ const IndexPage = () => {
             Income, unique identity, and many other applications.
           </Text>
 
-          <Text fontSize="lg" mt={6} textAlign="center">
-            This project is a novel attempt at proving personhood - we send physical mail with a
-            secret phrase, and use a <strong>commit-reveal scheme</strong> to ensure that the
-            recipient resides at the provided address. The address is kept private and names are not
-            requested.
+          <Text fontSize="lg" mt={8} textAlign="center">
+            This project is a Sybil-resistant proof of personhood protocol which issues
+            non-transferable ERC-721 tokens (NFTs) based on physical mailing addresses. We send mail
+            with a secret phrase and use a{' '}
+            <strong>
+              <Link
+                aria-label="Commitment scheme wiki"
+                href="https://en.wikipedia.org/wiki/Commitment_scheme"
+              >
+                commitment scheme
+              </Link>
+            </strong>{' '}
+            to ensure that the recipient resides at the provided address. The address is kept
+            private and names are not requested.
           </Text>
 
-          <Text fontSize="md" mt={6} textAlign="center">
+          <Text fontSize="md" mt={8} textAlign="center">
             All of our code is open-source on Github under an MIT license for future projects to
             build upon. We dedicate 15% of the revenue from this project to be donated to the
             Make-A-Wish Foundation.

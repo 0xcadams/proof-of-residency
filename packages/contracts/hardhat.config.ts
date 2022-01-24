@@ -10,6 +10,9 @@ import '@nomiclabs/hardhat-etherscan';
 import '@openzeppelin/hardhat-upgrades';
 import 'solidity-coverage';
 import 'hardhat-contract-sizer';
+import 'hardhat-gas-reporter';
+
+process.env.REPORT_GAS = 'y';
 
 const ALCHEMY_API_KEY = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
 const INFURA_PROJECT_ID = process.env.NEXT_PUBLIC_INFURA_PROJECT_ID;
@@ -49,12 +52,14 @@ const config: HardhatUserConfig = {
     }
   },
   etherscan: {
-    // Your API key for Etherscan
-    // Obtain one at https://etherscan.io/
     apiKey: ETHERSCAN_API_KEY
   },
   typechain: {
     outDir: '../web/types/typechain-types'
+  },
+  gasReporter: {
+    currency: 'USD',
+    coinmarketcap: '181841aa-db2a-4825-8359-f0dcce4d0db5'
   }
 };
 

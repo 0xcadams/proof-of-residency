@@ -259,12 +259,13 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   }
 
   /**
-   * @notice Gets if the commitment for the sender's address exists or they already have a token.
+   * @notice Gets if a commitment for the sender's address is upcoming.
    */
-  function getCommitmentExists() external view returns (bool) {
+  function getCommitmentPeriodIsUpcoming() external view returns (bool) {
     Commitment storage existingCommitment = _commitments[_msgSender()];
 
-    return existingCommitment.validAt != 0;
+    // slither-disable-next-line timestamp
+    return existingCommitment.validAt != 0 && block.timestamp <= existingCommitment.invalidAt;
   }
 
   /**

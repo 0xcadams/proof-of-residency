@@ -1,16 +1,8 @@
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { ProofOfResidency, ProofOfResidency__factory as ProofOfResidencyFactory } from 'types';
 
 import { useWallet } from 'use-wallet';
-
-export type ContractFunctionState =
-  | 'UNINITIALIZED'
-  | 'INITIALIZED'
-  | 'PENDING_CONFIRMATION'
-  | 'CONFIRMED'
-  | 'ERROR';
-type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
 
 // ethers.getDefaultProvider(
 //   process.env.VERCEL_ENV === 'production' ? 'rinkeby' : 'localhost',
@@ -87,14 +79,14 @@ export const useGetCommitmentPeriodIsValid = () => {
   return value;
 };
 
-export const useGetCommitmentExists = () => {
+export const useGetCommitmentPeriodIsUpcoming = () => {
   const [value, setValue] = useState<boolean | null>(null);
 
   const proofOfResidency = useProofOfResidency();
 
   useEffect(() => {
     (async () => {
-      const response = await proofOfResidency?.getCommitmentExists();
+      const response = await proofOfResidency?.getCommitmentPeriodIsUpcoming();
 
       setValue(response ?? false);
     })();
@@ -143,15 +135,11 @@ export const useMintPrice = () => {
   return proofOfResidency?.mintPrice;
 };
 
-// export const useMintedCount = async (countryId: BigNumber): Promise<BigNumber> => {
-//   try {
-//     const { proofOfResidency } = getProofOfResidency();
+export const useMintedCount = async (countryId: BigNumber): Promise<BigNumber | undefined> => {
+  const proofOfResidency = useProofOfResidency();
 
-//     return proofOfResidency.getCurrentCountryCount(countryId);
-//   } catch (e) {
-//     return BigNumber.from(0);
-//   }
-// };
+  return proofOfResidency?.getCountryCount(countryId);
+};
 
 // export type TokenOwner = { content: string; link: string | null };
 

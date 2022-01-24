@@ -1,38 +1,30 @@
 import { Box, Flex, Heading, SimpleGrid, Tag, Text } from '@chakra-ui/react';
-import { promises as fs } from 'fs';
 import { NextSeo } from 'next-seo';
 import Image from 'next/image';
 import Link from 'next/link';
-import path from 'path';
 import React from 'react';
+import iso from 'iso-3166-1';
 import Footer from '../src/web/components/Footer';
 import Header from '../src/web/components/Header';
-import { getMintedCount } from '../src/web/hooks/useProofOfResidency';
-import { Mapping } from '../types/mapping';
 
-type Details = Mapping & {
-  cityId: number;
+// imports from API
+import { getCurrentMintedCount } from 'src/api/ethers';
+
+type Details = {
+  country: ReturnType<typeof iso.all>[number];
   image: string;
   minted: number;
 };
 
 export const getStaticProps = async () => {
   try {
-    const mappingFile = path.join(process.cwd(), 'sources/mappings.json');
-    const mappings: Mapping[] = JSON.parse((await fs.readFile(mappingFile, 'utf8')).toString());
-
     const details = await Promise.all(
-      mappings.map(async (mapping, cityId) => {
-        if (!mapping) {
-          return { notFound: true };
-        }
-
-        const mintedCount = await getMintedCount(cityId);
+      iso.all().map(async (country) => {
+        const mintedCount = await getCurrentMintedCount(Number(country.numeric));
 
         const props: Details = {
-          ...mapping,
-          image: `/previews/${cityId}.png`,
-          cityId,
+          image: `/previews/${Number(country.numeric)}.png`,
+          country,
           minted: mintedCount.toNumber()
         };
 
@@ -40,13 +32,16 @@ export const getStaticProps = async () => {
       })
     );
 
+    const detailsSorted = details.sort((a, b) => b.minted - a.minted);
+
     return {
       props: {
-        details
+        details: detailsSorted
       },
       revalidate: 600
     };
   } catch (e) {
+    console.error(e);
     return { notFound: true };
   }
 };
@@ -77,7 +72,7 @@ const ExplorePage = (props: ExploreProps) => {
           spacing={8}
         >
           {props.details.map((detail, i) => (
-            <Link key={detail.cityId} href={`/city/${detail.cityId}`} passHref>
+            <Link key={detail.country.alpha2} href={`/country/${detail.country.alpha2}`} passHref>
               <Flex cursor="pointer" direction="column">
                 <Box>
                   <Flex mt={2} mx="auto" position="relative" height={400}>
@@ -87,14 +82,14 @@ const ExplorePage = (props: ExploreProps) => {
                       layout="fill"
                       placeholder="empty"
                       src={detail.image}
-                      alt={detail.name}
+                      alt={detail.country.country}
                     />
                   </Flex>
                 </Box>
-                <Text fontWeight="bold">{detail.name}</Text>
+                <Text fontWeight="bold">{detail.country.country}</Text>
                 <Box mt={2}>
                   <Tag pt="3px" variant="solid" size="lg">
-                    {detail.minted} of {detail.limit} minted
+                    {detail.minted} minted
                   </Tag>
                 </Box>
               </Flex>

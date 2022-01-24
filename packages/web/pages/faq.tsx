@@ -26,10 +26,11 @@ const FaqPage = () => {
       q: 'What is Proof of Residency?',
       a: (
         <>
-          Proof of Residency is an NFT project inspired by cartography, with a unique minting
-          process that requires residency in the city you are minting for. Token holders can
-          represent their city with artwork that admires the eccentricities of their city and state.
-          NFTs are only available for US cities, but we are working on expanding to other countries.
+          Proof of Residency is a {'"proof of personhood"'} protocol - we send physical mail with a
+          secret phrase and use a <strong>commit-reveal scheme</strong> to prove that the recipient
+          is human and resides at the provided address. The physical address is kept private and
+          names are not requested. The subsequently minted ERC-721 tokens are non-transferable and
+          burnable.
         </>
       )
     },
@@ -37,63 +38,65 @@ const FaqPage = () => {
       q: 'What is the address verification process?',
       a: (
         <>
-          We are pioneering a novel way of minting NFTs, and the first step to the process is
-          verifying that you are minting for the city you reside in. The technical details of the
-          process can be seen on our public{' '}
-          <Link href="https://github.com/proof-of-residency/proof-of-residency/blob/main/WHITEPAPER.md">
-            Github
-          </Link>
-          , and can be freely copied/built upon. We preserve privacy by gathering a minimal amount
-          of information and never storing any sensitive information. All data is stored on the
-          blockchain and no centralized database is used.
+          We pioneered a novel way of proving humanity - the first step to the process is verifying
+          that you reside at a mailing address you provide. The technical details of the process can
+          be seen on our{' '}
+          <strong>
+            <Link href="https://github.com/proof-of-residency/proof-of-residency/blob/main/WHITEPAPER.md">
+              public Github
+            </Link>
+          </strong>{' '}
+          and can be freely copied/built upon. We preserve privacy by gathering a minimal amount of
+          information. All data is stored on the blockchain and no centralized database is used.
         </>
       )
     },
     {
-      q: 'How do I mint?',
+      q: 'How do I request a proof of residency?',
       a: (
         <>
           Minting can be performed by first requesting a Proof of Residency letter to your physical
-          address. Letters are mailed with via USPS First Class Mail, which has a typical delivery
-          time of 4 to 6 business days. Once the letter is received, the unique code you receive can
-          be used to mint an NFT for your city. NFT availability is not guaranteed by the letter,
-          and there is a likelihood that the remaining NFTs will be minted while your Proof of
-          Residency letter is still being delivered.
+          address. Letters are mailed via USPS First Class mail with a typical delivery time of 4 to
+          6 business days for US addresses and international mailings with an additional 5 to 7
+          days. Once the letter is received, the unique mnemonic you receive can be used to mint a
+          token for your country.
         </>
       )
     },
     {
-      q: 'What are generative designs?',
+      q: 'What are the designs based on?',
       a: (
         <>
           We create each NFT with a generative script using{' '}
-          <Link href="https://p5js.org/">p5js</Link>. These designs are carefully based on
-          real-world maps of cities, with seed parameters for each NFT stored immutably on the
-          blockchain. We are inspired by the incredible designs derived from man-made land
-          boundaries which have evolved over the past few centuries.
+          <strong>
+            <Link href="https://p5js.org/">p5js</Link>
+          </strong>
+          . These designs are carefully based on real-world maps of countries, with seed parameters
+          for each NFT stored immutably on the blockchain. We are inspired by the incredible designs
+          derived from man-made land boundaries which have evolved over the past few centuries.
         </>
       )
     },
     {
-      q: 'How is minting limited?',
+      q: 'Is minting unlimited?',
       a: (
         <>
-          Minting is limited to a capped number of tokens per city. This cap is based upon
-          population count - New York City and the greater Los Angeles area are capped at 200 and
-          150 respectively, while smaller cities by population, such as Raleigh and New Orleans, are
-          limited to 10.
+          Minting is essentially unlimited for every country, with enough available token IDs to
+          support 10^15 tokens per country. This is nearly one million times larger than {"China's"}{' '}
+          current population.
         </>
       )
     },
     {
-      q: 'When will you expand outside of the US?',
+      q: 'Why is my mailing address not supported?',
       a: (
         <>
-          We are actively working on cities/countries outside of the US. There is a massive amount
-          of artwork required for all of the great cities of the world. To show your support for a
-          city which is not represented yet, please email{' '}
-          <Link href="mailto:hello@proofofresidency.xyz">hello@proofofresidency.xyz</Link>
-          {". We're looking forward to supporting your city soon!"}
+          We depend on Lob to provide mailing address verification. If you are running into trouble
+          with a valid address, please email{' '}
+          <strong>
+            <Link href="mailto:hello@proofofresidency.xyz">hello@proofofresidency.xyz</Link>
+          </strong>
+          {'. We look forward to supporting your address soon!'}
         </>
       )
     },
@@ -102,11 +105,13 @@ const FaqPage = () => {
       a: (
         <>
           We give all token-holders{' '}
-          <Link href="https://creativecommons.org/share-your-work/public-domain/cc0/">
-            exclusive permissive copyright (CC0)
-          </Link>{' '}
-          if they own the NFT artwork. The token-holder of each piece of art may freely build upon,
-          enhance and reuse the works for any purposes without restriction under copyright law.
+          <strong>
+            <Link href="https://creativecommons.org/share-your-work/public-domain/cc0/">
+              exclusive permissive copyright (CC0)
+            </Link>
+          </strong>{' '}
+          for their minted NFT. The token-holder of each piece of art may freely build upon, enhance
+          and reuse the works for any purposes without restriction under copyright law.
         </>
       )
     }

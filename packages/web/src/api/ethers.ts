@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { ProofOfResidency__factory as ProofOfResidencyFactory } from 'types';
 
 if (!process.env.PRIVATE_KEY || !process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) {
   throw new Error(
@@ -17,10 +18,10 @@ const provider = ethers.getDefaultProvider(
 
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
-// const proofOfResidency = ProofOfResidencyFactory.connect(
-//   process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-//   wallet
-// );
+const proofOfResidency = ProofOfResidencyFactory.connect(
+  process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+  wallet
+);
 
 const getEip712Domain = async (contractAddress: string, chainId: number) => ({
   name: 'Proof of Residency Protocol',
@@ -142,4 +143,8 @@ export const validateMailingAddressSignature = async (
 
 export const getCurrentWalletAddress = (): string => {
   return wallet.address;
+};
+
+export const getCurrentMintedCount = async (countryId: number) => {
+  return proofOfResidency.getCountryCount(countryId);
 };

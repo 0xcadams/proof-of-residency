@@ -31,7 +31,7 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     "commitAddress(address,bytes32,bytes32,uint8,bytes32,bytes32)": FunctionFragment;
     "contractURI()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "getCommitmentExists()": FunctionFragment;
+    "getCommitmentPeriodIsUpcoming()": FunctionFragment;
     "getCommitmentPeriodIsValid()": FunctionFragment;
     "getCountryCount(uint256)": FunctionFragment;
     "getMailingAddressCount(uint256)": FunctionFragment;
@@ -97,7 +97,7 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getCommitmentExists",
+    functionFragment: "getCommitmentPeriodIsUpcoming",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -218,7 +218,7 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getCommitmentExists",
+    functionFragment: "getCommitmentPeriodIsUpcoming",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -466,7 +466,9 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    getCommitmentExists(overrides?: CallOverrides): Promise<[boolean]>;
+    getCommitmentPeriodIsUpcoming(
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
     getCommitmentPeriodIsValid(overrides?: CallOverrides): Promise<[boolean]>;
 
@@ -643,7 +645,7 @@ export interface ProofOfResidency extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  getCommitmentExists(overrides?: CallOverrides): Promise<boolean>;
+  getCommitmentPeriodIsUpcoming(overrides?: CallOverrides): Promise<boolean>;
 
   getCommitmentPeriodIsValid(overrides?: CallOverrides): Promise<boolean>;
 
@@ -811,7 +813,7 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getCommitmentExists(overrides?: CallOverrides): Promise<boolean>;
+    getCommitmentPeriodIsUpcoming(overrides?: CallOverrides): Promise<boolean>;
 
     getCommitmentPeriodIsValid(overrides?: CallOverrides): Promise<boolean>;
 
@@ -1053,7 +1055,9 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getCommitmentExists(overrides?: CallOverrides): Promise<BigNumber>;
+    getCommitmentPeriodIsUpcoming(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getCommitmentPeriodIsValid(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1236,7 +1240,7 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getCommitmentExists(
+    getCommitmentPeriodIsUpcoming(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

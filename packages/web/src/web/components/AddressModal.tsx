@@ -81,7 +81,7 @@ export const AddressModal = (props: {
       <Modal isOpen={props.isOpen} onClose={props.onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Submit your claimed address</ModalHeader>
+          <ModalHeader>Claim an address</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <Text mb={3}>

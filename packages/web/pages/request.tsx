@@ -3,12 +3,10 @@ import { CoordinateLongitudeLatitude } from 'haversine';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { FiGithub } from 'react-icons/fi';
 import ReactMapboxGl, { Marker } from 'react-mapbox-gl';
-import { useGetCommitmentExists } from 'src/web/hooks';
-
+import { useGetCommitmentPeriodIsUpcoming } from 'src/web/hooks';
 import { VerifyAddressResponse } from 'types';
 
 import Logo from '../public/logo.svg';
@@ -50,8 +48,7 @@ const RequestPage = () => {
   const [latLng, setLatLng] = useState<CoordinateLongitudeLatitude | null>(null);
   const [address, setAddress] = useState<VerifyAddressResponse | null>(null);
 
-  const commitmentExists = useGetCommitmentExists();
-  const router = useRouter();
+  const commitmentPeriodIsUpcoming = useGetCommitmentPeriodIsUpcoming();
 
   const {
     isOpen: isOpenAddressModal,
@@ -101,7 +98,7 @@ const RequestPage = () => {
   };
 
   useEffect(() => {
-    if (!commitmentExists) {
+    if (!commitmentPeriodIsUpcoming) {
       getLocation();
     }
   }, []);
@@ -138,14 +135,14 @@ const RequestPage = () => {
           colorScheme="gray"
           onClick={onOpenInfoModal}
           mr={2}
-          disabled={Boolean(commitmentExists)}
+          disabled={Boolean(commitmentPeriodIsUpcoming)}
         >
           More Info
         </Button>
         <Button
           size="lg"
           onClick={address ? onOpenConfirmModal : onOpenAddressModal}
-          disabled={!latLng || Boolean(commitmentExists)}
+          disabled={!latLng || Boolean(commitmentPeriodIsUpcoming)}
         >
           {address ? 'Confirm your Address' : 'Add your Address'}
         </Button>
@@ -166,7 +163,7 @@ const RequestPage = () => {
         )}
         {address?.longitude && address?.latitude ? (
           <Marker
-            onClick={!commitmentExists ? onOpenConfirmModal : () => {}}
+            onClick={!commitmentPeriodIsUpcoming ? onOpenConfirmModal : () => {}}
             style={styles.markerAddress}
             coordinates={[address.longitude, address.latitude]}
           />

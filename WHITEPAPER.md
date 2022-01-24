@@ -6,7 +6,7 @@ The web3 ecosystem has benefited from the anonymity and transparency of the unde
 
 There has been an explosion of DAOs in the recent years, solving complex organizational problems with the backing of the blockchain. Many of these projects have experimented with [coin voting governance](https://vitalik.ca/general/2021/08/16/voting3.html), which has been criticized for misaligned incentives and conflicts of interest. One of the most common solutions to governance (and many other problems) are Proof of Personhood protocols. There have been [recent reviews](https://arxiv.org/abs/2008.05300) of the notable projects which have made attempts at proof of personhood and their approaches to the problem.
 
-This project is a novel attempt at "proof of personhood" - we send physical mail with a secret phrase, and use a **commit-reveal scheme** to ensure that the recipient resides at the provided address. The physical address is kept private and names are not requested. The ERC-721 tokens which are minted are non-transferable, only burnable.
+This project is a solution to "proof of personhood" - we send physical mail with a secret phrase, and use a **commit-reveal scheme** to ensure that the recipient resides at the provided address. The physical address is kept private and names are not requested. The ERC-721 tokens which are minted are non-transferable, only burnable.
 
 ## Approach
 
@@ -78,53 +78,7 @@ If the commitment is valid, then a **non-transferable ERC-721 token** is minted 
 
 ### NFT
 
-An NFT is issued with the metadata stored in IPFS. The IPFS URL is passed as the `tokenUri` for the ERC721 implementation. The structure of this metadata follows [OpenSea's standards](https://docs.opensea.io/docs/metadata-standards):
-
-```json
-{
-  "name": "New York-Newark-Jersey City, NY-NJ-PA: #1",
-  "description": "Inspired by the study of cartography in New York. Proof of Residency is an NFT generative art project based on maps; every design is created from content stored immutably on the Ethereum blockchain. Minting is limited to one NFT per mailing address and can only be completed after physical mail is received, as a first-ever experiment into city-based limits on token supply. Designs are inspired by real-world maps of hydrography and transportation networks.",
-  "background_color": "aadaee",
-  "external_url": "https://proofofresidency.xyz/token/1",
-  "image": "ipfs://bafybeid6qz46vjlncd4o7mepaazbnvpakcifedkbnrui5hly4xjajev554/token/1.png",
-  "animation_url": "ipfs://bafybeid6qz46vjlncd4o7mepaazbnvpakcifedkbnrui5hly4xjajev554/1.html",
-  "tags": ["proof-of-residency", "generative-art"],
-  "attributes": [
-    {
-      "trait_type": "Type",
-      "value": "Rivers/Lakes"
-    },
-    {
-      "trait_type": "Background",
-      "value": "Light"
-    },
-    {
-      "trait_type": "Theme",
-      "value": "Blue Sky"
-    },
-    {
-      "trait_type": "Type Iterations",
-      "value": 1
-    },
-    {
-      "trait_type": "State Iterations",
-      "value": 3
-    },
-    {
-      "trait_type": "State",
-      "value": "New York"
-    },
-    {
-      "trait_type": "City",
-      "value": "New York-Newark-Jersey City, NY-NJ-PA"
-    },
-    {
-      "trait_type": "Country",
-      "value": "United States of America"
-    }
-  ]
-}
-```
+An NFT is issued with the metadata returned by an API, with plans to move to IPFS. The structure of this metadata follows [OpenSea's standards](https://docs.opensea.io/docs/metadata-standards), but is subject to change.
 
 ## Known Attack Vectors/Tradeoffs
 
@@ -136,12 +90,16 @@ An NFT is issued with the metadata stored in IPFS. The IPFS URL is passed as the
 
 ## Future Goals
 
+### Metadata Hardening
+
+The current metadata is returned by an API, which presents issues for longevity and trust in the protocol. We would like to move towards storing the metadata in IPFS as each token is minted.
+
 ### Decentralization
 
 Once the protocol grows to a point that it is necessary to begin decentralization, a few goals will begin being worked on:
 
-1. A DAO will be formed with all participants having a single vote based on their `PORP` ERC721 token.
+1. A DAO will be formed with all participants having a single vote based on their ERC721 `PORP` token.
 
 2. The dApp/backend can be hosted by numerous parties, since the code is open-source. These new committer EOA accounts would be voted on by the DAO, and could be removed by the DAO if they behave poorly. This would also include the original EOA account of the maintainers. There is a financial incentive for the committer to continue to provide honest commitments.
 
-3. The new ERC721 tokens which are minted would be monitored by the community. Once numerous parties have committer credentials, there would need to be checks in place to ensure they are behaving honestly. A solution to this would be community votes on removing a committer account and burning all of the tokens it issued.
+3. The newly minted ERC721 tokens and their corresponding address IDs would be monitored by the community. Once numerous parties have committer credentials, there would need to be checks in place to ensure they are behaving honestly. A solution to this would be community votes on removing a committer account and burning all of the tokens it issued.

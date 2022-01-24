@@ -4,6 +4,7 @@ import { ethers } from 'ethers';
 import * as bip39 from 'bip39';
 import React, { useState } from 'react';
 import {
+  useGetCommitmentPeriodIsUpcoming,
   useGetCommitmentPeriodIsValid,
   useMint,
   useMintPrice,
@@ -30,6 +31,7 @@ const MintPage = () => {
   const mint = useMint();
   const mintPrice = useMintPrice();
 
+  const commitmentPeriodIsUpcoming = useGetCommitmentPeriodIsUpcoming();
   const isCommitmentReady = useGetCommitmentPeriodIsValid();
 
   const toast = useToast();
@@ -93,11 +95,18 @@ const MintPage = () => {
         <Flex textAlign={'center'} direction={'column'} mt={4} mb={6} mx="auto">
           <Text fontSize="xl">Please select your country from the dropdown below.</Text>
 
-          {!isCommitmentReady && (
-            <Text mt={2} color={'red'} fontSize="sm">
-              Your token is not ready to be minted. Please wait one week from your original request.
-            </Text>
-          )}
+          {!isCommitmentReady &&
+            (commitmentPeriodIsUpcoming ? (
+              <Text maxWidth={700} mt={3} color={'red'} fontSize="sm">
+                Your token is not available to be minted. Please wait one week from your original
+                request.
+              </Text>
+            ) : (
+              <Text maxWidth={700} mt={3} color={'red'} fontSize="sm">
+                Your token is not available to be minted. Please try again if it has been more than
+                ten weeks.
+              </Text>
+            ))}
         </Flex>
 
         <Flex flexDirection="column" mx="auto" justify="center">
@@ -119,7 +128,15 @@ const MintPage = () => {
                 placeholder="Password you entered"
               />
               <Button
-                disabled={!(mnemonic && password && password.length >= 6)}
+                disabled={
+                  !(
+                    mnemonic &&
+                    password &&
+                    password.length >= 6 &&
+                    mnemonic.split(' ')?.length === 12 &&
+                    mnemonic.split(' ')?.every((e) => e)
+                  )
+                }
                 mt={4}
                 onClick={onSubmit}
               >

@@ -6,9 +6,6 @@ export const timeTravel = async (days: number) => {
   await ethers.provider.send('evm_mine', []);
 };
 
-// 1 week
-export const timeTravelToValid = async () => timeTravel(7);
-
 async function main() {
   // const [owner] = await ethers.getSigners();
 
@@ -18,7 +15,9 @@ async function main() {
   //   '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
   // ).connect(owner);
 
-  await timeTravelToValid();
+  await timeTravel(7);
+
+  console.log('Time traveling complete.');
 }
 
 main()
