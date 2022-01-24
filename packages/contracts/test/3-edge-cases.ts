@@ -5,9 +5,18 @@ import chaiAsPromised from 'chai-as-promised';
 import { ProofOfResidency } from '../../web/types';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { signCommitment, timeTravelToValid } from './util';
+import { BigNumber } from 'ethers';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
+
+const primaryLine = '370 WATER ST';
+const secondaryLine = '';
+const lastLine = 'SUMMERSIDE PE C1N 1C4';
+const country = 'CA';
+const mailingAddressId = BigNumber.from(
+  '74931654352136841322477683321810728405693153704805913520852177993368555879610'
+);
 
 describe('Proof of Residency: edge cases', () => {
   const secretCommitment = 'secret1';
@@ -42,23 +51,28 @@ describe('Proof of Residency: edge cases', () => {
 
     proofOfResidencyUnaffiliated = proofOfResidencyOwner.connect(unaffiliated);
 
-    const hash = ethers.utils.keccak256(
-      ethers.utils.defaultAbiCoder.encode(
-        ['address', 'uint256', 'string'],
-        [requester1.address, countryCommitment, secretCommitment]
-      )
-    );
-
-    const { v, r, s } = await signCommitment(
-      proofOfResidencyOwner.address,
+    const { hash, hashedMailingAddress, v, r, s } = await signCommitment(
       requester1.address,
-      hash,
+      countryCommitment,
+      secretCommitment,
+
+      primaryLine,
+      secondaryLine,
+      lastLine,
+      country,
+
+      proofOfResidencyOwner.address,
       committer
     );
 
-    await expect(proofOfResidencyCommitter.commitAddress(requester1.address, hash, v, r, s))
-      .to.emit(proofOfResidencyCommitter, 'CommitmentCreated')
-      .withArgs(requester1.address, committer.address, hash);
+    await proofOfResidencyCommitter.commitAddress(
+      requester1.address,
+      hash,
+      hashedMailingAddress,
+      v,
+      r,
+      s
+    );
   });
 
   describe('PoR functions correctly (happy paths)', async () => {

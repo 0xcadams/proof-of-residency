@@ -29,15 +29,57 @@ const getEip712Domain = async (contractAddress: string, chainId: number) => ({
   verifyingContract: contractAddress
 });
 
-export const hashAndSignEip712 = async (
+const mailingAddressTypes = {
+  MailingAddress: [
+    { name: 'primaryLine', type: 'string' },
+    { name: 'secondaryLine', type: 'string' },
+    { name: 'lastLine', type: 'string' },
+    { name: 'country', type: 'string' }
+  ]
+};
+
+export const signAddressEip712 = async (
+  primaryLine: string,
+  secondaryLine: string,
+  lastLine: string,
+  country: string
+) => {
+  const domain = await getEip712Domain(
+    process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '',
+    await wallet.getChainId()
+  );
+
+  const signature = await wallet._signTypedData(domain, mailingAddressTypes, {
+    primaryLine,
+    secondaryLine,
+    lastLine,
+    country
+  });
+
+  return signature;
+};
+
+export const hashAndSignCommitmentEip712 = async (
   walletAddress: string,
-  country: number,
-  publicKey: string
+  countryId: number,
+  publicKey: string,
+
+  primaryLine: string,
+  secondaryLine: string,
+  lastLine: string,
+  country: string
 ) => {
   const hash = ethers.utils.keccak256(
     ethers.utils.defaultAbiCoder.encode(
       ['address', 'uint256', 'string'],
-      [walletAddress, country, publicKey]
+      [walletAddress, countryId, publicKey]
+    )
+  );
+
+  const hashedMailingAddress = ethers.utils.keccak256(
+    ethers.utils.defaultAbiCoder.encode(
+      ['string', 'string', 'string', 'string'],
+      [primaryLine, secondaryLine, lastLine, country]
     )
   );
 
@@ -49,22 +91,55 @@ export const hashAndSignEip712 = async (
   const types = {
     Commitment: [
       { name: 'to', type: 'address' },
-      { name: 'commitment', type: 'bytes32' }
+      { name: 'commitment', type: 'bytes32' },
+      { name: 'hashedMailingAddress', type: 'bytes32' }
     ]
   };
 
   const signature = await wallet._signTypedData(domain, types, {
     to: walletAddress,
-    commitment: hash
+    commitment: hash,
+    hashedMailingAddress
   });
 
   const { v, r, s } = ethers.utils.splitSignature(signature);
 
-  return { commitment: hash, v, r, s };
+  return { commitment: hash, hashedMailingAddress, v, r, s };
 };
 
 export const validateSignature = async (payload: string, signature: string): Promise<string> => {
   const address = ethers.utils.verifyMessage(payload, signature);
 
   return address;
+};
+
+export const validateMailingAddressSignature = async (
+  primaryLine: string,
+  secondaryLine: string,
+  lastLine: string,
+  country: string,
+  signature: string
+): Promise<string> => {
+  const domain = await getEip712Domain(
+    process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '',
+    await wallet.getChainId()
+  );
+
+  const address = ethers.utils.verifyTypedData(
+    domain,
+    mailingAddressTypes,
+    {
+      primaryLine,
+      secondaryLine,
+      lastLine,
+      country
+    },
+    signature
+  );
+
+  return address;
+};
+
+export const getCurrentWalletAddress = (): string => {
+  return wallet.address;
 };

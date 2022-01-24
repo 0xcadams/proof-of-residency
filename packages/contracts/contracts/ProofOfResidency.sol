@@ -31,7 +31,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
 
   /// @notice The EIP-712 typehash for the commitment struct used by the contract
   bytes32 public constant COMMITMENT_TYPEHASH =
-    keccak256('Commitment(address to,bytes32 commitment)');
+    keccak256('Commitment(address to,bytes32 commitment,bytes32 hashedMailingAddress)');
 
   /// @notice Mint price for tokens to contribute to the protocol
   uint256 public mintPrice;
@@ -53,13 +53,23 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   /// @notice Token counts for a country
   mapping(uint256 => uint256) private _countriesTokenCounts;
 
+  /// @notice Commitments for each mailing address ID
+  mapping(uint256 => uint256) private _mailingAddressCounts;
+  /// @notice Blacklist for mailing addresses
+  mapping(uint256 => bool) private _mailingAddressBlacklist;
+
   /// @notice Total contributions for each committer
   mapping(address => uint256) private _committerContributions;
   /// @notice Total withdrawn from the contract
   uint256 private _totalWithdrawn;
 
   /// @notice Event emitted when a commitment is made to an address
-  event CommitmentCreated(address indexed to, address indexed committer, bytes32 commitment);
+  event CommitmentCreated(
+    address indexed to,
+    address indexed committer,
+    uint256 indexed mailingAddressId,
+    bytes32 commitment
+  );
 
   /// @notice Event emitted when a committer is added
   event CommitterAdded(address indexed committer);
@@ -69,6 +79,9 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
 
   /// @notice Event emitted when the price is changed
   event PriceChanged(uint256 indexed newPrice);
+
+  /// @notice Event emitted when a mailing address is blacklisted
+  event MailingAddressBlacklisted(uint256 indexed blacklistedAddress);
 
   constructor(address initialCommitter, address initialTreasury)
     ERC721NonTransferable('Proof of Residency Protocol', 'PORP')
@@ -119,6 +132,15 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     delete _committerTreasuries[removedCommitter];
 
     emit CommitterRemoved(removedCommitter);
+  }
+
+  /**
+   * @notice Blacklists a mailing address from being used. This is only to be used in cases of fraud.
+   */
+  function blacklistMailingAddress(uint256 mailingAddressId) external onlyOwner {
+    _mailingAddressBlacklist[mailingAddressId] = true;
+
+    emit MailingAddressBlacklisted(mailingAddressId);
   }
 
   /**
@@ -188,12 +210,18 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   function commitAddress(
     address to,
     bytes32 commitment,
+    bytes32 hashedMailingAddress,
     uint8 v,
     bytes32 r,
     bytes32 s
   ) external whenNotPaused {
-    address signatory = _validateSignature(to, commitment, v, r, s);
+    address signatory = _validateSignature(to, commitment, hashedMailingAddress, v, r, s);
     require(_committerTreasuries[signatory] != address(0), 'Signatory is not a committer');
+
+    uint256 mailingAddressId = uint256(hashedMailingAddress);
+    require(!_mailingAddressBlacklist[mailingAddressId], 'Mailing address is blacklisted');
+
+    _mailingAddressCounts[mailingAddressId] += 1;
 
     Commitment storage existingCommitment = _commitments[to];
 
@@ -208,7 +236,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     existingCommitment.invalidAt = block.timestamp + 10 weeks;
     existingCommitment.commitment = commitment;
 
-    emit CommitmentCreated(to, signatory, commitment);
+    emit CommitmentCreated(to, signatory, mailingAddressId, commitment);
   }
 
   /**
@@ -234,19 +262,29 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   }
 
   /**
-   * @notice Gets if the commitment for the sender's address is able to mint.
+   * @notice Gets if the commitment for the sender's address is in the time window where they
+   * are able to mint.
    */
-  function getCommitmentIsReady() external view returns (bool) {
+  function getCommitmentPeriodIsValid() external view returns (bool) {
     Commitment storage existingCommitment = _commitments[_msgSender()];
 
-    return getCommitmentExists() && block.timestamp >= existingCommitment.validAt;
+    return
+      block.timestamp >= existingCommitment.validAt &&
+      block.timestamp <= existingCommitment.invalidAt;
   }
 
   /**
    * @notice Gets the current country count for a country ID.
    */
-  function getCurrentCountryCount(uint256 country) external view returns (uint256) {
+  function getCountryCount(uint256 country) external view returns (uint256) {
     return _countriesTokenCounts[country];
+  }
+
+  /**
+   * @notice Gets the current commitment count for a mailing address ID.
+   */
+  function getMailingAddressCount(uint256 mailingAddressId) external view returns (uint256) {
+    return _mailingAddressCounts[mailingAddressId];
   }
 
   /**
@@ -256,6 +294,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   function _validateSignature(
     address to,
     bytes32 commitment,
+    bytes32 hashedMailingAddress,
     uint8 v,
     bytes32 r,
     bytes32 s
@@ -269,7 +308,9 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
         address(this)
       )
     );
-    bytes32 structHash = keccak256(abi.encode(COMMITMENT_TYPEHASH, to, commitment));
+    bytes32 structHash = keccak256(
+      abi.encode(COMMITMENT_TYPEHASH, to, commitment, hashedMailingAddress)
+    );
     bytes32 digest = keccak256(abi.encodePacked('\x19\x01', domainSeparator, structHash));
     address signatory = ecrecover(digest, v, r, s);
 

@@ -3,6 +3,7 @@ import { verifyUsAddress, verifyIntlAddress } from 'src/api/lob';
 import { VerifyAddressRequest, VerifyAddressResponse } from 'types';
 
 import iso from 'iso-3166-1';
+import { signAddressEip712 } from 'src/api/ethers';
 
 const usCountryCodes = ['US', 'AS', 'PR', 'FM', 'GU', 'MH', 'MP', 'PW', 'VI'];
 
@@ -27,7 +28,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<VerifyAddressRe
           body.postalCode
         );
 
-        return res.status(200).json(verifyResult);
+        const signature = await signAddressEip712(
+          verifyResult.primary_line,
+          verifyResult.secondary_line,
+          verifyResult.last_line,
+          body.country
+        );
+
+        return res.status(200).json({
+          primaryLine: verifyResult.primary_line,
+          secondaryLine: verifyResult.secondary_line,
+          lastLine: verifyResult.last_line,
+          country: body.country,
+          signature,
+
+          deliverability: verifyResult.deliverability
+        });
       }
 
       const verifyResult = await verifyIntlAddress(
@@ -39,7 +55,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<VerifyAddressRe
         body.country
       );
 
-      return res.status(200).json(verifyResult);
+      const signature = await signAddressEip712(
+        verifyResult.primary_line,
+        verifyResult.secondary_line,
+        verifyResult.last_line,
+        verifyResult.country
+      );
+
+      return res.status(200).json({
+        primaryLine: verifyResult.primary_line,
+        secondaryLine: verifyResult.secondary_line,
+        lastLine: verifyResult.last_line,
+        country: verifyResult.country,
+        signature,
+
+        deliverability: verifyResult.deliverability
+      });
     }
 
     res.setHeader('Allow', ['POST']);

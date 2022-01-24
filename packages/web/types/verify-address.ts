@@ -97,7 +97,18 @@ export type VerifyUsAddressResponse = {
   object: 'us_verification';
 };
 
-export type VerifyAddressResponse = VerifyUsAddressResponse | VerifyIntlAddressResponse;
+export type VerifyAddressResponse = {
+  primaryLine: string;
+  secondaryLine: string;
+  lastLine: string;
+  country: string;
+
+  deliverability:
+    | VerifyUsAddressResponse['deliverability']
+    | VerifyIntlAddressResponse['deliverability'];
+
+  signature: string;
+};
 
 export type VerifyAddressRequest = {
   primaryLine: string;

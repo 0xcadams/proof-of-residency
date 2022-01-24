@@ -71,14 +71,14 @@ export const useNetworkName = () => {
   return network;
 };
 
-export const useGetCommitmentIsReady = () => {
+export const useGetCommitmentPeriodIsValid = () => {
   const [value, setValue] = useState<boolean | null>(null);
 
   const proofOfResidency = useProofOfResidency();
 
   useEffect(() => {
     (async () => {
-      const response = await proofOfResidency?.getCommitmentIsReady();
+      const response = await proofOfResidency?.getCommitmentPeriodIsValid();
 
       setValue(response ?? false);
     })();

@@ -1,6 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { generatePublicPrivateKey } from 'src/api/bip';
-import { hashAndSignEip712, validateSignature } from 'src/api/ethers';
+import {
+  getCurrentWalletAddress,
+  hashAndSignCommitmentEip712,
+  validateMailingAddressSignature,
+  validateSignature
+} from 'src/api/ethers';
 
 import iso from 'iso-3166-1';
 
@@ -12,16 +17,29 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
     const body: SubmitAddressRequest = req.body;
 
     if (method === 'POST') {
-      if (!body.signature) {
-        return res.status(500).end('Signature must be supplied');
+      if (!body.addressSignature || !body.passwordSignature) {
+        return res.status(500).end('Signatures must be supplied');
       }
 
-      const signatureAddress = await validateSignature(
-        JSON.stringify(body.payload, null, 2),
-        body.signature
+      const signaturePasswordAddress = await validateSignature(
+        JSON.stringify(body.passwordPayload, null, 2),
+        body.passwordSignature
       );
 
-      const countryIso = iso.whereAlpha2(body.payload.address.country);
+      // ensure that the address was sent from this backend
+      const signatureMailAddress = await validateMailingAddressSignature(
+        body.addressPayload.primaryLine,
+        body.addressPayload.secondaryLine,
+        body.addressPayload.lastLine,
+        body.addressPayload.country,
+        body.addressSignature
+      );
+
+      if (signatureMailAddress !== getCurrentWalletAddress()) {
+        return res.status(500).end('Mailing address signature was incorrect');
+      }
+
+      const countryIso = iso.whereAlpha2(body.addressPayload.country);
 
       if (!countryIso) {
         return res.status(500).end('Country code was incorrect');
@@ -41,15 +59,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
 
       // }
 
-      const keygen = await generatePublicPrivateKey(body.payload.hashedPassword);
+      const keygen = await generatePublicPrivateKey(body.passwordPayload.hashedPassword);
 
       const countryId = Number(countryIso.numeric);
       const countryName = countryIso.country;
 
-      const { commitment, v, r, s } = await hashAndSignEip712(
-        signatureAddress,
+      const { commitment, hashedMailingAddress, v, r, s } = await hashAndSignCommitmentEip712(
+        signaturePasswordAddress,
         countryId,
-        keygen.publicKey.toString('hex')
+        keygen.publicKey.toString('hex'),
+        body.addressPayload.primaryLine,
+        body.addressPayload.secondaryLine,
+        body.addressPayload.lastLine,
+        body.addressPayload.country
       );
 
       console.log(`Mnemonic: ${keygen.mnemonic}`);
@@ -62,7 +84,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
         r,
         s,
         country: countryName,
-        commitment
+        commitment,
+        hashedMailingAddress
       });
     }
 

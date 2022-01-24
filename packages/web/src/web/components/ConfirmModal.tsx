@@ -12,7 +12,11 @@ import faker from 'faker';
 import React, { useEffect, useState } from 'react';
 
 import { axiosClient } from '../axios';
-import { SubmitAddressPayload, SubmitAddressRequest, SubmitAddressResponse } from '../../../types';
+import {
+  SubmitAddressPasswordPayload,
+  SubmitAddressRequest,
+  SubmitAddressResponse
+} from '../../../types';
 import { VerifyAddressResponse } from 'types';
 import { useCommitAddress, useSigner } from '../hooks';
 import { ethers } from 'ethers';
@@ -46,30 +50,28 @@ export const ConfirmModal = (props: {
       const address = await signer.getAddress();
 
       const hashedPassword = ethers.utils.keccak256(
-        ethers.utils.toUtf8Bytes(`${address}${password}`)
+        ethers.utils.defaultAbiCoder.encode(['string', 'string'], [address, password])
       );
 
-      const payload: SubmitAddressPayload = {
-        address: {
-          primaryLine: props.address.primary_line,
-          secondaryLine: props.address.secondary_line,
-          lastLine: props.address.last_line,
-          country: props.address.object === 'us_verification' ? 'US' : props.address.country
-        },
-        geolocation: {
-          latitude: props.geolocation.latitude,
-          longitude: props.geolocation.longitude
-        },
+      const passwordPayload: SubmitAddressPasswordPayload = {
         hashedPassword
       };
 
-      const message = JSON.stringify(payload, null, 2);
+      const message = JSON.stringify(passwordPayload, null, 2);
 
       const signature = await signer.signMessage(message);
 
       const body: SubmitAddressRequest = {
-        payload,
-        signature,
+        addressPayload: {
+          primaryLine: props.address.primaryLine,
+          secondaryLine: props.address.secondaryLine,
+          lastLine: props.address.lastLine,
+          country: props.address.country
+        },
+        addressSignature: props.address.signature,
+
+        passwordPayload,
+        passwordSignature: signature,
         latitude: -1,
         longitude: -1,
 
@@ -83,6 +85,7 @@ export const ConfirmModal = (props: {
           const transaction = await commitAddress(
             address,
             result.data.commitment,
+            result.data.hashedMailingAddress,
             result.data.v,
             result.data.r,
             result.data.s
@@ -94,7 +97,7 @@ export const ConfirmModal = (props: {
             toast({
               title: 'Success',
               description: `Successfully mailed a letter and committed your country to the blockchain. Please wait ${
-                props.address.object === 'us_verification' ? 'one week' : 'two weeks'
+                props.address.country === 'US' ? 'one week' : 'two weeks'
               } for your letter to arrive.`,
               status: 'success'
             });
@@ -156,11 +159,11 @@ export const ConfirmModal = (props: {
 
             <Flex direction="column" mb={6} mt={6}>
               <Text fontWeight="bold">{randomName}</Text>
-              <Text fontWeight="bold">{props.address.primary_line}</Text>
-              {props.address.secondary_line && (
-                <Text fontWeight="bold">{props.address.secondary_line}</Text>
+              <Text fontWeight="bold">{props.address.primaryLine}</Text>
+              {props.address.secondaryLine && (
+                <Text fontWeight="bold">{props.address.secondaryLine}</Text>
               )}
-              {props.address.last_line && <Text fontWeight="bold">{props.address.last_line}</Text>}
+              {props.address.lastLine && <Text fontWeight="bold">{props.address.lastLine}</Text>}
             </Flex>
 
             <Text mb={3}>

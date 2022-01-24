@@ -33,7 +33,7 @@ const IndexPage = () => {
         <Flex mb={10} flexDirection="column" mx="auto" align="center" width="100%" maxWidth={800}>
           <Text fontSize="2xl" mt={10} textAlign="center">
             Proof of Residency is a protocol to support decentralized governance, Universal Basic
-            Income, unique identity, and many other projects.
+            Income, unique identity, and many other applications.
           </Text>
 
           <Text fontSize="lg" mt={6} textAlign="center">

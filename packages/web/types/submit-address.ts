@@ -5,18 +5,16 @@ export type AddressComponents = {
   country: string;
 };
 
-export type SubmitAddressPayload = {
-  address: AddressComponents;
-  geolocation: {
-    latitude: number;
-    longitude: number;
-  };
+export type SubmitAddressPasswordPayload = {
   hashedPassword: string;
 };
 
 export type SubmitAddressRequest = {
-  payload: SubmitAddressPayload;
-  signature: string;
+  passwordPayload: SubmitAddressPasswordPayload;
+  passwordSignature: string;
+
+  addressPayload: AddressComponents;
+  addressSignature: string;
 
   name: string;
 
@@ -31,4 +29,5 @@ export type SubmitAddressResponse = {
 
   country: string;
   commitment: string;
+  hashedMailingAddress: string;
 };

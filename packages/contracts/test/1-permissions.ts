@@ -5,9 +5,18 @@ import chaiAsPromised from 'chai-as-promised';
 import { ProofOfResidency, FailingTreasuryTest, ReentrantTreasuryTest } from '../../web/types';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { signCommitment, timeTravelToValid } from './util';
+import { BigNumber } from 'ethers';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
+
+const primaryLine = '370 WATER ST';
+const secondaryLine = '';
+const lastLine = 'SUMMERSIDE PE C1N 1C4';
+const country = 'CA';
+const mailingAddressId = BigNumber.from(
+  '74931654352136841322477683321810728405693153704805913520852177993368555879610'
+);
 
 describe('Proof of Residency: permissions', () => {
   const secretCommitment = 'secret1';
@@ -54,23 +63,30 @@ describe('Proof of Residency: permissions', () => {
 
   describe('PoR functions correctly (happy paths)', async () => {
     it('should succeed for assigning permissions to random person', async () => {
-      const hash = ethers.utils.keccak256(
-        ethers.utils.defaultAbiCoder.encode(
-          ['address', 'uint256', 'string'],
-          [requester1.address, countryCommitment, secretCommitment]
-        )
-      );
-
       await proofOfResidencyOwner.addCommitter(unaffiliated.address, unaffiliated.address);
 
-      const { v, r, s } = await signCommitment(
-        proofOfResidencyOwner.address,
+      const { hash, hashedMailingAddress, v, r, s } = await signCommitment(
         requester1.address,
-        hash,
+        countryCommitment,
+        secretCommitment,
+
+        primaryLine,
+        secondaryLine,
+        lastLine,
+        country,
+
+        proofOfResidencyOwner.address,
         unaffiliated
       );
 
-      await proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s);
+      await proofOfResidencyRequester1.commitAddress(
+        requester1.address,
+        hash,
+        hashedMailingAddress,
+        v,
+        r,
+        s
+      );
 
       await timeTravelToValid();
 
@@ -103,6 +119,38 @@ describe('Proof of Residency: permissions', () => {
       expect(await proofOfResidencyUnaffiliated.mintPrice()).to.equal(value.add(100));
     });
 
+    it('should blacklist a mailing address ID for owner', async () => {
+      await expect(proofOfResidencyOwner.blacklistMailingAddress(mailingAddressId)).to.emit(
+        proofOfResidencyOwner,
+        'MailingAddressBlacklisted'
+      );
+
+      const { hash, hashedMailingAddress, v, r, s } = await signCommitment(
+        requester1.address,
+        countryCommitment,
+        secretCommitment,
+
+        primaryLine,
+        secondaryLine,
+        lastLine,
+        country,
+
+        proofOfResidencyOwner.address,
+        committer
+      );
+
+      await expect(
+        proofOfResidencyRequester1.commitAddress(
+          requester1.address,
+          hash,
+          hashedMailingAddress,
+          v,
+          r,
+          s
+        )
+      ).to.be.revertedWith('Mailing address is blacklisted');
+    });
+
     it('should remove committer for owner', async () => {
       await expect(proofOfResidencyOwner.removeCommitter(committer.address))
         .to.emit(proofOfResidencyOwner, 'CommitterRemoved')
@@ -110,21 +158,28 @@ describe('Proof of Residency: permissions', () => {
     });
 
     it('should be able to withdraw for committer', async () => {
-      const hash = ethers.utils.keccak256(
-        ethers.utils.defaultAbiCoder.encode(
-          ['address', 'uint256', 'string'],
-          [requester1.address, countryCommitment, secretCommitment]
-        )
-      );
-
-      const { v, r, s } = await signCommitment(
-        proofOfResidencyOwner.address,
+      const { hash, hashedMailingAddress, v, r, s } = await signCommitment(
         requester1.address,
-        hash,
+        countryCommitment,
+        secretCommitment,
+
+        primaryLine,
+        secondaryLine,
+        lastLine,
+        country,
+
+        proofOfResidencyOwner.address,
         committer
       );
 
-      await proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s);
+      await proofOfResidencyRequester1.commitAddress(
+        requester1.address,
+        hash,
+        hashedMailingAddress,
+        v,
+        r,
+        s
+      );
 
       await timeTravelToValid();
 
@@ -148,21 +203,28 @@ describe('Proof of Residency: permissions', () => {
     });
 
     it('should fail to withdraw too large balance for committer', async () => {
-      const hash = ethers.utils.keccak256(
-        ethers.utils.defaultAbiCoder.encode(
-          ['address', 'uint256', 'string'],
-          [requester1.address, countryCommitment, secretCommitment]
-        )
-      );
-
-      const { v, r, s } = await signCommitment(
-        proofOfResidencyOwner.address,
+      const { hash, hashedMailingAddress, v, r, s } = await signCommitment(
         requester1.address,
-        hash,
+        countryCommitment,
+        secretCommitment,
+
+        primaryLine,
+        secondaryLine,
+        lastLine,
+        country,
+
+        proofOfResidencyOwner.address,
         committer
       );
 
-      await proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s);
+      await proofOfResidencyRequester1.commitAddress(
+        requester1.address,
+        hash,
+        hashedMailingAddress,
+        v,
+        r,
+        s
+      );
 
       await timeTravelToValid();
 
@@ -176,27 +238,34 @@ describe('Proof of Residency: permissions', () => {
     });
 
     it('should fail to withdraw to the failing treasury contract', async () => {
-      const hash = ethers.utils.keccak256(
-        ethers.utils.defaultAbiCoder.encode(
-          ['address', 'uint256', 'string'],
-          [requester1.address, countryCommitment, secretCommitment]
-        )
-      );
-
       // USES FAILING TREASURY CONTRACT
       await proofOfResidencyOwner.addCommitter(
         unaffiliated.address,
         failingTreasuryContract.address
       );
 
-      const { v, r, s } = await signCommitment(
-        proofOfResidencyOwner.address,
+      const { hash, hashedMailingAddress, v, r, s } = await signCommitment(
         requester1.address,
-        hash,
+        countryCommitment,
+        secretCommitment,
+
+        primaryLine,
+        secondaryLine,
+        lastLine,
+        country,
+
+        proofOfResidencyOwner.address,
         unaffiliated
       );
 
-      await proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s);
+      await proofOfResidencyRequester1.commitAddress(
+        requester1.address,
+        hash,
+        hashedMailingAddress,
+        v,
+        r,
+        s
+      );
 
       await timeTravelToValid();
 
@@ -213,27 +282,34 @@ describe('Proof of Residency: permissions', () => {
     });
 
     it('should fail to withdraw to the reentrant treasury contract', async () => {
-      const hash = ethers.utils.keccak256(
-        ethers.utils.defaultAbiCoder.encode(
-          ['address', 'uint256', 'string'],
-          [requester1.address, countryCommitment, secretCommitment]
-        )
-      );
-
       // USES REENTRANT TREASURY CONTRACT
       await proofOfResidencyOwner.addCommitter(
         unaffiliated.address,
         reentrantTreasuryContract.address
       );
 
-      const { v, r, s } = await signCommitment(
-        proofOfResidencyOwner.address,
+      const { hash, hashedMailingAddress, v, r, s } = await signCommitment(
         requester1.address,
-        hash,
+        countryCommitment,
+        secretCommitment,
+
+        primaryLine,
+        secondaryLine,
+        lastLine,
+        country,
+
+        proofOfResidencyOwner.address,
         unaffiliated
       );
 
-      await proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s);
+      await proofOfResidencyRequester1.commitAddress(
+        requester1.address,
+        hash,
+        hashedMailingAddress,
+        v,
+        r,
+        s
+      );
 
       await timeTravelToValid();
 
@@ -247,22 +323,29 @@ describe('Proof of Residency: permissions', () => {
     });
 
     it('should fail for public (no committing role)', async () => {
-      const hash = ethers.utils.keccak256(
-        ethers.utils.defaultAbiCoder.encode(
-          ['address', 'uint256', 'string'],
-          [proofOfResidencyRequester1.address, countryCommitment, secretCommitment]
-        )
-      );
-
-      const { v, r, s } = await signCommitment(
-        proofOfResidencyOwner.address,
+      const { hash, hashedMailingAddress, v, r, s } = await signCommitment(
         requester1.address,
-        hash,
+        countryCommitment,
+        secretCommitment,
+
+        primaryLine,
+        secondaryLine,
+        lastLine,
+        country,
+
+        proofOfResidencyOwner.address,
         unaffiliated
       );
 
       await expect(
-        proofOfResidencyRequester1.commitAddress(proofOfResidencyRequester1.address, hash, v, r, s)
+        proofOfResidencyRequester1.commitAddress(
+          proofOfResidencyRequester1.address,
+          hash,
+          hashedMailingAddress,
+          v,
+          r,
+          s
+        )
       ).to.be.revertedWith('Signatory is not a committer');
     });
 

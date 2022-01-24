@@ -11,7 +11,7 @@ export const timeTravel = async (days: number) => {
 export const timeTravelToValid = async () => timeTravel(7);
 
 // 10 weeks
-export const timeTravelToPastValid = async () => timeTravel(10 * 7);
+export const timeTravelToPastValid = async () => timeTravel(10 * 7 + 1);
 
 export const getEip712Domain = async (contractAddress: string, chainId: number) => ({
   name: 'Proof of Residency Protocol',
@@ -21,26 +21,49 @@ export const getEip712Domain = async (contractAddress: string, chainId: number) 
 });
 
 export const signCommitment = async (
+  walletAddress: string,
+  countryId: number,
+  publicKey: string,
+
+  primaryLine: string,
+  secondaryLine: string,
+  lastLine: string,
+  country: string,
+
   contractAddress: string,
-  toAddress: string,
-  commitment: string,
   signer: SignerWithAddress
 ) => {
   const domain = await getEip712Domain(contractAddress, await signer.getChainId());
 
+  const hash = ethers.utils.keccak256(
+    ethers.utils.defaultAbiCoder.encode(
+      ['address', 'uint256', 'string'],
+      [walletAddress, countryId, publicKey]
+    )
+  );
+
+  const hashedMailingAddress = ethers.utils.keccak256(
+    ethers.utils.defaultAbiCoder.encode(
+      ['string', 'string', 'string', 'string'],
+      [primaryLine, secondaryLine, lastLine, country]
+    )
+  );
+
   const types = {
     Commitment: [
       { name: 'to', type: 'address' },
-      { name: 'commitment', type: 'bytes32' }
+      { name: 'commitment', type: 'bytes32' },
+      { name: 'hashedMailingAddress', type: 'bytes32' }
     ]
   };
 
   const signature = await signer._signTypedData(domain, types, {
-    to: toAddress,
-    commitment
+    to: walletAddress,
+    commitment: hash,
+    hashedMailingAddress
   });
 
   const { v, r, s } = ethers.utils.splitSignature(signature);
 
-  return { v, r, s };
+  return { hash, hashedMailingAddress, v, r, s };
 };

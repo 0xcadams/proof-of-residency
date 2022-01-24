@@ -5,7 +5,12 @@ import * as bip39 from 'bip39';
 import { promises as fs } from 'fs';
 import path from 'path';
 import React, { useState } from 'react';
-import { useGetCommitmentIsReady, useMint, useMintPrice, useWalletAddress } from 'src/web/hooks';
+import {
+  useGetCommitmentPeriodIsValid,
+  useMint,
+  useMintPrice,
+  useWalletAddress
+} from 'src/web/hooks';
 import * as ecc from 'tiny-secp256k1';
 
 import iso from 'iso-3166-1';
@@ -56,7 +61,7 @@ const MintPage = (props: MintProps) => {
   const mint = useMint();
   const mintPrice = useMintPrice();
 
-  const isCommitmentReady = useGetCommitmentIsReady();
+  const isCommitmentReady = useGetCommitmentPeriodIsValid();
 
   const toast = useToast();
   const router = useRouter();
@@ -67,8 +72,9 @@ const MintPage = (props: MintProps) => {
     try {
       if (isoCountry && walletAddress && mint && mintPrice) {
         const hashedPassword = ethers.utils.keccak256(
-          ethers.utils.toUtf8Bytes(`${walletAddress}${password}`)
+          ethers.utils.defaultAbiCoder.encode(['string', 'string'], [walletAddress, password])
         );
+
         const seedBuffer = await bip39.mnemonicToSeed(mnemonic.trim(), hashedPassword);
         const node = bip32.fromSeed(seedBuffer);
 
