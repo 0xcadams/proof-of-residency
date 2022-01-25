@@ -20,9 +20,6 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface ProofOfResidencyInterface extends utils.Interface {
   functions: {
-    "COMMITMENT_TYPEHASH()": FunctionFragment;
-    "DOMAIN_TYPEHASH()": FunctionFragment;
-    "VERSION()": FunctionFragment;
     "addCommitter(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
@@ -30,12 +27,12 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     "burn(uint256)": FunctionFragment;
     "commitAddress(address,bytes32,bytes32,uint8,bytes32,bytes32)": FunctionFragment;
     "contractURI()": FunctionFragment;
+    "countryTokenCounts(uint256)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getCommitmentPeriodIsUpcoming()": FunctionFragment;
     "getCommitmentPeriodIsValid()": FunctionFragment;
-    "getCountryCount(uint256)": FunctionFragment;
-    "getMailingAddressCount(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
+    "mailingAddressCounts(uint256)": FunctionFragment;
     "mint(uint256,string)": FunctionFragment;
     "mintPrice()": FunctionFragment;
     "name()": FunctionFragment;
@@ -62,15 +59,6 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   };
 
   encodeFunctionData(
-    functionFragment: "COMMITMENT_TYPEHASH",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "DOMAIN_TYPEHASH",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "VERSION", values?: undefined): string;
-  encodeFunctionData(
     functionFragment: "addCommitter",
     values: [string, string]
   ): string;
@@ -93,6 +81,10 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "countryTokenCounts",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
   ): string;
@@ -105,16 +97,12 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getCountryCount",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getMailingAddressCount",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "mailingAddressCounts",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "mint",
@@ -186,15 +174,6 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "COMMITMENT_TYPEHASH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "DOMAIN_TYPEHASH",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "VERSION", data: BytesLike): Result;
-  decodeFunctionResult(
     functionFragment: "addCommitter",
     data: BytesLike
   ): Result;
@@ -214,6 +193,10 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "countryTokenCounts",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
@@ -226,15 +209,11 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getCountryCount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getMailingAddressCount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "isApprovedForAll",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "mailingAddressCounts",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
@@ -419,12 +398,6 @@ export interface ProofOfResidency extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    COMMITMENT_TYPEHASH(overrides?: CallOverrides): Promise<[string]>;
-
-    DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<[string]>;
-
-    VERSION(overrides?: CallOverrides): Promise<[string]>;
-
     addCommitter(
       newCommitter: string,
       newTreasury: string,
@@ -461,6 +434,11 @@ export interface ProofOfResidency extends BaseContract {
 
     contractURI(overrides?: CallOverrides): Promise<[string]>;
 
+    countryTokenCounts(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -472,21 +450,16 @@ export interface ProofOfResidency extends BaseContract {
 
     getCommitmentPeriodIsValid(overrides?: CallOverrides): Promise<[boolean]>;
 
-    getCountryCount(
-      country: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    getMailingAddressCount(
-      mailingAddressId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     isApprovedForAll(
       owner: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
+
+    mailingAddressCounts(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     mint(
       country: BigNumberish,
@@ -598,12 +571,6 @@ export interface ProofOfResidency extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  COMMITMENT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-
-  DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-
-  VERSION(overrides?: CallOverrides): Promise<string>;
-
   addCommitter(
     newCommitter: string,
     newTreasury: string,
@@ -640,6 +607,11 @@ export interface ProofOfResidency extends BaseContract {
 
   contractURI(overrides?: CallOverrides): Promise<string>;
 
+  countryTokenCounts(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   getApproved(
     tokenId: BigNumberish,
     overrides?: CallOverrides
@@ -649,21 +621,16 @@ export interface ProofOfResidency extends BaseContract {
 
   getCommitmentPeriodIsValid(overrides?: CallOverrides): Promise<boolean>;
 
-  getCountryCount(
-    country: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getMailingAddressCount(
-    mailingAddressId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   isApprovedForAll(
     owner: string,
     operator: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  mailingAddressCounts(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   mint(
     country: BigNumberish,
@@ -769,12 +736,6 @@ export interface ProofOfResidency extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    COMMITMENT_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-
-    DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<string>;
-
-    VERSION(overrides?: CallOverrides): Promise<string>;
-
     addCommitter(
       newCommitter: string,
       newTreasury: string,
@@ -808,6 +769,11 @@ export interface ProofOfResidency extends BaseContract {
 
     contractURI(overrides?: CallOverrides): Promise<string>;
 
+    countryTokenCounts(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -817,21 +783,16 @@ export interface ProofOfResidency extends BaseContract {
 
     getCommitmentPeriodIsValid(overrides?: CallOverrides): Promise<boolean>;
 
-    getCountryCount(
-      country: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getMailingAddressCount(
-      mailingAddressId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     isApprovedForAll(
       owner: string,
       operator: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    mailingAddressCounts(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     mint(
       country: BigNumberish,
@@ -1008,12 +969,6 @@ export interface ProofOfResidency extends BaseContract {
   };
 
   estimateGas: {
-    COMMITMENT_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
-
-    DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
-
-    VERSION(overrides?: CallOverrides): Promise<BigNumber>;
-
     addCommitter(
       newCommitter: string,
       newTreasury: string,
@@ -1050,6 +1005,11 @@ export interface ProofOfResidency extends BaseContract {
 
     contractURI(overrides?: CallOverrides): Promise<BigNumber>;
 
+    countryTokenCounts(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1061,19 +1021,14 @@ export interface ProofOfResidency extends BaseContract {
 
     getCommitmentPeriodIsValid(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getCountryCount(
-      country: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getMailingAddressCount(
-      mailingAddressId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     isApprovedForAll(
       owner: string,
       operator: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    mailingAddressCounts(
+      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1188,14 +1143,6 @@ export interface ProofOfResidency extends BaseContract {
   };
 
   populateTransaction: {
-    COMMITMENT_TYPEHASH(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    DOMAIN_TYPEHASH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    VERSION(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     addCommitter(
       newCommitter: string,
       newTreasury: string,
@@ -1235,6 +1182,11 @@ export interface ProofOfResidency extends BaseContract {
 
     contractURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    countryTokenCounts(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1248,19 +1200,14 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getCountryCount(
-      country: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getMailingAddressCount(
-      mailingAddressId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     isApprovedForAll(
       owner: string,
       operator: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    mailingAddressCounts(
+      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

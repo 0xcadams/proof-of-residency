@@ -18,6 +18,12 @@ const mailingAddressId = BigNumber.from(
   '74931654352136841322477683321810728405693153704805913520852177993368555879610'
 );
 
+const baseUri = 'https://generator.proofofresidency.xyz/';
+
+const secretCommitment = 'secret1';
+const countryCommitment = 411;
+const initialPrice = ethers.utils.parseEther('0.008');
+
 describe('Proof of Residency: edge cases', () => {
   const secretCommitment = 'secret1';
   const countryCommitment = 444;
@@ -41,7 +47,12 @@ describe('Proof of Residency: edge cases', () => {
     [owner, committer, treasury, requester1, requester2, unaffiliated] = await ethers.getSigners();
 
     const ProofOfResidency = await ethers.getContractFactory('ProofOfResidency');
-    proofOfResidencyOwner = await ProofOfResidency.deploy(committer.address, treasury.address);
+    proofOfResidencyOwner = await ProofOfResidency.deploy(
+      committer.address,
+      treasury.address,
+      baseUri,
+      initialPrice
+    );
 
     proofOfResidencyCommitter = proofOfResidencyOwner.connect(committer);
     proofOfResidencyTreasury = proofOfResidencyOwner.connect(treasury);
@@ -89,13 +100,17 @@ describe('Proof of Residency: edge cases', () => {
         ethers.BigNumber.from('444000000000000001')
       );
 
-      expect(tokenUri).to.contain('ipfs://').and.to.contain('/444000000000000001');
+      expect(tokenUri)
+        .to.contain('https://generator.proofofresidency.xyz')
+        .and.to.contain('/444000000000000001');
     });
 
     it('should initialize contract metadata uri', async () => {
       const contractURI = await proofOfResidencyUnaffiliated.contractURI();
 
-      expect(contractURI).to.contain('ipfs://').and.to.contain('/contract');
+      expect(contractURI)
+        .to.contain('https://generator.proofofresidency.xyz')
+        .and.to.contain('/contract');
     });
 
     it('should support erc721 interface ID', async () => {

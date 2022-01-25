@@ -18,11 +18,13 @@ const mailingAddressId = BigNumber.from(
   '74931654352136841322477683321810728405693153704805913520852177993368555879610'
 );
 
-describe('Proof of Residency: permissions', () => {
-  const secretCommitment = 'secret1';
-  const countryCommitment = 411;
-  const value = ethers.utils.parseEther('0.008');
+const baseUri = 'https://generator.proofofresidency.xyz/';
 
+const secretCommitment = 'secret1';
+const countryCommitment = 411;
+const initialPrice = ethers.utils.parseEther('0.008');
+
+describe('Proof of Residency: permissions', () => {
   let proofOfResidencyOwner: ProofOfResidency;
   let proofOfResidencyCommitter: ProofOfResidency;
   let proofOfResidencyTreasury: ProofOfResidency;
@@ -44,7 +46,12 @@ describe('Proof of Residency: permissions', () => {
     [owner, committer, treasury, requester1, requester2, unaffiliated] = await ethers.getSigners();
 
     const ProofOfResidency = await ethers.getContractFactory('ProofOfResidency');
-    proofOfResidencyOwner = await ProofOfResidency.deploy(committer.address, treasury.address);
+    proofOfResidencyOwner = await ProofOfResidency.deploy(
+      committer.address,
+      treasury.address,
+      baseUri,
+      initialPrice
+    );
 
     const FailingTreasuryTest = await ethers.getContractFactory('FailingTreasuryTest');
     failingTreasuryContract = await FailingTreasuryTest.deploy();
@@ -92,7 +99,7 @@ describe('Proof of Residency: permissions', () => {
 
       await expect(
         proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
-          value: value
+          value: initialPrice
         })
       )
         .to.emit(proofOfResidencyRequester1, 'Transfer')
@@ -114,9 +121,9 @@ describe('Proof of Residency: permissions', () => {
     });
 
     it('should set price for owner', async () => {
-      await proofOfResidencyOwner.setPrice(value.add(100));
+      await proofOfResidencyOwner.setPrice(initialPrice.add(100));
 
-      expect(await proofOfResidencyUnaffiliated.mintPrice()).to.equal(value.add(100));
+      expect(await proofOfResidencyUnaffiliated.mintPrice()).to.equal(initialPrice.add(100));
     });
 
     it('should blacklist a mailing address ID for owner', async () => {
@@ -148,7 +155,7 @@ describe('Proof of Residency: permissions', () => {
           r,
           s
         )
-      ).to.be.revertedWith('Mailing address is blacklisted');
+      ).to.be.revertedWith('Mailing address blacklisted');
     });
 
     it('should remove committer for owner', async () => {
@@ -184,21 +191,21 @@ describe('Proof of Residency: permissions', () => {
       await timeTravelToValid();
 
       await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
-        value: value
+        value: initialPrice
       });
 
       const originalTreasuryBalance = await treasury.getBalance();
 
-      await proofOfResidencyCommitter.withdraw(value);
+      await proofOfResidencyCommitter.withdraw(initialPrice);
 
-      expect((await treasury.getBalance()).sub(originalTreasuryBalance)).to.equal(value);
+      expect((await treasury.getBalance()).sub(originalTreasuryBalance)).to.equal(initialPrice);
     });
   });
 
   describe('PoR functions correctly (sad paths)', async () => {
     it('should fail to withdraw when zero balance for committer', async () => {
-      await expect(proofOfResidencyCommitter.withdraw(value)).to.be.revertedWith(
-        'Withdrawal amount not available'
+      await expect(proofOfResidencyCommitter.withdraw(initialPrice)).to.be.revertedWith(
+        'Not available'
       );
     });
 
@@ -229,11 +236,11 @@ describe('Proof of Residency: permissions', () => {
       await timeTravelToValid();
 
       await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
-        value: value
+        value: initialPrice
       });
 
-      await expect(proofOfResidencyCommitter.withdraw(value.add(1))).to.be.revertedWith(
-        'Withdrawal amount not available'
+      await expect(proofOfResidencyCommitter.withdraw(initialPrice.add(1))).to.be.revertedWith(
+        'Not available'
       );
     });
 
@@ -270,10 +277,10 @@ describe('Proof of Residency: permissions', () => {
       await timeTravelToValid();
 
       await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
-        value: value
+        value: initialPrice
       });
 
-      await expect(proofOfResidencyUnaffiliated.withdraw(value)).to.be.revertedWith(
+      await expect(proofOfResidencyUnaffiliated.withdraw(initialPrice)).to.be.revertedWith(
         'Unable to withdraw'
       );
 
@@ -314,10 +321,10 @@ describe('Proof of Residency: permissions', () => {
       await timeTravelToValid();
 
       await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
-        value: value
+        value: initialPrice
       });
 
-      await expect(proofOfResidencyUnaffiliated.withdraw(value.div(2))).to.be.revertedWith(
+      await expect(proofOfResidencyUnaffiliated.withdraw(initialPrice.div(2))).to.be.revertedWith(
         'Unable to withdraw'
       );
     });
@@ -346,23 +353,23 @@ describe('Proof of Residency: permissions', () => {
           r,
           s
         )
-      ).to.be.revertedWith('Signatory is not a committer');
+      ).to.be.revertedWith('Signatory non-committer');
     });
 
     it('should fail for public (never committed)', async () => {
       await expect(
         proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
-          value: value
+          value: initialPrice
         })
-      ).to.be.revertedWith('Commitment is incorrect');
+      ).to.be.revertedWith('Commitment incorrec');
     });
 
     it('should fail for public (never committed)', async () => {
       await expect(
         proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
-          value: value
+          value: initialPrice
         })
-      ).to.be.revertedWith('Commitment is incorrect');
+      ).to.be.revertedWith('Commitment incorrec');
     });
 
     it('should fail to remove committer for public (no owner role)', async () => {
@@ -372,7 +379,7 @@ describe('Proof of Residency: permissions', () => {
     });
 
     it('should fail to set price for public (no pausing role)', async () => {
-      await expect(proofOfResidencyRequester1.setPrice(value.add(100))).to.be.revertedWith(
+      await expect(proofOfResidencyRequester1.setPrice(initialPrice.add(100))).to.be.revertedWith(
         'Ownable: caller is not the owner'
       );
     });

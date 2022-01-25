@@ -22,7 +22,7 @@ abstract contract ERC721NonTransferable is ERC721, ERC721Burnable, ERC721Enumera
     address,
     uint256
   ) public pure override {
-    revert('ERC721ReadOnly: transferFrom not allowed');
+    revert('ERC721NonTransferable: transferFrom not allowed');
   }
 
   function safeTransferFrom(
@@ -30,7 +30,7 @@ abstract contract ERC721NonTransferable is ERC721, ERC721Burnable, ERC721Enumera
     address,
     uint256
   ) public pure override {
-    revert('ERC721ReadOnly: safeTransferFrom not allowed');
+    revert('ERC721NonTransferable: safeTransferFrom not allowed');
   }
 
   function safeTransferFrom(
@@ -39,7 +39,7 @@ abstract contract ERC721NonTransferable is ERC721, ERC721Burnable, ERC721Enumera
     uint256,
     bytes memory
   ) public pure override {
-    revert('ERC721ReadOnly: safeTransferFrom not allowed');
+    revert('ERC721NonTransferable: safeTransferFrom not allowed');
   }
 
   function _beforeTokenTransfer(

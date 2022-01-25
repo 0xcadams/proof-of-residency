@@ -18,12 +18,14 @@ const mailingAddressId = BigNumber.from(
   '74931654352136841322477683321810728405693153704805913520852177993368555879610'
 );
 
-describe('Proof of Residency: token', () => {
-  const secretCommitment = 'secret1';
-  const countryCommitment = 411;
-  const value = ethers.utils.parseEther('0.008');
-  const tokenId = ethers.BigNumber.from('411000000000000001');
+const baseUri = 'https://generator.proofofresidency.xyz/';
 
+const secretCommitment = 'secret1';
+const countryCommitment = 411;
+const initialPrice = ethers.utils.parseEther('0.008');
+const tokenId = ethers.BigNumber.from('411000000000000001');
+
+describe('Proof of Residency: token', () => {
   let proofOfResidencyOwner: ProofOfResidency;
   let proofOfResidencyCommitter: ProofOfResidency;
   let proofOfResidencyTreasury: ProofOfResidency;
@@ -42,7 +44,12 @@ describe('Proof of Residency: token', () => {
     [owner, committer, treasury, requester1, requester2, unaffiliated] = await ethers.getSigners();
 
     const ProofOfResidency = await ethers.getContractFactory('ProofOfResidency');
-    proofOfResidencyOwner = await ProofOfResidency.deploy(committer.address, treasury.address);
+    proofOfResidencyOwner = await ProofOfResidency.deploy(
+      committer.address,
+      treasury.address,
+      baseUri,
+      initialPrice
+    );
 
     proofOfResidencyCommitter = proofOfResidencyOwner.connect(committer);
     proofOfResidencyTreasury = proofOfResidencyOwner.connect(treasury);
@@ -79,7 +86,7 @@ describe('Proof of Residency: token', () => {
 
     await expect(
       proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
-        value: value
+        value: initialPrice
       })
     ).to.emit(proofOfResidencyRequester1, 'Transfer');
   });
@@ -96,7 +103,7 @@ describe('Proof of Residency: token', () => {
     it('should fail to transfer token to another address', async () => {
       await expect(
         proofOfResidencyRequester1.transferFrom(requester1.address, unaffiliated.address, tokenId)
-      ).to.be.revertedWith('ERC721ReadOnly: transferFrom not allowed');
+      ).to.be.revertedWith('ERC721NonTransferable: transferFrom not allowed');
     });
 
     it('should fail to safe transfer token to another address', async () => {
@@ -106,7 +113,7 @@ describe('Proof of Residency: token', () => {
           unaffiliated.address,
           tokenId
         )
-      ).to.be.revertedWith('ERC721ReadOnly: safeTransferFrom not allowed');
+      ).to.be.revertedWith('ERC721NonTransferable: safeTransferFrom not allowed');
     });
 
     it('should fail to safe transfer token to another address', async () => {
@@ -117,7 +124,7 @@ describe('Proof of Residency: token', () => {
           tokenId,
           ethers.utils.randomBytes(4)
         )
-      ).to.be.revertedWith('ERC721ReadOnly: safeTransferFrom not allowed');
+      ).to.be.revertedWith('ERC721NonTransferable: safeTransferFrom not allowed');
     });
   });
 });
