@@ -1,12 +1,18 @@
 export type AddressComponents = {
-  primaryLine: string;
-  secondaryLine: string;
-  lastLine: string;
+  name: string;
+  addressLine1: string;
+  addressLine2: string;
+  city?: string;
+  state?: string;
+  postal?: string;
   country: string;
+
+  nonce: number;
 };
 
 export type SubmitAddressPasswordPayload = {
   hashedPassword: string;
+  nonce: number;
 };
 
 export type SubmitAddressRequest = {
@@ -15,8 +21,6 @@ export type SubmitAddressRequest = {
 
   addressPayload: AddressComponents;
   addressSignature: string;
-
-  name: string;
 
   latitude: number;
   longitude: number;

@@ -34,28 +34,31 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     "isApprovedForAll(address,address)": FunctionFragment;
     "mailingAddressCounts(uint256)": FunctionFragment;
     "mint(uint256,string)": FunctionFragment;
-    "mintPrice()": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "pause()": FunctionFragment;
     "paused()": FunctionFragment;
+    "projectTreasury()": FunctionFragment;
     "removeCommitter(address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
+    "reservePrice()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setBaseURI(string)": FunctionFragment;
     "setPrice(uint256)": FunctionFragment;
+    "setProjectTreasury(address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenByIndex(uint256)": FunctionFragment;
     "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
+    "tokenTimestamp(uint256)": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "unpause()": FunctionFragment;
-    "withdraw(uint256)": FunctionFragment;
+    "withdraw()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -108,7 +111,6 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     functionFragment: "mint",
     values: [BigNumberish, string]
   ): string;
-  encodeFunctionData(functionFragment: "mintPrice", values?: undefined): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -118,11 +120,19 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "pause", values?: undefined): string;
   encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "projectTreasury",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "removeCommitter",
     values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "reservePrice",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -139,6 +149,10 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "setProjectTreasury",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
@@ -150,6 +164,10 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "tokenOfOwnerByIndex",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tokenTimestamp",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "tokenURI",
@@ -168,10 +186,7 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "withdraw",
-    values: [BigNumberish]
-  ): string;
+  encodeFunctionData(functionFragment: "withdraw", values?: undefined): string;
 
   decodeFunctionResult(
     functionFragment: "addCommitter",
@@ -217,18 +232,25 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "mintPrice", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "projectTreasury",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "removeCommitter",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "reservePrice",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -242,6 +264,10 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "setBaseURI", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setPrice", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "setProjectTreasury",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
@@ -252,6 +278,10 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "tokenOfOwnerByIndex",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenTimestamp",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
@@ -429,7 +459,7 @@ export interface ProofOfResidency extends BaseContract {
       v: BigNumberish,
       r: BytesLike,
       s: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     contractURI(overrides?: CallOverrides): Promise<[string]>;
@@ -464,10 +494,8 @@ export interface ProofOfResidency extends BaseContract {
     mint(
       country: BigNumberish,
       publicKey: string,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    mintPrice(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
@@ -484,6 +512,8 @@ export interface ProofOfResidency extends BaseContract {
 
     paused(overrides?: CallOverrides): Promise<[boolean]>;
 
+    projectTreasury(overrides?: CallOverrides): Promise<[string]>;
+
     removeCommitter(
       removedCommitter: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -492,6 +522,8 @@ export interface ProofOfResidency extends BaseContract {
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    reservePrice(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     "safeTransferFrom(address,address,uint256)"(
       arg0: string,
@@ -524,6 +556,11 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setProjectTreasury(
+      newTreasury: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -539,6 +576,11 @@ export interface ProofOfResidency extends BaseContract {
     tokenOfOwnerByIndex(
       owner: string,
       index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    tokenTimestamp(
+      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -566,7 +608,6 @@ export interface ProofOfResidency extends BaseContract {
     ): Promise<ContractTransaction>;
 
     withdraw(
-      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -602,7 +643,7 @@ export interface ProofOfResidency extends BaseContract {
     v: BigNumberish,
     r: BytesLike,
     s: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   contractURI(overrides?: CallOverrides): Promise<string>;
@@ -635,10 +676,8 @@ export interface ProofOfResidency extends BaseContract {
   mint(
     country: BigNumberish,
     publicKey: string,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
-
-  mintPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
   name(overrides?: CallOverrides): Promise<string>;
 
@@ -652,6 +691,8 @@ export interface ProofOfResidency extends BaseContract {
 
   paused(overrides?: CallOverrides): Promise<boolean>;
 
+  projectTreasury(overrides?: CallOverrides): Promise<string>;
+
   removeCommitter(
     removedCommitter: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -660,6 +701,8 @@ export interface ProofOfResidency extends BaseContract {
   renounceOwnership(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  reservePrice(overrides?: CallOverrides): Promise<BigNumber>;
 
   "safeTransferFrom(address,address,uint256)"(
     arg0: string,
@@ -692,6 +735,11 @@ export interface ProofOfResidency extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setProjectTreasury(
+    newTreasury: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   supportsInterface(
     interfaceId: BytesLike,
     overrides?: CallOverrides
@@ -707,6 +755,11 @@ export interface ProofOfResidency extends BaseContract {
   tokenOfOwnerByIndex(
     owner: string,
     index: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  tokenTimestamp(
+    tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -731,7 +784,6 @@ export interface ProofOfResidency extends BaseContract {
   ): Promise<ContractTransaction>;
 
   withdraw(
-    amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -800,8 +852,6 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    mintPrice(overrides?: CallOverrides): Promise<BigNumber>;
-
     name(overrides?: CallOverrides): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
@@ -812,12 +862,16 @@ export interface ProofOfResidency extends BaseContract {
 
     paused(overrides?: CallOverrides): Promise<boolean>;
 
+    projectTreasury(overrides?: CallOverrides): Promise<string>;
+
     removeCommitter(
       removedCommitter: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    reservePrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     "safeTransferFrom(address,address,uint256)"(
       arg0: string,
@@ -844,6 +898,11 @@ export interface ProofOfResidency extends BaseContract {
 
     setPrice(newPrice: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
+    setProjectTreasury(
+      newTreasury: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -859,6 +918,11 @@ export interface ProofOfResidency extends BaseContract {
     tokenOfOwnerByIndex(
       owner: string,
       index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    tokenTimestamp(
+      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -880,7 +944,7 @@ export interface ProofOfResidency extends BaseContract {
 
     unpause(overrides?: CallOverrides): Promise<void>;
 
-    withdraw(amount: BigNumberish, overrides?: CallOverrides): Promise<void>;
+    withdraw(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -1000,7 +1064,7 @@ export interface ProofOfResidency extends BaseContract {
       v: BigNumberish,
       r: BytesLike,
       s: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     contractURI(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1035,10 +1099,8 @@ export interface ProofOfResidency extends BaseContract {
     mint(
       country: BigNumberish,
       publicKey: string,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    mintPrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1055,6 +1117,8 @@ export interface ProofOfResidency extends BaseContract {
 
     paused(overrides?: CallOverrides): Promise<BigNumber>;
 
+    projectTreasury(overrides?: CallOverrides): Promise<BigNumber>;
+
     removeCommitter(
       removedCommitter: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1063,6 +1127,8 @@ export interface ProofOfResidency extends BaseContract {
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    reservePrice(overrides?: CallOverrides): Promise<BigNumber>;
 
     "safeTransferFrom(address,address,uint256)"(
       arg0: string,
@@ -1095,6 +1161,11 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setProjectTreasury(
+      newTreasury: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -1110,6 +1181,11 @@ export interface ProofOfResidency extends BaseContract {
     tokenOfOwnerByIndex(
       owner: string,
       index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    tokenTimestamp(
+      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1137,7 +1213,6 @@ export interface ProofOfResidency extends BaseContract {
     ): Promise<BigNumber>;
 
     withdraw(
-      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -1177,7 +1252,7 @@ export interface ProofOfResidency extends BaseContract {
       v: BigNumberish,
       r: BytesLike,
       s: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     contractURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1214,10 +1289,8 @@ export interface ProofOfResidency extends BaseContract {
     mint(
       country: BigNumberish,
       publicKey: string,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
-
-    mintPrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1234,6 +1307,8 @@ export interface ProofOfResidency extends BaseContract {
 
     paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    projectTreasury(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     removeCommitter(
       removedCommitter: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1242,6 +1317,8 @@ export interface ProofOfResidency extends BaseContract {
     renounceOwnership(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    reservePrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
       arg0: string,
@@ -1274,6 +1351,11 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setProjectTreasury(
+      newTreasury: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
@@ -1289,6 +1371,11 @@ export interface ProofOfResidency extends BaseContract {
     tokenOfOwnerByIndex(
       owner: string,
       index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    tokenTimestamp(
+      tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1316,7 +1403,6 @@ export interface ProofOfResidency extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     withdraw(
-      amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };

@@ -79,16 +79,18 @@ describe('Proof of Residency: token', () => {
       hashedMailingAddress,
       v,
       r,
-      s
+      s,
+      {
+        value: initialPrice
+      }
     );
 
     await timeTravelToValid();
 
-    await expect(
-      proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
-        value: initialPrice
-      })
-    ).to.emit(proofOfResidencyRequester1, 'Transfer');
+    await expect(proofOfResidencyRequester1.mint(countryCommitment, secretCommitment)).to.emit(
+      proofOfResidencyRequester1,
+      'Transfer'
+    );
   });
 
   describe('PoR functions correctly (happy paths)', async () => {

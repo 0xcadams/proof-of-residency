@@ -82,7 +82,10 @@ describe('Proof of Residency: edge cases', () => {
       hashedMailingAddress,
       v,
       r,
-      s
+      s,
+      {
+        value: initialPrice
+      }
     );
   });
 
@@ -90,11 +93,10 @@ describe('Proof of Residency: edge cases', () => {
     it('should initialize token uri', async () => {
       await timeTravelToValid();
 
-      await expect(
-        proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
-          value: value
-        })
-      ).to.emit(proofOfResidencyRequester1, 'Transfer');
+      await expect(proofOfResidencyRequester1.mint(countryCommitment, secretCommitment)).to.emit(
+        proofOfResidencyRequester1,
+        'Transfer'
+      );
 
       const tokenUri = await proofOfResidencyUnaffiliated.tokenURI(
         ethers.BigNumber.from('444000000000000001')

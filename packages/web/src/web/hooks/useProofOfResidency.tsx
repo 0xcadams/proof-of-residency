@@ -1,5 +1,5 @@
 import { BigNumber, ethers } from 'ethers';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ProofOfResidency, ProofOfResidency__factory as ProofOfResidencyFactory } from 'types';
 
 import { useWallet } from 'use-wallet';
@@ -132,13 +132,54 @@ export const useMint = () => {
 export const useMintPrice = () => {
   const proofOfResidency = useProofOfResidency();
 
-  return proofOfResidency?.mintPrice;
+  return proofOfResidency?.reservePrice;
 };
 
 export const useMintedCount = async (countryId: BigNumber): Promise<BigNumber | undefined> => {
   const proofOfResidency = useProofOfResidency();
 
-  return proofOfResidency?.getCountryCount(countryId);
+  return proofOfResidency?.countryTokenCounts(countryId);
+};
+
+const getEip712Domain = async (contractAddress: string, chainId: number) => ({
+  name: 'Proof of Residency Protocol',
+  version: '1',
+  chainId,
+  verifyingContract: contractAddress
+});
+
+const passwordTypes = {
+  Password: [
+    { name: 'password', type: 'string' },
+    { name: 'nonce', type: 'uint256' }
+  ]
+};
+
+export const useSignPasswordEip712 = () => {
+  const wallet = useWallet();
+
+  return useCallback(async (password: string, nonce: number) => {
+    if (wallet.chainId) {
+      const domain = await getEip712Domain(
+        process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '',
+        wallet.chainId
+      );
+
+      const provider = new ethers.providers.Web3Provider(wallet.ethereum);
+      const signer = provider.getSigner();
+
+      const signature = await signer._signTypedData(domain, passwordTypes, {
+        password,
+        nonce
+      });
+
+      return signature;
+    }
+
+    console.error('Chain ID is not available');
+
+    return null;
+  }, []);
 };
 
 // export type TokenOwner = { content: string; link: string | null };

@@ -39,7 +39,7 @@
 
       .text {
         position: relative;
-        top: 1in;
+        top: 3.2in;
         margin: 0 0.7in;
       }
 
@@ -56,25 +56,18 @@
   </head>
   <body>
     <div class="page">
+      <img id="logo" src="https://proofofresidency.xyz/logo.svg" width="150px" height="150px" />
       <div class="text">
-        <img
-          src="https://proofofresidency.xyz/logo.svg"
-          width="70px"
-          height="70px"
-          style="margin-bottom: 8px"
-        />
-
-        <p>{{today_date}}</p>
-
         <p>Hi!</p>
 
         <p>
           You have submitted a Proof of Residency request to verify that you reside in {{country}}.
+          If you did not submit this request, please reach out to fraud@proofofresidency.xyz.
         </p>
 
         <p>
-          To mint your token, <strong>please wait one week from your request,</strong> then complete
-          the following steps:
+          Your token will become ready to claim on <strong>{{valid_date}}</strong>. On that day,
+          complete the following steps:
         </p>
 
         <div class="steps">
@@ -97,6 +90,8 @@
         </div>
 
         <p>Welcome to the Proof of Residency community!</p>
+
+        <p>{{today_date}}</p>
       </div>
     </div>
   </body>

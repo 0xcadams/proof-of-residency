@@ -92,16 +92,15 @@ describe('Proof of Residency: permissions', () => {
         hashedMailingAddress,
         v,
         r,
-        s
+        s,
+        {
+          value: initialPrice
+        }
       );
 
       await timeTravelToValid();
 
-      await expect(
-        proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
-          value: initialPrice
-        })
-      )
+      await expect(proofOfResidencyRequester1.mint(countryCommitment, secretCommitment))
         .to.emit(proofOfResidencyRequester1, 'Transfer')
         .withArgs(
           ethers.constants.AddressZero,
@@ -123,7 +122,7 @@ describe('Proof of Residency: permissions', () => {
     it('should set price for owner', async () => {
       await proofOfResidencyOwner.setPrice(initialPrice.add(100));
 
-      expect(await proofOfResidencyUnaffiliated.mintPrice()).to.equal(initialPrice.add(100));
+      expect(await proofOfResidencyUnaffiliated.reservePrice()).to.equal(initialPrice.add(100));
     });
 
     it('should blacklist a mailing address ID for owner', async () => {
@@ -153,9 +152,12 @@ describe('Proof of Residency: permissions', () => {
           hashedMailingAddress,
           v,
           r,
-          s
+          s,
+          {
+            value: initialPrice
+          }
         )
-      ).to.be.revertedWith('Mailing address blacklisted');
+      ).to.be.revertedWith('Address blacklisted');
     });
 
     it('should remove committer for owner', async () => {
@@ -185,31 +187,26 @@ describe('Proof of Residency: permissions', () => {
         hashedMailingAddress,
         v,
         r,
-        s
+        s,
+        {
+          value: initialPrice
+        }
       );
 
       await timeTravelToValid();
 
-      await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
-        value: initialPrice
-      });
+      await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment);
 
       const originalTreasuryBalance = await treasury.getBalance();
 
-      await proofOfResidencyCommitter.withdraw(initialPrice);
+      await proofOfResidencyCommitter.withdraw();
 
       expect((await treasury.getBalance()).sub(originalTreasuryBalance)).to.equal(initialPrice);
     });
-  });
 
-  describe('PoR functions correctly (sad paths)', async () => {
-    it('should fail to withdraw when zero balance for committer', async () => {
-      await expect(proofOfResidencyCommitter.withdraw(initialPrice)).to.be.revertedWith(
-        'Not available'
-      );
-    });
+    it('should be able to withdraw with a tax', async () => {
+      await proofOfResidencyOwner.addCommitter(unaffiliated.address, requester2.address);
 
-    it('should fail to withdraw too large balance for committer', async () => {
       const { hash, hashedMailingAddress, v, r, s } = await signCommitment(
         requester1.address,
         countryCommitment,
@@ -221,7 +218,7 @@ describe('Proof of Residency: permissions', () => {
         country,
 
         proofOfResidencyOwner.address,
-        committer
+        unaffiliated
       );
 
       await proofOfResidencyRequester1.commitAddress(
@@ -230,18 +227,33 @@ describe('Proof of Residency: permissions', () => {
         hashedMailingAddress,
         v,
         r,
-        s
+        s,
+        {
+          value: initialPrice
+        }
       );
 
       await timeTravelToValid();
 
-      await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
-        value: initialPrice
-      });
+      await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment);
 
-      await expect(proofOfResidencyCommitter.withdraw(initialPrice.add(1))).to.be.revertedWith(
-        'Not available'
+      const originalTreasuryBalance = await treasury.getBalance();
+      const originalBalance = await requester2.getBalance();
+
+      await proofOfResidencyUnaffiliated.withdraw();
+
+      expect((await treasury.getBalance()).sub(originalTreasuryBalance)).to.equal(
+        initialPrice.mul(20).div(100)
       );
+      expect((await requester2.getBalance()).sub(originalBalance)).to.equal(
+        initialPrice.mul(80).div(100)
+      );
+    });
+  });
+
+  describe('PoR functions correctly (sad paths)', async () => {
+    it('should fail to withdraw when zero balance for committer', async () => {
+      await expect(proofOfResidencyCommitter.withdraw()).to.be.revertedWith('Tax not over 0');
     });
 
     it('should fail to withdraw to the failing treasury contract', async () => {
@@ -271,16 +283,17 @@ describe('Proof of Residency: permissions', () => {
         hashedMailingAddress,
         v,
         r,
-        s
+        s,
+        {
+          value: initialPrice
+        }
       );
 
       await timeTravelToValid();
 
-      await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
-        value: initialPrice
-      });
+      await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment);
 
-      await expect(proofOfResidencyUnaffiliated.withdraw(initialPrice)).to.be.revertedWith(
+      await expect(proofOfResidencyUnaffiliated.withdraw()).to.be.revertedWith(
         'Unable to withdraw'
       );
 
@@ -315,16 +328,17 @@ describe('Proof of Residency: permissions', () => {
         hashedMailingAddress,
         v,
         r,
-        s
+        s,
+        {
+          value: initialPrice
+        }
       );
 
       await timeTravelToValid();
 
-      await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
-        value: initialPrice
-      });
+      await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment);
 
-      await expect(proofOfResidencyUnaffiliated.withdraw(initialPrice.div(2))).to.be.revertedWith(
+      await expect(proofOfResidencyUnaffiliated.withdraw()).to.be.revertedWith(
         'Unable to withdraw'
       );
     });
@@ -351,25 +365,24 @@ describe('Proof of Residency: permissions', () => {
           hashedMailingAddress,
           v,
           r,
-          s
+          s,
+          {
+            value: initialPrice
+          }
         )
       ).to.be.revertedWith('Signatory non-committer');
     });
 
     it('should fail for public (never committed)', async () => {
       await expect(
-        proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
-          value: initialPrice
-        })
-      ).to.be.revertedWith('Commitment incorrec');
+        proofOfResidencyRequester1.mint(countryCommitment, secretCommitment)
+      ).to.be.revertedWith('Commitment incorrect');
     });
 
     it('should fail for public (never committed)', async () => {
       await expect(
-        proofOfResidencyRequester1.mint(countryCommitment, secretCommitment, {
-          value: initialPrice
-        })
-      ).to.be.revertedWith('Commitment incorrec');
+        proofOfResidencyRequester1.mint(countryCommitment, secretCommitment)
+      ).to.be.revertedWith('Commitment incorrect');
     });
 
     it('should fail to remove committer for public (no owner role)', async () => {

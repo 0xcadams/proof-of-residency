@@ -7,18 +7,24 @@ import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 import './ERC721NonTransferable.sol';
 
+import 'hardhat/console.sol';
+
 /**
  * @title Proof of Residency
  * @custom:security-contact security@proofofresidency.xyz
  *
- * @notice An ERC721 token for Proof of Personhood. Proves residency at a physical address
- * which is private. Based on a non-transferable ERC721 token.
+ * @notice An non-transferable ERC721 token for Proof of Personhood. Proves residency at a physical address
+ * which is kept private.
  *
  * @dev Uses a commit-reveal scheme to commit to a country and have a token issued based on that commitment.
  */
 contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, ReentrancyGuard {
-  /// @notice Mint price for tokens to contribute to the protocol
-  uint256 public mintPrice;
+  /// @notice Reservation price for tokens to contribute to the protocol
+  /// Incentivizes users to continue to sign up after requesting a letter
+  uint256 public reservePrice;
+
+  /// @notice Project treasury to send tax + donation
+  address public projectTreasury;
 
   /// @notice Commitments for each mailing address ID
   mapping(uint256 => uint256) public mailingAddressCounts;
@@ -37,6 +43,8 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   /// @notice Blacklist for mailing address IDs
   mapping(uint256 => bool) private _mailingAddressBlacklist;
 
+  /// @notice The tax + donation percentages (15% to MAW, 5% to original team)
+  uint256 private constant TAX_AND_DONATION_PERCENT = 20;
   /// @notice The waiting period before minting becomes available
   uint256 private constant PREMINTING_WAITING_PERIOD_TIME = 1 weeks;
   /// @notice The period during which minting is available (after the preminting period)
@@ -91,7 +99,11 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     string memory initialBaseUri,
     uint256 initialPrice
   ) ERC721NonTransferable('Proof of Residency Protocol', 'PORP') {
-    mintPrice = initialPrice;
+    projectTreasury = initialTreasury;
+    reservePrice = initialPrice;
+
+    console.log(type(uint16).max);
+
     __baseUri = initialBaseUri;
 
     _committerTreasuries[initialCommitter] = initialTreasury;
@@ -129,10 +141,16 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   }
 
   /**
+   * @notice Sets the main project treasury.
+   */
+  function setProjectTreasury(address newTreasury) external onlyOwner {
+    projectTreasury = newTreasury;
+  }
+
+  /**
    * @notice Adds a new committer address with their treasury.
    */
   function addCommitter(address newCommitter, address newTreasury) external onlyOwner {
-    // -disable-next-line missing-zero-check
     _committerTreasuries[newCommitter] = newTreasury;
 
     emit CommitterAdded(newCommitter);
@@ -142,7 +160,6 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
    * @notice Removes a new committer address with their treasury.
    */
   function removeCommitter(address removedCommitter) external onlyOwner {
-    // -disable-next-line missing-zero-check
     delete _committerTreasuries[removedCommitter];
 
     emit CommitterRemoved(removedCommitter);
@@ -158,11 +175,11 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   }
 
   /**
-   * @notice Sets the value required to mint an NFT. Deliberately as low as possible to
+   * @notice Sets the value required to request an NFT. Deliberately as low as possible to
    * incentivize committers, this may be changed to be lower/higher.
    */
   function setPrice(uint256 newPrice) external onlyOwner {
-    mintPrice = newPrice;
+    reservePrice = newPrice;
 
     emit PriceChanged(newPrice);
   }
@@ -186,27 +203,22 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
    */
   function mint(uint256 country, string memory publicKey)
     external
-    payable
     whenNotPaused
     nonReentrant
     returns (uint256)
   {
     Commitment storage existingCommitment = _commitments[_msgSender()];
 
-    require(msg.value == mintPrice, 'Incorrect value');
     require(
       existingCommitment.commitment == keccak256(abi.encode(_msgSender(), country, publicKey)),
       'Commitment incorrect'
     );
     // requires the requester to have no tokens - they cannot transfer, but may have burned a previous token
-    // TODO can this be reached?
     require(balanceOf(_msgSender()) == 0, 'Already owns token');
     // slither-disable-next-line timestamp
     require(block.timestamp >= existingCommitment.validAt, 'Cannot mint yet');
     // slither-disable-next-line timestamp
     require(block.timestamp <= existingCommitment.invalidAt, 'Expired');
-
-    _committerContributions[existingCommitment.committer] += msg.value;
 
     countryTokenCounts[country] += 1; // increment before minting so count starts at 1
     uint256 tokenId = country * LOCATION_MULTIPLIER + countryTokenCounts[country];
@@ -214,6 +226,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     delete _commitments[_msgSender()];
 
     _safeMint(_msgSender(), tokenId);
+    _setTokenTimestamp(tokenId, block.timestamp);
 
     return tokenId;
   }
@@ -231,15 +244,18 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     uint8 v,
     bytes32 r,
     bytes32 s
-  ) external whenNotPaused {
+  ) external payable whenNotPaused nonReentrant {
     address signatory = _validateSignature(to, commitment, hashedMailingAddress, v, r, s);
     require(_committerTreasuries[signatory] != address(0), 'Signatory non-committer');
+
+    require(msg.value == reservePrice, 'Incorrect value');
+    _committerContributions[signatory] += msg.value;
 
     // requires the requester to have no tokens - they cannot transfer, but may have burned a previous token
     require(balanceOf(to) == 0, 'Non-0 token');
 
     uint256 mailingAddressId = uint256(hashedMailingAddress);
-    require(!_mailingAddressBlacklist[mailingAddressId], 'Mailing address blacklisted');
+    require(!_mailingAddressBlacklist[mailingAddressId], 'Address blacklisted');
 
     mailingAddressCounts[mailingAddressId] += 1;
 
@@ -260,16 +276,26 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   }
 
   /**
-   * @notice Withdraws a specified amount of funds from the contract to the committer's treasury.
+   * @notice Withdraws funds from the contract to the committer's treasury.
+   *
+   * Applies a tax to the withdrawal for the protocol and donations.
    */
-  function withdraw(uint256 amount) external nonReentrant {
-    require(_committerContributions[_msgSender()] >= amount, 'Not available');
+  function withdraw() external nonReentrant {
+    uint256 totalAmount = _committerContributions[_msgSender()];
+    uint256 taxAndDonation = (totalAmount * TAX_AND_DONATION_PERCENT) / 100;
+    require(taxAndDonation > 0, 'Tax not over 0');
 
-    _committerContributions[_msgSender()] -= amount;
+    _committerContributions[_msgSender()] = 0;
 
     // slither-disable-next-line low-level-calls
-    (bool success, ) = _committerTreasuries[_msgSender()].call{ value: amount }('');
-    require(success, 'Unable to withdraw');
+    (bool success1, ) = projectTreasury.call{ value: taxAndDonation }('');
+    require(success1, 'Unable to send project treasury');
+
+    // slither-disable-next-line low-level-calls
+    (bool success2, ) = _committerTreasuries[_msgSender()].call{
+      value: totalAmount - taxAndDonation
+    }('');
+    require(success2, 'Unable to withdraw');
   }
 
   /**

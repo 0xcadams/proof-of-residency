@@ -1,15 +1,18 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { generatePublicPrivateKey } from 'src/api/bip';
+
 import {
   getCurrentWalletAddress,
   hashAndSignCommitmentEip712,
   validateMailingAddressSignature,
-  validateSignature
+  validatePasswordSignature
 } from 'src/api/ethers';
 
 import iso from 'iso-3166-1';
 
 import { SubmitAddressResponse, SubmitAddressRequest } from '../../types';
+import { sendLetter } from 'src/api/lob';
+import { createClient } from 'redis';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressResponse | null>) => {
   try {
@@ -21,17 +24,44 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
         return res.status(500).end('Signatures must be supplied');
       }
 
-      const signaturePasswordAddress = await validateSignature(
-        JSON.stringify(body.passwordPayload, null, 2),
+      const client = createClient({
+        url: process.env.REDIS_URL
+      });
+
+      await client.connect();
+
+      const getRedis = async (key: string): Promise<number | null> => {
+        const value = await client.get(key);
+
+        return value ? Number(value) : null;
+      };
+
+      const setRedis = async (key: string, value: number) => {
+        await client.set(key, value);
+      };
+
+      const lastRequestAddressSig = await getRedis(body.addressSignature);
+      const lastRequestIp =
+        typeof req.headers['x-forwarded-for'] === 'string' &&
+        (await getRedis(req.headers['x-forwarded-for']));
+
+      if (lastRequestAddressSig) {
+        return res.status(400).end('Must request an address verification again');
+      }
+      if (lastRequestIp && Date.now() - lastRequestIp <= 60000) {
+        return res.status(429).end('Slow it down, cowboy!!');
+      }
+
+      const signaturePasswordAddress = await validatePasswordSignature(
+        body.passwordPayload.hashedPassword,
+        body.passwordPayload.nonce,
         body.passwordSignature
       );
 
       // ensure that the address was sent from this backend
       const signatureMailAddress = await validateMailingAddressSignature(
-        body.addressPayload.primaryLine,
-        body.addressPayload.secondaryLine,
-        body.addressPayload.lastLine,
-        body.addressPayload.country,
+        body.addressPayload,
+
         body.addressSignature
       );
 
@@ -45,20 +75,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
         return res.status(500).end('Country code was incorrect');
       }
 
-      // TODO
-      // const distance = haversine(
-      //   props.geolocation,
-      //   {
-      //     latitude: result.data.components.latitude,
-      //     longitude: result.data.components.longitude
-      //   },
-      //   { unit: 'meter' }
-      // );
-
-      // if (distance <= 2000) {
-
-      // }
-
       const keygen = await generatePublicPrivateKey(body.passwordPayload.hashedPassword);
 
       const countryId = Number(countryIso.numeric);
@@ -68,26 +84,25 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
         signaturePasswordAddress,
         countryId,
         keygen.publicKey.toString('hex'),
-        body.addressPayload.primaryLine,
-        body.addressPayload.secondaryLine,
-        body.addressPayload.lastLine,
-        body.addressPayload.country
+        body.addressPayload
       );
 
-      // TODO add Lob sending and limit to only one letter per address
-      // await sendLetter(
-      //   body.name,
-      //   body.addressPayload.primaryLine,
-      //   body.addressPayload.secondaryLine,
-      //   body.addressPayload.lastLine,
-      //   body.addressPayload.country,
+      // const lastRequestHashedMailingAddress = await getRedis(hashedMailingAddress);
+      // TODO do something fancy here
+      // if (
+      //   lastRequestHashedMailingAddress &&
+      //   Date.now() - lastRequestHashedMailingAddress <= 86400000
+      // ) {
+      //   return res.status(429).end('Too many requests for this address!');
+      // }
 
-      //   keygen.mnemonic,
+      await sendLetter(body.addressPayload, keygen.mnemonic, signaturePasswordAddress);
 
-      //   signaturePasswordAddress
-      // );
-
-      console.log({ mnemonic: keygen.mnemonic });
+      await setRedis(hashedMailingAddress, Date.now());
+      await setRedis(body.addressSignature, Date.now());
+      if (typeof req.headers['x-forwarded-for'] === 'string') {
+        await setRedis(req.headers['x-forwarded-for'], Date.now());
+      }
 
       return res.status(200).json({
         v,

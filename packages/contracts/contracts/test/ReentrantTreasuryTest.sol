@@ -23,6 +23,6 @@ contract ReentrantTreasuryTest {
   receive() external payable {
     emit HitFallback();
 
-    por.withdraw(100);
+    por.withdraw();
   }
 }

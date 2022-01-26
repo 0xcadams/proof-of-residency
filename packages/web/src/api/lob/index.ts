@@ -1,6 +1,6 @@
 import lob from 'lob';
 import * as dayjs from 'dayjs';
-import { VerifyIntlAddressResponse, VerifyUsAddressResponse } from 'types';
+import { AddressComponents, VerifyIntlAddressResponse, VerifyUsAddressResponse } from 'types';
 
 const Lob = lob(process.env.LOB_API_KEY);
 
@@ -61,35 +61,35 @@ export const verifyIntlAddress = async (
 };
 
 export const sendLetter = (
-  name: string,
-  primaryLine: string,
-  secondaryLine: string | undefined,
-  lastLine: string,
-  country: string,
-
+  address: AddressComponents,
   mnemonic: string,
-
   idempotencyKey: string
 ) => {
+  const today = dayjs.default();
+
   return new Promise<VerifyIntlAddressResponse>((resolve, reject) => {
     Lob.letters.create(
       {
         to: {
-          name,
-          primary_line: primaryLine,
-          secondary_line: secondaryLine,
-          last_line: lastLine,
-          country
+          name: address.name,
+          address_line1: address.addressLine1,
+          address_line2: address.addressLine2,
+          address_city: address.city,
+          address_state: address.state,
+          address_zip: address.postal,
+          address_country: address.country
         },
         from: process.env.LOB_ADDRESS_ID,
         file: process.env.LOB_TEMPLATE_ID,
         merge_variables: {
-          today_date: dayjs.default().format('DD/MM/YYYY'),
-          country,
+          today_date: today.format('DD/MM/YYYY'),
+          valid_date: today.add(8, 'days').format('DD/MM/YYYY'), // 8 days :) to deal with time zone issues and delayed submissions
+          country: address.country,
           mnemonic
         },
         color: true
       },
+      // TODO should this be address.nonce?
       { 'idempotency-key': idempotencyKey },
       function (err: Error, res: any) {
         if (err) {

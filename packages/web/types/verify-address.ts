@@ -1,3 +1,5 @@
+import { AddressComponents } from './submit-address';
+
 export type Components = {
   primary_number: string;
   street_predirection: string;
@@ -97,15 +99,12 @@ export type VerifyUsAddressResponse = {
   object: 'us_verification';
 };
 
-export type VerifyAddressResponse = {
-  primaryLine: string;
-  secondaryLine: string;
-  lastLine: string;
-  country: string;
-
+export type VerifyAddressResponse = AddressComponents & {
   deliverability:
     | VerifyUsAddressResponse['deliverability']
     | VerifyIntlAddressResponse['deliverability'];
+
+  lastLine: string;
 
   latitude?: number;
   longitude?: number;
