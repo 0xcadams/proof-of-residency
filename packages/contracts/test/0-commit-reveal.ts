@@ -127,7 +127,8 @@ describe('Proof of Residency: commit/reveal scheme', () => {
         committer
       );
 
-      expect(await proofOfResidencyRequester1.getCommitmentPeriodIsValid()).to.be.false;
+      // TODO expect((await proofOfResidencyRequester1.getCommitment()).validAt).to.be.false;
+      // expect(await proofOfResidencyRequester1.getCommitmentPeriodIsValid()).to.be.false;
 
       await expect(
         proofOfResidencyRequester1.commitAddress(
@@ -152,7 +153,7 @@ describe('Proof of Residency: commit/reveal scheme', () => {
 
       await timeTravelToValid();
 
-      expect(await proofOfResidencyRequester1.getCommitmentPeriodIsValid()).to.be.true;
+      // TODO expect((await proofOfResidencyRequester1.getCommitment()).validAt).to.be.true;
 
       await expect(proofOfResidencyRequester1.mint(countryCommitment, 'secret2'))
         .to.emit(proofOfResidencyRequester1, 'Transfer')

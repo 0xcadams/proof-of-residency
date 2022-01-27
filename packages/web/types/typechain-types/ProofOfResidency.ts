@@ -18,6 +18,20 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
+export type CommitmentStruct = {
+  validAt: BigNumberish;
+  commitment: BytesLike;
+  committer: string;
+  value: BigNumberish;
+};
+
+export type CommitmentStructOutput = [BigNumber, string, string, BigNumber] & {
+  validAt: BigNumber;
+  commitment: string;
+  committer: string;
+  value: BigNumber;
+};
+
 export interface ProofOfResidencyInterface extends utils.Interface {
   functions: {
     "addCommitter(address,address)": FunctionFragment;
@@ -27,13 +41,14 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     "burn(uint256)": FunctionFragment;
     "commitAddress(address,bytes32,bytes32,uint8,bytes32,bytes32)": FunctionFragment;
     "contractURI()": FunctionFragment;
-    "countryTokenCounts(uint256)": FunctionFragment;
+    "countryTokenCounts(uint16)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getCommitment()": FunctionFragment;
     "getCommitmentPeriodIsUpcoming()": FunctionFragment;
     "getCommitmentPeriodIsValid()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "mailingAddressCounts(uint256)": FunctionFragment;
-    "mint(uint256,string)": FunctionFragment;
+    "mint(uint16,string)": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
@@ -90,6 +105,10 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getCommitment",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getCommitmentPeriodIsUpcoming",
@@ -213,6 +232,10 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getCommitment",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -474,6 +497,8 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    getCommitment(overrides?: CallOverrides): Promise<[CommitmentStructOutput]>;
+
     getCommitmentPeriodIsUpcoming(
       overrides?: CallOverrides
     ): Promise<[boolean]>;
@@ -489,7 +514,7 @@ export interface ProofOfResidency extends BaseContract {
     mailingAddressCounts(
       arg0: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    ): Promise<[number]>;
 
     mint(
       country: BigNumberish,
@@ -658,6 +683,8 @@ export interface ProofOfResidency extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  getCommitment(overrides?: CallOverrides): Promise<CommitmentStructOutput>;
+
   getCommitmentPeriodIsUpcoming(overrides?: CallOverrides): Promise<boolean>;
 
   getCommitmentPeriodIsValid(overrides?: CallOverrides): Promise<boolean>;
@@ -671,7 +698,7 @@ export interface ProofOfResidency extends BaseContract {
   mailingAddressCounts(
     arg0: BigNumberish,
     overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  ): Promise<number>;
 
   mint(
     country: BigNumberish,
@@ -831,6 +858,8 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    getCommitment(overrides?: CallOverrides): Promise<CommitmentStructOutput>;
+
     getCommitmentPeriodIsUpcoming(overrides?: CallOverrides): Promise<boolean>;
 
     getCommitmentPeriodIsValid(overrides?: CallOverrides): Promise<boolean>;
@@ -844,7 +873,7 @@ export interface ProofOfResidency extends BaseContract {
     mailingAddressCounts(
       arg0: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<number>;
 
     mint(
       country: BigNumberish,
@@ -1079,6 +1108,8 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getCommitment(overrides?: CallOverrides): Promise<BigNumber>;
+
     getCommitmentPeriodIsUpcoming(
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1266,6 +1297,8 @@ export interface ProofOfResidency extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    getCommitment(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getCommitmentPeriodIsUpcoming(
       overrides?: CallOverrides

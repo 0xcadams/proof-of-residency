@@ -14,7 +14,15 @@ import { useWallet } from 'use-wallet';
 // );
 
 const useProofOfResidency = () => {
-  const [proofOfResidency, setProofOfResidency] = useState<ProofOfResidency | null>(null);
+  const [proofOfResidency, setProofOfResidency] = useState<{
+    proofOfResidency: ProofOfResidency | null;
+    signer: ethers.providers.JsonRpcSigner | null;
+    provider: ethers.providers.Web3Provider | null;
+  }>({
+    proofOfResidency: null,
+    signer: null,
+    provider: null
+  });
 
   const wallet = useWallet();
 
@@ -40,7 +48,7 @@ const useProofOfResidency = () => {
         signer
       );
 
-      setProofOfResidency(proofOfResidency);
+      setProofOfResidency({ proofOfResidency, signer, provider });
     }
   }, [wallet.status]);
 
@@ -50,7 +58,7 @@ const useProofOfResidency = () => {
 export const useNetworkName = () => {
   const [network, setNetwork] = useState<string | null>(null);
 
-  const proofOfResidency = useProofOfResidency();
+  const { proofOfResidency } = useProofOfResidency();
 
   useEffect(() => {
     (async () => {
@@ -66,7 +74,7 @@ export const useNetworkName = () => {
 export const useGetCommitmentPeriodIsValid = () => {
   const [value, setValue] = useState<boolean | null>(null);
 
-  const proofOfResidency = useProofOfResidency();
+  const { proofOfResidency, signer } = useProofOfResidency();
 
   useEffect(() => {
     (async () => {
@@ -82,7 +90,7 @@ export const useGetCommitmentPeriodIsValid = () => {
 export const useGetCommitmentPeriodIsUpcoming = () => {
   const [value, setValue] = useState<boolean | null>(null);
 
-  const proofOfResidency = useProofOfResidency();
+  const { proofOfResidency } = useProofOfResidency();
 
   useEffect(() => {
     (async () => {
@@ -98,45 +106,45 @@ export const useGetCommitmentPeriodIsUpcoming = () => {
 export const useWalletAddress = () => {
   const [value, setValue] = useState<string | null>(null);
 
-  const proofOfResidency = useProofOfResidency();
+  const { signer } = useProofOfResidency();
 
   useEffect(() => {
     (async () => {
-      const response = await proofOfResidency?.signer.getAddress();
+      const response = await signer?.getAddress();
 
       setValue(response ?? null);
     })();
-  }, [proofOfResidency]);
+  }, [signer]);
 
   return value;
 };
 
 export const useSigner = () => {
-  const proofOfResidency = useProofOfResidency();
+  const { signer } = useProofOfResidency();
 
-  return proofOfResidency?.signer;
+  return signer;
 };
 
 export const useCommitAddress = () => {
-  const proofOfResidency = useProofOfResidency();
+  const { proofOfResidency } = useProofOfResidency();
 
   return proofOfResidency?.commitAddress;
 };
 
 export const useMint = () => {
-  const proofOfResidency = useProofOfResidency();
+  const { proofOfResidency } = useProofOfResidency();
 
   return proofOfResidency?.mint;
 };
 
 export const useMintPrice = () => {
-  const proofOfResidency = useProofOfResidency();
+  const { proofOfResidency } = useProofOfResidency();
 
   return proofOfResidency?.reservePrice;
 };
 
 export const useMintedCount = async (countryId: BigNumber): Promise<BigNumber | undefined> => {
-  const proofOfResidency = useProofOfResidency();
+  const { proofOfResidency } = useProofOfResidency();
 
   return proofOfResidency?.countryTokenCounts(countryId);
 };
