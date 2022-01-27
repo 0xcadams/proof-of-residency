@@ -73,20 +73,25 @@ describe('Proof of Residency: edge cases', () => {
       country,
 
       proofOfResidencyOwner.address,
-      committer
+      committer,
+      await proofOfResidencyRequester1.nonces(requester1.address)
     );
 
-    await proofOfResidencyCommitter.commitAddress(
-      requester1.address,
-      hash,
-      hashedMailingAddress,
-      v,
-      r,
-      s,
-      {
-        value: initialPrice
-      }
-    );
+    await expect(
+      proofOfResidencyRequester1.commitAddress(
+        requester1.address,
+        hash,
+        hashedMailingAddress,
+        v,
+        r,
+        s,
+        {
+          value: initialPrice
+        }
+      )
+    )
+      .to.emit(proofOfResidencyCommitter, 'CommitmentCreated')
+      .withArgs(requester1.address, committer.address, mailingAddressId, hash);
   });
 
   describe('PoR functions correctly (happy paths)', async () => {

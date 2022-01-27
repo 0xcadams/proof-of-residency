@@ -3,6 +3,7 @@ import { generatePublicPrivateKey } from 'src/api/bip';
 
 import {
   getCurrentWalletAddress,
+  getNonceForAddress,
   hashAndSignCommitmentEip712,
   validateMailingAddressSignature,
   validatePasswordSignature
@@ -52,7 +53,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
         return res.status(429).end('Slow it down, cowboy!!');
       }
 
-      const signaturePasswordAddress = await validatePasswordSignature(
+      const requesterAddress = await validatePasswordSignature(
         body.passwordPayload.hashedPassword,
         body.passwordPayload.nonce,
         body.passwordSignature
@@ -80,11 +81,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
       const countryId = Number(countryIso.numeric);
       const countryName = countryIso.country;
 
+      const nonce = await getNonceForAddress(requesterAddress);
+
       const { commitment, hashedMailingAddress, v, r, s } = await hashAndSignCommitmentEip712(
-        signaturePasswordAddress,
+        requesterAddress,
         countryId,
         keygen.publicKey.toString('hex'),
-        body.addressPayload
+        body.addressPayload,
+        nonce
       );
 
       // const lastRequestHashedMailingAddress = await getRedis(hashedMailingAddress);
@@ -96,7 +100,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
       //   return res.status(429).end('Too many requests for this address!');
       // }
 
-      await sendLetter(body.addressPayload, keygen.mnemonic, signaturePasswordAddress);
+      await sendLetter(body.addressPayload, keygen.mnemonic, requesterAddress);
 
       await setRedis(hashedMailingAddress, Date.now());
       await setRedis(body.addressSignature, Date.now());

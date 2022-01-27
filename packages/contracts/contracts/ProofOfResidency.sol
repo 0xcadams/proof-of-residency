@@ -54,6 +54,9 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   /// @notice Multiplier for country token IDs
   uint256 private constant LOCATION_MULTIPLIER = 1e15;
 
+  /// @notice We include a nonce in every hashed message, and increment the nonce as part of a
+  /// state-changing operation, so as to prevent replay attacks, i.e. the reuse of a signature.
+  mapping(address => uint256) public nonces;
   /// @notice The version of this contract
   string private constant VERSION = '1';
   /// @notice The EIP-712 typehash for the contract's domain
@@ -61,7 +64,9 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     keccak256('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)');
   /// @notice The EIP-712 typehash for the commitment struct used by the contract
   bytes32 private constant COMMITMENT_TYPEHASH =
-    keccak256('Commitment(address to,bytes32 commitment,bytes32 hashedMailingAddress)');
+    keccak256(
+      'Commitment(address to,bytes32 commitment,bytes32 hashedMailingAddress,uint256 nonce)'
+    );
   /// @notice The domain separator for EIP-712
   bytes32 private immutable _domainSeparator;
 
@@ -215,6 +220,8 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     address signatory = _validateSignature(to, commitment, hashedMailingAddress, v, r, s);
     require(_committerTreasuries[signatory] != address(0), 'Signatory non-committer');
 
+    _incrementNonce(_msgSender());
+
     require(msg.value == reservePrice, 'Incorrect value');
 
     // requires the requester to have no tokens - they cannot transfer, but may have burned a previous token
@@ -254,7 +261,8 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     Commitment memory existingCommitment = _commitments[_msgSender()];
 
     require(
-      existingCommitment.commitment == keccak256(abi.encode(_msgSender(), country, publicKey)),
+      existingCommitment.commitment ==
+        keccak256(abi.encode(_msgSender(), country, publicKey, nonces[_msgSender()])),
       'Commitment incorrect'
     );
     // requires the requester to have no tokens - they cannot transfer, but may have burned a previous token
@@ -263,6 +271,8 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     require(block.timestamp >= existingCommitment.validAt, 'Cannot mint yet');
     // slither-disable-next-line timestamp
     require(block.timestamp <= existingCommitment.validAt + MINTING_PERIOD_TIME, 'Expired');
+
+    _incrementNonce(_msgSender());
 
     // add the value to the committers successful commitments
     _committerContributions[existingCommitment.committer] += existingCommitment.value;
@@ -344,12 +354,19 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     bytes32 s
   ) private view returns (address) {
     bytes32 structHash = keccak256(
-      abi.encode(COMMITMENT_TYPEHASH, to, commitment, hashedMailingAddress)
+      abi.encode(COMMITMENT_TYPEHASH, to, commitment, hashedMailingAddress, nonces[to])
     );
     bytes32 digest = keccak256(abi.encodePacked('\x19\x01', _domainSeparator, structHash));
     address signatory = ecrecover(digest, v, r, s);
 
     return signatory;
+  }
+
+  /**
+   * @dev Increments the nonce used by the signature/commitment scheme. Used to prevent replay attacks.
+   */
+  function _incrementNonce(address account) private {
+    nonces[account] += 1;
   }
 
   /**

@@ -15,7 +15,7 @@ const IndexPage = () => {
 
       <Flex minHeight="90vh" pt="70px" width="100%" direction="column" px={4}>
         <Heading mt={20} size="2xl" textAlign="center">
-          Proof of personhood using physical mail
+          Blockchain proof of personhood using physical mail
         </Heading>
 
         <Box>

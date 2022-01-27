@@ -18,7 +18,13 @@ import {
   SubmitAddressResponse
 } from '../../../types';
 import { VerifyAddressResponse } from 'types';
-import { useCommitAddress, useMintPrice, useSignPasswordEip712, useWalletAddress } from '../hooks';
+import {
+  useCommitAddress,
+  useCurrentNonce,
+  useMintPrice,
+  useSignPasswordEip712,
+  useWalletAddress
+} from '../hooks';
 import { ethers } from 'ethers';
 import { CoordinateLongitudeLatitude } from 'haversine';
 import { useRouter } from 'next/router';
@@ -39,14 +45,13 @@ export const ConfirmModal = (props: {
   const commitAddress = useCommitAddress();
   const mintPrice = useMintPrice();
   const signPasswordEip712 = useSignPasswordEip712();
+  const nonce = useCurrentNonce();
 
   const onSubmit = async () => {
-    if (walletAddress && commitAddress && mintPrice) {
+    if (walletAddress && commitAddress && mintPrice && nonce) {
       const hashedPassword = ethers.utils.keccak256(
         ethers.utils.defaultAbiCoder.encode(['string', 'string'], [walletAddress, password])
       );
-
-      const nonce = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
 
       const passwordPayload: SubmitAddressPasswordPayload = {
         hashedPassword,

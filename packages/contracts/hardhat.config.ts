@@ -36,11 +36,11 @@ const config: HardhatUserConfig = {
   },
   networks: {
     hardhat: {
-      chainId: 1337
-      // forking: {
-      //   url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
-      //   blockNumber: 13762650
-      // }
+      chainId: 1337,
+      forking: {
+        url: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
+        blockNumber: 14090042
+      }
     },
     localhost: {
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined

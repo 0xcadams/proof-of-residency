@@ -119,6 +119,26 @@ export const useWalletAddress = () => {
   return value;
 };
 
+export const useCurrentNonce = () => {
+  const [value, setValue] = useState<BigNumber | null>(null);
+
+  const { signer, proofOfResidency } = useProofOfResidency();
+
+  useEffect(() => {
+    (async () => {
+      const response = await signer?.getAddress();
+
+      if (response) {
+        const nonce = await proofOfResidency?.nonces(response);
+
+        setValue(nonce ?? null);
+      }
+    })();
+  }, [signer, proofOfResidency]);
+
+  return value;
+};
+
 export const useSigner = () => {
   const { signer } = useProofOfResidency();
 
@@ -164,30 +184,32 @@ const passwordTypes = {
 };
 
 export const useSignPasswordEip712 = () => {
-  const wallet = useWallet();
+  const { signer } = useProofOfResidency();
 
-  return useCallback(async (password: string, nonce: number) => {
-    if (wallet.chainId) {
-      const domain = await getEip712Domain(
-        process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '',
-        wallet.chainId
-      );
+  return useCallback(
+    async (password: string, nonce: BigNumber) => {
+      const chainId = await signer?.getChainId();
 
-      const provider = new ethers.providers.Web3Provider(wallet.ethereum);
-      const signer = provider.getSigner();
+      if (chainId && signer) {
+        const domain = await getEip712Domain(
+          process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '',
+          chainId
+        );
 
-      const signature = await signer._signTypedData(domain, passwordTypes, {
-        password,
-        nonce
-      });
+        const signature = await signer._signTypedData(domain, passwordTypes, {
+          password,
+          nonce
+        });
 
-      return signature;
-    }
+        return signature;
+      }
 
-    console.error('Chain ID is not available');
+      console.error('Chain ID or signer is not available');
 
-    return null;
-  }, []);
+      return null;
+    },
+    [signer]
+  );
 };
 
 // export type TokenOwner = { content: string; link: string | null };

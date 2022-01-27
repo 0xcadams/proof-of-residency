@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { AddressComponents, ProofOfResidency__factory as ProofOfResidencyFactory } from 'types';
 
 if (!process.env.PRIVATE_KEY || !process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) {
@@ -35,12 +35,13 @@ export const hashAndSignCommitmentEip712 = async (
   countryId: number,
   publicKey: string,
 
-  mailingAddress: AddressComponents
+  mailingAddress: AddressComponents,
+  nonce: BigNumber
 ) => {
   const hash = ethers.utils.keccak256(
     ethers.utils.defaultAbiCoder.encode(
-      ['address', 'uint256', 'string'],
-      [walletAddress, countryId, publicKey]
+      ['address', 'uint256', 'string', 'uint256'],
+      [walletAddress, countryId, publicKey, nonce.add(1)]
     )
   );
 
@@ -68,14 +69,16 @@ export const hashAndSignCommitmentEip712 = async (
     Commitment: [
       { name: 'to', type: 'address' },
       { name: 'commitment', type: 'bytes32' },
-      { name: 'hashedMailingAddress', type: 'bytes32' }
+      { name: 'hashedMailingAddress', type: 'bytes32' },
+      { name: 'nonce', type: 'uint256' }
     ]
   };
 
   const signature = await wallet._signTypedData(domain, types, {
     to: walletAddress,
     commitment: hash,
-    hashedMailingAddress
+    hashedMailingAddress,
+    nonce
   });
 
   const { v, r, s } = ethers.utils.splitSignature(signature);
@@ -130,7 +133,7 @@ const passwordTypes = {
 
 export const validatePasswordSignature = async (
   password: string,
-  nonce: number,
+  nonce: BigNumber,
   signature: string
 ): Promise<string> => {
   const domain = await getEip712Domain(
@@ -157,4 +160,8 @@ export const getCurrentWalletAddress = (): string => {
 
 export const getCurrentMintedCount = async (countryId: number) => {
   return proofOfResidency.countryTokenCounts(countryId);
+};
+
+export const getNonceForAddress = async (address: string) => {
+  return proofOfResidency.nonces(address);
 };

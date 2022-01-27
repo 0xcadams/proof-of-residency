@@ -69,7 +69,8 @@ describe('Proof of Residency: commit/reveal scheme', () => {
       country,
 
       proofOfResidencyOwner.address,
-      committer
+      committer,
+      await proofOfResidencyRequester1.nonces(requester1.address)
     );
 
     await expect(
@@ -124,7 +125,8 @@ describe('Proof of Residency: commit/reveal scheme', () => {
         country,
 
         proofOfResidencyOwner.address,
-        committer
+        committer,
+        await proofOfResidencyRequester1.nonces(requester1.address)
       );
 
       // TODO expect((await proofOfResidencyRequester1.getCommitment()).validAt).to.be.false;
@@ -197,7 +199,8 @@ describe('Proof of Residency: commit/reveal scheme', () => {
         country,
 
         proofOfResidencyOwner.address,
-        committer
+        committer,
+        await proofOfResidencyRequester1.nonces(requester1.address)
       );
 
       await expect(
@@ -229,7 +232,8 @@ describe('Proof of Residency: commit/reveal scheme', () => {
         country,
 
         proofOfResidencyOwner.address,
-        committer
+        committer,
+        await proofOfResidencyRequester1.nonces(requester1.address)
       );
 
       const { hashedMailingAddress: badHashedMailingAddress } = await signCommitment(
@@ -243,7 +247,8 @@ describe('Proof of Residency: commit/reveal scheme', () => {
         country,
 
         proofOfResidencyOwner.address,
-        committer
+        committer,
+        await proofOfResidencyRequester1.nonces(requester1.address)
       );
 
       await expect(
@@ -272,7 +277,8 @@ describe('Proof of Residency: commit/reveal scheme', () => {
         country,
 
         proofOfResidencyOwner.address,
-        committer
+        committer,
+        await proofOfResidencyRequester1.nonces(requester1.address)
       );
 
       await expect(

@@ -1,3 +1,5 @@
+import { BigNumber } from 'ethers';
+
 export type AddressComponents = {
   name: string;
   addressLine1: string;
@@ -7,12 +9,12 @@ export type AddressComponents = {
   postal?: string;
   country: string;
 
-  nonce: number;
+  nonce: BigNumber;
 };
 
 export type SubmitAddressPasswordPayload = {
   hashedPassword: string;
-  nonce: number;
+  nonce: BigNumber;
 };
 
 export type SubmitAddressRequest = {

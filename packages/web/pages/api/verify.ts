@@ -5,6 +5,7 @@ import faker from 'faker';
 
 import iso from 'iso-3166-1';
 import { signAddressEip712 } from 'src/api/ethers';
+import { ethers } from 'ethers';
 
 const usCountryCodes = ['US', 'AS', 'PR', 'FM', 'GU', 'MH', 'MP', 'PW', 'VI'];
 
@@ -14,7 +15,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<VerifyAddressRe
     const body: VerifyAddressRequest = req.body;
 
     if (method === 'POST') {
-      const nonce = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+      const nonce = ethers.BigNumber.from(ethers.utils.randomBytes(32));
+
       const name = `${faker.name.firstName()} ${faker.name.lastName()}`;
 
       const isoCountry = iso.whereAlpha2(body.country);

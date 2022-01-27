@@ -83,7 +83,8 @@ describe('Proof of Residency: permissions', () => {
         country,
 
         proofOfResidencyOwner.address,
-        unaffiliated
+        unaffiliated,
+        await proofOfResidencyRequester1.nonces(requester1.address)
       );
 
       await proofOfResidencyRequester1.commitAddress(
@@ -142,7 +143,8 @@ describe('Proof of Residency: permissions', () => {
         country,
 
         proofOfResidencyOwner.address,
-        committer
+        committer,
+        await proofOfResidencyRequester1.nonces(requester1.address)
       );
 
       await expect(
@@ -178,7 +180,8 @@ describe('Proof of Residency: permissions', () => {
         country,
 
         proofOfResidencyOwner.address,
-        committer
+        committer,
+        await proofOfResidencyRequester1.nonces(requester1.address)
       );
 
       await proofOfResidencyRequester1.commitAddress(
@@ -218,7 +221,8 @@ describe('Proof of Residency: permissions', () => {
         country,
 
         proofOfResidencyOwner.address,
-        unaffiliated
+        unaffiliated,
+        await proofOfResidencyRequester1.nonces(requester1.address)
       );
 
       await proofOfResidencyRequester1.commitAddress(
@@ -274,7 +278,8 @@ describe('Proof of Residency: permissions', () => {
         country,
 
         proofOfResidencyOwner.address,
-        unaffiliated
+        unaffiliated,
+        await proofOfResidencyRequester1.nonces(requester1.address)
       );
 
       await proofOfResidencyRequester1.commitAddress(
@@ -319,7 +324,8 @@ describe('Proof of Residency: permissions', () => {
         country,
 
         proofOfResidencyOwner.address,
-        unaffiliated
+        unaffiliated,
+        await proofOfResidencyRequester1.nonces(requester1.address)
       );
 
       await proofOfResidencyRequester1.commitAddress(
@@ -355,12 +361,44 @@ describe('Proof of Residency: permissions', () => {
         country,
 
         proofOfResidencyOwner.address,
-        unaffiliated
+        unaffiliated,
+        await proofOfResidencyRequester1.nonces(requester1.address)
       );
 
       await expect(
         proofOfResidencyRequester1.commitAddress(
           proofOfResidencyRequester1.address,
+          hash,
+          hashedMailingAddress,
+          v,
+          r,
+          s,
+          {
+            value: initialPrice
+          }
+        )
+      ).to.be.revertedWith('Signatory non-committer');
+    });
+
+    it('should fail with incorrect nonce', async () => {
+      const { hash, hashedMailingAddress, v, r, s } = await signCommitment(
+        requester1.address,
+        countryCommitment,
+        secretCommitment,
+
+        primaryLine,
+        secondaryLine,
+        lastLine,
+        country,
+
+        proofOfResidencyOwner.address,
+        committer,
+        BigNumber.from(100)
+      );
+
+      await expect(
+        proofOfResidencyRequester1.commitAddress(
+          requester1.address,
           hash,
           hashedMailingAddress,
           v,

@@ -1,4 +1,5 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import { BigNumber } from 'ethers';
 import { ethers } from 'hardhat';
 
 export const timeTravel = async (days: number) => {
@@ -31,14 +32,16 @@ export const signCommitment = async (
   country: string,
 
   contractAddress: string,
-  signer: SignerWithAddress
+  signer: SignerWithAddress,
+
+  nonce: BigNumber
 ) => {
   const domain = await getEip712Domain(contractAddress, await signer.getChainId());
 
   const hash = ethers.utils.keccak256(
     ethers.utils.defaultAbiCoder.encode(
-      ['address', 'uint256', 'string'],
-      [walletAddress, countryId, publicKey]
+      ['address', 'uint256', 'string', 'uint256'],
+      [walletAddress, countryId, publicKey, nonce.add(1)]
     )
   );
 
@@ -53,14 +56,16 @@ export const signCommitment = async (
     Commitment: [
       { name: 'to', type: 'address' },
       { name: 'commitment', type: 'bytes32' },
-      { name: 'hashedMailingAddress', type: 'bytes32' }
+      { name: 'hashedMailingAddress', type: 'bytes32' },
+      { name: 'nonce', type: 'uint256' }
     ]
   };
 
   const signature = await signer._signTypedData(domain, types, {
     to: walletAddress,
     commitment: hash,
-    hashedMailingAddress
+    hashedMailingAddress,
+    nonce
   });
 
   const { v, r, s } = ethers.utils.splitSignature(signature);
