@@ -71,6 +71,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   bytes32 private immutable _domainSeparator;
 
   /// @notice The baseURI for the metadata of this contract (extra underscore to avoid clashing with function)
+  // slither-disable-next-line naming-convention
   string private __baseUri;
 
   /// @notice The struct to represent commitments to an address
@@ -106,6 +107,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     string memory initialBaseUri,
     uint256 initialPrice
   ) ERC721NonTransferable('Proof of Residency Protocol', 'PORP') {
+    // slither-disable-next-line missing-zero-check
     projectTreasury = initialTreasury;
     reservePrice = initialPrice;
 
@@ -149,6 +151,8 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
    * @notice Sets the main project treasury.
    */
   function setProjectTreasury(address newTreasury) external onlyOwner {
+    require(newTreasury != address(0), 'Non-0 address');
+
     projectTreasury = newTreasury;
   }
 
