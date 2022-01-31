@@ -18,21 +18,29 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
-export type CommitmentStruct = {
-  validAt: BigNumberish;
-  commitment: BytesLike;
-  committer: string;
-  value: BigNumberish;
-};
+export declare namespace ProofOfResidency {
+  export type CommitmentStruct = {
+    validAt: BigNumberish;
+    commitment: BytesLike;
+    committer: string;
+    value: BigNumberish;
+  };
 
-export type CommitmentStructOutput = [BigNumber, string, string, BigNumber] & {
-  validAt: BigNumber;
-  commitment: string;
-  committer: string;
-  value: BigNumber;
-};
+  export type CommitmentStructOutput = [
+    BigNumber,
+    string,
+    string,
+    BigNumber
+  ] & {
+    validAt: BigNumber;
+    commitment: string;
+    committer: string;
+    value: BigNumber;
+  };
+}
 
 export interface ProofOfResidencyInterface extends utils.Interface {
+  contractName: "ProofOfResidency";
   functions: {
     "addCommitter(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
@@ -419,6 +427,7 @@ export type UnpausedEvent = TypedEvent<[string], { account: string }>;
 export type UnpausedEventFilter = TypedEventFilter<UnpausedEvent>;
 
 export interface ProofOfResidency extends BaseContract {
+  contractName: "ProofOfResidency";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -491,7 +500,9 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    getCommitment(overrides?: CallOverrides): Promise<[CommitmentStructOutput]>;
+    getCommitment(
+      overrides?: CallOverrides
+    ): Promise<[ProofOfResidency.CommitmentStructOutput]>;
 
     getCommitmentPeriodIsUpcoming(
       overrides?: CallOverrides
@@ -674,7 +685,9 @@ export interface ProofOfResidency extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  getCommitment(overrides?: CallOverrides): Promise<CommitmentStructOutput>;
+  getCommitment(
+    overrides?: CallOverrides
+  ): Promise<ProofOfResidency.CommitmentStructOutput>;
 
   getCommitmentPeriodIsUpcoming(overrides?: CallOverrides): Promise<boolean>;
 
@@ -846,7 +859,9 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getCommitment(overrides?: CallOverrides): Promise<CommitmentStructOutput>;
+    getCommitment(
+      overrides?: CallOverrides
+    ): Promise<ProofOfResidency.CommitmentStructOutput>;
 
     getCommitmentPeriodIsUpcoming(overrides?: CallOverrides): Promise<boolean>;
 

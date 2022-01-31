@@ -7,6 +7,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface ReentrantTreasuryTestInterface extends utils.Interface {
+  contractName: "ReentrantTreasuryTest";
   functions: {};
 
   events: {
@@ -21,6 +22,7 @@ export type HitFallbackEvent = TypedEvent<[], {}>;
 export type HitFallbackEventFilter = TypedEventFilter<HitFallbackEvent>;
 
 export interface ReentrantTreasuryTest extends BaseContract {
+  contractName: "ReentrantTreasuryTest";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
