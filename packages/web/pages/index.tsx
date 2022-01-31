@@ -1,4 +1,4 @@
-import { Flex, Heading, Text, useBreakpointValue } from '@chakra-ui/react';
+import { Flex, Text, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -14,11 +14,7 @@ const IndexPage = () => {
       <Header />
 
       <Flex minHeight="90vh" pt="70px" width="100%" direction="column" px={4}>
-        <Heading mt={20} size="2xl" textAlign="center">
-          Blockchain proof of personhood using physical mail
-        </Heading>
-
-        <Flex mt={10} mb={4} mx="auto" position="relative" width="100%" height={frameHeight}>
+        <Flex mt={2} mb={4} mx="auto" position="relative" width="100%" height={frameHeight}>
           <Image
             priority
             objectFit="contain"
@@ -35,9 +31,9 @@ const IndexPage = () => {
           </Text>
 
           <Text fontSize="lg" mt={8} textAlign="center">
-            This project is a Sybil-resistant proof of personhood protocol which issues
-            non-transferable ERC-721 tokens (NFTs) based on physical mailing addresses. We send mail
-            with a secret phrase and use a{' '}
+            A privacy-focused, Sybil-resistant proof of personhood protocol which issues
+            non-transferable NFTs based on physical mailing addresses. We perform a reverse Turing
+            test by sending mail with a secret phrase and use a{' '}
             <strong>
               <Link
                 aria-label="Commitment scheme wiki"
@@ -46,8 +42,9 @@ const IndexPage = () => {
                 commitment scheme
               </Link>
             </strong>{' '}
-            to ensure that the recipient resides at the provided address. The address is kept
-            private and names are not requested.
+            to ensure that the recipient resides at the provided address. Privacy is the first
+            priority - your address is kept private and real names are not requested.
+            Decentralization and community ownership is built into the protocol.
           </Text>
 
           <Text fontSize="md" mt={8} textAlign="center">
