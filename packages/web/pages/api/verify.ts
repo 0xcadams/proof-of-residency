@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { verifyUsAddress, verifyIntlAddress } from 'src/api/lob';
 import { AddressComponents, VerifyAddressRequest, VerifyAddressResponse } from 'types';
-import faker from 'faker';
+import { faker } from '@faker-js/faker';
 
 import iso from 'iso-3166-1';
 import { signAddressEip712 } from 'src/api/ethers';
