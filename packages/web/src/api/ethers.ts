@@ -9,7 +9,8 @@ if (!process.env.PRIVATE_KEY || !process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) {
 }
 
 const provider = ethers.getDefaultProvider(
-  process.env.VERCEL_ENV === 'production' || process.env.VERCEL_ENV === 'preview'
+  process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' ||
+    process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
     ? 'rinkeby'
     : 'http://localhost:8545',
   {
