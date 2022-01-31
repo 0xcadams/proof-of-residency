@@ -4,15 +4,6 @@ import { ProofOfResidency, ProofOfResidency__factory as ProofOfResidencyFactory 
 
 import { useWallet } from 'use-wallet';
 
-// ethers.getDefaultProvider(
-//   process.env.VERCEL_ENV === 'production' ? 'rinkeby' : 'localhost',
-//   {
-//     etherscan: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY,
-//     infura: process.env.NEXT_PUBLIC_INFURA_PROJECT_ID,
-//     alchemy: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY
-//   }
-// );
-
 const useProofOfResidency = () => {
   const [proofOfResidency, setProofOfResidency] = useState<{
     proofOfResidency: ProofOfResidency | null;

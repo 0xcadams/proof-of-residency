@@ -9,7 +9,9 @@ if (!process.env.PRIVATE_KEY || !process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) {
 }
 
 const provider = ethers.getDefaultProvider(
-  process.env.VERCEL_ENV === 'production' ? 'rinkeby' : 'http://localhost:8545',
+  process.env.VERCEL_ENV === 'production' || process.env.VERCEL_ENV === 'preview'
+    ? 'rinkeby'
+    : 'http://localhost:8545',
   {
     etherscan: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY,
     infura: process.env.NEXT_PUBLIC_INFURA_PROJECT_ID,

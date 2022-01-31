@@ -42,7 +42,6 @@ jobs:
       - name: Run code analysis
         # this is dumb, but slither has a problem with yarn workspaces and it's not worth the time
         run: |
-          cp -r ../../node_modules/@openzeppelin/ ./node_modules/@openzeppelin/
           yarn analyze
 
       - name: Run test coverage
