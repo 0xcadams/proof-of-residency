@@ -50,7 +50,7 @@ export const getTokenIdForAllCountries = () =>
 
 export const getCacheableTokenIds = () =>
   getAllCountries().flatMap((country) => {
-    const tokenCounts = [...Array(200)].map((_, i) => i + 1);
+    const tokenCounts = [...Array(1)].map((_, i) => i + 1);
 
     return tokenCounts.map((tokenCount) =>
       BigNumber.from(Number(country.numeric)).mul(1e15).add(tokenCount).toString()
