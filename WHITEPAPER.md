@@ -76,9 +76,9 @@ The address parameters are then used to reconstruct the original commitment and 
 
 If the commitment is valid, then a **non-transferable ERC-721 token** is minted with the country information. The user pays a gas fee as well as a minimal ETH amount to cover the [costs of sending a letter through Lob](https://www.lob.com/pricing/print-mail) and development costs of the platform (this is a variable cost set by an owner of the contract, which is ideally as low as possible to support innovation on top of the platform).
 
-### NFT
+### ERC-721
 
-An NFT is issued with the metadata returned by an API, with plans to move to IPFS. The structure of this metadata follows [OpenSea's standards](https://docs.opensea.io/docs/metadata-standards), but is subject to change.
+An ERC-721 token is issued with the metadata returned by an API, with plans to move to IPFS. The structure of this metadata follows [OpenSea's standards](https://docs.opensea.io/docs/metadata-standards), but is subject to change.
 
 ## Known Attack Vectors/Tradeoffs
 
