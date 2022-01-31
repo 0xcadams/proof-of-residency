@@ -43,7 +43,7 @@ const Header = () => {
           wallet.isConnected &&
           network !== 'homestead' && (
             <Badge fontSize="md" ml={3}>
-              Connected to {network ?? 'Unknown'}
+              {network === 'unknown' ? 'Local' : network ?? 'Unknown'}
             </Badge>
           )}
 

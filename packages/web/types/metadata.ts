@@ -1,7 +1,7 @@
 export type Attribute = {
   trait_type:
     | 'Country'
-    | 'Country Iterations'
+    | 'Outline Iterations'
     | 'Theme'
     | 'Background'
     | 'Type'

@@ -1,4 +1,5 @@
 import { BigNumber, ethers } from 'ethers';
+import { getCountryAndTokenNumber } from 'src/web/token';
 import { AddressComponents, ProofOfResidency__factory as ProofOfResidencyFactory } from 'types';
 
 if (!process.env.PRIVATE_KEY || !process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) {
@@ -158,10 +159,34 @@ export const getCurrentWalletAddress = (): string => {
   return wallet.address;
 };
 
-export const getCurrentMintedCount = async (countryId: number) => {
+export const getCurrentMintedCount = async (countryId: BigNumber | number) => {
   return proofOfResidency.countryTokenCounts(countryId);
 };
 
 export const getNonceForAddress = async (address: string) => {
   return proofOfResidency.nonces(address);
+};
+
+export type TokenOwner = { content: string; link: string | null };
+
+export const getOwnerOfToken = async (tokenId: string | BigNumber): Promise<TokenOwner> => {
+  try {
+    const { countryId, tokenNumber } = getCountryAndTokenNumber(tokenId);
+
+    const count = await getCurrentMintedCount(countryId);
+
+    if (count.gte(tokenNumber)) {
+      const owner = await proofOfResidency.ownerOf(tokenId);
+
+      return {
+        content: owner?.slice(0, 8) || 'None',
+        link: owner ? `https://etherscan.io/address/${owner}` : null
+      };
+    }
+  } catch (e) {}
+
+  return {
+    content: 'None',
+    link: null
+  };
 };

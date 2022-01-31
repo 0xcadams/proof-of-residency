@@ -211,27 +211,3 @@ export const useSignPasswordEip712 = () => {
     [signer]
   );
 };
-
-// export type TokenOwner = { content: string; link: string | null };
-
-// export const getOwnerOfToken = async (tokenId: BigNumber): Promise<TokenOwner> => {
-//   // const count = await getMintedCount(tokenId.div(ethers.BigNumber.from(10).pow(15)));
-
-//   try {
-//     const { proofOfResidency } = getProofOfResidency();
-
-//     // if (count.toNumber() >= tokenId.mod(1000)) {
-//     const owner = await proofOfResidency.ownerOf(tokenId);
-
-//     return {
-//       content: owner?.slice(0, 8) || 'None',
-//       link: owner ? `https://etherscan.io/address/${owner}` : null
-//     };
-//     // }
-//   } catch (e) {}
-
-//   return {
-//     content: 'None',
-//     link: null
-//   };
-// };
