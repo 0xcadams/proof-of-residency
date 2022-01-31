@@ -2,7 +2,6 @@ import { Box, Flex, Heading, Text, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import LandingImage from '../public/russia.png';
 import Footer from '../src/web/components/Footer';
 import Header from '../src/web/components/Header';
 
@@ -24,8 +23,7 @@ const IndexPage = () => {
               priority
               objectFit="contain"
               layout="fill"
-              placeholder="empty"
-              src={LandingImage}
+              src="/russia.png"
               alt="Proof of residency image"
             />
           </Flex>
