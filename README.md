@@ -3,7 +3,7 @@
     Proof of Residency
   </h1>
 
-  <!-- <img src="https://proofofresidency.xyz/washington.png" alt="Seattle POR" width="100%" /> -->
+  <img src="https://proofofresidency.xyz/russia.png" alt="Russia POR" width="100%" />
 
   <br />
 
@@ -20,7 +20,7 @@ Proof of Residency is a Sybil-resistant Proof of Personhood protocol which issue
 
 This stack uses [Hardhat](https://hardhat.org) to orchestrate tasks and [Ethers](https://docs.ethers.io/v5/) for all Ethereum interactions and testing. There are also shared types between the tests and smart contract layer using [Typechain](https://github.com/dethcrypto/TypeChain).
 
-Clone this repository, then install the dependencies with `yarn install`. The smart contract code is under `packages/contracts` and the web code is under `packages/web`. This repository does not contain the code behind the artwork for each NFT.
+Clone this repository, then install the dependencies with `yarn install`. The smart contract code is under `packages/contracts` and the web code is under `packages/web`. This repository does not contain the code behind the artwork for each ERC-721.
 
 Please see the [website](https://proofofresidency.xyz) for more information!
 

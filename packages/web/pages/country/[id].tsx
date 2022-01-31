@@ -16,6 +16,7 @@ import Header from '../../src/web/components/Header';
 type CountryDetailsProps = Country & {
   countryId: number;
   image: string;
+  imageLarge: string;
   minted: number;
   tokens: {
     tokenId: string;
@@ -88,13 +89,14 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
       ...isoCountry,
       countryId,
       image: `/previews/${countryId}.png`,
+      imageLarge: `/previews-large/${countryId}.png`,
       minted: mintedCount?.toNumber() ?? 0,
       tokens
     };
 
     return {
       props,
-      revalidate: 60
+      revalidate: 300
     };
   } catch (e) {
     console.error(e);
@@ -135,8 +137,8 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
             images: [
               {
                 url: `https://proofofresidency.xyz${props.image}`,
-                width: 1000,
-                height: 1000,
+                width: 1800,
+                height: 1800,
                 alt: props.country
               }
             ]
@@ -149,7 +151,7 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
               objectFit="contain"
               layout="fill"
               placeholder="empty"
-              src={props.image}
+              src={props.imageLarge}
               alt={props.country}
             />
           </Flex>

@@ -67,7 +67,7 @@ const FaqPage = () => {
       q: 'What are the designs based on?',
       a: (
         <>
-          We create each NFT with a generative script using{' '}
+          We create each artwork with a generative script using{' '}
           <strong>
             <Link href="https://p5js.org/">p5js</Link>
           </strong>
@@ -110,8 +110,8 @@ const FaqPage = () => {
               exclusive permissive copyright (CC0)
             </Link>
           </strong>{' '}
-          for their minted NFT. The token-holder of each piece of art may freely build upon, enhance
-          and reuse the works for any purposes without restriction under copyright law.
+          for their minted ERC-721. The token-holder of each piece of art may freely build upon,
+          enhance and reuse the works for any purposes without restriction under copyright law.
         </>
       )
     }
