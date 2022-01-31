@@ -11,11 +11,13 @@ import { getCurrentMintedCount } from 'src/api/ethers';
 
 import { getAllCountries } from 'src/web/token';
 import { Country } from 'iso-3166-1/dist/iso-3166';
+import { getPopulationForAlpha3 } from 'src/web/populations';
 
 type Details = {
   country: Country;
   image: string;
   minted: number;
+  population: number;
 };
 
 export const getStaticProps = async () => {
@@ -24,9 +26,12 @@ export const getStaticProps = async () => {
       getAllCountries().map(async (country) => {
         const mintedCount = await getCurrentMintedCount(Number(country.numeric));
 
+        const population = getPopulationForAlpha3(country.alpha3);
+
         const props: Details = {
           image: `/previews/${Number(country.numeric)}.png`,
           country,
+          population: population ?? 0,
           minted: mintedCount.toNumber()
         };
 
@@ -34,7 +39,7 @@ export const getStaticProps = async () => {
       })
     );
 
-    const detailsSorted = details.sort((a, b) => b.minted - a.minted);
+    const detailsSorted = details.sort((a, b) => b.population - a.population);
 
     return {
       props: {

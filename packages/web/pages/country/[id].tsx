@@ -8,6 +8,7 @@ import numeral from 'numeral';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
 import { getCurrentMintedCount, getOwnerOfToken, TokenOwner } from 'src/api/ethers';
+import { getPopulationForAlpha3 } from 'src/web/populations';
 import { getAllCountries, getIsoCountryForAlpha3 } from 'src/web/token';
 import { MetadataResponse } from 'types';
 import Footer from '../../src/web/components/Footer';
@@ -18,6 +19,7 @@ type CountryDetailsProps = Country & {
   image: string;
   imageLarge: string;
   minted: number;
+  population: number;
   tokens: {
     tokenId: string;
     link: string;
@@ -85,9 +87,12 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
         })
     );
 
+    const population = getPopulationForAlpha3(isoCountry.alpha3);
+
     const props: CountryDetailsProps = {
       ...isoCountry,
       countryId,
+      population: population ?? 0,
       image: `/previews/${countryId}.png`,
       imageLarge: `/previews-large/${countryId}.png`,
       minted: mintedCount?.toNumber() ?? 0,
@@ -116,14 +121,19 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
       content: props.alpha3,
       tooltip: 'The ISO-3166 identifier for the country.'
     },
+    ...[
+      props.population !== 0
+        ? {
+            name: '2020 Population',
+            content: `${numeral(props.population).format('0.0a')}`,
+            tooltip: 'The total population size in 2020 in the country.'
+          }
+        : {}
+    ],
     {
       name: 'License',
       link: 'https://creativecommons.org/publicdomain/zero/1.0/',
       content: 'CCO: No Rights Reserved'
-    },
-    {
-      name: 'Created By',
-      content: 'Generative Script'
     }
   ];
 
