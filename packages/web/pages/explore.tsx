@@ -3,15 +3,17 @@ import { NextSeo } from 'next-seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import iso from 'iso-3166-1';
 import Footer from '../src/web/components/Footer';
 import Header from '../src/web/components/Header';
 
 // imports from API
 import { getCurrentMintedCount } from 'src/api/ethers';
 
+import { getAllCountries } from 'src/web/token';
+import { Country } from 'iso-3166-1/dist/iso-3166';
+
 type Details = {
-  country: ReturnType<typeof iso.all>[number];
+  country: Country;
   image: string;
   minted: number;
 };
@@ -19,7 +21,7 @@ type Details = {
 export const getStaticProps = async () => {
   try {
     const details = await Promise.all(
-      iso.all().map(async (country) => {
+      getAllCountries().map(async (country) => {
         const mintedCount = await getCurrentMintedCount(Number(country.numeric));
 
         const props: Details = {
@@ -72,7 +74,7 @@ const ExplorePage = (props: ExploreProps) => {
           spacing={8}
         >
           {props.details.map((detail, i) => (
-            <Link key={detail.country.alpha2} href={`/country/${detail.country.alpha2}`} passHref>
+            <Link key={detail.country.alpha3} href={`/country/${detail.country.alpha3}`} passHref>
               <Flex cursor="pointer" direction="column">
                 <Box>
                   <Flex mt={2} mx="auto" position="relative" height={400}>

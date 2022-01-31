@@ -18,6 +18,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface ERC721BurnableInterface extends utils.Interface {
+  contractName: "ERC721Burnable";
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
@@ -140,6 +141,7 @@ export type TransferEvent = TypedEvent<
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
 export interface ERC721Burnable extends BaseContract {
+  contractName: "ERC721Burnable";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;

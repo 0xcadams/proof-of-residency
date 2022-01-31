@@ -49,7 +49,7 @@ const hash = ethers.utils.keccak256(
 );
 ```
 
-The hash is then signed by the backend, which has the credentials for a trusted EOA which has been granted the role of committer in the smart contract. This is passed to the dApp, which sends the signed hash payload to the smart contract. The contract verifies that the trusted EOA signed the commitment and stores the commitment on-chain.
+The hash is then signed by the backend, which has the credentials for a trusted EOA which has been granted the role of committer in the smart contract. This is passed to the dApp, which sends the signed hash payload to the smart contract. The contract verifies that the trusted EOA signed the commitment and stores the commitment on-chain. A nonce is included in the signature which is always updated from the smart contract upon every state change.
 
 ```typescript
 // API (has a private key committer role)

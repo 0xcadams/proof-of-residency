@@ -33,6 +33,7 @@ export class FailingTreasuryTest__factory extends ContractFactory {
     } else {
       super(_abi, _bytecode, args[0]);
     }
+    this.contractName = "FailingTreasuryTest";
   }
 
   deploy(
@@ -51,6 +52,8 @@ export class FailingTreasuryTest__factory extends ContractFactory {
   connect(signer: Signer): FailingTreasuryTest__factory {
     return super.connect(signer) as FailingTreasuryTest__factory;
   }
+  static readonly contractName: "FailingTreasuryTest";
+  public readonly contractName: "FailingTreasuryTest";
   static readonly bytecode = _bytecode;
   static readonly abi = _abi;
   static createInterface(): FailingTreasuryTestInterface {

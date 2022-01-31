@@ -1,12 +1,20 @@
+import { BigNumber } from 'ethers';
+
 export type AddressComponents = {
-  primaryLine: string;
-  secondaryLine: string;
-  lastLine: string;
+  name: string;
+  addressLine1: string;
+  addressLine2: string;
+  city?: string;
+  state?: string;
+  postal?: string;
   country: string;
+
+  nonce: BigNumber;
 };
 
 export type SubmitAddressPasswordPayload = {
   hashedPassword: string;
+  nonce: BigNumber;
 };
 
 export type SubmitAddressRequest = {
@@ -15,8 +23,6 @@ export type SubmitAddressRequest = {
 
   addressPayload: AddressComponents;
   addressSignature: string;
-
-  name: string;
 
   latitude: number;
   longitude: number;

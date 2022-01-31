@@ -1,9 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { verifyUsAddress, verifyIntlAddress } from 'src/api/lob';
-import { VerifyAddressRequest, VerifyAddressResponse } from 'types';
+import { AddressComponents, VerifyAddressRequest, VerifyAddressResponse } from 'types';
+import { faker } from '@faker-js/faker';
 
 import iso from 'iso-3166-1';
 import { signAddressEip712 } from 'src/api/ethers';
+import { ethers } from 'ethers';
 
 const usCountryCodes = ['US', 'AS', 'PR', 'FM', 'GU', 'MH', 'MP', 'PW', 'VI'];
 
@@ -13,6 +15,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<VerifyAddressRe
     const body: VerifyAddressRequest = req.body;
 
     if (method === 'POST') {
+      const nonce = ethers.BigNumber.from(ethers.utils.randomBytes(32));
+
+      const name = `${faker.name.firstName()} ${faker.name.lastName()}`;
+
       const isoCountry = iso.whereAlpha2(body.country);
 
       if (!isoCountry) {
@@ -28,24 +34,30 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<VerifyAddressRe
           body.postalCode
         );
 
-        console.log({ verifyResult });
+        const address: AddressComponents = {
+          name,
 
-        const signature = await signAddressEip712(
-          verifyResult.primary_line,
-          verifyResult.secondary_line,
-          verifyResult.last_line,
-          body.country
-        );
+          addressLine1: verifyResult.primary_line,
+          addressLine2: verifyResult.secondary_line,
+          city: verifyResult.components.city,
+          state: verifyResult.components.state,
+          postal: verifyResult.components.zip_code,
+          country: body.country,
+
+          nonce
+        };
+
+        const signature = await signAddressEip712(address);
 
         return res.status(200).json({
-          primaryLine: verifyResult.primary_line,
-          secondaryLine: verifyResult.secondary_line,
-          lastLine: verifyResult.last_line,
-          country: body.country,
+          ...address,
+
           signature,
 
           latitude: verifyResult.components.latitude,
           longitude: verifyResult.components.longitude,
+
+          lastLine: verifyResult.last_line,
 
           deliverability: verifyResult.deliverability
         });
@@ -60,19 +72,27 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<VerifyAddressRe
         body.country
       );
 
-      const signature = await signAddressEip712(
-        verifyResult.primary_line,
-        verifyResult.secondary_line,
-        verifyResult.last_line,
-        verifyResult.country
-      );
+      const address: AddressComponents = {
+        name,
+
+        addressLine1: verifyResult.primary_line,
+        addressLine2: verifyResult.secondary_line,
+        city: verifyResult.components.city,
+        state: verifyResult.components.state,
+        postal: verifyResult.components.postal_code,
+        country: body.country,
+
+        nonce
+      };
+
+      const signature = await signAddressEip712(address);
 
       return res.status(200).json({
-        primaryLine: verifyResult.primary_line,
-        secondaryLine: verifyResult.secondary_line,
-        lastLine: verifyResult.last_line,
-        country: verifyResult.country,
+        ...address,
+
         signature,
+
+        lastLine: verifyResult.last_line,
 
         deliverability: verifyResult.deliverability
       });

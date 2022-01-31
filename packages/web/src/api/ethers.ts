@@ -1,5 +1,6 @@
-import { ethers } from 'ethers';
-import { ProofOfResidency__factory as ProofOfResidencyFactory } from 'types';
+import { BigNumber, ethers } from 'ethers';
+import { getCountryAndTokenNumber } from 'src/web/token';
+import { AddressComponents, ProofOfResidency__factory as ProofOfResidencyFactory } from 'types';
 
 if (!process.env.PRIVATE_KEY || !process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) {
   throw new Error(
@@ -8,7 +9,10 @@ if (!process.env.PRIVATE_KEY || !process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) {
 }
 
 const provider = ethers.getDefaultProvider(
-  process.env.VERCEL_ENV === 'production' ? 'rinkeby' : 'http://localhost:8545',
+  process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' ||
+    process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
+    ? 'rinkeby'
+    : 'http://localhost:8545',
   {
     etherscan: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY,
     infura: process.env.NEXT_PUBLIC_INFURA_PROJECT_ID,
@@ -30,57 +34,33 @@ const getEip712Domain = async (contractAddress: string, chainId: number) => ({
   verifyingContract: contractAddress
 });
 
-const mailingAddressTypes = {
-  MailingAddress: [
-    { name: 'primaryLine', type: 'string' },
-    { name: 'secondaryLine', type: 'string' },
-    { name: 'lastLine', type: 'string' },
-    { name: 'country', type: 'string' }
-  ]
-};
-
-export const signAddressEip712 = async (
-  primaryLine: string,
-  secondaryLine: string,
-  lastLine: string,
-  country: string
-) => {
-  const domain = await getEip712Domain(
-    process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '',
-    await wallet.getChainId()
-  );
-
-  const signature = await wallet._signTypedData(domain, mailingAddressTypes, {
-    primaryLine,
-    secondaryLine,
-    lastLine,
-    country
-  });
-
-  return signature;
-};
-
 export const hashAndSignCommitmentEip712 = async (
   walletAddress: string,
   countryId: number,
   publicKey: string,
 
-  primaryLine: string,
-  secondaryLine: string,
-  lastLine: string,
-  country: string
+  mailingAddress: AddressComponents,
+  nonce: BigNumber
 ) => {
   const hash = ethers.utils.keccak256(
     ethers.utils.defaultAbiCoder.encode(
-      ['address', 'uint256', 'string'],
-      [walletAddress, countryId, publicKey]
+      ['address', 'uint256', 'string', 'uint256'],
+      [walletAddress, countryId, publicKey, nonce.add(1)]
     )
   );
 
+  // TODO should there be a nonce here? how do we ensure privacy?
   const hashedMailingAddress = ethers.utils.keccak256(
     ethers.utils.defaultAbiCoder.encode(
-      ['string', 'string', 'string', 'string'],
-      [primaryLine, secondaryLine, lastLine, country]
+      ['string', 'string', 'string', 'string', 'string', 'string'],
+      [
+        mailingAddress.addressLine1,
+        mailingAddress.addressLine2,
+        mailingAddress.city,
+        mailingAddress.state,
+        mailingAddress.postal,
+        mailingAddress.country
+      ]
     )
   );
 
@@ -93,14 +73,16 @@ export const hashAndSignCommitmentEip712 = async (
     Commitment: [
       { name: 'to', type: 'address' },
       { name: 'commitment', type: 'bytes32' },
-      { name: 'hashedMailingAddress', type: 'bytes32' }
+      { name: 'hashedMailingAddress', type: 'bytes32' },
+      { name: 'nonce', type: 'uint256' }
     ]
   };
 
   const signature = await wallet._signTypedData(domain, types, {
     to: walletAddress,
     commitment: hash,
-    hashedMailingAddress
+    hashedMailingAddress,
+    nonce
   });
 
   const { v, r, s } = ethers.utils.splitSignature(signature);
@@ -108,17 +90,54 @@ export const hashAndSignCommitmentEip712 = async (
   return { commitment: hash, hashedMailingAddress, v, r, s };
 };
 
-export const validateSignature = async (payload: string, signature: string): Promise<string> => {
-  const address = ethers.utils.verifyMessage(payload, signature);
+const mailingAddressTypes = {
+  MailingAddress: [
+    { name: 'name', type: 'string' },
+    { name: 'addressLine1', type: 'string' },
+    { name: 'addressLine2', type: 'string' },
+    { name: 'city', type: 'string' },
+    { name: 'state', type: 'string' },
+    { name: 'postal', type: 'string' },
+    { name: 'country', type: 'string' },
+    { name: 'nonce', type: 'uint256' }
+  ]
+};
+
+export const signAddressEip712 = async (address: AddressComponents) => {
+  const domain = await getEip712Domain(
+    process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '',
+    await wallet.getChainId()
+  );
+
+  const signature = await wallet._signTypedData(domain, mailingAddressTypes, address);
+
+  return signature;
+};
+
+export const validateMailingAddressSignature = async (
+  payload: AddressComponents,
+  signature: string
+): Promise<string> => {
+  const domain = await getEip712Domain(
+    process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '',
+    await wallet.getChainId()
+  );
+
+  const address = ethers.utils.verifyTypedData(domain, mailingAddressTypes, payload, signature);
 
   return address;
 };
 
-export const validateMailingAddressSignature = async (
-  primaryLine: string,
-  secondaryLine: string,
-  lastLine: string,
-  country: string,
+const passwordTypes = {
+  Password: [
+    { name: 'password', type: 'string' },
+    { name: 'nonce', type: 'uint256' }
+  ]
+};
+
+export const validatePasswordSignature = async (
+  password: string,
+  nonce: BigNumber,
   signature: string
 ): Promise<string> => {
   const domain = await getEip712Domain(
@@ -128,12 +147,10 @@ export const validateMailingAddressSignature = async (
 
   const address = ethers.utils.verifyTypedData(
     domain,
-    mailingAddressTypes,
+    passwordTypes,
     {
-      primaryLine,
-      secondaryLine,
-      lastLine,
-      country
+      password,
+      nonce
     },
     signature
   );
@@ -145,6 +162,34 @@ export const getCurrentWalletAddress = (): string => {
   return wallet.address;
 };
 
-export const getCurrentMintedCount = async (countryId: number) => {
-  return proofOfResidency.getCountryCount(countryId);
+export const getCurrentMintedCount = async (countryId: BigNumber | number) => {
+  return proofOfResidency.countryTokenCounts(countryId);
+};
+
+export const getNonceForAddress = async (address: string) => {
+  return proofOfResidency.nonces(address);
+};
+
+export type TokenOwner = { content: string; link: string | null };
+
+export const getOwnerOfToken = async (tokenId: string | BigNumber): Promise<TokenOwner> => {
+  try {
+    const { countryId, tokenNumber } = getCountryAndTokenNumber(tokenId);
+
+    const count = await getCurrentMintedCount(countryId);
+
+    if (count.gte(tokenNumber)) {
+      const owner = await proofOfResidency.ownerOf(tokenId);
+
+      return {
+        content: owner?.slice(0, 8) || 'None',
+        link: owner ? `https://etherscan.io/address/${owner}` : null
+      };
+    }
+  } catch (e) {}
+
+  return {
+    content: 'None',
+    link: null
+  };
 };

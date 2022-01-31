@@ -15,6 +15,7 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
 export interface PausableInterface extends utils.Interface {
+  contractName: "Pausable";
   functions: {
     "paused()": FunctionFragment;
   };
@@ -41,6 +42,7 @@ export type UnpausedEvent = TypedEvent<[string], { account: string }>;
 export type UnpausedEventFilter = TypedEventFilter<UnpausedEvent>;
 
 export interface Pausable extends BaseContract {
+  contractName: "Pausable";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;

@@ -14,7 +14,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { trackEvent } from 'src/web/mixpanel';
-import BST from '../public/boston.png';
+import BST from '../public/bolivia.png';
 import Footer from '../src/web/components/Footer';
 import Header from '../src/web/components/Header';
 
@@ -127,14 +127,14 @@ const FaqPage = () => {
         </Heading>
 
         <Box>
-          <Flex mt={2} mx="auto" position="relative" height={frameHeight}>
+          <Flex mt={6} mb={2} mx="auto" position="relative" height={frameHeight}>
             <Image
               priority
               objectFit="contain"
               layout="fill"
               placeholder="empty"
               src={BST}
-              alt="Boston proof of residency image"
+              alt="Proof of residency image"
             />
           </Flex>
         </Box>

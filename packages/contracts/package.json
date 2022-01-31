@@ -20,27 +20,19 @@
     "test": "yarn hardhat test"
   },
   "devDependencies": {
-    "@nomiclabs/hardhat-ethers": "^2.0.3",
-    "@nomiclabs/hardhat-etherscan": "^2.1.7",
-    "@nomiclabs/hardhat-waffle": "^2.0.1",
-    "@openzeppelin/hardhat-upgrades": "^1.12.0",
+    "@openzeppelin/hardhat-upgrades": "^1.13.0",
     "@openzeppelin/test-helpers": "^0.5.15",
-    "@typechain/ethers-v5": "^8.0.2",
-    "@typechain/hardhat": "^3.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.5.0",
-    "eslint": "^8.3.0",
+    "@typescript-eslint/eslint-plugin": "^5.10.1",
+    "eslint": "^8.8.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-unused-imports": "^2.0.0",
-    "ethereum-waffle": "^3.4.0",
-    "ethers": "^5.5.2",
-    "hardhat": "^2.7.0",
-    "hardhat-contract-sizer": "^2.1.1",
+    "hardhat": "^2.8.3",
+    "hardhat-contract-sizer": "^2.4.0",
     "hardhat-gas-reporter": "^1.0.7",
     "prettier-plugin-solidity": "^1.0.0-beta.19",
     "solhint": "^3.3.6",
     "solhint-plugin-prettier": "^0.0.5",
-    "solidity-coverage": "^0.7.17",
-    "typechain": "^6.0.5"
+    "solidity-coverage": "^0.7.18"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.4.2"

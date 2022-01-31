@@ -7,7 +7,6 @@ import {
   useGetCommitmentPeriodIsUpcoming,
   useGetCommitmentPeriodIsValid,
   useMint,
-  useMintPrice,
   useWalletAddress
 } from 'src/web/hooks';
 import * as ecc from 'tiny-secp256k1';
@@ -29,7 +28,6 @@ const MintPage = () => {
 
   const walletAddress = useWalletAddress();
   const mint = useMint();
-  const mintPrice = useMintPrice();
 
   const commitmentPeriodIsUpcoming = useGetCommitmentPeriodIsUpcoming();
   const isCommitmentReady = useGetCommitmentPeriodIsValid();
@@ -41,7 +39,7 @@ const MintPage = () => {
     const isoCountry = iso.whereAlpha2(selectedCountry);
 
     try {
-      if (isoCountry && walletAddress && mint && mintPrice) {
+      if (isoCountry && walletAddress && mint) {
         const hashedPassword = ethers.utils.keccak256(
           ethers.utils.defaultAbiCoder.encode(['string', 'string'], [walletAddress, password])
         );
@@ -49,12 +47,9 @@ const MintPage = () => {
         const seedBuffer = await bip39.mnemonicToSeed(mnemonic.trim(), hashedPassword);
         const node = bip32.fromSeed(seedBuffer);
 
-        const value = await mintPrice();
-
         const transaction = await mint(
           Number(isoCountry.numeric),
-          node?.publicKey?.toString('hex') ?? '',
-          { value }
+          node?.publicKey?.toString('hex') ?? ''
         );
 
         const result = await transaction.wait();

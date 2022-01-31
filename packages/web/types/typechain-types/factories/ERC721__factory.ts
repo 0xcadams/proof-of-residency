@@ -372,6 +372,7 @@ export class ERC721__factory extends ContractFactory {
     } else {
       super(_abi, _bytecode, args[0]);
     }
+    this.contractName = "ERC721";
   }
 
   deploy(
@@ -394,6 +395,8 @@ export class ERC721__factory extends ContractFactory {
   connect(signer: Signer): ERC721__factory {
     return super.connect(signer) as ERC721__factory;
   }
+  static readonly contractName: "ERC721";
+  public readonly contractName: "ERC721";
   static readonly bytecode = _bytecode;
   static readonly abi = _abi;
   static createInterface(): ERC721Interface {

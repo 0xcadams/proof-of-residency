@@ -7,60 +7,80 @@ import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 import './ERC721NonTransferable.sol';
 
+// import 'hardhat/console.sol';
+
 /**
  * @title Proof of Residency
  * @custom:security-contact security@proofofresidency.xyz
  *
- * @notice An ERC721 token for Proof of Personhood. Proves residency at a physical address
- * which is private. Based on a non-transferable ERC721 token.
+ * @notice An non-transferable ERC721 token for Proof of Personhood. Proves residency at a physical address
+ * which is kept private.
  *
  * @dev Uses a commit-reveal scheme to commit to a country and have a token issued based on that commitment.
  */
 contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, ReentrancyGuard {
-  uint256 private constant BASE_PRICE = (1 ether * 8) / 1000;
-  uint256 private constant LOCATION_MULTIPLIER = 1e15;
+  /// @notice Reservation price for tokens to contribute to the protocol
+  /// Incentivizes users to continue to mint after requesting a letter
+  uint256 public reservePrice;
 
-  /// @notice The version of this contract
-  string public constant VERSION = '1';
+  /// @notice Project treasury to send tax + donation
+  address public projectTreasury;
 
-  /// @notice The EIP-712 typehash for the contract's domain
-  bytes32 public constant DOMAIN_TYPEHASH =
-    keccak256('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)');
-
-  /// @notice The EIP-712 typehash for the commitment struct used by the contract
-  bytes32 public constant COMMITMENT_TYPEHASH =
-    keccak256('Commitment(address to,bytes32 commitment,bytes32 hashedMailingAddress)');
-
-  /// @notice Mint price for tokens to contribute to the protocol
-  uint256 public mintPrice;
-
-  /// @notice The baseURI for the metadata of this contract
-  string private baseUri;
+  /// @notice Commitments for each mailing address ID
+  mapping(uint256 => uint16) public mailingAddressCounts;
+  /// @notice Token counts for a country
+  /// @dev Uses uint16 for count (which will overflow at 65535)
+  /// https://en.wikipedia.org/wiki/ISO_3166-1_numeric
+  mapping(uint16 => uint256) public countryTokenCounts;
 
   /// @notice Committer addresses responsible for managing secret commitments to an address
   /// @dev Maps to treasury accounts for a committer for transferring out contributions
   mapping(address => address) private _committerTreasuries;
+  /// @notice Total contributions for each committer
+  mapping(address => uint256) private _committerContributions;
+
+  /// @notice Commitments for a wallet address
+  mapping(address => Commitment) private _commitments;
+
+  /// @notice Blacklist for mailing address IDs
+  mapping(uint256 => bool) private _mailingAddressBlacklist;
+
+  /// @notice The tax + donation percentages (15% to MAW, 5% to original team)
+  uint256 private constant TAX_AND_DONATION_PERCENT = 20;
+  /// @notice The waiting period before minting becomes available
+  uint256 private constant PREMINTING_WAITING_PERIOD_TIME = 1 weeks;
+  /// @notice The period during which minting is available (after the preminting period)
+  uint256 private constant MINTING_PERIOD_TIME = 5 weeks;
+  /// @notice Multiplier for country token IDs
+  uint256 private constant LOCATION_MULTIPLIER = 1e15;
+
+  /// @notice We include a nonce in every hashed message, and increment the nonce as part of a
+  /// state-changing operation, so as to prevent replay attacks, i.e. the reuse of a signature.
+  mapping(address => uint256) public nonces;
+  /// @notice The version of this contract
+  string private constant VERSION = '1';
+  /// @notice The EIP-712 typehash for the contract's domain
+  bytes32 private constant DOMAIN_TYPEHASH =
+    keccak256('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)');
+  /// @notice The EIP-712 typehash for the commitment struct used by the contract
+  bytes32 private constant COMMITMENT_TYPEHASH =
+    keccak256(
+      'Commitment(address to,bytes32 commitment,bytes32 hashedMailingAddress,uint256 nonce)'
+    );
+  /// @notice The domain separator for EIP-712
+  bytes32 private immutable _domainSeparator;
+
+  /// @notice The baseURI for the metadata of this contract (extra underscore to avoid clashing with function)
+  // slither-disable-next-line naming-convention
+  string private __baseUri;
 
   /// @notice The struct to represent commitments to an address
   struct Commitment {
     uint256 validAt;
-    uint256 invalidAt;
     bytes32 commitment;
     address committer;
+    uint256 value;
   }
-
-  /// @notice Commitments for an address
-  mapping(address => Commitment) private _commitments;
-  /// @notice Token counts for a country
-  mapping(uint256 => uint256) private _countriesTokenCounts;
-
-  /// @notice Commitments for each mailing address ID
-  mapping(uint256 => uint256) private _mailingAddressCounts;
-  /// @notice Blacklist for mailing addresses
-  mapping(uint256 => bool) private _mailingAddressBlacklist;
-
-  /// @notice Total contributions for each committer
-  mapping(address => uint256) private _committerContributions;
 
   /// @notice Event emitted when a commitment is made to an address
   event CommitmentCreated(
@@ -72,31 +92,38 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
 
   /// @notice Event emitted when a committer is added
   event CommitterAdded(address indexed committer);
-
   /// @notice Event emitted when a committer is removed
   event CommitterRemoved(address indexed committer);
-
-  /// @notice Event emitted when the price is changed
-  event PriceChanged(uint256 indexed newPrice);
 
   /// @notice Event emitted when a mailing address is blacklisted
   event MailingAddressBlacklisted(uint256 indexed blacklistedAddress);
 
-  constructor(address initialCommitter, address initialTreasury)
-    ERC721NonTransferable('Proof of Residency Protocol', 'PORP')
-  {
+  /// @notice Event emitted when the price is changed
+  event PriceChanged(uint256 indexed newPrice);
+
+  constructor(
+    address initialCommitter,
+    address initialTreasury,
+    string memory initialBaseUri,
+    uint256 initialPrice
+  ) ERC721NonTransferable('Proof of Residency Protocol', 'PORP') {
+    // slither-disable-next-line missing-zero-check
+    projectTreasury = initialTreasury;
+    reservePrice = initialPrice;
+
+    __baseUri = initialBaseUri;
+
     _committerTreasuries[initialCommitter] = initialTreasury;
 
-    mintPrice = BASE_PRICE;
-    baseUri = 'ipfs://bafybeihrbi6ghrxckdzlitupwnxzicocrfeuqqoavktxp7oruw2bbejdhu/';
-  }
-
-  /**
-   * @dev Throws if called by any account other than a committer.
-   */
-  modifier onlyCommitter() {
-    require(_committerTreasuries[_msgSender()] != address(0), 'Caller is not a committer');
-    _;
+    _domainSeparator = keccak256(
+      abi.encode(
+        DOMAIN_TYPEHASH,
+        keccak256(bytes(name())),
+        keccak256(bytes(VERSION)),
+        block.chainid,
+        address(this)
+      )
+    );
   }
 
   /**
@@ -110,31 +137,38 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
    * @dev Base URI override for the contract.
    */
   function _baseURI() internal view override returns (string memory) {
-    return baseUri;
+    return __baseUri;
   }
 
   /**
    * @notice Sets the base URI for the metadata.
    */
   function setBaseURI(string memory newBaseUri) external onlyOwner {
-    baseUri = newBaseUri;
+    __baseUri = newBaseUri;
+  }
+
+  /**
+   * @notice Sets the main project treasury.
+   */
+  function setProjectTreasury(address newTreasury) external onlyOwner {
+    require(newTreasury != address(0), 'Non-0 address');
+
+    projectTreasury = newTreasury;
   }
 
   /**
    * @notice Adds a new committer address with their treasury.
    */
   function addCommitter(address newCommitter, address newTreasury) external onlyOwner {
-    // -disable-next-line missing-zero-check
     _committerTreasuries[newCommitter] = newTreasury;
 
     emit CommitterAdded(newCommitter);
   }
 
   /**
-   * @notice Removes a new committer address with their treasury.
+   * @notice Removes a committer address.
    */
   function removeCommitter(address removedCommitter) external onlyOwner {
-    // -disable-next-line missing-zero-check
     delete _committerTreasuries[removedCommitter];
 
     emit CommitterRemoved(removedCommitter);
@@ -150,11 +184,11 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   }
 
   /**
-   * @notice Sets the value required to mint an NFT. Deliberately as low as possible to
+   * @notice Sets the value required to request an NFT. Deliberately as low as possible to
    * incentivize committers, this may be changed to be lower/higher.
    */
   function setPrice(uint256 newPrice) external onlyOwner {
-    mintPrice = newPrice;
+    reservePrice = newPrice;
 
     emit PriceChanged(newPrice);
   }
@@ -174,40 +208,6 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   }
 
   /**
-   * @notice Mints a new NFT for the given country/publicKey.
-   */
-  function mint(uint256 country, string memory publicKey)
-    external
-    payable
-    whenNotPaused
-    nonReentrant
-    returns (uint256)
-  {
-    Commitment storage existingCommitment = _commitments[_msgSender()];
-
-    require(msg.value == mintPrice, 'Incorrect ETH sent');
-    require(
-      existingCommitment.commitment == keccak256(abi.encode(_msgSender(), country, publicKey)),
-      'Commitment is incorrect'
-    );
-    // slither-disable-next-line timestamp
-    require(block.timestamp >= existingCommitment.validAt, 'Cannot mint yet');
-    // slither-disable-next-line timestamp
-    require(block.timestamp <= existingCommitment.invalidAt, 'Commitment expired');
-
-    _committerContributions[existingCommitment.committer] += msg.value;
-
-    _countriesTokenCounts[country] += 1; // increment before minting so count starts at 1
-    uint256 tokenId = country * LOCATION_MULTIPLIER + _countriesTokenCounts[country];
-
-    delete _commitments[_msgSender()];
-
-    _safeMint(_msgSender(), tokenId);
-
-    return tokenId;
-  }
-
-  /**
    * @notice Commits a wallet address to a physical address using signed data from a committer.
    * Signatures are used to prevent committers from paying gas fees for commitments.
    *
@@ -220,52 +220,109 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     uint8 v,
     bytes32 r,
     bytes32 s
-  ) external whenNotPaused {
+  ) external payable whenNotPaused nonReentrant {
     address signatory = _validateSignature(to, commitment, hashedMailingAddress, v, r, s);
-    require(_committerTreasuries[signatory] != address(0), 'Signatory is not a committer');
+    require(_committerTreasuries[signatory] != address(0), 'Signatory non-committer');
+
+    _incrementNonce(_msgSender());
+
+    require(msg.value == reservePrice, 'Incorrect value');
+
+    // requires the requester to have no tokens - they cannot transfer, but may have burned a previous token
+    require(balanceOf(to) == 0, 'Non-0 token');
 
     uint256 mailingAddressId = uint256(hashedMailingAddress);
-    require(!_mailingAddressBlacklist[mailingAddressId], 'Mailing address is blacklisted');
+    require(!_mailingAddressBlacklist[mailingAddressId], 'Address blacklisted');
 
-    _mailingAddressCounts[mailingAddressId] += 1;
+    mailingAddressCounts[mailingAddressId] += 1;
 
     Commitment storage existingCommitment = _commitments[to];
 
     // slither-disable-next-line timestamp
     require(
-      existingCommitment.commitment == 0 || block.timestamp > existingCommitment.invalidAt,
-      'Address has existing commitment'
+      existingCommitment.commitment == 0 ||
+        block.timestamp > existingCommitment.validAt + MINTING_PERIOD_TIME,
+      'Existing commitment'
     );
 
     existingCommitment.committer = signatory;
-    existingCommitment.validAt = block.timestamp + 1 weeks;
-    existingCommitment.invalidAt = block.timestamp + 10 weeks;
+    existingCommitment.validAt = block.timestamp + PREMINTING_WAITING_PERIOD_TIME;
     existingCommitment.commitment = commitment;
+    existingCommitment.value = msg.value;
 
     emit CommitmentCreated(to, signatory, mailingAddressId, commitment);
   }
 
   /**
-   * @notice Withdraws a specified amount of funds from the contract to the committer's treasury.
+   * @notice Mints a new token for the given country/publicKey.
    */
-  function withdraw(uint256 amount) external onlyCommitter nonReentrant {
-    require(_committerContributions[_msgSender()] >= amount, 'Withdrawal amount not available');
+  function mint(uint16 country, string memory publicKey)
+    external
+    whenNotPaused
+    nonReentrant
+    returns (uint256)
+  {
+    Commitment memory existingCommitment = _commitments[_msgSender()];
 
-    _committerContributions[_msgSender()] -= amount;
+    require(
+      existingCommitment.commitment ==
+        keccak256(abi.encode(_msgSender(), country, publicKey, nonces[_msgSender()])),
+      'Commitment incorrect'
+    );
+    // requires the requester to have no tokens - they cannot transfer, but may have burned a previous token
+    require(balanceOf(_msgSender()) == 0, 'Already owns token');
+    // slither-disable-next-line timestamp
+    require(block.timestamp >= existingCommitment.validAt, 'Cannot mint yet');
+    // slither-disable-next-line timestamp
+    require(block.timestamp <= existingCommitment.validAt + MINTING_PERIOD_TIME, 'Expired');
+
+    _incrementNonce(_msgSender());
+
+    // add the value to the committers successful commitments
+    _committerContributions[existingCommitment.committer] += existingCommitment.value;
+
+    countryTokenCounts[country] += 1; // increment before minting so count starts at 1
+    uint256 tokenId = uint256(country) * LOCATION_MULTIPLIER + uint256(countryTokenCounts[country]);
+
+    delete _commitments[_msgSender()];
+
+    _safeMint(_msgSender(), tokenId);
+    // _setTokenTimestamp(tokenId, block.timestamp);
+
+    return tokenId;
+  }
+
+  /**
+   * @notice Withdraws funds from the contract to the committer's treasury.
+   *
+   * Applies a tax to the withdrawal for the protocol and donations.
+   */
+  function withdraw() external nonReentrant {
+    uint256 totalAmount = _committerContributions[_msgSender()];
+    uint256 taxAndDonation = (totalAmount * TAX_AND_DONATION_PERCENT) / 100;
+    require(taxAndDonation > 0, 'Tax not over 0');
+
+    _committerContributions[_msgSender()] = 0;
 
     // slither-disable-next-line low-level-calls
-    (bool success, ) = _committerTreasuries[_msgSender()].call{ value: amount }('');
-    require(success, 'Unable to withdraw');
+    (bool success1, ) = projectTreasury.call{ value: taxAndDonation }('');
+    require(success1, 'Unable to send project treasury');
+
+    // slither-disable-next-line low-level-calls
+    (bool success2, ) = _committerTreasuries[_msgSender()].call{
+      value: totalAmount - taxAndDonation
+    }('');
+    require(success2, 'Unable to withdraw');
   }
 
   /**
    * @notice Gets if a commitment for the sender's address is upcoming.
    */
   function getCommitmentPeriodIsUpcoming() external view returns (bool) {
-    Commitment storage existingCommitment = _commitments[_msgSender()];
+    Commitment memory existingCommitment = _commitments[_msgSender()];
 
     // slither-disable-next-line timestamp
-    return existingCommitment.validAt != 0 && block.timestamp <= existingCommitment.invalidAt;
+    return block.timestamp <= existingCommitment.validAt;
   }
 
   /**
@@ -273,26 +330,19 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
    * are able to mint.
    */
   function getCommitmentPeriodIsValid() external view returns (bool) {
-    Commitment storage existingCommitment = _commitments[_msgSender()];
+    Commitment memory existingCommitment = _commitments[_msgSender()];
 
     // slither-disable-next-line timestamp
     return
       block.timestamp >= existingCommitment.validAt &&
-      block.timestamp <= existingCommitment.invalidAt;
+      block.timestamp <= existingCommitment.validAt + MINTING_PERIOD_TIME;
   }
 
   /**
-   * @notice Gets the current country count for a country ID.
+   * @notice Gets a commitment for the sender.
    */
-  function getCountryCount(uint256 country) external view returns (uint256) {
-    return _countriesTokenCounts[country];
-  }
-
-  /**
-   * @notice Gets the current commitment count for a mailing address ID.
-   */
-  function getMailingAddressCount(uint256 mailingAddressId) external view returns (uint256) {
-    return _mailingAddressCounts[mailingAddressId];
+  function getCommitment() external view returns (Commitment memory) {
+    return _commitments[_msgSender()];
   }
 
   /**
@@ -307,22 +357,20 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     bytes32 r,
     bytes32 s
   ) private view returns (address) {
-    bytes32 domainSeparator = keccak256(
-      abi.encode(
-        DOMAIN_TYPEHASH,
-        keccak256(bytes(name())),
-        keccak256(bytes(VERSION)),
-        block.chainid,
-        address(this)
-      )
-    );
     bytes32 structHash = keccak256(
-      abi.encode(COMMITMENT_TYPEHASH, to, commitment, hashedMailingAddress)
+      abi.encode(COMMITMENT_TYPEHASH, to, commitment, hashedMailingAddress, nonces[to])
     );
-    bytes32 digest = keccak256(abi.encodePacked('\x19\x01', domainSeparator, structHash));
+    bytes32 digest = keccak256(abi.encodePacked('\x19\x01', _domainSeparator, structHash));
     address signatory = ecrecover(digest, v, r, s);
 
     return signatory;
+  }
+
+  /**
+   * @dev Increments the nonce used by the signature/commitment scheme. Used to prevent replay attacks.
+   */
+  function _incrementNonce(address account) private {
+    nonces[account] += 1;
   }
 
   /**

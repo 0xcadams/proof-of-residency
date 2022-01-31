@@ -8,8 +8,8 @@ import {
   ModalOverlay
 } from '@chakra-ui/modal';
 import { Button, Flex, Input, Text, useToast } from '@chakra-ui/react';
-import faker from 'faker';
-import React, { useEffect, useState } from 'react';
+
+import React, { useState } from 'react';
 
 import { axiosClient } from '../axios';
 import {
@@ -18,7 +18,13 @@ import {
   SubmitAddressResponse
 } from '../../../types';
 import { VerifyAddressResponse } from 'types';
-import { useCommitAddress, useSigner } from '../hooks';
+import {
+  useCommitAddress,
+  useCurrentNonce,
+  useMintPrice,
+  useSignPasswordEip712,
+  useWalletAddress
+} from '../hooks';
 import { ethers } from 'ethers';
 import { CoordinateLongitudeLatitude } from 'haversine';
 import { useRouter } from 'next/router';
@@ -35,60 +41,63 @@ export const ConfirmModal = (props: {
 
   const router = useRouter();
 
-  const signer = useSigner();
+  const walletAddress = useWalletAddress();
   const commitAddress = useCommitAddress();
-
-  useEffect(() => {
-    (async () => {
-      faker.seed((await signer?.getTransactionCount()) ?? 11);
-      setRandomName(`${faker.name.firstName()} ${faker.name.lastName()}`);
-    })();
-  }, []);
+  const mintPrice = useMintPrice();
+  const signPasswordEip712 = useSignPasswordEip712();
+  const nonce = useCurrentNonce();
 
   const onSubmit = async () => {
-    if (signer && commitAddress) {
-      const address = await signer.getAddress();
-
+    if (walletAddress && commitAddress && mintPrice && nonce) {
       const hashedPassword = ethers.utils.keccak256(
-        ethers.utils.defaultAbiCoder.encode(['string', 'string'], [address, password])
+        ethers.utils.defaultAbiCoder.encode(['string', 'string'], [walletAddress, password])
       );
 
       const passwordPayload: SubmitAddressPasswordPayload = {
-        hashedPassword
+        hashedPassword,
+        nonce
       };
 
-      const message = JSON.stringify(passwordPayload, null, 2);
+      const signature = await signPasswordEip712(hashedPassword, nonce);
 
-      const signature = await signer.signMessage(message);
+      if (!signature) {
+        throw new Error('Signature could not be completed successfully.');
+      }
 
       const body: SubmitAddressRequest = {
         addressPayload: {
-          primaryLine: props.address.primaryLine,
-          secondaryLine: props.address.secondaryLine,
-          lastLine: props.address.lastLine,
-          country: props.address.country
+          name: props.address.name,
+          addressLine1: props.address.addressLine1,
+          addressLine2: props.address.addressLine2,
+          city: props.address.city,
+          state: props.address.state,
+          postal: props.address.postal,
+          country: props.address.country,
+
+          nonce: props.address.nonce
         },
         addressSignature: props.address.signature,
 
         passwordPayload,
         passwordSignature: signature,
         latitude: -1,
-        longitude: -1,
-
-        name: randomName
+        longitude: -1
       };
 
       try {
         const result = await axiosClient.post<SubmitAddressResponse>('/request', body);
 
         if (result.status === 200) {
+          const value = await mintPrice();
+
           const transaction = await commitAddress(
-            address,
+            walletAddress,
             result.data.commitment,
             result.data.hashedMailingAddress,
             result.data.v,
             result.data.r,
-            result.data.s
+            result.data.s,
+            { value }
           );
 
           const transactionResult = await transaction.wait();
@@ -159,11 +168,13 @@ export const ConfirmModal = (props: {
 
             <Flex direction="column" mb={6} mt={6}>
               <Text fontWeight="bold">{randomName}</Text>
-              <Text fontWeight="bold">{props.address.primaryLine}</Text>
-              {props.address.secondaryLine && (
-                <Text fontWeight="bold">{props.address.secondaryLine}</Text>
+              <Text fontWeight="bold">{props.address.addressLine1}</Text>
+              {props.address.addressLine2 && (
+                <Text fontWeight="bold">{props.address.addressLine2}</Text>
               )}
-              {props.address.lastLine && <Text fontWeight="bold">{props.address.lastLine}</Text>}
+              {props.address.lastLine && (
+                <Text fontWeight="bold">{`${props.address.lastLine}`}</Text>
+              )}
             </Flex>
 
             <Text mb={3}>
