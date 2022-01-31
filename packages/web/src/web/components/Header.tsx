@@ -9,7 +9,7 @@ import Logo from '../../../public/logo.svg';
 import { useNetworkName } from '../hooks';
 
 const Header = () => {
-  const isMobile = useBreakpointValue({ base: true, sm: false });
+  const isMobile = useBreakpointValue({ base: true, sm: false }, 'sm');
   const buttonSize = isMobile ? 'md' : 'lg';
 
   const network = useNetworkName();

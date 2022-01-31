@@ -1,12 +1,13 @@
-import { Box, Flex, Heading, Text, useBreakpointValue } from '@chakra-ui/react';
+import { Flex, Heading, Text, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import LandingImage from '../public/russia.png';
 import Footer from '../src/web/components/Footer';
 import Header from '../src/web/components/Header';
 
 const IndexPage = () => {
-  const frameHeight = useBreakpointValue({ base: 300, md: 500 });
+  const frameHeight = useBreakpointValue({ base: 300, md: 500 }, 'md');
 
   return (
     <>
@@ -17,17 +18,15 @@ const IndexPage = () => {
           Blockchain proof of personhood using physical mail
         </Heading>
 
-        <Box>
-          <Flex mt={10} mb={4} mx="auto" position="relative" height={frameHeight}>
-            <Image
-              priority
-              objectFit="contain"
-              layout="fill"
-              src="/russia.png"
-              alt="Proof of residency image"
-            />
-          </Flex>
-        </Box>
+        <Flex mt={10} mb={4} mx="auto" position="relative" width="100%" height={frameHeight}>
+          <Image
+            priority
+            objectFit="contain"
+            layout="fill"
+            src={LandingImage}
+            alt="Proof of residency image of russia"
+          />
+        </Flex>
 
         <Flex mb={10} flexDirection="column" mx="auto" align="center" width="100%" maxWidth={800}>
           <Text fontSize="2xl" mt={10} textAlign="center">

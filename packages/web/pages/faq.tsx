@@ -4,7 +4,6 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-  Box,
   Flex,
   Heading,
   Text,
@@ -19,7 +18,7 @@ import Footer from '../src/web/components/Footer';
 import Header from '../src/web/components/Header';
 
 const FaqPage = () => {
-  const frameHeight = useBreakpointValue({ base: 300, md: 400 });
+  const frameHeight = useBreakpointValue({ base: 300, md: 400 }, 'md');
 
   const faqs = [
     {
@@ -126,18 +125,16 @@ const FaqPage = () => {
           FAQ
         </Heading>
 
-        <Box>
-          <Flex mt={6} mb={2} mx="auto" position="relative" height={frameHeight}>
-            <Image
-              priority
-              objectFit="contain"
-              layout="fill"
-              placeholder="empty"
-              src={BST}
-              alt="Proof of residency image"
-            />
-          </Flex>
-        </Box>
+        <Flex mt={6} mb={2} mx="auto" position="relative" width="100%" height={frameHeight}>
+          <Image
+            priority
+            objectFit="contain"
+            layout="fill"
+            src={BST}
+            placeholder="blur"
+            alt="Proof of residency image of bolivia"
+          />
+        </Flex>
 
         <Flex
           mt={8}

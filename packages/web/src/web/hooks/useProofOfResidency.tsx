@@ -47,19 +47,9 @@ const useProofOfResidency = () => {
 };
 
 export const useNetworkName = () => {
-  const [network, setNetwork] = useState<string | null>(null);
+  const wallet = useWallet();
 
-  const { proofOfResidency } = useProofOfResidency();
-
-  useEffect(() => {
-    (async () => {
-      const retrievedNetwork = await proofOfResidency?.provider.getNetwork();
-
-      setNetwork(retrievedNetwork?.name ?? null);
-    })();
-  }, [proofOfResidency]);
-
-  return network;
+  return wallet.networkName;
 };
 
 export const useGetCommitmentPeriodIsValid = () => {

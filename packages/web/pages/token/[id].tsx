@@ -103,7 +103,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
 };
 
 const TokenDetailsPage = (props: DetailsProps) => {
-  const imageHeight = useBreakpointValue({ base: 400, md: 650 });
+  const imageHeight = useBreakpointValue({ base: 400, md: 650 }, 'md');
 
   const tags = [
     {
