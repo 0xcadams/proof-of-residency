@@ -1,12 +1,16 @@
 {
   "name": "@proof-of-residency/contracts",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "The Solidity smart contracts for Proof of Residency.",
   "private": false,
   "main": "index.js",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:proof-of-residency/proof-of-residency.git"
   },
   "scripts": {
     "analyze": "yarn lint && slither . --filter-paths \"@openzeppelin\"",
