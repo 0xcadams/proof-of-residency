@@ -41,7 +41,7 @@ export const signCommitment = async (
   const hash = ethers.utils.keccak256(
     ethers.utils.defaultAbiCoder.encode(
       ['address', 'uint256', 'string', 'uint256'],
-      [walletAddress, countryId, publicKey, nonce.add(1)]
+      [walletAddress, countryId, publicKey, nonce]
     )
   );
 

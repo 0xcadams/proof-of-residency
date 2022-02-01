@@ -31,7 +31,7 @@ const App = ({ Component, pageProps }: AppProps) => {
     <>
       <DefaultSeo
         title="Proof of Residency"
-        description="Proof of Residency is a proof of personhood protocol based on physical mailing addresses."
+        description="Proof of Residency is a proof of personhood protocol built on physical mail."
         openGraph={{
           type: 'website',
           url: 'https://proofofresidency.xyz',

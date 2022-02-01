@@ -15,9 +15,6 @@ import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
  * Internal functions will be optimized out by the compiler.
  */
 abstract contract ERC721NonTransferable is ERC721, ERC721Burnable, ERC721Enumerable {
-  // Mapping for storing timestamp of issuance on-chain
-  // mapping(uint256 => uint256) private _tokenTimestamp;
-
   constructor(string memory name_, string memory symbol_) ERC721(name_, symbol_) {}
 
   function transferFrom(
@@ -44,24 +41,6 @@ abstract contract ERC721NonTransferable is ERC721, ERC721Burnable, ERC721Enumera
   ) public pure override {
     revert('ERC721NonTransferable: safeTransferFrom not allowed');
   }
-
-  // function tokenTimestamp(uint256 tokenId) public view returns (uint256) {
-  //   require(_exists(tokenId), 'ERC721NonTransferable: Nonexistent token');
-  //   return _tokenTimestamp[tokenId];
-  // }
-
-  // function _setTokenTimestamp(uint256 tokenId, uint256 timestamp) internal {
-  //   require(_exists(tokenId), 'ERC721NonTransferable: Nonexistent token');
-  //   _tokenTimestamp[tokenId] = timestamp;
-  // }
-
-  // function _burn(uint256 tokenId) internal override {
-  //   super._burn(tokenId);
-
-  //   if (_tokenTimestamp[tokenId] != 0) {
-  //     delete _tokenTimestamp[tokenId];
-  //   }
-  // }
 
   function _beforeTokenTransfer(
     address from,

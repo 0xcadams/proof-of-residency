@@ -26,10 +26,8 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   /// @notice Project treasury to send tax + donation
   address public projectTreasury;
 
-  /// @notice Commitments for each mailing address ID
-  mapping(uint256 => uint16) public mailingAddressCounts;
   /// @notice Token counts for a country
-  /// @dev Uses uint16 for count (which will overflow at 65535)
+  /// @dev Uses uint16 for country ID (which will overflow at 65535)
   /// https://en.wikipedia.org/wiki/ISO_3166-1_numeric
   mapping(uint16 => uint256) public countryTokenCounts;
 
@@ -42,20 +40,20 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   /// @notice Commitments for a wallet address
   mapping(address => Commitment) private _commitments;
 
-  /// @notice Blacklist for mailing address IDs
-  mapping(uint256 => bool) private _mailingAddressBlacklist;
+  /// @notice Expiration for challenges made for an address
+  mapping(address => uint256) private _tokenChallengeExpirations;
 
   /// @notice The tax + donation percentages (15% to MAW, 5% to original team)
   uint256 private constant TAX_AND_DONATION_PERCENT = 20;
   /// @notice The waiting period before minting becomes available
-  uint256 private constant PREMINTING_WAITING_PERIOD_TIME = 1 weeks;
+  uint256 private constant COMMITMENT_WAITING_PERIOD = 1 weeks;
   /// @notice The period during which minting is available (after the preminting period)
-  uint256 private constant MINTING_PERIOD_TIME = 5 weeks;
+  uint256 private constant COMMITMENT_PERIOD = 5 weeks;
   /// @notice Multiplier for country token IDs
   uint256 private constant LOCATION_MULTIPLIER = 1e15;
 
   /// @notice We include a nonce in every hashed message, and increment the nonce as part of a
-  /// state-changing operation, so as to prevent replay attacks, i.e. the reuse of a signature.
+  /// minting operation to prevent replay attacks
   mapping(address => uint256) public nonces;
   /// @notice The version of this contract
   string private constant VERSION = '1';
@@ -64,9 +62,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     keccak256('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)');
   /// @notice The EIP-712 typehash for the commitment struct used by the contract
   bytes32 private constant COMMITMENT_TYPEHASH =
-    keccak256(
-      'Commitment(address to,bytes32 commitment,bytes32 hashedMailingAddress,uint256 nonce)'
-    );
+    keccak256('Commitment(address to,bytes32 commitment,uint256 nonce)');
   /// @notice The domain separator for EIP-712
   bytes32 private immutable _domainSeparator;
 
@@ -83,20 +79,15 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   }
 
   /// @notice Event emitted when a commitment is made to an address
-  event CommitmentCreated(
-    address indexed to,
-    address indexed committer,
-    uint256 indexed mailingAddressId,
-    bytes32 commitment
-  );
+  event CommitmentCreated(address indexed to, address indexed committer, bytes32 commitment);
 
   /// @notice Event emitted when a committer is added
   event CommitterAdded(address indexed committer);
   /// @notice Event emitted when a committer is removed
-  event CommitterRemoved(address indexed committer);
+  event CommitterRemoved(address indexed committer, uint256 fundsLost);
 
-  /// @notice Event emitted when a mailing address is blacklisted
-  event MailingAddressBlacklisted(uint256 indexed blacklistedAddress);
+  /// @notice Event emitted when a token is challenged
+  event TokenChallenged(address indexed owner, uint256 indexed tokenId);
 
   /// @notice Event emitted when the price is changed
   event PriceChanged(uint256 indexed newPrice);
@@ -166,21 +157,53 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   }
 
   /**
-   * @notice Removes a committer address.
+   * @notice Removes a committer address and sets their contributions to be owned
+   * by the treasury.
    */
   function removeCommitter(address removedCommitter) external onlyOwner {
     delete _committerTreasuries[removedCommitter];
 
-    emit CommitterRemoved(removedCommitter);
+    uint256 fundsLost = _committerContributions[removedCommitter];
+
+    _committerContributions[projectTreasury] = fundsLost;
+    _committerContributions[removedCommitter] = 0;
+
+    emit CommitterRemoved(removedCommitter, fundsLost);
   }
 
   /**
-   * @notice Blacklists a mailing address from being used. This is for cases of fraud.
+   * @notice Burns a list of token IDs. Only allowed after a token challenge has been
+   * issued and subsequently expired.
    */
-  function blacklistMailingAddress(uint256 mailingAddressId) external onlyOwner {
-    _mailingAddressBlacklist[mailingAddressId] = true;
+  function burnTokens(address[] memory addresses) external onlyOwner {
+    for (uint256 i = 0; i < addresses.length; i++) {
+      require(tokenChallengeExpired(addresses[i]), 'Challenge not expired');
 
-    emit MailingAddressBlacklisted(mailingAddressId);
+      uint256 tokenId = tokenOfOwnerByIndex(addresses[i], 1);
+      Commitment memory existingCommitment = _commitments[addresses[i]];
+
+      // add the value to the committers successful commitments
+      _committerContributions[existingCommitment.committer] += existingCommitment.value;
+
+      _burn(tokenId);
+    }
+  }
+
+  /**
+   * @notice Initiates a challenge for a list of addresses. The user must re-request
+   * a commitment and verify a mailing address again.
+   */
+  function challenge(address[] memory addresses) external onlyOwner {
+    for (uint256 i = 0; i < addresses.length; i++) {
+      uint256 tokenId = tokenOfOwnerByIndex(addresses[i], 1);
+
+      _tokenChallengeExpirations[addresses[i]] =
+        block.timestamp +
+        COMMITMENT_WAITING_PERIOD +
+        COMMITMENT_PERIOD;
+
+      emit TokenChallenged(addresses[i], tokenId);
+    }
   }
 
   /**
@@ -216,67 +239,45 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   function commitAddress(
     address to,
     bytes32 commitment,
-    bytes32 hashedMailingAddress,
     uint8 v,
     bytes32 r,
     bytes32 s
   ) external payable whenNotPaused nonReentrant {
-    address signatory = _validateSignature(to, commitment, hashedMailingAddress, v, r, s);
+    address signatory = _validateSignature(to, commitment, v, r, s);
     require(_committerTreasuries[signatory] != address(0), 'Signatory non-committer');
 
-    _incrementNonce(_msgSender());
-
     require(msg.value == reservePrice, 'Incorrect value');
-
-    // requires the requester to have no tokens - they cannot transfer, but may have burned a previous token
-    require(balanceOf(to) == 0, 'Non-0 token');
-
-    uint256 mailingAddressId = uint256(hashedMailingAddress);
-    require(!_mailingAddressBlacklist[mailingAddressId], 'Address blacklisted');
-
-    mailingAddressCounts[mailingAddressId] += 1;
 
     Commitment storage existingCommitment = _commitments[to];
 
     // slither-disable-next-line timestamp
     require(
       existingCommitment.commitment == 0 ||
-        block.timestamp > existingCommitment.validAt + MINTING_PERIOD_TIME,
+        block.timestamp > existingCommitment.validAt + COMMITMENT_PERIOD,
       'Existing commitment'
     );
 
     existingCommitment.committer = signatory;
-    existingCommitment.validAt = block.timestamp + PREMINTING_WAITING_PERIOD_TIME;
+    existingCommitment.validAt = block.timestamp + COMMITMENT_WAITING_PERIOD;
     existingCommitment.commitment = commitment;
     existingCommitment.value = msg.value;
 
-    emit CommitmentCreated(to, signatory, mailingAddressId, commitment);
+    emit CommitmentCreated(to, signatory, commitment);
   }
 
   /**
-   * @notice Mints a new token for the given country/publicKey.
+   * @notice Mints a new token for the given country/commitment.
    */
-  function mint(uint16 country, string memory publicKey)
+  function mint(uint16 country, string memory commitment)
     external
     whenNotPaused
     nonReentrant
     returns (uint256)
   {
-    Commitment memory existingCommitment = _commitments[_msgSender()];
-
-    require(
-      existingCommitment.commitment ==
-        keccak256(abi.encode(_msgSender(), country, publicKey, nonces[_msgSender()])),
-      'Commitment incorrect'
-    );
     // requires the requester to have no tokens - they cannot transfer, but may have burned a previous token
     require(balanceOf(_msgSender()) == 0, 'Already owns token');
-    // slither-disable-next-line timestamp
-    require(block.timestamp >= existingCommitment.validAt, 'Cannot mint yet');
-    // slither-disable-next-line timestamp
-    require(block.timestamp <= existingCommitment.validAt + MINTING_PERIOD_TIME, 'Expired');
 
-    _incrementNonce(_msgSender());
+    Commitment memory existingCommitment = _validateAndDeleteCommitment(country, commitment);
 
     // add the value to the committers successful commitments
     _committerContributions[existingCommitment.committer] += existingCommitment.value;
@@ -284,12 +285,31 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     countryTokenCounts[country] += 1; // increment before minting so count starts at 1
     uint256 tokenId = uint256(country) * LOCATION_MULTIPLIER + uint256(countryTokenCounts[country]);
 
-    delete _commitments[_msgSender()];
-
     _safeMint(_msgSender(), tokenId);
-    // _setTokenTimestamp(tokenId, block.timestamp);
 
     return tokenId;
+  }
+
+  /**
+   * @notice Responds to a challenge with a token ID and corresponding country/commitment.
+   */
+  function respondToChallenge(
+    uint256 tokenId,
+    uint16 country,
+    string memory commitment
+  ) external whenNotPaused nonReentrant returns (bool) {
+    // ensure that the country is the same as the current token ID
+    require(tokenId / LOCATION_MULTIPLIER == country, 'Country not valid');
+
+    Commitment memory existingCommitment = _validateAndDeleteCommitment(country, commitment);
+
+    delete _tokenChallengeExpirations[_msgSender()];
+
+    // slither-disable-next-line low-level-calls
+    (bool success, ) = _msgSender().call{ value: existingCommitment.value }('');
+    require(success, 'Unable to refund');
+
+    return true;
   }
 
   /**
@@ -329,20 +349,54 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
    * @notice Gets if the commitment for the sender's address is in the time window where they
    * are able to mint.
    */
-  function getCommitmentPeriodIsValid() external view returns (bool) {
+  function getCommitmentPeriodIsValid() public view returns (bool) {
     Commitment memory existingCommitment = _commitments[_msgSender()];
 
     // slither-disable-next-line timestamp
     return
       block.timestamp >= existingCommitment.validAt &&
-      block.timestamp <= existingCommitment.validAt + MINTING_PERIOD_TIME;
+      block.timestamp <= existingCommitment.validAt + COMMITMENT_WAITING_PERIOD;
   }
 
   /**
-   * @notice Gets a commitment for the sender.
+   * @notice Gets if a token challenge for an address has expired (and becomes eligible for
+   * burning/re-issuing).
    */
-  function getCommitment() external view returns (Commitment memory) {
-    return _commitments[_msgSender()];
+  function tokenChallengeExpired(address owner) public view returns (bool) {
+    return _tokenChallengeExpirations[owner] >= block.timestamp;
+  }
+
+  /**
+   * @notice Gets if a token challenge exists for an address. This can be used in
+   * downstream projects to ensure that a user does not have any outstanding challenges.
+   */
+  function tokenChallengeExists(address owner) public view returns (bool) {
+    return _tokenChallengeExpirations[owner] != 0;
+  }
+
+  /**
+   * @dev Validates a commitment and deletes the Commitment from the mapping.
+   */
+  function _validateAndDeleteCommitment(uint16 country, string memory commitment)
+    private
+    returns (Commitment memory existingCommitment)
+  {
+    existingCommitment = _commitments[_msgSender()];
+
+    require(
+      existingCommitment.commitment ==
+        keccak256(abi.encode(_msgSender(), country, commitment, nonces[_msgSender()])),
+      'Commitment incorrect'
+    );
+    require(getCommitmentPeriodIsValid(), 'Commitment period invalid');
+
+    // requires that the original committer is still valid
+    require(_committerTreasuries[existingCommitment.committer] != address(0), 'Signatory removed');
+
+    // increment the nonce for the sender
+    nonces[_msgSender()] += 1;
+
+    delete _commitments[_msgSender()];
   }
 
   /**
@@ -352,25 +406,15 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   function _validateSignature(
     address to,
     bytes32 commitment,
-    bytes32 hashedMailingAddress,
     uint8 v,
     bytes32 r,
     bytes32 s
   ) private view returns (address) {
-    bytes32 structHash = keccak256(
-      abi.encode(COMMITMENT_TYPEHASH, to, commitment, hashedMailingAddress, nonces[to])
-    );
+    bytes32 structHash = keccak256(abi.encode(COMMITMENT_TYPEHASH, to, commitment, nonces[to]));
     bytes32 digest = keccak256(abi.encodePacked('\x19\x01', _domainSeparator, structHash));
     address signatory = ecrecover(digest, v, r, s);
 
     return signatory;
-  }
-
-  /**
-   * @dev Increments the nonce used by the signature/commitment scheme. Used to prevent replay attacks.
-   */
-  function _incrementNonce(address account) private {
-    nonces[account] += 1;
   }
 
   /**

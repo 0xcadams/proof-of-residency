@@ -1,6 +1,6 @@
 {
-  "name": "@proof-of-residency/main",
-  "version": "0.0.1",
+  "name": "proof-of-residency",
+  "version": "0.0.3",
   "description": "The Proof of Residency NextJS decentralized app/api and Ethereum contracts.",
   "private": true,
   "license": "MIT",
@@ -9,7 +9,9 @@
     "lint": "lerna run lint --parallel",
     "lint:commit": "yarn lint",
     "prepare": "simple-git-hooks",
-    "start": "lerna run start --parallel --stream"
+    "publish": "lerna publish",
+    "start": "lerna run start --parallel --stream",
+    "version": "lerna version"
   },
   "devDependencies": {
     "@commitlint/cli": "^15.0.0",

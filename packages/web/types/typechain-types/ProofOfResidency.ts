@@ -523,7 +523,7 @@ export interface ProofOfResidency extends BaseContract {
 
     mint(
       country: BigNumberish,
-      publicKey: string,
+      commitment: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -706,7 +706,7 @@ export interface ProofOfResidency extends BaseContract {
 
   mint(
     country: BigNumberish,
-    publicKey: string,
+    commitment: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -880,7 +880,7 @@ export interface ProofOfResidency extends BaseContract {
 
     mint(
       country: BigNumberish,
-      publicKey: string,
+      commitment: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1129,7 +1129,7 @@ export interface ProofOfResidency extends BaseContract {
 
     mint(
       country: BigNumberish,
-      publicKey: string,
+      commitment: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1318,7 +1318,7 @@ export interface ProofOfResidency extends BaseContract {
 
     mint(
       country: BigNumberish,
-      publicKey: string,
+      commitment: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
