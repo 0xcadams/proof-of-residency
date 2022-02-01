@@ -17,7 +17,7 @@
     "deploy:rinkeby": "yarn hardhat run --network rinkeby scripts/initial-deploy.ts",
     "deploy:local": "yarn hardhat run --network localhost scripts/initial-deploy.ts",
     "time-travel:local": "yarn hardhat run --network localhost scripts/time-travel.ts",
-    "lerna-publish": "lerna publish from-git",
+    "lerna-publish": "lerna publish",
     "lerna-version": "lerna version",
     "lint": "solhint 'contracts/**/*.sol' && prettier --list-different 'contracts/**/*.sol' && eslint . --ext .ts",
     "size": "yarn hardhat size-contracts",
