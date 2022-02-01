@@ -6,3 +6,4 @@ coverage*
 .env
 .DS_STORE
 .openzeppelin
+lerna-debug.log
