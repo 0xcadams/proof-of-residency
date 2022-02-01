@@ -51,14 +51,6 @@ contract MyDAO {
 
 The API for the Proof of Residency ERC-721 is documented extensively in the contract and in the whitepaper.
 
-## Contributing
-
-This stack uses [Hardhat](https://hardhat.org) to orchestrate tasks and [Ethers](https://docs.ethers.io/v5/) for all Ethereum interactions and testing. There are also shared types between the tests and smart contract layer using [Typechain](https://github.com/dethcrypto/TypeChain).
-
-Clone this repository, then install the dependencies with `yarn install`. The smart contract code is under `packages/contracts` and the web code is under `packages/web`. This repository does not contain the code behind the artwork for each ERC-721.
-
-Please see the [website](https://proofofresidency.xyz) for more information!
-
 ## License
 
 Licensed under the [MIT license](LICENSE).
