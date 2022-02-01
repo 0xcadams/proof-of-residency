@@ -39,28 +39,12 @@ export const hashAndSignCommitmentEip712 = async (
   countryId: number,
   publicKey: string,
 
-  mailingAddress: AddressComponents,
   nonce: BigNumber
 ) => {
   const hash = ethers.utils.keccak256(
     ethers.utils.defaultAbiCoder.encode(
       ['address', 'uint256', 'string', 'uint256'],
       [walletAddress, countryId, publicKey, nonce]
-    )
-  );
-
-  // TODO should there be a nonce here? how do we ensure privacy?
-  const hashedMailingAddress = ethers.utils.keccak256(
-    ethers.utils.defaultAbiCoder.encode(
-      ['string', 'string', 'string', 'string', 'string', 'string'],
-      [
-        mailingAddress.addressLine1,
-        mailingAddress.addressLine2,
-        mailingAddress.city,
-        mailingAddress.state,
-        mailingAddress.postal,
-        mailingAddress.country
-      ]
     )
   );
 
@@ -73,7 +57,6 @@ export const hashAndSignCommitmentEip712 = async (
     Commitment: [
       { name: 'to', type: 'address' },
       { name: 'commitment', type: 'bytes32' },
-      { name: 'hashedMailingAddress', type: 'bytes32' },
       { name: 'nonce', type: 'uint256' }
     ]
   };
@@ -81,13 +64,12 @@ export const hashAndSignCommitmentEip712 = async (
   const signature = await wallet._signTypedData(domain, types, {
     to: walletAddress,
     commitment: hash,
-    hashedMailingAddress,
     nonce
   });
 
   const { v, r, s } = ethers.utils.splitSignature(signature);
 
-  return { commitment: hash, hashedMailingAddress, v, r, s };
+  return { commitment: hash, v, r, s };
 };
 
 const mailingAddressTypes = {

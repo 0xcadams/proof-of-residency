@@ -18,44 +18,22 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
-export declare namespace ProofOfResidency {
-  export type CommitmentStruct = {
-    validAt: BigNumberish;
-    commitment: BytesLike;
-    committer: string;
-    value: BigNumberish;
-  };
-
-  export type CommitmentStructOutput = [
-    BigNumber,
-    string,
-    string,
-    BigNumber
-  ] & {
-    validAt: BigNumber;
-    commitment: string;
-    committer: string;
-    value: BigNumber;
-  };
-}
-
 export interface ProofOfResidencyInterface extends utils.Interface {
   contractName: "ProofOfResidency";
   functions: {
     "addCommitter(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
-    "blacklistMailingAddress(uint256)": FunctionFragment;
     "burn(uint256)": FunctionFragment;
-    "commitAddress(address,bytes32,bytes32,uint8,bytes32,bytes32)": FunctionFragment;
+    "burnTokens(address[])": FunctionFragment;
+    "challenge(address[])": FunctionFragment;
+    "commitAddress(address,bytes32,uint8,bytes32,bytes32)": FunctionFragment;
     "contractURI()": FunctionFragment;
     "countryTokenCounts(uint16)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "getCommitment()": FunctionFragment;
     "getCommitmentPeriodIsUpcoming()": FunctionFragment;
     "getCommitmentPeriodIsValid()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "mailingAddressCounts(uint256)": FunctionFragment;
     "mint(uint16,string)": FunctionFragment;
     "name()": FunctionFragment;
     "nonces(address)": FunctionFragment;
@@ -67,6 +45,7 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     "removeCommitter(address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "reservePrice()": FunctionFragment;
+    "respondToChallenge(uint256,uint16,string)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setBaseURI(string)": FunctionFragment;
@@ -75,6 +54,8 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenByIndex(uint256)": FunctionFragment;
+    "tokenChallengeExists(address)": FunctionFragment;
+    "tokenChallengeExpired(address)": FunctionFragment;
     "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
     "tokenURI(uint256)": FunctionFragment;
     "totalSupply()": FunctionFragment;
@@ -93,14 +74,15 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "blacklistMailingAddress",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(functionFragment: "burn", values: [BigNumberish]): string;
   encodeFunctionData(
+    functionFragment: "burnTokens",
+    values: [string[]]
+  ): string;
+  encodeFunctionData(functionFragment: "challenge", values: [string[]]): string;
+  encodeFunctionData(
     functionFragment: "commitAddress",
-    values: [string, BytesLike, BytesLike, BigNumberish, BytesLike, BytesLike]
+    values: [string, BytesLike, BigNumberish, BytesLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "contractURI",
@@ -115,10 +97,6 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getCommitment",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "getCommitmentPeriodIsUpcoming",
     values?: undefined
   ): string;
@@ -129,10 +107,6 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mailingAddressCounts",
-    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "mint",
@@ -164,6 +138,10 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "respondToChallenge",
+    values: [BigNumberish, BigNumberish, string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "safeTransferFrom",
     values: [string, string, BigNumberish]
   ): string;
@@ -188,6 +166,14 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "tokenByIndex",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tokenChallengeExists",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tokenChallengeExpired",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "tokenOfOwnerByIndex",
@@ -218,11 +204,9 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "blacklistMailingAddress",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "burnTokens", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "challenge", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "commitAddress",
     data: BytesLike
@@ -240,10 +224,6 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getCommitment",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getCommitmentPeriodIsUpcoming",
     data: BytesLike
   ): Result;
@@ -253,10 +233,6 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "mailingAddressCounts",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
@@ -283,6 +259,10 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "respondToChallenge",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "safeTransferFrom",
     data: BytesLike
   ): Result;
@@ -303,6 +283,14 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "tokenByIndex",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenChallengeExists",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenChallengeExpired",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -328,13 +316,13 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
-    "CommitmentCreated(address,address,uint256,bytes32)": EventFragment;
+    "CommitmentCreated(address,address,bytes32)": EventFragment;
     "CommitterAdded(address)": EventFragment;
-    "CommitterRemoved(address)": EventFragment;
-    "MailingAddressBlacklisted(uint256)": EventFragment;
+    "CommitterRemoved(address,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
     "PriceChanged(uint256)": EventFragment;
+    "TokenChallenged(address,uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
     "Unpaused(address)": EventFragment;
   };
@@ -344,10 +332,10 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "CommitmentCreated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "CommitterAdded"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "CommitterRemoved"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "MailingAddressBlacklisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PriceChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TokenChallenged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
 }
@@ -367,13 +355,8 @@ export type ApprovalForAllEvent = TypedEvent<
 export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
 
 export type CommitmentCreatedEvent = TypedEvent<
-  [string, string, BigNumber, string],
-  {
-    to: string;
-    committer: string;
-    mailingAddressId: BigNumber;
-    commitment: string;
-  }
+  [string, string, string],
+  { to: string; committer: string; commitment: string }
 >;
 
 export type CommitmentCreatedEventFilter =
@@ -383,18 +366,13 @@ export type CommitterAddedEvent = TypedEvent<[string], { committer: string }>;
 
 export type CommitterAddedEventFilter = TypedEventFilter<CommitterAddedEvent>;
 
-export type CommitterRemovedEvent = TypedEvent<[string], { committer: string }>;
+export type CommitterRemovedEvent = TypedEvent<
+  [string, BigNumber],
+  { committer: string; fundsLost: BigNumber }
+>;
 
 export type CommitterRemovedEventFilter =
   TypedEventFilter<CommitterRemovedEvent>;
-
-export type MailingAddressBlacklistedEvent = TypedEvent<
-  [BigNumber],
-  { blacklistedAddress: BigNumber }
->;
-
-export type MailingAddressBlacklistedEventFilter =
-  TypedEventFilter<MailingAddressBlacklistedEvent>;
 
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string],
@@ -414,6 +392,13 @@ export type PriceChangedEvent = TypedEvent<
 >;
 
 export type PriceChangedEventFilter = TypedEventFilter<PriceChangedEvent>;
+
+export type TokenChallengedEvent = TypedEvent<
+  [string, BigNumber],
+  { owner: string; tokenId: BigNumber }
+>;
+
+export type TokenChallengedEventFilter = TypedEventFilter<TokenChallengedEvent>;
 
 export type TransferEvent = TypedEvent<
   [string, string, BigNumber],
@@ -468,20 +453,24 @@ export interface ProofOfResidency extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
-    blacklistMailingAddress(
-      mailingAddressId: BigNumberish,
+    burn(
+      tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    burn(
-      tokenId: BigNumberish,
+    burnTokens(
+      addresses: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    challenge(
+      addresses: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     commitAddress(
       to: string,
       commitment: BytesLike,
-      hashedMailingAddress: BytesLike,
       v: BigNumberish,
       r: BytesLike,
       s: BytesLike,
@@ -500,10 +489,6 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    getCommitment(
-      overrides?: CallOverrides
-    ): Promise<[ProofOfResidency.CommitmentStructOutput]>;
-
     getCommitmentPeriodIsUpcoming(
       overrides?: CallOverrides
     ): Promise<[boolean]>;
@@ -515,11 +500,6 @@ export interface ProofOfResidency extends BaseContract {
       operator: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
-
-    mailingAddressCounts(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[number]>;
 
     mint(
       country: BigNumberish,
@@ -556,6 +536,13 @@ export interface ProofOfResidency extends BaseContract {
     ): Promise<ContractTransaction>;
 
     reservePrice(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    respondToChallenge(
+      tokenId: BigNumberish,
+      country: BigNumberish,
+      commitment: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
       arg0: string,
@@ -605,6 +592,16 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    tokenChallengeExists(
+      owner: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    tokenChallengeExpired(
+      owner: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
     tokenOfOwnerByIndex(
       owner: string,
       index: BigNumberish,
@@ -653,20 +650,24 @@ export interface ProofOfResidency extends BaseContract {
 
   balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-  blacklistMailingAddress(
-    mailingAddressId: BigNumberish,
+  burn(
+    tokenId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  burn(
-    tokenId: BigNumberish,
+  burnTokens(
+    addresses: string[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  challenge(
+    addresses: string[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   commitAddress(
     to: string,
     commitment: BytesLike,
-    hashedMailingAddress: BytesLike,
     v: BigNumberish,
     r: BytesLike,
     s: BytesLike,
@@ -685,10 +686,6 @@ export interface ProofOfResidency extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  getCommitment(
-    overrides?: CallOverrides
-  ): Promise<ProofOfResidency.CommitmentStructOutput>;
-
   getCommitmentPeriodIsUpcoming(overrides?: CallOverrides): Promise<boolean>;
 
   getCommitmentPeriodIsValid(overrides?: CallOverrides): Promise<boolean>;
@@ -698,11 +695,6 @@ export interface ProofOfResidency extends BaseContract {
     operator: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
-
-  mailingAddressCounts(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<number>;
 
   mint(
     country: BigNumberish,
@@ -736,6 +728,13 @@ export interface ProofOfResidency extends BaseContract {
   ): Promise<ContractTransaction>;
 
   reservePrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+  respondToChallenge(
+    tokenId: BigNumberish,
+    country: BigNumberish,
+    commitment: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   "safeTransferFrom(address,address,uint256)"(
     arg0: string,
@@ -785,6 +784,16 @@ export interface ProofOfResidency extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  tokenChallengeExists(
+    owner: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  tokenChallengeExpired(
+    owner: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
   tokenOfOwnerByIndex(
     owner: string,
     index: BigNumberish,
@@ -830,17 +839,15 @@ export interface ProofOfResidency extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    blacklistMailingAddress(
-      mailingAddressId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     burn(tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
+
+    burnTokens(addresses: string[], overrides?: CallOverrides): Promise<void>;
+
+    challenge(addresses: string[], overrides?: CallOverrides): Promise<void>;
 
     commitAddress(
       to: string,
       commitment: BytesLike,
-      hashedMailingAddress: BytesLike,
       v: BigNumberish,
       r: BytesLike,
       s: BytesLike,
@@ -859,10 +866,6 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getCommitment(
-      overrides?: CallOverrides
-    ): Promise<ProofOfResidency.CommitmentStructOutput>;
-
     getCommitmentPeriodIsUpcoming(overrides?: CallOverrides): Promise<boolean>;
 
     getCommitmentPeriodIsValid(overrides?: CallOverrides): Promise<boolean>;
@@ -872,11 +875,6 @@ export interface ProofOfResidency extends BaseContract {
       operator: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
-
-    mailingAddressCounts(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<number>;
 
     mint(
       country: BigNumberish,
@@ -906,6 +904,13 @@ export interface ProofOfResidency extends BaseContract {
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     reservePrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+    respondToChallenge(
+      tokenId: BigNumberish,
+      country: BigNumberish,
+      commitment: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     "safeTransferFrom(address,address,uint256)"(
       arg0: string,
@@ -948,6 +953,16 @@ export interface ProofOfResidency extends BaseContract {
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    tokenChallengeExists(
+      owner: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    tokenChallengeExpired(
+      owner: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
 
     tokenOfOwnerByIndex(
       owner: string,
@@ -999,16 +1014,14 @@ export interface ProofOfResidency extends BaseContract {
       approved?: null
     ): ApprovalForAllEventFilter;
 
-    "CommitmentCreated(address,address,uint256,bytes32)"(
+    "CommitmentCreated(address,address,bytes32)"(
       to?: string | null,
       committer?: string | null,
-      mailingAddressId?: BigNumberish | null,
       commitment?: null
     ): CommitmentCreatedEventFilter;
     CommitmentCreated(
       to?: string | null,
       committer?: string | null,
-      mailingAddressId?: BigNumberish | null,
       commitment?: null
     ): CommitmentCreatedEventFilter;
 
@@ -1017,17 +1030,14 @@ export interface ProofOfResidency extends BaseContract {
     ): CommitterAddedEventFilter;
     CommitterAdded(committer?: string | null): CommitterAddedEventFilter;
 
-    "CommitterRemoved(address)"(
-      committer?: string | null
+    "CommitterRemoved(address,uint256)"(
+      committer?: string | null,
+      fundsLost?: null
     ): CommitterRemovedEventFilter;
-    CommitterRemoved(committer?: string | null): CommitterRemovedEventFilter;
-
-    "MailingAddressBlacklisted(uint256)"(
-      blacklistedAddress?: BigNumberish | null
-    ): MailingAddressBlacklistedEventFilter;
-    MailingAddressBlacklisted(
-      blacklistedAddress?: BigNumberish | null
-    ): MailingAddressBlacklistedEventFilter;
+    CommitterRemoved(
+      committer?: string | null,
+      fundsLost?: null
+    ): CommitterRemovedEventFilter;
 
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,
@@ -1045,6 +1055,15 @@ export interface ProofOfResidency extends BaseContract {
       newPrice?: BigNumberish | null
     ): PriceChangedEventFilter;
     PriceChanged(newPrice?: BigNumberish | null): PriceChangedEventFilter;
+
+    "TokenChallenged(address,uint256)"(
+      owner?: string | null,
+      tokenId?: BigNumberish | null
+    ): TokenChallengedEventFilter;
+    TokenChallenged(
+      owner?: string | null,
+      tokenId?: BigNumberish | null
+    ): TokenChallengedEventFilter;
 
     "Transfer(address,address,uint256)"(
       from?: string | null,
@@ -1076,20 +1095,24 @@ export interface ProofOfResidency extends BaseContract {
 
     balanceOf(owner: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    blacklistMailingAddress(
-      mailingAddressId: BigNumberish,
+    burn(
+      tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    burn(
-      tokenId: BigNumberish,
+    burnTokens(
+      addresses: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    challenge(
+      addresses: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     commitAddress(
       to: string,
       commitment: BytesLike,
-      hashedMailingAddress: BytesLike,
       v: BigNumberish,
       r: BytesLike,
       s: BytesLike,
@@ -1108,8 +1131,6 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getCommitment(overrides?: CallOverrides): Promise<BigNumber>;
-
     getCommitmentPeriodIsUpcoming(
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1119,11 +1140,6 @@ export interface ProofOfResidency extends BaseContract {
     isApprovedForAll(
       owner: string,
       operator: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    mailingAddressCounts(
-      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1162,6 +1178,13 @@ export interface ProofOfResidency extends BaseContract {
     ): Promise<BigNumber>;
 
     reservePrice(overrides?: CallOverrides): Promise<BigNumber>;
+
+    respondToChallenge(
+      tokenId: BigNumberish,
+      country: BigNumberish,
+      commitment: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     "safeTransferFrom(address,address,uint256)"(
       arg0: string,
@@ -1208,6 +1231,16 @@ export interface ProofOfResidency extends BaseContract {
 
     tokenByIndex(
       index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    tokenChallengeExists(
+      owner: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    tokenChallengeExpired(
+      owner: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1263,20 +1296,24 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    blacklistMailingAddress(
-      mailingAddressId: BigNumberish,
+    burn(
+      tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    burn(
-      tokenId: BigNumberish,
+    burnTokens(
+      addresses: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    challenge(
+      addresses: string[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     commitAddress(
       to: string,
       commitment: BytesLike,
-      hashedMailingAddress: BytesLike,
       v: BigNumberish,
       r: BytesLike,
       s: BytesLike,
@@ -1295,8 +1332,6 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getCommitment(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     getCommitmentPeriodIsUpcoming(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1308,11 +1343,6 @@ export interface ProofOfResidency extends BaseContract {
     isApprovedForAll(
       owner: string,
       operator: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    mailingAddressCounts(
-      arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1354,6 +1384,13 @@ export interface ProofOfResidency extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     reservePrice(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    respondToChallenge(
+      tokenId: BigNumberish,
+      country: BigNumberish,
+      commitment: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
       arg0: string,
@@ -1400,6 +1437,16 @@ export interface ProofOfResidency extends BaseContract {
 
     tokenByIndex(
       index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    tokenChallengeExists(
+      owner: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    tokenChallengeExpired(
+      owner: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

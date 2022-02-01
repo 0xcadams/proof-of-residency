@@ -142,8 +142,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
    * @notice Sets the main project treasury.
    */
   function setProjectTreasury(address newTreasury) external onlyOwner {
-    require(newTreasury != address(0), 'Non-0 address');
-
+    // slither-disable-next-line missing-zero-check
     projectTreasury = newTreasury;
   }
 
@@ -275,6 +274,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     returns (uint256)
   {
     // requires the requester to have no tokens - they cannot transfer, but may have burned a previous token
+    // this is not performed in the commit step, since that is also used for challenges
     require(balanceOf(_msgSender()) == 0, 'Already owns token');
 
     Commitment memory existingCommitment = _validateAndDeleteCommitment(country, commitment);
@@ -342,7 +342,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     Commitment memory existingCommitment = _commitments[_msgSender()];
 
     // slither-disable-next-line timestamp
-    return block.timestamp <= existingCommitment.validAt;
+    return block.timestamp < existingCommitment.validAt;
   }
 
   /**
@@ -363,6 +363,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
    * burning/re-issuing).
    */
   function tokenChallengeExpired(address owner) public view returns (bool) {
+    // slither-disable-next-line timestamp
     return _tokenChallengeExpirations[owner] >= block.timestamp;
   }
 
@@ -370,7 +371,8 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
    * @notice Gets if a token challenge exists for an address. This can be used in
    * downstream projects to ensure that a user does not have any outstanding challenges.
    */
-  function tokenChallengeExists(address owner) public view returns (bool) {
+  function tokenChallengeExists(address owner) external view returns (bool) {
+    // slither-disable-next-line timestamp
     return _tokenChallengeExpirations[owner] != 0;
   }
 

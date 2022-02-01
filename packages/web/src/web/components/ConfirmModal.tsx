@@ -93,7 +93,6 @@ export const ConfirmModal = (props: {
           const transaction = await commitAddress(
             walletAddress,
             result.data.commitment,
-            result.data.hashedMailingAddress,
             result.data.v,
             result.data.r,
             result.data.s,

@@ -5,18 +5,9 @@ import chaiAsPromised from 'chai-as-promised';
 import { ProofOfResidency } from '../../web/types';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { signCommitment, timeTravelToValid } from './util';
-import { BigNumber } from 'ethers';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
-
-const primaryLine = '370 WATER ST';
-const secondaryLine = '';
-const lastLine = 'SUMMERSIDE PE C1N 1C4';
-const country = 'CA';
-const mailingAddressId = BigNumber.from(
-  '74931654352136841322477683321810728405693153704805913520852177993368555879610'
-);
 
 const baseUri = 'https://generator.proofofresidency.xyz/';
 
@@ -25,7 +16,7 @@ const countryCommitment = 411;
 const initialPrice = ethers.utils.parseEther('0.008');
 const tokenId = ethers.BigNumber.from('411000000000000001');
 
-describe('Proof of Residency: token', () => {
+describe('Proof of Residency: non-transferable token', () => {
   let proofOfResidencyOwner: ProofOfResidency;
   let proofOfResidencyCommitter: ProofOfResidency;
   let proofOfResidencyTreasury: ProofOfResidency;
@@ -59,15 +50,10 @@ describe('Proof of Residency: token', () => {
 
     proofOfResidencyUnaffiliated = proofOfResidencyOwner.connect(unaffiliated);
 
-    const { hash, hashedMailingAddress, v, r, s } = await signCommitment(
+    const { hash, v, r, s } = await signCommitment(
       requester1.address,
       countryCommitment,
       secretCommitment,
-
-      primaryLine,
-      secondaryLine,
-      lastLine,
-      country,
 
       proofOfResidencyOwner.address,
       committer,
@@ -75,20 +61,12 @@ describe('Proof of Residency: token', () => {
     );
 
     await expect(
-      proofOfResidencyRequester1.commitAddress(
-        requester1.address,
-        hash,
-        hashedMailingAddress,
-        v,
-        r,
-        s,
-        {
-          value: initialPrice
-        }
-      )
+      proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
+        value: initialPrice
+      })
     )
       .to.emit(proofOfResidencyCommitter, 'CommitmentCreated')
-      .withArgs(requester1.address, committer.address, mailingAddressId, hash);
+      .withArgs(requester1.address, committer.address, hash);
 
     await timeTravelToValid();
 

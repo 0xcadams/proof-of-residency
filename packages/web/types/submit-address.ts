@@ -35,5 +35,4 @@ export type SubmitAddressResponse = {
 
   country: string;
   commitment: string;
-  hashedMailingAddress: string;
 };

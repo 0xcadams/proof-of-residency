@@ -14,6 +14,7 @@ import iso from 'iso-3166-1';
 import { SubmitAddressResponse, SubmitAddressRequest } from '../../types';
 import { sendLetter } from 'src/api/lob';
 import { createClient } from 'redis';
+import { ethers } from 'ethers';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressResponse | null>) => {
   try {
@@ -83,14 +84,26 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
 
       const nonce = await getNonceForAddress(requesterAddress);
 
-      const { commitment, hashedMailingAddress, v, r, s } = await hashAndSignCommitmentEip712(
+      const { commitment, v, r, s } = await hashAndSignCommitmentEip712(
         requesterAddress,
         countryId,
         keygen.publicKey.toString('hex'),
-        body.addressPayload,
         nonce
       );
 
+      const hashedMailingAddress = ethers.utils.keccak256(
+        ethers.utils.defaultAbiCoder.encode(
+          ['string', 'string', 'string', 'string', 'string', 'string'],
+          [
+            body.addressPayload.addressLine1,
+            body.addressPayload.addressLine2,
+            body.addressPayload.city,
+            body.addressPayload.state,
+            body.addressPayload.postal,
+            body.addressPayload.country
+          ]
+        )
+      );
       // const lastRequestHashedMailingAddress = await getRedis(hashedMailingAddress);
       // TODO do something fancy here
       // if (
@@ -113,8 +126,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
         r,
         s,
         country: countryName,
-        commitment,
-        hashedMailingAddress
+        commitment
       });
     }
 

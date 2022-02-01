@@ -36,7 +36,7 @@ The `mnemonic` (without the user-provided `password`) is sent to a mail service 
 
 _Note: Lob is a centralized API which allows physical mail to be sent from an API call. We use this initially as a core piece to our proofs, but acknowledge that the exposure to this service should be reduced. We take steps to mitigate risk and plan to reduce dependency on this service by eventually scaling out the [Committer Pool](#committer-pool)._
 
-The generated `publicKey` is hashed alongside the wallet address and country ID (as well as a nonce to prevent replay attacks). The mailing address is also hashed to generate an irreversible identifier for it. See [below](#mailing-address-identifiers) for more details.
+The generated `publicKey` is hashed alongside the wallet address and country ID (as well as a nonce to prevent replay attacks).
 
 ```typescript
 const walletAddress = ethers.utils.verifyMessage(payload, signature);
@@ -47,54 +47,24 @@ const hash = ethers.utils.keccak256(
     [walletAddress, countryId, publicKey, nonce]
   )
 );
-
-const hashedMailingAddress = ethers.utils.keccak256(
-  ethers.utils.defaultAbiCoder.encode(
-    ['string', 'string', 'string', 'string', 'string', 'string'],
-    [
-      mailingAddress.addressLine1,
-      mailingAddress.addressLine2,
-      mailingAddress.city,
-      mailingAddress.state,
-      mailingAddress.postal,
-      mailingAddress.country
-    ]
-  )
-);
 ```
 
-The commitment hash and mailing address hash are signed by the committer, which has the credentials for a trusted EOA which has been granted the role of committer in the smart contract. This is passed to the dApp, which sends the signed payload to the smart contract. The contract verifies that the trusted EOA signed the commitment and stores the commitment on-chain. A nonce is included in the signature which is always updated from the smart contract upon every state change.
+The commitment hash is signed by the committer, which has the credentials for a trusted EOA which has been granted the role of committer in the smart contract. This is passed to the dApp, which sends the signed payload to the smart contract. The contract verifies that the trusted EOA signed the commitment and stores the commitment on-chain. A nonce is included in the signature which is always updated from the smart contract upon every state change.
 
 ```solidity
 function commitAddress(
   address to,
   bytes32 commitment,
-  bytes32 hashedMailingAddress,
   uint8 v,
   bytes32 r,
   bytes32 s
 ) external payable whenNotPaused nonReentrant {
-  address signatory = _validateSignature(to, commitment, hashedMailingAddress, v, r, s);
+  address signatory = _validateSignature(to, commitment, v, r, s);
   ...
 }
 ```
 
 The requester pays the gas fee as well as a minimal ETH amount to cover the [costs of sending a letter](https://www.lob.com/pricing/print-mail) and development costs of the platform (this is a variable cost set by the owner of the contract, ideally as low as possible). This also acts as a deterrent to fraud, as the user must pay this amount each time they request a commitment.
-
-#### Mailing Address Identifiers
-
-TODO
-
-When the committer is generating a commitment, they also hash the components of the mailing address to create a unique identifier. Given the same set of address components, this hash would create the same `bytes32 hashedMailingAddress`. Since most countries have addresses on the order of millions...
-
-```solidity
-  ...
-  uint256 mailingAddressId = uint256(hashedMailingAddress);
-  require(!_mailingAddressBlacklist[mailingAddressId], 'Address blacklisted');
-
-  mailingAddressCounts[mailingAddressId] += 1;
-  ...
-```
 
 ### Step Two: Reveal
 

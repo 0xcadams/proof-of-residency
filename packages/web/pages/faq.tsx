@@ -90,8 +90,8 @@ const FaqPage = () => {
       q: 'Why is my mailing address not supported?',
       a: (
         <>
-          We depend on Lob to provide mailing address verification. If you are running into trouble
-          with a valid address, please email{' '}
+          We depend on an external service, Lob, to provide mailing address validation. If you are
+          running into trouble with a valid address, please email{' '}
           <strong>
             <Link href="mailto:hello@proofofresidency.xyz">hello@proofofresidency.xyz</Link>
           </strong>

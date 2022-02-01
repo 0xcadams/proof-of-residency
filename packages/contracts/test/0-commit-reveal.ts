@@ -5,18 +5,9 @@ import chaiAsPromised from 'chai-as-promised';
 import { ProofOfResidency } from '../../web/types';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { signCommitment, timeTravel, timeTravelToPastValid, timeTravelToValid } from './util';
-import { BigNumber } from 'ethers';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
-
-const primaryLine = '370 WATER ST';
-const secondaryLine = '';
-const lastLine = 'SUMMERSIDE PE C1N 1C4';
-const country = 'CA';
-const mailingAddressId = BigNumber.from(
-  '74931654352136841322477683321810728405693153704805913520852177993368555879610'
-);
 
 const baseUri = 'https://generator.proofofresidency.xyz/';
 
@@ -58,15 +49,10 @@ describe('Proof of Residency: commit/reveal scheme', () => {
 
     proofOfResidencyUnaffiliated = proofOfResidencyOwner.connect(unaffiliated);
 
-    const { hash, hashedMailingAddress, v, r, s } = await signCommitment(
+    const { hash, v, r, s } = await signCommitment(
       requester1.address,
       countryCommitment,
       secretCommitment,
-
-      primaryLine,
-      secondaryLine,
-      lastLine,
-      country,
 
       proofOfResidencyOwner.address,
       committer,
@@ -74,20 +60,12 @@ describe('Proof of Residency: commit/reveal scheme', () => {
     );
 
     await expect(
-      proofOfResidencyRequester1.commitAddress(
-        requester1.address,
-        hash,
-        hashedMailingAddress,
-        v,
-        r,
-        s,
-        {
-          value: initialPrice
-        }
-      )
+      proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
+        value: initialPrice
+      })
     )
       .to.emit(proofOfResidencyCommitter, 'CommitmentCreated')
-      .withArgs(requester1.address, committer.address, mailingAddressId, hash);
+      .withArgs(requester1.address, committer.address, hash);
   });
 
   describe('PoR functions correctly (happy paths)', async () => {
@@ -112,50 +90,36 @@ describe('Proof of Residency: commit/reveal scheme', () => {
     });
 
     it('should succeed to recommit + mint after first commitment expires', async () => {
+      expect(await proofOfResidencyRequester1.getCommitmentPeriodIsValid()).to.be.false;
+      expect(await proofOfResidencyRequester1.getCommitmentPeriodIsUpcoming()).to.be.true;
+
       await timeTravelToPastValid();
 
-      const { hash, hashedMailingAddress, v, r, s } = await signCommitment(
+      const { hash, v, r, s } = await signCommitment(
         requester1.address,
         countryCommitment,
         'secret2',
-
-        primaryLine,
-        secondaryLine,
-        lastLine,
-        country,
 
         proofOfResidencyOwner.address,
         committer,
         await proofOfResidencyRequester1.nonces(requester1.address)
       );
 
-      // TODO expect((await proofOfResidencyRequester1.getCommitment()).validAt).to.be.false;
-      // expect(await proofOfResidencyRequester1.getCommitmentPeriodIsValid()).to.be.false;
+      expect(await proofOfResidencyRequester1.getCommitmentPeriodIsValid()).to.be.false;
+      expect(await proofOfResidencyRequester1.getCommitmentPeriodIsUpcoming()).to.be.false;
 
       await expect(
-        proofOfResidencyRequester1.commitAddress(
-          requester1.address,
-          hash,
-          hashedMailingAddress,
-          v,
-          r,
-          s,
-          {
-            value: initialPrice
-          }
-        )
+        proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
+          value: initialPrice
+        })
       )
         .to.emit(proofOfResidencyCommitter, 'CommitmentCreated')
-        .withArgs(requester1.address, committer.address, mailingAddressId, hash);
-
-      // expect the count of mailing address commitments to go up
-      expect(await proofOfResidencyRequester1.mailingAddressCounts(mailingAddressId)).to.eq(
-        BigNumber.from(2)
-      );
+        .withArgs(requester1.address, committer.address, hash);
 
       await timeTravelToValid();
 
-      // TODO expect((await proofOfResidencyRequester1.getCommitment()).validAt).to.be.true;
+      expect(await proofOfResidencyRequester1.getCommitmentPeriodIsValid()).to.be.true;
+      expect(await proofOfResidencyRequester1.getCommitmentPeriodIsUpcoming()).to.be.false;
 
       await expect(proofOfResidencyRequester1.mint(countryCommitment, 'secret2'))
         .to.emit(proofOfResidencyRequester1, 'Transfer')
@@ -168,13 +132,25 @@ describe('Proof of Residency: commit/reveal scheme', () => {
   });
 
   describe('PoR functions correctly (sad paths)', async () => {
+    it('should fail to mint when a committer is removed', async () => {
+      await timeTravelToValid();
+
+      await expect(proofOfResidencyOwner.removeCommitter(committer.address))
+        .to.emit(proofOfResidencyOwner, 'CommitterRemoved')
+        .withArgs(committer.address, 0);
+
+      await expect(
+        proofOfResidencyRequester1.mint(countryCommitment, secretCommitment)
+      ).to.be.revertedWith('Signatory removed');
+    });
+
     it('should fail for early minting', async () => {
       // time travel only 3 days
       await timeTravel(3);
 
       await expect(
         proofOfResidencyRequester1.mint(countryCommitment, secretCommitment)
-      ).to.be.revertedWith('Cannot mint yet');
+      ).to.be.revertedWith('Commitment period invalid');
     });
 
     it('should fail for expired commitment', async () => {
@@ -182,21 +158,16 @@ describe('Proof of Residency: commit/reveal scheme', () => {
 
       await expect(
         proofOfResidencyRequester1.mint(countryCommitment, secretCommitment)
-      ).to.be.revertedWith('Expired');
+      ).to.be.revertedWith('Commitment period invalid');
     });
 
     it('should fail to commit without enough ETH', async () => {
       await timeTravelToPastValid();
 
-      const { hash, hashedMailingAddress, v, r, s } = await signCommitment(
+      const { hash, v, r, s } = await signCommitment(
         requester1.address,
         countryCommitment,
         'secret2',
-
-        primaryLine,
-        secondaryLine,
-        lastLine,
-        country,
 
         proofOfResidencyOwner.address,
         committer,
@@ -204,21 +175,61 @@ describe('Proof of Residency: commit/reveal scheme', () => {
       );
 
       await expect(
-        proofOfResidencyRequester1.commitAddress(
-          requester1.address,
-          hash,
-          hashedMailingAddress,
-          v,
-          r,
-          s,
-          {
-            value: initialPrice.sub(1)
-          }
-        )
+        proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
+          value: initialPrice.sub(1)
+        })
       ).to.be.revertedWith('Incorrect value');
     });
 
-    it('should fail for incorrect mailing address hash', async () => {
+    it('should fail to try to mint twice with the same commitment after burning original', async () => {
+      await timeTravelToValid();
+
+      await expect(proofOfResidencyRequester1.mint(countryCommitment, secretCommitment)).to.emit(
+        proofOfResidencyRequester1,
+        'Transfer'
+      );
+
+      await expect(
+        proofOfResidencyRequester1.burn(ethers.BigNumber.from('444000000000000001'))
+      ).to.emit(proofOfResidencyRequester1, 'Transfer');
+
+      await expect(
+        proofOfResidencyRequester1.mint(countryCommitment, secretCommitment)
+      ).to.be.revertedWith('Commitment incorrect');
+    });
+
+    it('should fail to try to mint twice with a new commitment (but still have existing token)', async () => {
+      await timeTravelToValid();
+
+      await expect(proofOfResidencyRequester1.mint(countryCommitment, secretCommitment)).to.emit(
+        proofOfResidencyRequester1,
+        'Transfer'
+      );
+
+      const { hash, v, r, s } = await signCommitment(
+        requester1.address,
+        countryCommitment,
+        'commitment222',
+
+        proofOfResidencyOwner.address,
+        committer,
+        await proofOfResidencyRequester1.nonces(requester1.address)
+      );
+
+      await expect(
+        proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
+          value: initialPrice
+        })
+      ).to.emit(proofOfResidencyCommitter, 'CommitmentCreated');
+
+      await timeTravelToValid();
+
+      await expect(
+        proofOfResidencyRequester1.mint(countryCommitment, 'commitment222')
+      ).to.be.revertedWith('Already owns token');
+    });
+
+    it('should fail for duplicate commitment (already committed to another country)', async () => {
       await timeTravelToValid();
 
       const { hash, v, r, s } = await signCommitment(
@@ -226,71 +237,15 @@ describe('Proof of Residency: commit/reveal scheme', () => {
         countryCommitment + 1,
         'secret-another',
 
-        primaryLine,
-        secondaryLine,
-        lastLine,
-        country,
-
-        proofOfResidencyOwner.address,
-        committer,
-        await proofOfResidencyRequester1.nonces(requester1.address)
-      );
-
-      const { hashedMailingAddress: badHashedMailingAddress } = await signCommitment(
-        requester1.address,
-        countryCommitment,
-        secretCommitment,
-
-        '999 WATER ST',
-        secondaryLine,
-        lastLine,
-        country,
-
         proofOfResidencyOwner.address,
         committer,
         await proofOfResidencyRequester1.nonces(requester1.address)
       );
 
       await expect(
-        proofOfResidencyRequester1.commitAddress(
-          requester1.address,
-          hash,
-          badHashedMailingAddress,
-          v,
-          r,
-          s
-        )
-      ).to.be.revertedWith('Signatory non-committer');
-    });
-
-    it('should fail for duplicate commitment (already committed to another country)', async () => {
-      await timeTravelToValid();
-
-      const { hash, hashedMailingAddress, v, r, s } = await signCommitment(
-        requester1.address,
-        countryCommitment + 1,
-        'secret-another',
-
-        primaryLine,
-        secondaryLine,
-        lastLine,
-        country,
-
-        proofOfResidencyOwner.address,
-        committer,
-        await proofOfResidencyRequester1.nonces(requester1.address)
-      );
-
-      await expect(
-        proofOfResidencyRequester1.commitAddress(
-          requester1.address,
-          hash,
-          hashedMailingAddress,
-          v,
-          r,
-          s,
-          { value: initialPrice }
-        )
+        proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
+          value: initialPrice
+        })
       ).to.be.revertedWith('Existing commitment');
     });
 

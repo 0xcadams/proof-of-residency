@@ -26,11 +26,6 @@ export const signCommitment = async (
   countryId: number,
   publicKey: string,
 
-  primaryLine: string,
-  secondaryLine: string,
-  lastLine: string,
-  country: string,
-
   contractAddress: string,
   signer: SignerWithAddress,
 
@@ -45,18 +40,10 @@ export const signCommitment = async (
     )
   );
 
-  const hashedMailingAddress = ethers.utils.keccak256(
-    ethers.utils.defaultAbiCoder.encode(
-      ['string', 'string', 'string', 'string'],
-      [primaryLine, secondaryLine, lastLine, country]
-    )
-  );
-
   const types = {
     Commitment: [
       { name: 'to', type: 'address' },
       { name: 'commitment', type: 'bytes32' },
-      { name: 'hashedMailingAddress', type: 'bytes32' },
       { name: 'nonce', type: 'uint256' }
     ]
   };
@@ -64,11 +51,10 @@ export const signCommitment = async (
   const signature = await signer._signTypedData(domain, types, {
     to: walletAddress,
     commitment: hash,
-    hashedMailingAddress,
     nonce
   });
 
   const { v, r, s } = ethers.utils.splitSignature(signature);
 
-  return { hash, hashedMailingAddress, v, r, s };
+  return { hash, v, r, s };
 };
