@@ -9,9 +9,7 @@
     "lint": "lerna run lint --parallel",
     "lint:commit": "yarn lint",
     "prepare": "simple-git-hooks",
-    "publish": "lerna publish",
-    "start": "lerna run start --parallel --stream",
-    "version": "lerna version"
+    "start": "lerna run start --parallel --stream"
   },
   "devDependencies": {
     "@commitlint/cli": "^15.0.0",

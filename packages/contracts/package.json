@@ -18,6 +18,7 @@
     "deploy:local": "yarn hardhat run --network localhost scripts/initial-deploy.ts",
     "time-travel:local": "yarn hardhat run --network localhost scripts/time-travel.ts",
     "lint": "solhint 'contracts/**/*.sol' && prettier --list-different 'contracts/**/*.sol' && eslint . --ext .ts",
+    "publish": "lerna publish",
     "size": "yarn hardhat size-contracts",
     "start": "hardhat node",
     "test": "yarn hardhat test"
