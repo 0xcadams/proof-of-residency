@@ -15,6 +15,7 @@
   "files": [
     "**/*.sol",
     "/artifacts/contracts/*.json",
+    "!/contracts/test/**/*",
     "!/test/**/*",
     "!/scripts/**/*"
   ],

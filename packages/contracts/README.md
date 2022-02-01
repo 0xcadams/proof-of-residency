@@ -29,27 +29,35 @@ The Proof of Residency contracts are non-upgradeable, so the API will remain sta
 
 ### Usage
 
-Once installed, you can use the contracts in the library by importing them:
+Once installed, you can use the contracts by importing them:
 
 ```solidity
 pragma solidity ^0.8.0;
 
-import "@proof-of-residency/contracts/ProofOfResidency.sol";
+import "@proof-of-residency/contracts/contracts/ProofOfResidency.sol";
 
 contract MyDAO {
-  public ProofOfResidency proofOfResidency;
+  ProofOfResidency private immutable proofOfResidency;
 
   constructor(address proofOfResidencyAddress) {
     proofOfResidency = ProofOfResidency(proofOfResidencyAddress)
   }
 
-  function getIsRequesterHuman() internal view override returns (bool) {
+  function isSenderHuman() external view override returns (bool) {
     return proofOfResidency.balanceOf(msg.sender) == 1;
+  }
+
+  function doesSenderHaveOutstandingTokenChallenge() external view override returns (bool) {
+    return proofOfResidency.tokenChallengeExists(msg.sender);
   }
 }
 ```
 
-The API for the Proof of Residency ERC-721 is documented extensively in the contract and in the whitepaper.
+This will not increase the size of your contract, it will only add the appropriate function selectors to the compiled bytecode (as long as you don't use the `new` keyword and create a new Proof of Residency contract). The API for the Proof of Residency ERC-721 is documented extensively in the contract and in the whitepaper.
+
+### Mainnet/Rinkeby Addresses
+
+Coming soon (TODO)...
 
 ## License
 
