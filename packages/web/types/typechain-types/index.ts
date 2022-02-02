@@ -16,6 +16,7 @@ export type { ERC721NonTransferable } from "./ERC721NonTransferable";
 export type { ProofOfResidency } from "./ProofOfResidency";
 export type { FailingTreasuryTest } from "./FailingTreasuryTest";
 export type { ReentrantTreasuryTest } from "./ReentrantTreasuryTest";
+export type { SomeDAOTest } from "./SomeDAOTest";
 
 export { Ownable__factory } from "./factories/Ownable__factory";
 export { Pausable__factory } from "./factories/Pausable__factory";
@@ -32,3 +33,4 @@ export { ERC721NonTransferable__factory } from "./factories/ERC721NonTransferabl
 export { ProofOfResidency__factory } from "./factories/ProofOfResidency__factory";
 export { FailingTreasuryTest__factory } from "./factories/FailingTreasuryTest__factory";
 export { ReentrantTreasuryTest__factory } from "./factories/ReentrantTreasuryTest__factory";
+export { SomeDAOTest__factory } from "./factories/SomeDAOTest__factory";

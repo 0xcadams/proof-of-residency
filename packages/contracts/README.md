@@ -32,28 +32,37 @@ The Proof of Residency contracts are non-upgradeable, so the API will remain sta
 Once installed, you can use the contracts by importing them:
 
 ```solidity
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.7;
 
-import "@proof-of-residency/contracts/contracts/ProofOfResidency.sol";
+import '@proof-of-residency/contracts/contracts/ProofOfResidency.sol';
 
-contract MyDAO {
-  ProofOfResidency private immutable proofOfResidency;
+contract SomeDAOTest {
+  ProofOfResidency private immutable _proofOfResidency;
 
   constructor(address proofOfResidencyAddress) {
-    proofOfResidency = ProofOfResidency(proofOfResidencyAddress)
+    _proofOfResidency = ProofOfResidency(proofOfResidencyAddress);
   }
 
-  function isSenderHuman() external view override returns (bool) {
-    return proofOfResidency.balanceOf(msg.sender) == 1;
+  function canJoinDao() external view returns (bool) {
+    require(isSenderHuman() && !doesSenderHaveOutstandingTokenChallenge(), 'Not allowed!');
+
+    return true;
   }
 
-  function doesSenderHaveOutstandingTokenChallenge() external view override returns (bool) {
-    return proofOfResidency.tokenChallengeExists(msg.sender);
+  function isSenderHuman() private view returns (bool) {
+    return _proofOfResidency.balanceOf(msg.sender) == 1;
+  }
+
+  function doesSenderHaveOutstandingTokenChallenge() private view returns (bool) {
+    return _proofOfResidency.tokenChallengeExists(msg.sender);
   }
 }
+
 ```
 
-This will not increase the size of your contract, it will only add the appropriate function selectors to the compiled bytecode (as long as you don't use the `new` keyword and create a new Proof of Residency contract). The API for the Proof of Residency ERC-721 is documented extensively in the contract and in the whitepaper.
+This will not increase the size of your contract, it will only add the appropriate function selectors to the compiled bytecode (as long as you don't use the `new` keyword and create a new Proof of Residency contract!)
+
+The API for the Proof of Residency ERC-721 is documented extensively in the contract and in the whitepaper.
 
 ### Mainnet/Rinkeby Addresses
 
@@ -61,4 +70,4 @@ Coming soon (TODO)...
 
 ## License
 
-Licensed under the [MIT license](LICENSE).
+Licensed under the [MIT license](../../LICENSE).
