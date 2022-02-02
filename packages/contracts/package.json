@@ -1,6 +1,6 @@
 {
   "name": "@proof-of-residency/contracts",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "The Solidity smart contracts for Proof of Residency.",
   "private": false,
   "main": "index.js",
@@ -35,7 +35,6 @@
     "start": "hardhat node",
     "test": "yarn hardhat test"
   },
-  "devDependencies": {},
   "dependencies": {
     "@openzeppelin/contracts": "^4.4.2"
   }
