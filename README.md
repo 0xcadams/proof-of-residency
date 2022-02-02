@@ -56,7 +56,7 @@ contract SomeDAOTest {
   }
 
   function isSenderHuman() private view returns (bool) {
-    return _proofOfResidency.balanceOf(msg.sender) == 1;
+    return _proofOfResidency.balanceOf(msg.sender) > 0;
   }
 
   function doesSenderHaveOutstandingTokenChallenge() private view returns (bool) {
