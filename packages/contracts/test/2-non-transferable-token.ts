@@ -64,9 +64,7 @@ describe('Proof of Residency: non-transferable token', () => {
       proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
         value: initialPrice
       })
-    )
-      .to.emit(proofOfResidencyCommitter, 'CommitmentCreated')
-      .withArgs(requester1.address, committer.address, hash);
+    ).to.emit(proofOfResidencyCommitter, 'CommitmentCreated');
 
     await timeTravelToValid();
 

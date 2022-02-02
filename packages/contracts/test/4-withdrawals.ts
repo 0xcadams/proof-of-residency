@@ -85,40 +85,6 @@ describe('Proof of Residency: withdrawals', () => {
 
       expect((await treasury.getBalance()).sub(originalTreasuryBalance)).to.equal(initialPrice);
     });
-
-    it('should be able to withdraw with a tax', async () => {
-      await proofOfResidencyOwner.addCommitter(unaffiliated.address, requester2.address);
-
-      const { hash, v, r, s } = await signCommitment(
-        requester1.address,
-        countryCommitment,
-        secretCommitment,
-
-        proofOfResidencyOwner.address,
-        unaffiliated,
-        await proofOfResidencyRequester1.nonces(requester1.address)
-      );
-
-      await proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
-        value: initialPrice
-      });
-
-      await timeTravelToValid();
-
-      await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment);
-
-      const originalTreasuryBalance = await treasury.getBalance();
-      const originalBalance = await requester2.getBalance();
-
-      await proofOfResidencyUnaffiliated.withdraw();
-
-      expect((await treasury.getBalance()).sub(originalTreasuryBalance)).to.equal(
-        initialPrice.mul(20).div(100)
-      );
-      expect((await requester2.getBalance()).sub(originalBalance)).to.equal(
-        initialPrice.mul(80).div(100)
-      );
-    });
   });
 
   describe('PoR functions correctly (sad paths)', async () => {
@@ -126,7 +92,7 @@ describe('Proof of Residency: withdrawals', () => {
       await expect(proofOfResidencyCommitter.withdraw()).to.be.revertedWith('Tax not over 0');
     });
 
-    it('should fail to withdraw when committer ', async () => {
+    it('should fail to withdraw when main project sets failing treasury', async () => {
       const FailingTreasuryTest = await ethers.getContractFactory('FailingTreasuryTest');
       failingTreasuryContract = await FailingTreasuryTest.deploy();
 

@@ -7,8 +7,6 @@ import '@openzeppelin/contracts/security/ReentrancyGuard.sol';
 
 import './ERC721NonTransferable.sol';
 
-// import 'hardhat/console.sol';
-
 /**
  * @title Proof of Residency
  * @custom:security-contact security@proofofresidency.xyz
@@ -88,6 +86,8 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
 
   /// @notice Event emitted when a token is challenged
   event TokenChallenged(address indexed owner, uint256 indexed tokenId);
+  /// @notice Event emitted when a token challenge is completed successfully
+  event TokenChallengeCompleted(address indexed owner, uint256 indexed tokenId);
 
   /// @notice Event emitted when the price is changed
   event PriceChanged(uint256 indexed newPrice);
@@ -150,6 +150,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
    * @notice Adds a new committer address with their treasury.
    */
   function addCommitter(address newCommitter, address newTreasury) external onlyOwner {
+    require(_committerTreasuries[newCommitter] == address(0), 'Already exists');
     _committerTreasuries[newCommitter] = newTreasury;
 
     emit CommitterAdded(newCommitter);
@@ -178,11 +179,14 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     for (uint256 i = 0; i < addresses.length; i++) {
       require(tokenChallengeExpired(addresses[i]), 'Challenge not expired');
 
-      uint256 tokenId = tokenOfOwnerByIndex(addresses[i], 1);
+      // use 0 as the index since this is the only possible index, if a token exists
+      uint256 tokenId = tokenOfOwnerByIndex(addresses[i], 0);
       Commitment memory existingCommitment = _commitments[addresses[i]];
 
-      // add the value to the committers successful commitments
-      _committerContributions[existingCommitment.committer] += existingCommitment.value;
+      if (existingCommitment.committer != address(0)) {
+        // add the value to the committers successful commitments
+        _committerContributions[existingCommitment.committer] += existingCommitment.value;
+      }
 
       _burn(tokenId);
     }
@@ -194,7 +198,8 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
    */
   function challenge(address[] memory addresses) external onlyOwner {
     for (uint256 i = 0; i < addresses.length; i++) {
-      uint256 tokenId = tokenOfOwnerByIndex(addresses[i], 1);
+      // use 0 as the index since this is the only possible index, if a token exists
+      uint256 tokenId = tokenOfOwnerByIndex(addresses[i], 0);
 
       _tokenChallengeExpirations[addresses[i]] =
         block.timestamp +
@@ -305,6 +310,8 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
 
     delete _tokenChallengeExpirations[_msgSender()];
 
+    emit TokenChallengeCompleted(_msgSender(), tokenId);
+
     // slither-disable-next-line low-level-calls
     (bool success, ) = _msgSender().call{ value: existingCommitment.value }('');
     require(success, 'Unable to refund');
@@ -355,7 +362,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     // slither-disable-next-line timestamp
     return
       block.timestamp >= existingCommitment.validAt &&
-      block.timestamp <= existingCommitment.validAt + COMMITMENT_WAITING_PERIOD;
+      block.timestamp <= existingCommitment.validAt + COMMITMENT_PERIOD;
   }
 
   /**
@@ -364,14 +371,14 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
    */
   function tokenChallengeExpired(address owner) public view returns (bool) {
     // slither-disable-next-line timestamp
-    return _tokenChallengeExpirations[owner] >= block.timestamp;
+    return tokenChallengeExists(owner) && _tokenChallengeExpirations[owner] <= block.timestamp;
   }
 
   /**
    * @notice Gets if a token challenge exists for an address. This can be used in
    * downstream projects to ensure that a user does not have any outstanding challenges.
    */
-  function tokenChallengeExists(address owner) external view returns (bool) {
+  function tokenChallengeExists(address owner) public view returns (bool) {
     // slither-disable-next-line timestamp
     return _tokenChallengeExpirations[owner] != 0;
   }

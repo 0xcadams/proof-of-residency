@@ -322,6 +322,7 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
     "PriceChanged(uint256)": EventFragment;
+    "TokenChallengeCompleted(address,uint256)": EventFragment;
     "TokenChallenged(address,uint256)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
     "Unpaused(address)": EventFragment;
@@ -335,6 +336,7 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PriceChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "TokenChallengeCompleted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TokenChallenged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
@@ -392,6 +394,14 @@ export type PriceChangedEvent = TypedEvent<
 >;
 
 export type PriceChangedEventFilter = TypedEventFilter<PriceChangedEvent>;
+
+export type TokenChallengeCompletedEvent = TypedEvent<
+  [string, BigNumber],
+  { owner: string; tokenId: BigNumber }
+>;
+
+export type TokenChallengeCompletedEventFilter =
+  TypedEventFilter<TokenChallengeCompletedEvent>;
 
 export type TokenChallengedEvent = TypedEvent<
   [string, BigNumber],
@@ -1055,6 +1065,15 @@ export interface ProofOfResidency extends BaseContract {
       newPrice?: BigNumberish | null
     ): PriceChangedEventFilter;
     PriceChanged(newPrice?: BigNumberish | null): PriceChangedEventFilter;
+
+    "TokenChallengeCompleted(address,uint256)"(
+      owner?: string | null,
+      tokenId?: BigNumberish | null
+    ): TokenChallengeCompletedEventFilter;
+    TokenChallengeCompleted(
+      owner?: string | null,
+      tokenId?: BigNumberish | null
+    ): TokenChallengeCompletedEventFilter;
 
     "TokenChallenged(address,uint256)"(
       owner?: string | null,

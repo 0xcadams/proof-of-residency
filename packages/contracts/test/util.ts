@@ -11,8 +11,8 @@ export const timeTravel = async (days: number) => {
 // 1 week
 export const timeTravelToValid = async () => timeTravel(7);
 
-// 5 weeks
-export const timeTravelToPastValid = async () => timeTravel(10 * 5 + 1);
+// 6 weeks
+export const timeTravelToPastValid = async () => timeTravel(7 * 6 + 1);
 
 export const getEip712Domain = async (contractAddress: string, chainId: number) => ({
   name: 'Proof of Residency Protocol',

@@ -165,6 +165,18 @@ describe('Proof of Residency: permissions', () => {
       ).to.be.revertedWith('Commitment incorrect');
     });
 
+    it('should fail to burn tokens for public (no owner role)', async () => {
+      await expect(proofOfResidencyRequester1.burnTokens([committer.address])).to.be.revertedWith(
+        'Ownable: caller is not the owner'
+      );
+    });
+
+    it('should fail to challenge token for public (no owner role)', async () => {
+      await expect(proofOfResidencyRequester1.challenge([committer.address])).to.be.revertedWith(
+        'Ownable: caller is not the owner'
+      );
+    });
+
     it('should fail to remove committer for public (no owner role)', async () => {
       await expect(
         proofOfResidencyRequester1.removeCommitter(committer.address)
