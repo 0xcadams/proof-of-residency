@@ -113,7 +113,7 @@ function challenge(address[] memory addresses) external onlyOwner { ... }
 If the token owner does not validate their proof, their token will be eligible for burning after 6 weeks.
 
 ```solidity
-function burnTokens(address[] memory addresses) external onlyOwner {
+function burnFailedChallenges(address[] memory addresses) external onlyOwner {
   for (uint256 i = 0; i < addresses.length; i++) {
     require(tokenChallengeExpired(addresses[i]), 'Challenge not expired');
     ...

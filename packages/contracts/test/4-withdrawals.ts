@@ -4,7 +4,7 @@ import chaiAsPromised from 'chai-as-promised';
 
 import { ProofOfResidency, FailingTreasuryTest, ReentrantTreasuryTest } from '../../web/types';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { signCommitment, timeTravelToValid } from './util';
+import { signCommitment, timeTravelToEndOfTimelock, timeTravelToValid } from './util';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -79,17 +79,41 @@ describe('Proof of Residency: withdrawals', () => {
 
       await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment);
 
+      await timeTravelToEndOfTimelock();
+
       const originalTreasuryBalance = await treasury.getBalance();
-
       await proofOfResidencyCommitter.withdraw();
-
-      expect((await treasury.getBalance()).sub(originalTreasuryBalance)).to.equal(initialPrice);
+      expect((await treasury.getBalance()).sub(originalTreasuryBalance)).to.equal(
+        initialPrice.mul(20).div(100)
+      );
     });
   });
 
   describe('PoR functions correctly (sad paths)', async () => {
     it('should fail to withdraw when zero balance for committer', async () => {
       await expect(proofOfResidencyCommitter.withdraw()).to.be.revertedWith('Tax not over 0');
+    });
+
+    it('should fail to withdraw before timelock is expired', async () => {
+      const { hash, v, r, s } = await signCommitment(
+        requester1.address,
+        countryCommitment,
+        secretCommitment,
+
+        proofOfResidencyOwner.address,
+        committer,
+        await proofOfResidencyRequester1.nonces(requester1.address)
+      );
+
+      await proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
+        value: initialPrice
+      });
+
+      await timeTravelToValid();
+
+      await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment);
+
+      await expect(proofOfResidencyCommitter.withdraw()).to.be.revertedWith('Timelocked');
     });
 
     it('should fail to withdraw when main project sets failing treasury', async () => {
@@ -108,7 +132,7 @@ describe('Proof of Residency: withdrawals', () => {
       proofOfResidencyRequester1 = proofOfResidencyOwner.connect(requester1);
       proofOfResidencyUnaffiliated = proofOfResidencyOwner.connect(unaffiliated);
 
-      await proofOfResidencyOwner.addCommitter(unaffiliated.address, unaffiliated.address);
+      await proofOfResidencyOwner.addCommitter(unaffiliated.address);
 
       const { hash, v, r, s } = await signCommitment(
         requester1.address,
@@ -127,73 +151,77 @@ describe('Proof of Residency: withdrawals', () => {
       await timeTravelToValid();
 
       await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment);
+
+      await timeTravelToEndOfTimelock();
 
       await expect(proofOfResidencyUnaffiliated.withdraw()).to.be.revertedWith(
         'Unable to send project treasury'
       );
     });
 
-    it('should fail to withdraw to the failing treasury contract', async () => {
-      // USES FAILING TREASURY CONTRACT
-      await proofOfResidencyOwner.addCommitter(
-        unaffiliated.address,
-        failingTreasuryContract.address
-      );
+    // TODO removed these since committers are always EOA accounts...
+    //
+    // it('should fail to withdraw to the failing treasury contract', async () => {
+    //   // USES FAILING TREASURY CONTRACT
+    //   await proofOfResidencyOwner.addCommitter(
+    //     unaffiliated.address,
+    //     failingTreasuryContract.address
+    //   );
 
-      const { hash, v, r, s } = await signCommitment(
-        requester1.address,
-        countryCommitment,
-        secretCommitment,
+    //   const { hash, v, r, s } = await signCommitment(
+    //     requester1.address,
+    //     countryCommitment,
+    //     secretCommitment,
 
-        proofOfResidencyOwner.address,
-        unaffiliated,
-        await proofOfResidencyRequester1.nonces(requester1.address)
-      );
+    //     proofOfResidencyOwner.address,
+    //     unaffiliated,
+    //     await proofOfResidencyRequester1.nonces(requester1.address)
+    //   );
 
-      await proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
-        value: initialPrice
-      });
+    //   await proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
+    //     value: initialPrice
+    //   });
 
-      await timeTravelToValid();
+    //   await timeTravelToValid();
 
-      await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment);
+    //   await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment);
 
-      await expect(proofOfResidencyUnaffiliated.withdraw()).to.be.revertedWith(
-        'Unable to withdraw'
-      );
+    //   await expect(proofOfResidencyUnaffiliated.withdraw()).to.be.revertedWith(
+    //     'Unable to withdraw'
+    //   );
 
-      // this is dumb but it's for code coverage :)
-      await failingTreasuryContract.fallback();
-    });
+    //   // this is dumb but it's for code coverage :)
+    //   await failingTreasuryContract.fallback();
+    // });
 
-    it('should fail to withdraw to the reentrant treasury contract', async () => {
-      // USES REENTRANT TREASURY CONTRACT
-      await proofOfResidencyOwner.addCommitter(
-        unaffiliated.address,
-        reentrantTreasuryContract.address
-      );
+    // it('should fail to withdraw to the reentrant treasury contract', async () => {
+    //   // USES REENTRANT TREASURY CONTRACT
+    //   await proofOfResidencyOwner.addCommitter(
+    //     unaffiliated.address,
+    //     reentrantTreasuryContract.address
+    //   );
 
-      const { hash, v, r, s } = await signCommitment(
-        requester1.address,
-        countryCommitment,
-        secretCommitment,
+    //   const { hash, v, r, s } = await signCommitment(
+    //     requester1.address,
+    //     countryCommitment,
+    //     secretCommitment,
 
-        proofOfResidencyOwner.address,
-        unaffiliated,
-        await proofOfResidencyRequester1.nonces(requester1.address)
-      );
+    //     proofOfResidencyOwner.address,
+    //     unaffiliated,
+    //     await proofOfResidencyRequester1.nonces(requester1.address)
+    //   );
 
-      await proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
-        value: initialPrice
-      });
+    //   await proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
+    //     value: initialPrice
+    //   });
 
-      await timeTravelToValid();
+    //   await timeTravelToValid();
 
-      await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment);
+    //   await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment);
 
-      await expect(proofOfResidencyUnaffiliated.withdraw()).to.be.revertedWith(
-        'Unable to withdraw'
-      );
-    });
+    //   await expect(proofOfResidencyUnaffiliated.withdraw()).to.be.revertedWith(
+    //     'Unable to withdraw'
+    //   );
+    // });
   });
 });

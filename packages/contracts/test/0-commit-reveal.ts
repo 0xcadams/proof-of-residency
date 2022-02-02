@@ -4,7 +4,12 @@ import chaiAsPromised from 'chai-as-promised';
 
 import { ProofOfResidency } from '../../web/types';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { signCommitment, timeTravel, timeTravelToPastValid, timeTravelToValid } from './util';
+import {
+  signCommitment,
+  timeTravelToBeforeValid,
+  timeTravelToPastValid,
+  timeTravelToValid
+} from './util';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -90,8 +95,8 @@ describe('Proof of Residency: commit/reveal scheme', () => {
     });
 
     it('should succeed to recommit + mint after first commitment expires', async () => {
-      expect(await proofOfResidencyRequester1.getCommitmentPeriodIsValid()).to.be.false;
-      expect(await proofOfResidencyRequester1.getCommitmentPeriodIsUpcoming()).to.be.true;
+      expect(await proofOfResidencyRequester1.commitmentPeriodIsValid()).to.be.false;
+      expect(await proofOfResidencyRequester1.commitmentPeriodIsUpcoming()).to.be.true;
 
       await timeTravelToPastValid();
 
@@ -105,8 +110,8 @@ describe('Proof of Residency: commit/reveal scheme', () => {
         await proofOfResidencyRequester1.nonces(requester1.address)
       );
 
-      expect(await proofOfResidencyRequester1.getCommitmentPeriodIsValid()).to.be.false;
-      expect(await proofOfResidencyRequester1.getCommitmentPeriodIsUpcoming()).to.be.false;
+      expect(await proofOfResidencyRequester1.commitmentPeriodIsValid()).to.be.false;
+      expect(await proofOfResidencyRequester1.commitmentPeriodIsUpcoming()).to.be.false;
 
       await expect(
         proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
@@ -118,8 +123,8 @@ describe('Proof of Residency: commit/reveal scheme', () => {
 
       await timeTravelToValid();
 
-      expect(await proofOfResidencyRequester1.getCommitmentPeriodIsValid()).to.be.true;
-      expect(await proofOfResidencyRequester1.getCommitmentPeriodIsUpcoming()).to.be.false;
+      expect(await proofOfResidencyRequester1.commitmentPeriodIsValid()).to.be.true;
+      expect(await proofOfResidencyRequester1.commitmentPeriodIsUpcoming()).to.be.false;
 
       await expect(proofOfResidencyRequester1.mint(countryCommitment, 'secret2'))
         .to.emit(proofOfResidencyRequester1, 'Transfer')
@@ -145,8 +150,7 @@ describe('Proof of Residency: commit/reveal scheme', () => {
     });
 
     it('should fail for early minting', async () => {
-      // time travel only 3 days
-      await timeTravel(3);
+      await timeTravelToBeforeValid();
 
       await expect(
         proofOfResidencyRequester1.mint(countryCommitment, secretCommitment)
