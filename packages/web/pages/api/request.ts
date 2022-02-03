@@ -9,12 +9,11 @@ import {
   validatePasswordSignature
 } from 'src/api/ethers';
 
-import iso from 'iso-3166-1';
-
 import { SubmitAddressResponse, SubmitAddressRequest } from '../../types';
 import { sendLetter } from 'src/api/lob';
 import { createClient } from 'redis';
 import { ethers } from 'ethers';
+import { getIsoCountryForAlpha2 } from 'src/web/token';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressResponse | null>) => {
   try {
@@ -71,7 +70,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
         return res.status(500).end('Mailing address signature was incorrect');
       }
 
-      const countryIso = iso.whereAlpha2(body.addressPayload.country);
+      const countryIso = getIsoCountryForAlpha2(body.addressPayload.country);
 
       if (!countryIso) {
         return res.status(500).end('Country code was incorrect');

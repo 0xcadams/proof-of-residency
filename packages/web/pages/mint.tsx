@@ -5,7 +5,6 @@ import * as bip39 from 'bip39';
 import React, { useState } from 'react';
 import * as ecc from 'tiny-secp256k1';
 
-import iso from 'iso-3166-1';
 import { useRouter } from 'next/router';
 
 import { CountrySelect } from 'src/web/components/CountrySelect';
@@ -19,6 +18,7 @@ import {
   useGetCommitmentPeriodIsValid
 } from 'src/web/hooks';
 import { NextSeo } from 'next-seo';
+import { getIsoCountryForAlpha2 } from 'src/web/token';
 
 const bip32 = BIP32Factory(ecc);
 
@@ -39,7 +39,7 @@ const MintPage = () => {
   const router = useRouter();
 
   const onSubmit = async () => {
-    const isoCountry = iso.whereAlpha2(selectedCountry);
+    const isoCountry = getIsoCountryForAlpha2(selectedCountry);
 
     try {
       if (isoCountry && walletAddress && mint) {
@@ -68,6 +68,13 @@ const MintPage = () => {
         } else {
           throw new Error('No transfer events found.');
         }
+      } else {
+        toast({
+          title: 'Error',
+          description:
+            'Minting was not successful. Please double check your inputs and try again in a few minutes.',
+          status: 'error'
+        });
       }
     } catch (e) {
       console.error({ e });

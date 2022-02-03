@@ -9,7 +9,6 @@ import {
   Text,
   Tooltip
 } from '@chakra-ui/react';
-import { Country } from 'iso-3166-1/dist/iso-3166';
 import { GetStaticPaths, GetStaticPropsContext } from 'next';
 import { NextSeo } from 'next-seo';
 import Image from 'next/image';
@@ -21,6 +20,7 @@ import { getCurrentMintedCount, getOwnerOfToken, TokenOwner } from 'src/api/ethe
 import Header from 'src/web/components/Header';
 import { getPopulationForAlpha3 } from 'src/web/populations';
 import {
+  CountryIso,
   getAllCountries,
   getCountryAndTokenNumber,
   getIsoCountryForAlpha3,
@@ -29,7 +29,7 @@ import {
 import { MetadataResponse } from 'types';
 import Footer from '../../src/web/components/Footer';
 
-type CountryDetailsProps = Country & {
+type CountryDetailsProps = CountryIso & {
   countryId: number;
   image: string;
   imageLarge: string;

@@ -16,7 +16,7 @@ import {
   Tr,
   useBreakpointValue
 } from '@chakra-ui/react';
-import { Country } from 'iso-3166-1/dist/iso-3166';
+
 import { GetStaticPaths, GetStaticPropsContext } from 'next';
 import { NextSeo } from 'next-seo';
 import Link from 'next/link';
@@ -25,6 +25,7 @@ import React from 'react';
 import { getOwnerOfToken, TokenOwner } from 'src/api/ethers';
 import Header from 'src/web/components/Header';
 import {
+  CountryIso,
   getCacheableTokenIds,
   getCountryAndTokenNumber,
   getIsoCountryForCountryId
@@ -48,7 +49,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-type DetailsProps = Country &
+type DetailsProps = CountryIso &
   MetadataResponse & {
     tokenId: string;
     owner: TokenOwner;
