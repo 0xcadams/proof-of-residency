@@ -134,11 +134,6 @@ describe('Proof of Residency: committer pools', () => {
   });
 
   describe('PoR functions correctly (sad paths)', async () => {
-    it('should fail to add a duplicate committer', async () => {
-      await proofOfResidencyOwner.addCommitter(unaffiliated.address);
-      await expect(proofOfResidencyOwner.addCommitter(unaffiliated.address)).to.be.revertedWith(
-        'Already exists'
-      );
-    });
+    //
   });
 });

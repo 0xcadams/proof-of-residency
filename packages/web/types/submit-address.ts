@@ -14,6 +14,7 @@ export type AddressComponents = {
 
 export type SubmitAddressPasswordPayload = {
   hashedPassword: string;
+  walletAddress: string;
   nonce: BigNumber;
 };
 

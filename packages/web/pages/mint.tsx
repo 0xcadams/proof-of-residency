@@ -3,21 +3,22 @@ import BIP32Factory from 'bip32';
 import { ethers } from 'ethers';
 import * as bip39 from 'bip39';
 import React, { useState } from 'react';
-import {
-  useGetCommitmentPeriodIsUpcoming,
-  useGetCommitmentPeriodIsValid,
-  useMint,
-  useWalletAddress
-} from 'src/web/hooks';
 import * as ecc from 'tiny-secp256k1';
 
 import iso from 'iso-3166-1';
-
-import Footer from '../src/web/components/Footer';
-import Header from '../src/web/components/Header';
+import { useRouter } from 'next/router';
 
 import { CountrySelect } from 'src/web/components/CountrySelect';
-import { useRouter } from 'next/router';
+import Footer from 'src/web/components/Footer';
+import Header from 'src/web/components/Header';
+import {
+  useWalletAddress,
+  useMint,
+  useProviderExists,
+  useGetCommitmentPeriodIsUpcoming,
+  useGetCommitmentPeriodIsValid
+} from 'src/web/hooks';
+import { NextSeo } from 'next-seo';
 
 const bip32 = BIP32Factory(ecc);
 
@@ -28,6 +29,8 @@ const MintPage = () => {
 
   const walletAddress = useWalletAddress();
   const mint = useMint();
+
+  const providerExists = useProviderExists();
 
   const commitmentPeriodIsUpcoming = useGetCommitmentPeriodIsUpcoming();
   const isCommitmentReady = useGetCommitmentPeriodIsValid();
@@ -80,6 +83,8 @@ const MintPage = () => {
 
   return (
     <>
+      <NextSeo title={`Mint | Proof of Residency`} />
+
       <Header />
 
       <Flex minHeight="100vh" pt="70px" width="100%" direction="column" px={4}>
@@ -90,22 +95,19 @@ const MintPage = () => {
         <Flex textAlign={'center'} direction={'column'} mt={4} mb={6} mx="auto">
           <Text fontSize="xl">Please select your country from the dropdown below.</Text>
 
-          {!isCommitmentReady &&
-            (commitmentPeriodIsUpcoming ? (
-              <Text maxWidth={700} mt={3} color={'red'} fontSize="sm">
-                Your token is not available to be minted. Please wait one week from your original
-                request.
-              </Text>
-            ) : (
-              <Text maxWidth={700} mt={3} color={'red'} fontSize="sm">
-                Your token is not available to be minted. Please try again if it has been more than
-                ten weeks.
-              </Text>
-            ))}
+          <Text maxWidth={700} mt={3} color={'red'} fontSize="sm">
+            {providerExists
+              ? !isCommitmentReady &&
+                (commitmentPeriodIsUpcoming
+                  ? 'Your token is not available to be minted. Please wait one week from your original request.'
+                  : 'Your token is not available to be minted. Please try again if it has been more than ten weeks.')
+              : 'You must have Metamask installed to use this app.'}
+          </Text>
         </Flex>
 
         <Flex flexDirection="column" mx="auto" justify="center">
           <CountrySelect
+            country={selectedCountry}
             disabled={!isCommitmentReady}
             onChange={(country) => setSelectedCountry(country)}
           />

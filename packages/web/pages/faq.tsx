@@ -9,13 +9,14 @@ import {
   Text,
   useBreakpointValue
 } from '@chakra-ui/react';
+import { NextSeo } from 'next-seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import Header from 'src/web/components/Header';
 import { trackEvent } from 'src/web/mixpanel';
 import BST from '../public/bolivia.png';
 import Footer from '../src/web/components/Footer';
-import Header from '../src/web/components/Header';
 
 const FaqPage = () => {
   const frameHeight = useBreakpointValue({ base: 300, md: 400 }, 'md');
@@ -118,6 +119,8 @@ const FaqPage = () => {
 
   return (
     <>
+      <NextSeo title={`FAQ | Proof of Residency`} />
+
       <Header />
 
       <Flex minHeight="100vh" pt="70px" width="100%" direction="column" px={4}>

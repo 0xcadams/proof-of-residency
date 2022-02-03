@@ -136,7 +136,6 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
    * commitments.
    */
   function addCommitter(address newCommitter) external onlyOwner {
-    require(!_committers[newCommitter], 'Already exists');
     _committers[newCommitter] = true;
 
     emit CommitterAdded(newCommitter);
@@ -268,8 +267,14 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     uint8 v,
     bytes32 r,
     bytes32 s
-  ) external payable whenNotPaused nonReentrant {
-    address signatory = _validateSignature(to, commitment, v, r, s);
+  ) external payable whenNotPaused {
+    // Validates a signature which corresponds to one signed by a committer with the
+    // https://eips.ethereum.org/EIPS/eip-712[`eth_signTypedData`] method as part of EIP-712.
+    bytes32 structHash = keccak256(abi.encode(COMMITMENT_TYPEHASH, to, commitment, nonces[to]));
+    bytes32 digest = keccak256(abi.encodePacked('\x19\x01', _domainSeparator, structHash));
+    address signatory = ecrecover(digest, v, r, s);
+
+    // require that the signatory is actually a committer
     require(_committers[signatory], 'Signatory non-committer');
 
     require(msg.value == reservePrice, 'Incorrect value');
@@ -439,24 +444,6 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     nonces[_msgSender()] += 1;
 
     delete commitments[_msgSender()];
-  }
-
-  /**
-   * @dev Validates a signature which corresponds to one signed with the
-   * https://eips.ethereum.org/EIPS/eip-712[`eth_signTypedData`] method as part of EIP-712.
-   */
-  function _validateSignature(
-    address to,
-    bytes32 commitment,
-    uint8 v,
-    bytes32 r,
-    bytes32 s
-  ) private view returns (address) {
-    bytes32 structHash = keccak256(abi.encode(COMMITMENT_TYPEHASH, to, commitment, nonces[to]));
-    bytes32 digest = keccak256(abi.encodePacked('\x19\x01', _domainSeparator, structHash));
-    address signatory = ecrecover(digest, v, r, s);
-
-    return signatory;
   }
 
   /**

@@ -2,7 +2,6 @@
   "name": "@proof-of-residency/contracts",
   "version": "0.0.8",
   "description": "The Solidity smart contracts for Proof of Residency.",
-  "private": false,
   "main": "index.js",
   "license": "MIT",
   "publishConfig": {
@@ -22,18 +21,18 @@
   "scripts": {
     "analyze": "yarn lint && slither . --filter-paths \"@openzeppelin\"",
     "build": "yarn clean && yarn compile",
-    "clean": "yarn hardhat clean",
-    "compile": "yarn hardhat compile",
-    "coverage": "yarn build && yarn hardhat coverage --temp artifacts",
-    "deploy:rinkeby": "yarn hardhat run --network rinkeby scripts/initial-deploy.ts",
-    "deploy:local": "yarn hardhat run --network localhost scripts/initial-deploy.ts",
-    "time-travel:local": "yarn hardhat run --network localhost scripts/time-travel.ts",
+    "clean": "yarn run -T hardhat clean",
+    "compile": "yarn run -T hardhat compile",
+    "coverage": "yarn build && yarn run -T hardhat coverage --temp artifacts",
+    "deploy:rinkeby": "yarn run -T hardhat run --network rinkeby scripts/initial-deploy.ts",
+    "deploy:local": "yarn run -T hardhat run --network localhost scripts/initial-deploy.ts",
+    "time-travel:local": "yarn run -T hardhat run --network localhost scripts/time-travel.ts",
     "lerna-publish": "lerna publish from-package",
     "lerna-version": "lerna version",
     "lint": "solhint 'contracts/**/*.sol' && prettier --list-different 'contracts/**/*.sol' && eslint . --ext .ts",
-    "size": "yarn hardhat size-contracts",
-    "start": "hardhat node",
-    "test": "yarn hardhat test"
+    "size": "yarn run -T hardhat size-contracts",
+    "start": "yarn run -T hardhat node",
+    "test": "yarn run -T hardhat test"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.4.2"

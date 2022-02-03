@@ -56,6 +56,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
 
       const requesterAddress = await validatePasswordSignature(
         body.passwordPayload.hashedPassword,
+        body.passwordPayload.walletAddress,
         body.passwordPayload.nonce,
         body.passwordSignature
       );
@@ -63,7 +64,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
       // ensure that the address was sent from this backend
       const signatureMailAddress = await validateMailingAddressSignature(
         body.addressPayload,
-
         body.addressSignature
       );
 

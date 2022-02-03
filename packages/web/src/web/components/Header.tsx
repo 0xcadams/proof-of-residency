@@ -1,32 +1,25 @@
-import { Badge, Box, Button, Flex, Spacer, useBreakpointValue, useToast } from '@chakra-ui/react';
+import { Badge, Box, Button, Flex, Spacer, Tooltip, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FiGithub } from 'react-icons/fi';
-import { useWallet } from 'use-wallet';
 
 import Logo from '../../../public/logo.svg';
-import { useNetworkName } from '../hooks';
+import {
+  useGetCommitmentPeriodIsValid,
+  useHasTokenId,
+  useNetworkName,
+  useProviderExists
+} from '../hooks';
 
 const Header = () => {
   const isMobile = useBreakpointValue({ base: true, sm: false }, 'sm');
   const buttonSize = isMobile ? 'md' : 'lg';
 
   const network = useNetworkName();
-
-  const wallet = useWallet();
-  const toast = useToast();
-
-  useEffect(() => {
-    if (wallet.error && !wallet.connector) {
-      toast({
-        title: 'Error',
-        description:
-          'You must have a Ethereum wallet browser extension like Metamask to use this app.',
-        status: 'error'
-      });
-    }
-  }, [wallet.error, wallet.connector]);
+  const providerExists = useProviderExists();
+  const commitmentPeriodIsValid = useGetCommitmentPeriodIsValid();
+  const hasTokenId = useHasTokenId();
 
   return (
     <Flex height="70px" position="absolute" left={0} top={0} right={0} px={4} shadow="sm">
@@ -38,22 +31,38 @@ const Header = () => {
             </Flex>
           </Link>
         </Box>
-        {process.env.NODE_ENV === 'development' &&
-          !wallet.error &&
-          wallet.isConnected &&
-          network !== 'homestead' && (
-            <Badge fontSize="md" ml={3}>
-              {network === 'unknown' ? 'Local' : network ?? 'Unknown'}
-            </Badge>
-          )}
+        {process.env.NODE_ENV === 'development' && (
+          <Badge fontSize="md" ml={3}>
+            {network ? network : 'Unknown'}
+          </Badge>
+        )}
 
         <Spacer />
 
-        {/* <Link href="/request"> */}
-        <Button disabled size={buttonSize}>
-          mint
-        </Button>
-        {/* </Link> */}
+        <Tooltip
+          label={
+            !providerExists
+              ? 'You must install Metamask to use this app.'
+              : process.env.NODE_ENV !== 'development'
+              ? 'Coming soon!'
+              : undefined
+          }
+          shouldWrapChildren
+        >
+          <Link
+            href={
+              commitmentPeriodIsValid ? '/mint' : hasTokenId ? `/token/${hasTokenId}` : '/request'
+            }
+            passHref
+          >
+            <Button
+              disabled={process.env.NODE_ENV !== 'development' || !providerExists}
+              size={buttonSize}
+            >
+              {hasTokenId ? 'proof' : 'mint'}
+            </Button>
+          </Link>
+        </Tooltip>
         <Link href="/explore" passHref>
           <Button ml={3} variant="outline" size={buttonSize}>
             explore

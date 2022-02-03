@@ -23,6 +23,7 @@ import Link from 'next/link';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
 import { getOwnerOfToken, TokenOwner } from 'src/api/ethers';
+import Header from 'src/web/components/Header';
 import {
   getCacheableTokenIds,
   getCountryAndTokenNumber,
@@ -30,7 +31,6 @@ import {
 } from 'src/web/token';
 import { MetadataResponse } from 'types';
 import Footer from '../../src/web/components/Footer';
-import Header from '../../src/web/components/Header';
 
 interface Params extends ParsedUrlQuery {
   id: string;
@@ -52,7 +52,7 @@ type DetailsProps = Country &
   MetadataResponse & {
     tokenId: string;
     owner: TokenOwner;
-    imagePng: string;
+    // imagePng: string;
   };
 
 export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) => {
@@ -85,7 +85,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
 
       image: `https://generator.proofofresidency.xyz/${tokenId}`,
       // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/${tokenId}.html`,
-      imagePng: `https://generator.proofofresidency.xyz/token/${tokenId}.png`,
+      // imagePng: `https://generator.proofofresidency.xyz/token/${tokenId}.png`,
       //  `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/token/${tokenId}.png`,
       tokenId,
       owner
@@ -142,16 +142,17 @@ const TokenDetailsPage = (props: DetailsProps) => {
       <NextSeo
         title={`${props.name} | Proof of Residency`}
         description={props.description}
-        openGraph={{
-          images: [
-            {
-              url: props.imagePng,
-              width: 1000,
-              height: 1000,
-              alt: props.name
-            }
-          ]
-        }}
+        // TODO find a way to generate these image PNGs
+        // openGraph={{
+        //   images: [
+        //     {
+        //       url: props.imagePng,
+        //       width: 1000,
+        //       height: 1000,
+        //       alt: props.name
+        //     }
+        //   ]
+        // }}
       />
       <Header />
       <Flex pt="70px" width="100%" direction="column">

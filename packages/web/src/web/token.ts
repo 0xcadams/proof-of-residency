@@ -42,6 +42,14 @@ const blacklist = [
 
 export const getAllCountries = () => iso.all().filter((e) => !blacklist.includes(e.numeric));
 
+export const getTokenIdsForCountryAndCount = (country: number, count: number) =>
+  [...Array(count)].map((_, tokenNumber) =>
+    BigNumber.from(Number(country))
+      .mul(1e15)
+      .add(tokenNumber + 1)
+      .toString()
+  );
+
 export const getTokenIdForAllCountries = () =>
   getAllCountries().map((country) => ({
     ...country,

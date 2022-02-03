@@ -1,8 +1,9 @@
+import { useToast } from '@chakra-ui/react';
 import { BigNumber, ethers } from 'ethers';
 import { useCallback, useEffect, useState } from 'react';
 import { ProofOfResidency, ProofOfResidency__factory as ProofOfResidencyFactory } from 'types';
 
-import { useWallet } from 'use-wallet';
+import { useWallet, ChainUnsupportedError } from 'use-wallet';
 
 const useProofOfResidency = () => {
   const [proofOfResidency, setProofOfResidency] = useState<{
@@ -16,6 +17,19 @@ const useProofOfResidency = () => {
   });
 
   const wallet = useWallet();
+
+  const toast = useToast();
+
+  useEffect(() => {
+    if (wallet.error instanceof ChainUnsupportedError && !toast.isActive('network-toast')) {
+      toast({
+        id: 'network-toast',
+        title: 'Error',
+        description: `You must switch your network to use this app.`,
+        status: 'error'
+      });
+    }
+  }, [wallet.error]);
 
   useEffect(() => {
     (async () => {
@@ -52,14 +66,20 @@ export const useNetworkName = () => {
   return wallet.networkName;
 };
 
+export const useProviderExists = () => {
+  const { signer } = useProofOfResidency();
+
+  return Boolean(signer);
+};
+
 export const useGetCommitmentPeriodIsValid = () => {
   const [value, setValue] = useState<boolean | null>(null);
 
-  const { proofOfResidency, signer } = useProofOfResidency();
+  const { proofOfResidency } = useProofOfResidency();
 
   useEffect(() => {
     (async () => {
-      const response = await proofOfResidency?.getCommitmentPeriodIsValid();
+      const response = await proofOfResidency?.commitmentPeriodIsValid();
 
       setValue(response ?? false);
     })();
@@ -75,11 +95,30 @@ export const useGetCommitmentPeriodIsUpcoming = () => {
 
   useEffect(() => {
     (async () => {
-      const response = await proofOfResidency?.getCommitmentPeriodIsUpcoming();
+      const response = await proofOfResidency?.commitmentPeriodIsUpcoming();
 
       setValue(response ?? false);
     })();
   }, [proofOfResidency]);
+
+  return value;
+};
+
+export const useHasTokenId = () => {
+  const [value, setValue] = useState<string | null>(null);
+
+  const { proofOfResidency } = useProofOfResidency();
+  const walletAddress = useWalletAddress();
+
+  useEffect(() => {
+    (async () => {
+      if (walletAddress && proofOfResidency) {
+        const response = await proofOfResidency?.tokenOfOwnerByIndex(walletAddress, 0);
+
+        setValue(response.toString());
+      }
+    })();
+  }, [walletAddress, proofOfResidency]);
 
   return value;
 };
@@ -160,6 +199,7 @@ const getEip712Domain = async (contractAddress: string, chainId: number) => ({
 const passwordTypes = {
   Password: [
     { name: 'password', type: 'string' },
+    { name: 'walletAddress', type: 'string' },
     { name: 'nonce', type: 'uint256' }
   ]
 };
@@ -168,7 +208,7 @@ export const useSignPasswordEip712 = () => {
   const { signer } = useProofOfResidency();
 
   return useCallback(
-    async (password: string, nonce: BigNumber) => {
+    async (walletAddress: string, password: string, nonce: BigNumber) => {
       const chainId = await signer?.getChainId();
 
       if (chainId && signer) {
@@ -179,6 +219,7 @@ export const useSignPasswordEip712 = () => {
 
         const signature = await signer._signTypedData(domain, passwordTypes, {
           password,
+          walletAddress,
           nonce
         });
 

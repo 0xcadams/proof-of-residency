@@ -1,4 +1,14 @@
-import { Box, Divider, Flex, Heading, SimpleGrid, Tag, Text, Tooltip } from '@chakra-ui/react';
+import {
+  Box,
+  Divider,
+  Flex,
+  Heading,
+  SimpleGrid,
+  Skeleton,
+  Tag,
+  Text,
+  Tooltip
+} from '@chakra-ui/react';
 import { Country } from 'iso-3166-1/dist/iso-3166';
 import { GetStaticPaths, GetStaticPropsContext } from 'next';
 import { NextSeo } from 'next-seo';
@@ -8,11 +18,16 @@ import numeral from 'numeral';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
 import { getCurrentMintedCount, getOwnerOfToken, TokenOwner } from 'src/api/ethers';
+import Header from 'src/web/components/Header';
 import { getPopulationForAlpha3 } from 'src/web/populations';
-import { getAllCountries, getIsoCountryForAlpha3 } from 'src/web/token';
+import {
+  getAllCountries,
+  getCountryAndTokenNumber,
+  getIsoCountryForAlpha3,
+  getTokenIdsForCountryAndCount
+} from 'src/web/token';
 import { MetadataResponse } from 'types';
 import Footer from '../../src/web/components/Footer';
-import Header from '../../src/web/components/Header';
 
 type CountryDetailsProps = Country & {
   countryId: number;
@@ -22,6 +37,7 @@ type CountryDetailsProps = Country & {
   population: number;
   tokens: {
     tokenId: string;
+    tokenNumber: string;
     link: string;
     image: string;
     owner: TokenOwner;
@@ -65,26 +81,27 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
     const mintedCount = await getCurrentMintedCount(countryId);
 
     const tokens = await Promise.all(
-      [...Array(mintedCount.toNumber() ?? 0)]
-        .map((_, tokenNumber) => countryId * 1e15 + (tokenNumber + 1))
-        .map(async (tokenId) => {
-          const res = await fetch(
-            `https://generator.proofofresidency.xyz/api/${tokenId}`
-            // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_METADATA}/${tokenId}`
-          );
-          const meta: MetadataResponse = await res.json();
+      getTokenIdsForCountryAndCount(countryId, mintedCount.toNumber() ?? 0).map(async (tokenId) => {
+        const res = await fetch(
+          `https://generator.proofofresidency.xyz/api/${tokenId}`
+          // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_METADATA}/${tokenId}`
+        );
+        const meta: MetadataResponse = await res.json();
 
-          const owner = await getOwnerOfToken(tokenId.toFixed(0));
+        const owner = await getOwnerOfToken(tokenId);
 
-          return {
-            ...meta,
-            owner,
-            tokenId: tokenId.toFixed(0),
-            link: `/token/${tokenId}`,
-            image: `https://generator.proofofresidency.xyz/token/${tokenId}.png`
-            // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/token/${tokenId}.png`
-          };
-        })
+        const { tokenNumber } = getCountryAndTokenNumber(tokenId);
+
+        return {
+          ...meta,
+          owner,
+          tokenId: tokenId,
+          tokenNumber: tokenNumber.toString(),
+          link: `/token/${tokenId}`,
+          image: `https://generator.proofofresidency.xyz/${tokenId}`
+          // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/token/${tokenId}.png`
+        };
+      })
     );
 
     const population = getPopulationForAlpha3(isoCountry.alpha3);
@@ -249,18 +266,21 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
                     <Flex cursor="pointer" direction="column">
                       <Box>
                         <Flex mt={2} mx="auto" position="relative" height={400}>
-                          <Image
-                            priority={i < 6}
-                            objectFit="contain"
-                            layout="fill"
-                            placeholder="empty"
-                            src={token.image}
-                            alt={token.tokenId}
-                          />
+                          {typeof window === 'undefined' ? (
+                            <Skeleton height={400} width="100%" />
+                          ) : (
+                            <iframe
+                              sandbox="allow-scripts allow-downloads"
+                              allowFullScreen={false}
+                              allow="xr-spatial-tracking"
+                              src={token.image}
+                              style={{ height: 400, width: '100%' }}
+                            />
+                          )}
                         </Flex>
                       </Box>
                       <Text mt={2} fontWeight="bold">
-                        Token #{token.tokenId}
+                        Token #{token.tokenNumber}
                       </Text>
                       <Box mt={2}>
                         <Tag pt="3px" variant="solid" size="lg">

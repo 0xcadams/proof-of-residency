@@ -113,12 +113,14 @@ export const validateMailingAddressSignature = async (
 const passwordTypes = {
   Password: [
     { name: 'password', type: 'string' },
+    { name: 'walletAddress', type: 'string' },
     { name: 'nonce', type: 'uint256' }
   ]
 };
 
 export const validatePasswordSignature = async (
   password: string,
+  walletAddress: string,
   nonce: BigNumber,
   signature: string
 ): Promise<string> => {
@@ -132,6 +134,7 @@ export const validatePasswordSignature = async (
     passwordTypes,
     {
       password,
+      walletAddress,
       nonce
     },
     signature
@@ -161,7 +164,7 @@ export const getOwnerOfToken = async (tokenId: string | BigNumber): Promise<Toke
     const count = await getCurrentMintedCount(countryId);
 
     if (count.gte(tokenNumber)) {
-      const owner = await proofOfResidency.ownerOf(tokenId);
+      const owner = await proofOfResidency.ownerOf(BigNumber.from(tokenId));
 
       return {
         content: owner?.slice(0, 8) || 'None',
