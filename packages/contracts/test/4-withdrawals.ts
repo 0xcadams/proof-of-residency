@@ -4,7 +4,12 @@ import chaiAsPromised from 'chai-as-promised';
 
 import { ProofOfResidency, FailingTreasuryTest, ReentrantTreasuryTest } from '../../web/types';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { signCommitment, timeTravelToEndOfTimelock, timeTravelToValid } from './util';
+import {
+  signCommitment,
+  timeTravelToEndOfTimelock,
+  timeTravelToPastValid,
+  timeTravelToValid
+} from './util';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -86,6 +91,53 @@ describe('Proof of Residency: withdrawals', () => {
       expect((await treasury.getBalance()).sub(originalTreasuryBalance)).to.equal(
         initialPrice.mul(20).div(100)
       );
+    });
+
+    it('should be able to withdraw for treasury when recommit after first commitment expires', async () => {
+      const commitment1 = await signCommitment(
+        requester1.address,
+        countryCommitment,
+        secretCommitment,
+
+        proofOfResidencyOwner.address,
+        committer,
+        await proofOfResidencyRequester1.nonces(requester1.address)
+      );
+
+      await proofOfResidencyRequester1.commitAddress(
+        requester1.address,
+        commitment1.hash,
+        commitment1.v,
+        commitment1.r,
+        commitment1.s,
+        {
+          value: initialPrice
+        }
+      );
+
+      await timeTravelToPastValid();
+
+      const { hash, v, r, s } = await signCommitment(
+        requester1.address,
+        countryCommitment,
+        'secret2',
+
+        proofOfResidencyOwner.address,
+        committer,
+        await proofOfResidencyRequester1.nonces(requester1.address)
+      );
+
+      await expect(
+        proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
+          value: initialPrice
+        })
+      ).to.emit(proofOfResidencyCommitter, 'CommitmentCreated');
+
+      await timeTravelToEndOfTimelock();
+
+      const originalTreasuryBalance = await treasury.getBalance();
+      await proofOfResidencyTreasury.withdraw();
+      expect((await treasury.getBalance()).gt(originalTreasuryBalance)).to.be.true;
     });
   });
 

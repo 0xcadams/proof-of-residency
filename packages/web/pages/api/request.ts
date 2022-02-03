@@ -41,17 +41,43 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
         await client.set(key, value);
       };
 
+      if (!process.env.HASHED_ADDRESS_SALT) {
+        return res
+          .status(500)
+          .end('Cannot securely store hashed addresses! Contact the committer.');
+      }
+
+      const hashedMailingAddress = ethers.utils.keccak256(
+        ethers.utils.defaultAbiCoder.encode(
+          ['string', 'string', 'string', 'string', 'string', 'string', 'string'],
+          [
+            body.addressPayload.addressLine1,
+            body.addressPayload.addressLine2,
+            body.addressPayload.city,
+            body.addressPayload.state,
+            body.addressPayload.postal,
+            body.addressPayload.country,
+            process.env.HASHED_ADDRESS_SALT
+          ]
+        )
+      );
+
+      if (body.addressPayload.deliverability !== 'deliverable') {
+        return res.status(400).end('Must request a valid deliverable address');
+      }
+
+      const lastRequestHashedMailingAddress = await getRedis(hashedMailingAddress);
       const lastRequestAddressSig = await getRedis(body.addressSignature);
-      const lastRequestIp =
-        typeof req.headers['x-forwarded-for'] === 'string' &&
-        (await getRedis(req.headers['x-forwarded-for']));
+      // const lastRequestIp =
+      //   typeof req.headers['x-forwarded-for'] === 'string' &&
+      //   (await getRedis(req.headers['x-forwarded-for']));
 
       if (lastRequestAddressSig) {
         return res.status(400).end('Must request an address verification again');
       }
-      if (lastRequestIp && Date.now() - lastRequestIp <= 60000) {
-        return res.status(429).end('Slow it down, cowboy!!');
-      }
+      // if (lastRequestIp && Date.now() - lastRequestIp <= 60000) {
+      //   return res.status(429).end('Slow it down, cowboy!!');
+      // }
 
       const requesterAddress = await validatePasswordSignature(
         body.passwordPayload.hashedPassword,
@@ -90,35 +116,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
         nonce
       );
 
-      const hashedMailingAddress = ethers.utils.keccak256(
-        ethers.utils.defaultAbiCoder.encode(
-          ['string', 'string', 'string', 'string', 'string', 'string'],
-          [
-            body.addressPayload.addressLine1,
-            body.addressPayload.addressLine2,
-            body.addressPayload.city,
-            body.addressPayload.state,
-            body.addressPayload.postal,
-            body.addressPayload.country
-          ]
-        )
-      );
-      // const lastRequestHashedMailingAddress = await getRedis(hashedMailingAddress);
-      // TODO do something fancy here
-      // if (
-      //   lastRequestHashedMailingAddress &&
-      //   Date.now() - lastRequestHashedMailingAddress <= 86400000
-      // ) {
-      //   return res.status(429).end('Too many requests for this address!');
-      // }
+      // require that the address hasn't been requested for 4 weeks
+      if (
+        lastRequestHashedMailingAddress &&
+        Date.now() - lastRequestHashedMailingAddress <= 2.419 * 1e9
+      ) {
+        return res.status(429).end('Too many requests for this address!');
+      }
 
       await sendLetter(body.addressPayload, keygen.mnemonic, requesterAddress);
 
       await setRedis(hashedMailingAddress, Date.now());
       await setRedis(body.addressSignature, Date.now());
-      if (typeof req.headers['x-forwarded-for'] === 'string') {
-        await setRedis(req.headers['x-forwarded-for'], Date.now());
-      }
+      // if (typeof req.headers['x-forwarded-for'] === 'string') {
+      //   await setRedis(req.headers['x-forwarded-for'], Date.now());
+      // }
 
       return res.status(200).json({
         v,

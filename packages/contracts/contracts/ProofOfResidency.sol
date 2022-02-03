@@ -88,7 +88,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   /// @notice Event emitted when a committer is added
   event CommitterAdded(address indexed committer);
   /// @notice Event emitted when a committer is removed
-  event CommitterRemoved(address indexed committer, uint256 fundsLost);
+  event CommitterRemoved(address indexed committer, uint256 fundsLost, bool forceReclaim);
 
   /// @notice Event emitted when a token is challenged
   event TokenChallenged(address indexed owner, uint256 indexed tokenId);
@@ -142,36 +142,43 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   }
 
   /**
-   * @notice Removes a committer address and transfers their contributions to be owned
+   * @notice Removes a committer address and optionally transfers their contributions to be owned
    * by the treasury.
    */
-  function removeCommitter(address removedCommitter) external onlyOwner {
-    delete _committers[removedCommitter];
-
+  function removeCommitter(address removedCommitter, bool forceReclaim) external onlyOwner {
     Contribution memory lostContribution = committerContributions[removedCommitter];
-    Contribution storage treasuryContribution = committerContributions[projectTreasury];
+    require(forceReclaim || lostContribution.value == 0, 'Cannot remove non-0');
 
-    treasuryContribution.value += lostContribution.value;
-    treasuryContribution.lockedUntil = block.timestamp + TIMELOCK_WAITING_PERIOD;
+    if (forceReclaim) {
+      Contribution storage treasuryContribution = committerContributions[projectTreasury];
 
+      treasuryContribution.value += lostContribution.value;
+      treasuryContribution.lockedUntil = block.timestamp + TIMELOCK_WAITING_PERIOD;
+    }
+
+    delete _committers[removedCommitter];
     delete committerContributions[removedCommitter];
 
-    emit CommitterRemoved(removedCommitter, lostContribution.value);
+    emit CommitterRemoved(removedCommitter, lostContribution.value, forceReclaim);
   }
 
   /**
-   * @notice Allows the project treasury to claim expired contribution(s). This allows funds to
+   * @notice Allows the project treasury to reclaim expired contribution(s). This allows funds to
    * not get locked up in the contract indefinitely.
    */
-  function claimExpiredContributions(address[] memory unclaimedAddresses) public onlyOwner {
+  function reclaimExpiredContributions(address[] memory unclaimedAddresses) external onlyOwner {
     uint256 totalAddition = 0;
 
     for (uint256 i = 0; i < unclaimedAddresses.length; i++) {
       Commitment memory existingCommitment = commitments[unclaimedAddresses[i]];
-      require(existingCommitment.validAt + COMMITMENT_PERIOD < block.timestamp, 'Still valid');
+
+      // require that the commitment expired so it can be claimed
+      // slither-disable-next-line timestamp
+      require(existingCommitment.validAt + COMMITMENT_PERIOD <= block.timestamp, 'Still valid');
 
       totalAddition += existingCommitment.value;
 
+      // slither-disable-next-line costly-loop
       delete commitments[unclaimedAddresses[i]];
     }
 
@@ -281,7 +288,9 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
 
     Commitment storage existingCommitment = commitments[to];
 
-    bool isExistingExpired = block.timestamp > existingCommitment.validAt + COMMITMENT_PERIOD;
+    // if there is an existing commitment and it hasn't expired yet
+    bool isExistingExpired = existingCommitment.commitment != 0 &&
+      block.timestamp > existingCommitment.validAt + COMMITMENT_PERIOD;
 
     // slither-disable-next-line timestamp
     require(existingCommitment.commitment == 0 || isExistingExpired, 'Existing commitment');
@@ -364,6 +373,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   function withdraw() external nonReentrant {
     Contribution memory contribution = committerContributions[_msgSender()];
     // enforce the timelock for the withdrawal
+    // slither-disable-next-line timestamp
     require(contribution.lockedUntil < block.timestamp, 'Timelocked');
 
     uint256 taxAndDonation = (contribution.value * TAX_AND_DONATION_PERCENT) / 100;

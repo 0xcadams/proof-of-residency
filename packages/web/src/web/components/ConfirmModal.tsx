@@ -62,9 +62,9 @@ export const ConfirmModal = (props: {
           nonce
         };
 
-        const signature = await signPasswordEip712(walletAddress, hashedPassword, nonce);
+        const passwordSignature = await signPasswordEip712(walletAddress, hashedPassword, nonce);
 
-        if (!signature) {
+        if (!passwordSignature) {
           throw new Error('Signature could not be completed successfully.');
         }
 
@@ -78,14 +78,14 @@ export const ConfirmModal = (props: {
             postal: props.address.postal,
             country: props.address.country,
 
+            deliverability: props.address.deliverability,
+
             nonce: props.address.nonce
           },
           addressSignature: props.address.signature,
 
           passwordPayload,
-          passwordSignature: signature,
-          latitude: -1,
-          longitude: -1
+          passwordSignature: passwordSignature
         };
 
         const result = await axiosClient.post<SubmitAddressResponse>('/request', body);

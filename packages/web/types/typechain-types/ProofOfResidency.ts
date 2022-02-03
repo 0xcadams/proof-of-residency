@@ -27,7 +27,6 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     "burn(uint256)": FunctionFragment;
     "burnFailedChallenges(address[])": FunctionFragment;
     "challenge(address[])": FunctionFragment;
-    "claimExpiredContributions(address[])": FunctionFragment;
     "commitAddress(address,bytes32,uint8,bytes32,bytes32)": FunctionFragment;
     "commitmentPeriodIsUpcoming()": FunctionFragment;
     "commitmentPeriodIsValid()": FunctionFragment;
@@ -45,7 +44,8 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     "pause()": FunctionFragment;
     "paused()": FunctionFragment;
     "projectTreasury()": FunctionFragment;
-    "removeCommitter(address)": FunctionFragment;
+    "reclaimExpiredContributions(address[])": FunctionFragment;
+    "removeCommitter(address,bool)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "reservePrice()": FunctionFragment;
     "respondToChallenge(uint256,uint16,string)": FunctionFragment;
@@ -83,10 +83,6 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     values: [string[]]
   ): string;
   encodeFunctionData(functionFragment: "challenge", values: [string[]]): string;
-  encodeFunctionData(
-    functionFragment: "claimExpiredContributions",
-    values: [string[]]
-  ): string;
   encodeFunctionData(
     functionFragment: "commitAddress",
     values: [string, BytesLike, BigNumberish, BytesLike, BytesLike]
@@ -138,8 +134,12 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "reclaimExpiredContributions",
+    values: [string[]]
+  ): string;
+  encodeFunctionData(
     functionFragment: "removeCommitter",
-    values: [string]
+    values: [string, boolean]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -223,10 +223,6 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "challenge", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "claimExpiredContributions",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "commitAddress",
     data: BytesLike
   ): Result;
@@ -271,6 +267,10 @@ export interface ProofOfResidencyInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "projectTreasury",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "reclaimExpiredContributions",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -345,7 +345,7 @@ export interface ProofOfResidencyInterface extends utils.Interface {
     "ApprovalForAll(address,address,bool)": EventFragment;
     "CommitmentCreated(address,address,bytes32)": EventFragment;
     "CommitterAdded(address)": EventFragment;
-    "CommitterRemoved(address,uint256)": EventFragment;
+    "CommitterRemoved(address,uint256,bool)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
     "PriceChanged(uint256)": EventFragment;
@@ -396,8 +396,8 @@ export type CommitterAddedEvent = TypedEvent<[string], { committer: string }>;
 export type CommitterAddedEventFilter = TypedEventFilter<CommitterAddedEvent>;
 
 export type CommitterRemovedEvent = TypedEvent<
-  [string, BigNumber],
-  { committer: string; fundsLost: BigNumber }
+  [string, BigNumber, boolean],
+  { committer: string; fundsLost: BigNumber; forceReclaim: boolean }
 >;
 
 export type CommitterRemovedEventFilter =
@@ -504,11 +504,6 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    claimExpiredContributions(
-      unclaimedAddresses: string[],
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     commitAddress(
       to: string,
       commitment: BytesLike,
@@ -584,8 +579,14 @@ export interface ProofOfResidency extends BaseContract {
 
     projectTreasury(overrides?: CallOverrides): Promise<[string]>;
 
+    reclaimExpiredContributions(
+      unclaimedAddresses: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     removeCommitter(
       removedCommitter: string,
+      forceReclaim: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -722,11 +723,6 @@ export interface ProofOfResidency extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  claimExpiredContributions(
-    unclaimedAddresses: string[],
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   commitAddress(
     to: string,
     commitment: BytesLike,
@@ -799,8 +795,14 @@ export interface ProofOfResidency extends BaseContract {
 
   projectTreasury(overrides?: CallOverrides): Promise<string>;
 
+  reclaimExpiredContributions(
+    unclaimedAddresses: string[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   removeCommitter(
     removedCommitter: string,
+    forceReclaim: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -928,11 +930,6 @@ export interface ProofOfResidency extends BaseContract {
 
     challenge(addresses: string[], overrides?: CallOverrides): Promise<void>;
 
-    claimExpiredContributions(
-      unclaimedAddresses: string[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     commitAddress(
       to: string,
       commitment: BytesLike,
@@ -1003,8 +1000,14 @@ export interface ProofOfResidency extends BaseContract {
 
     projectTreasury(overrides?: CallOverrides): Promise<string>;
 
+    reclaimExpiredContributions(
+      unclaimedAddresses: string[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     removeCommitter(
       removedCommitter: string,
+      forceReclaim: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1137,13 +1140,15 @@ export interface ProofOfResidency extends BaseContract {
     ): CommitterAddedEventFilter;
     CommitterAdded(committer?: string | null): CommitterAddedEventFilter;
 
-    "CommitterRemoved(address,uint256)"(
+    "CommitterRemoved(address,uint256,bool)"(
       committer?: string | null,
-      fundsLost?: null
+      fundsLost?: null,
+      forceReclaim?: null
     ): CommitterRemovedEventFilter;
     CommitterRemoved(
       committer?: string | null,
-      fundsLost?: null
+      fundsLost?: null,
+      forceReclaim?: null
     ): CommitterRemovedEventFilter;
 
     "OwnershipTransferred(address,address)"(
@@ -1225,11 +1230,6 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    claimExpiredContributions(
-      unclaimedAddresses: string[],
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     commitAddress(
       to: string,
       commitment: BytesLike,
@@ -1293,8 +1293,14 @@ export interface ProofOfResidency extends BaseContract {
 
     projectTreasury(overrides?: CallOverrides): Promise<BigNumber>;
 
+    reclaimExpiredContributions(
+      unclaimedAddresses: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     removeCommitter(
       removedCommitter: string,
+      forceReclaim: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1435,11 +1441,6 @@ export interface ProofOfResidency extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    claimExpiredContributions(
-      unclaimedAddresses: string[],
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     commitAddress(
       to: string,
       commitment: BytesLike,
@@ -1513,8 +1514,14 @@ export interface ProofOfResidency extends BaseContract {
 
     projectTreasury(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    reclaimExpiredContributions(
+      unclaimedAddresses: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     removeCommitter(
       removedCommitter: string,
+      forceReclaim: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

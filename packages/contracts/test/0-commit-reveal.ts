@@ -140,9 +140,9 @@ describe('Proof of Residency: commit/reveal scheme', () => {
     it('should fail to mint when a committer is removed', async () => {
       await timeTravelToValid();
 
-      await expect(proofOfResidencyOwner.removeCommitter(committer.address))
+      await expect(proofOfResidencyOwner.removeCommitter(committer.address, true))
         .to.emit(proofOfResidencyOwner, 'CommitterRemoved')
-        .withArgs(committer.address, 0);
+        .withArgs(committer.address, 0, true);
 
       await expect(
         proofOfResidencyRequester1.mint(countryCommitment, secretCommitment)
@@ -233,7 +233,25 @@ describe('Proof of Residency: commit/reveal scheme', () => {
       ).to.be.revertedWith('Already owns token');
     });
 
-    it('should fail for duplicate commitment (already committed to another country)', async () => {
+    it('should fail for duplicate immediate commitment (already committed to another country)', async () => {
+      const { hash, v, r, s } = await signCommitment(
+        requester1.address,
+        countryCommitment + 1,
+        'secret-another',
+
+        proofOfResidencyOwner.address,
+        committer,
+        await proofOfResidencyRequester1.nonces(requester1.address)
+      );
+
+      await expect(
+        proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
+          value: initialPrice
+        })
+      ).to.be.revertedWith('Existing commitment');
+    });
+
+    it('should fail for duplicate commitment while valid (already committed to another country)', async () => {
       await timeTravelToValid();
 
       const { hash, v, r, s } = await signCommitment(

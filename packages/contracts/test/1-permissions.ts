@@ -109,9 +109,9 @@ describe('Proof of Residency: permissions', () => {
     });
 
     it('should remove committer for owner', async () => {
-      await expect(proofOfResidencyOwner.removeCommitter(committer.address))
+      await expect(proofOfResidencyOwner.removeCommitter(committer.address, true))
         .to.emit(proofOfResidencyOwner, 'CommitterRemoved')
-        .withArgs(committer.address, 0);
+        .withArgs(committer.address, 0, true);
     });
   });
 
@@ -166,9 +166,9 @@ describe('Proof of Residency: permissions', () => {
     });
 
     it('should fail to burn tokens for public (no owner role)', async () => {
-      await expect(proofOfResidencyRequester1.burnFailedChallenges([committer.address])).to.be.revertedWith(
-        'Ownable: caller is not the owner'
-      );
+      await expect(
+        proofOfResidencyRequester1.burnFailedChallenges([committer.address])
+      ).to.be.revertedWith('Ownable: caller is not the owner');
     });
 
     it('should fail to challenge token for public (no owner role)', async () => {
@@ -179,7 +179,7 @@ describe('Proof of Residency: permissions', () => {
 
     it('should fail to remove committer for public (no owner role)', async () => {
       await expect(
-        proofOfResidencyRequester1.removeCommitter(committer.address)
+        proofOfResidencyRequester1.removeCommitter(committer.address, true)
       ).to.be.revertedWith('Ownable: caller is not the owner');
     });
 

@@ -81,6 +81,7 @@ const mailingAddressTypes = {
     { name: 'state', type: 'string' },
     { name: 'postal', type: 'string' },
     { name: 'country', type: 'string' },
+    { name: 'deliverability', type: 'string' },
     { name: 'nonce', type: 'uint256' }
   ]
 };
@@ -159,7 +160,7 @@ export type TokenOwner = { content: string; link: string | null };
 
 export const getOwnerOfToken = async (tokenId: string | BigNumber): Promise<TokenOwner> => {
   try {
-    const { countryId, tokenNumber } = getCountryAndTokenNumber(tokenId);
+    const { countryId, tokenNumber } = getCountryAndTokenNumber(tokenId.toString());
 
     const count = await getCurrentMintedCount(countryId);
 

@@ -44,6 +44,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<VerifyAddressRe
           postal: verifyResult.components.zip_code,
           country: body.country,
 
+          deliverability: verifyResult.deliverability,
+
           nonce
         };
 
@@ -57,9 +59,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<VerifyAddressRe
           latitude: verifyResult.components.latitude,
           longitude: verifyResult.components.longitude,
 
-          lastLine: verifyResult.last_line,
-
-          deliverability: verifyResult.deliverability
+          lastLine: verifyResult.last_line
         });
       }
 
@@ -82,20 +82,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<VerifyAddressRe
         postal: verifyResult.components.postal_code,
         country: body.country,
 
+        deliverability: verifyResult.deliverability,
+
         nonce
       };
 
       const signature = await signAddressEip712(address);
 
-      return res.status(200).json({
-        ...address,
-
-        signature,
-
-        lastLine: verifyResult.last_line,
-
-        deliverability: verifyResult.deliverability
-      });
+      return res.status(200).json({ ...address, signature, lastLine: verifyResult.last_line });
     }
 
     res.setHeader('Allow', ['POST']);

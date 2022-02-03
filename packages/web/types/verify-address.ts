@@ -100,10 +100,6 @@ export type VerifyUsAddressResponse = {
 };
 
 export type VerifyAddressResponse = AddressComponents & {
-  deliverability:
-    | VerifyUsAddressResponse['deliverability']
-    | VerifyIntlAddressResponse['deliverability'];
-
   lastLine: string;
 
   latitude?: number;
