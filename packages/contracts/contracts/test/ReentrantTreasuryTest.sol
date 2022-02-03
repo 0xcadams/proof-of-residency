@@ -38,6 +38,7 @@ contract ReentrantTreasuryTest {
   receive() external payable {
     emit HitFallback();
 
-    por.respondToChallenge(_tokenId, _country, _commitment);
+    bool ret = por.respondToChallenge(_tokenId, _country, _commitment);
+    require(ret, 'failed');
   }
 }
