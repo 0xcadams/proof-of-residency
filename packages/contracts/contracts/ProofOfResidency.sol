@@ -147,7 +147,10 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
    */
   function removeCommitter(address removedCommitter, bool forceReclaim) external onlyOwner {
     Contribution memory lostContribution = committerContributions[removedCommitter];
-    require(forceReclaim || lostContribution.value == 0, 'Cannot remove non-0');
+    require(
+      forceReclaim ? lostContribution.value != 0 : lostContribution.value == 0,
+      'Cannot force or non-0'
+    );
 
     if (forceReclaim) {
       Contribution storage treasuryContribution = committerContributions[projectTreasury];

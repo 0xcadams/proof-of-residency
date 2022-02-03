@@ -93,6 +93,51 @@ describe('Proof of Residency: withdrawals', () => {
       );
     });
 
+    it('should be able to withdraw for reclaimed contributions to treasury when a commitment expires', async () => {
+      const commitment1 = await signCommitment(
+        requester1.address,
+        countryCommitment,
+        secretCommitment,
+
+        proofOfResidencyOwner.address,
+        committer,
+        await proofOfResidencyRequester1.nonces(requester1.address)
+      );
+
+      await proofOfResidencyRequester1.commitAddress(
+        requester1.address,
+        commitment1.hash,
+        commitment1.v,
+        commitment1.r,
+        commitment1.s,
+        {
+          value: initialPrice
+        }
+      );
+
+      await timeTravelToPastValid();
+
+      const expiredCommitment = await proofOfResidencyTreasury.commitments(requester1.address);
+
+      await expect(expiredCommitment.commitment).to.equal(commitment1.hash);
+
+      const originalTreasuryContrib = await proofOfResidencyOwner.committerContributions(
+        treasury.address
+      );
+      await proofOfResidencyOwner.reclaimExpiredContributions([requester1.address]);
+      expect(
+        (await proofOfResidencyOwner.committerContributions(treasury.address)).value.sub(
+          originalTreasuryContrib.value
+        )
+      ).to.equal(initialPrice);
+
+      await timeTravelToEndOfTimelock();
+
+      const originalTreasuryBalance = await treasury.getBalance();
+      await proofOfResidencyTreasury.withdraw();
+      expect((await treasury.getBalance()).gt(originalTreasuryBalance)).to.be.true;
+    });
+
     it('should be able to withdraw for treasury when recommit after first commitment expires', async () => {
       const commitment1 = await signCommitment(
         requester1.address,
@@ -166,6 +211,35 @@ describe('Proof of Residency: withdrawals', () => {
       await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment);
 
       await expect(proofOfResidencyCommitter.withdraw()).to.be.revertedWith('Timelocked');
+    });
+
+    it('should fail to reclaim contributions when a commitment has not expired yet', async () => {
+      const commitment1 = await signCommitment(
+        requester1.address,
+        countryCommitment,
+        secretCommitment,
+
+        proofOfResidencyOwner.address,
+        committer,
+        await proofOfResidencyRequester1.nonces(requester1.address)
+      );
+
+      await proofOfResidencyRequester1.commitAddress(
+        requester1.address,
+        commitment1.hash,
+        commitment1.v,
+        commitment1.r,
+        commitment1.s,
+        {
+          value: initialPrice
+        }
+      );
+
+      await timeTravelToValid();
+
+      await expect(
+        proofOfResidencyOwner.reclaimExpiredContributions([requester1.address])
+      ).to.be.revertedWith('Still valid');
     });
 
     it('should fail to withdraw when main project sets failing treasury', async () => {

@@ -140,9 +140,9 @@ describe('Proof of Residency: commit/reveal scheme', () => {
     it('should fail to mint when a committer is removed', async () => {
       await timeTravelToValid();
 
-      await expect(proofOfResidencyOwner.removeCommitter(committer.address, true))
+      await expect(proofOfResidencyOwner.removeCommitter(committer.address, false))
         .to.emit(proofOfResidencyOwner, 'CommitterRemoved')
-        .withArgs(committer.address, 0, true);
+        .withArgs(committer.address, 0, false);
 
       await expect(
         proofOfResidencyRequester1.mint(countryCommitment, secretCommitment)

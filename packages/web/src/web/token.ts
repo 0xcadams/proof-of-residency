@@ -68,7 +68,7 @@ export const getTokenIdForAllCountries = () =>
 export const getCacheableTokenIds = () =>
   getAllCountries().flatMap((country) => {
     // generate the cacheable token IDs from the population size
-    const count = Math.floor((getPopulationForAlpha3(country.alpha3) ?? 2e6) / 8e5);
+    const count = Math.floor(Math.min(getPopulationForAlpha3(country.alpha3) ?? 1e8, 1e8) / 5e6);
 
     // floor at 1
     const tokenCounts = [...Array(count > 0 ? count : 1)].map((_, i) => i + 1);

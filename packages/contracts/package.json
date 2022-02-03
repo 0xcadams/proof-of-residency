@@ -24,7 +24,7 @@
     "clean": "yarn run -T hardhat clean",
     "compile": "yarn run -T hardhat compile",
     "copy-contracts": "mkdir -p ./node_modules/@openzeppelin/ && cp -r ../../node_modules/@openzeppelin/contracts/ ./node_modules/@openzeppelin/contracts/",
-    "coverage": "yarn build && yarn run -T hardhat coverage --temp artifacts",
+    "coverage": "yarn build && yarn run -T hardhat coverage --temp artifacts --solcoverjs ./../../.solcover.js",
     "deploy:rinkeby": "yarn run -T hardhat run --network rinkeby scripts/initial-deploy.ts",
     "deploy:local": "yarn run -T hardhat run --network localhost scripts/initial-deploy.ts",
     "time-travel:local": "yarn run -T hardhat run --network localhost scripts/time-travel.ts",

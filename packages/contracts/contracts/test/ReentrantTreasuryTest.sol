@@ -14,15 +14,30 @@ import '../ProofOfResidency.sol';
 contract ReentrantTreasuryTest {
   ProofOfResidency por;
 
+  uint256 private _tokenId;
+  uint16 private _country;
+  string private _commitment;
+
   event HitFallback();
 
   constructor(address victim) {
     por = ProofOfResidency(victim);
   }
 
+  function respondToChallenge(
+    uint256 tokenId,
+    uint16 country,
+    string memory commitment
+  ) external returns (bool) {
+    _tokenId = tokenId;
+    _commitment = commitment;
+    _country = country;
+    return por.respondToChallenge(tokenId, country, commitment);
+  }
+
   receive() external payable {
     emit HitFallback();
 
-    por.withdraw();
+    por.respondToChallenge(_tokenId, _country, _commitment);
   }
 }

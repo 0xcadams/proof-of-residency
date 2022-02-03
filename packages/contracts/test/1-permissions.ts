@@ -109,9 +109,9 @@ describe('Proof of Residency: permissions', () => {
     });
 
     it('should remove committer for owner', async () => {
-      await expect(proofOfResidencyOwner.removeCommitter(committer.address, true))
+      await expect(proofOfResidencyOwner.removeCommitter(committer.address, false))
         .to.emit(proofOfResidencyOwner, 'CommitterRemoved')
-        .withArgs(committer.address, 0, true);
+        .withArgs(committer.address, 0, false);
     });
   });
 
