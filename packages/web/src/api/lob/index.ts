@@ -89,7 +89,6 @@ export const sendLetter = (
         },
         color: true
       },
-      // TODO should this be address.nonce?
       { 'idempotency-key': idempotencyKey },
       function (err: Error, res: any) {
         if (err) {

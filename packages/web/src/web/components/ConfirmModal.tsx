@@ -35,8 +35,8 @@ export const ConfirmModal = (props: {
   isOpen: boolean;
   onClose: (success: boolean) => void;
 }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [password, setPassword] = useState<string>('');
-  const [randomName, setRandomName] = useState<string>('');
   const toast = useToast();
 
   const router = useRouter();
@@ -48,43 +48,46 @@ export const ConfirmModal = (props: {
   const nonce = useCurrentNonce();
 
   const onSubmit = async () => {
+    setIsLoading(true);
+
     if (walletAddress && commitAddress && mintPrice && nonce) {
-      const hashedPassword = ethers.utils.keccak256(
-        ethers.utils.defaultAbiCoder.encode(['string', 'string'], [walletAddress, password])
-      );
-
-      const passwordPayload: SubmitAddressPasswordPayload = {
-        hashedPassword,
-        nonce
-      };
-
-      const signature = await signPasswordEip712(hashedPassword, nonce);
-
-      if (!signature) {
-        throw new Error('Signature could not be completed successfully.');
-      }
-
-      const body: SubmitAddressRequest = {
-        addressPayload: {
-          name: props.address.name,
-          addressLine1: props.address.addressLine1,
-          addressLine2: props.address.addressLine2,
-          city: props.address.city,
-          state: props.address.state,
-          postal: props.address.postal,
-          country: props.address.country,
-
-          nonce: props.address.nonce
-        },
-        addressSignature: props.address.signature,
-
-        passwordPayload,
-        passwordSignature: signature,
-        latitude: -1,
-        longitude: -1
-      };
-
       try {
+        const hashedPassword = ethers.utils.keccak256(
+          ethers.utils.defaultAbiCoder.encode(['string', 'string'], [walletAddress, password])
+        );
+
+        const passwordPayload: SubmitAddressPasswordPayload = {
+          hashedPassword,
+          walletAddress,
+          nonce
+        };
+
+        const passwordSignature = await signPasswordEip712(walletAddress, hashedPassword, nonce);
+
+        if (!passwordSignature) {
+          throw new Error('Signature could not be completed successfully.');
+        }
+
+        const body: SubmitAddressRequest = {
+          addressPayload: {
+            name: props.address.name,
+            addressLine1: props.address.addressLine1,
+            addressLine2: props.address.addressLine2,
+            city: props.address.city,
+            state: props.address.state,
+            postal: props.address.postal,
+            country: props.address.country,
+
+            deliverability: props.address.deliverability,
+
+            nonce: props.address.nonce
+          },
+          addressSignature: props.address.signature,
+
+          passwordPayload,
+          passwordSignature: passwordSignature
+        };
+
         const result = await axiosClient.post<SubmitAddressResponse>('/request', body);
 
         if (result.status === 200) {
@@ -145,10 +148,19 @@ export const ConfirmModal = (props: {
           description: 'There was a problem with the request, please try again in a few minutes.',
           status: 'error'
         });
+      } finally {
+        props.onClose(false);
       }
-
-      props.onClose(false);
+    } else {
+      console.error({ walletAddress, commitAddress, mintPrice, nonce });
+      toast({
+        title: 'Error',
+        description: 'There was a problem with the request, please try again in a few minutes.',
+        status: 'error'
+      });
     }
+
+    setIsLoading(false);
   };
 
   return (
@@ -166,7 +178,7 @@ export const ConfirmModal = (props: {
             </Text>
 
             <Flex direction="column" mb={6} mt={6}>
-              <Text fontWeight="bold">{randomName}</Text>
+              <Text fontWeight="bold">{props.address.name}</Text>
               <Text fontWeight="bold">{props.address.addressLine1}</Text>
               {props.address.addressLine2 && (
                 <Text fontWeight="bold">{props.address.addressLine2}</Text>
@@ -178,7 +190,7 @@ export const ConfirmModal = (props: {
 
             <Text mb={3}>
               We require a password to securely generate your letter. Please use a{' '}
-              <strong>secure</strong> password and remember the value.
+              <strong>secure</strong> password and record the value safely.
             </Text>
 
             <Input
@@ -190,11 +202,16 @@ export const ConfirmModal = (props: {
           </ModalBody>
 
           <ModalFooter>
-            <Button mr={3} variant="outline" onClick={() => props.onClose(false)}>
-              Cancel
+            <Button
+              mr={3}
+              variant="outline"
+              disabled={isLoading}
+              onClick={() => props.onClose(false)}
+            >
+              Back
             </Button>
-            <Button disabled={password.length < 6} onClick={onSubmit}>
-              Sign Payload
+            <Button disabled={password.length < 6} isLoading={isLoading} onClick={onSubmit}>
+              Sign Confirmation
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -202,6 +219,3 @@ export const ConfirmModal = (props: {
     </>
   );
 };
-function useProofOfResidency() {
-  throw new Error('Function not implemented.');
-}

@@ -22,6 +22,8 @@ export const AddressModal = (props: {
   onClose: () => void;
   onSuccess: (address: VerifyAddressResponse) => void;
 }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [primaryLine, setPrimaryLine] = useState<string>('');
   const [secondaryLine, setSecondaryLine] = useState<string>('');
   const [city, setCity] = useState<string>('');
@@ -32,6 +34,8 @@ export const AddressModal = (props: {
   const toast = useToast();
 
   const onSubmit = async () => {
+    setIsLoading(true);
+
     if (primaryLine && city && state && postalCode && country) {
       const body: VerifyAddressRequest = {
         primaryLine,
@@ -50,7 +54,7 @@ export const AddressModal = (props: {
           status: 'error'
         });
       } else if (result.data.deliverability === 'deliverable') {
-        return props.onSuccess(result.data);
+        props.onSuccess(result.data);
       } else {
         toast({
           title: 'Warning',
@@ -74,6 +78,8 @@ export const AddressModal = (props: {
         status: 'error'
       });
     }
+
+    setIsLoading(false);
   };
 
   return (
@@ -81,7 +87,7 @@ export const AddressModal = (props: {
       <Modal isOpen={props.isOpen} onClose={props.onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Claim an address</ModalHeader>
+          <ModalHeader>Claim a mailing address</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <Text mb={3}>
@@ -95,7 +101,7 @@ export const AddressModal = (props: {
               to answer any other questions about our security considerations.
             </Text>
 
-            <CountrySelect onChange={(country) => setCountry(country)} />
+            <CountrySelect country={country} onChange={(country) => setCountry(country)} />
 
             {country && (
               <>
@@ -148,10 +154,14 @@ export const AddressModal = (props: {
           </ModalBody>
 
           <ModalFooter>
-            <Button mr={3} variant="outline" onClick={props.onClose}>
+            <Button mr={3} variant="outline" disabled={isLoading} onClick={props.onClose}>
               Cancel
             </Button>
-            <Button disabled={!(primaryLine && city && country)} onClick={onSubmit}>
+            <Button
+              disabled={!(primaryLine && city && country)}
+              isLoading={isLoading}
+              onClick={onSubmit}
+            >
               Verify Address
             </Button>
           </ModalFooter>

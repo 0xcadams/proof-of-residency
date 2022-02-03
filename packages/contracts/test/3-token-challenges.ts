@@ -2,9 +2,14 @@ import { ethers } from 'hardhat';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-import { ProofOfResidency } from '../../web/types';
+import { FailingTreasuryTest, ProofOfResidency, ReentrantTreasuryTest } from '../../web/types';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { signCommitment, timeTravelToPastValid, timeTravelToValid } from './util';
+import {
+  signCommitment,
+  timeTravelToEndOfTimelock,
+  timeTravelToPastValid,
+  timeTravelToValid
+} from './util';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -22,6 +27,9 @@ describe('Proof of Residency: token challenges', () => {
   let proofOfResidencyRequester1: ProofOfResidency;
   let proofOfResidencyRequester2: ProofOfResidency;
   let proofOfResidencyUnaffiliated: ProofOfResidency;
+
+  let failingTreasuryContract: FailingTreasuryTest;
+  let reentrantTreasuryContract: ReentrantTreasuryTest;
 
   let owner: SignerWithAddress;
   let committer: SignerWithAddress;
@@ -48,6 +56,12 @@ describe('Proof of Residency: token challenges', () => {
     proofOfResidencyRequester2 = proofOfResidencyOwner.connect(requester2);
 
     proofOfResidencyUnaffiliated = proofOfResidencyOwner.connect(unaffiliated);
+
+    const FailingTreasuryTest = await ethers.getContractFactory('FailingTreasuryTest');
+    failingTreasuryContract = await FailingTreasuryTest.deploy();
+
+    const ReentrantTreasuryTest = await ethers.getContractFactory('ReentrantTreasuryTest');
+    reentrantTreasuryContract = await ReentrantTreasuryTest.deploy(proofOfResidencyOwner.address);
 
     const { hash, v, r, s } = await signCommitment(
       requester1.address,
@@ -96,7 +110,7 @@ describe('Proof of Residency: token challenges', () => {
       await expect(await proofOfResidencyOwner.tokenChallengeExpired(requester1.address)).to.be
         .true;
 
-      await expect(proofOfResidencyOwner.burnTokens([requester1.address]))
+      await expect(proofOfResidencyOwner.burnFailedChallenges([requester1.address]))
         .to.emit(proofOfResidencyOwner, 'Transfer')
         .withArgs(requester1.address, ethers.constants.AddressZero, tokenId);
     });
@@ -133,9 +147,9 @@ describe('Proof of Residency: token challenges', () => {
         .to.emit(proofOfResidencyRequester1, 'TokenChallengeCompleted')
         .withArgs(requester1.address, tokenId);
 
-      await expect(proofOfResidencyOwner.burnTokens([requester1.address])).to.be.revertedWith(
-        'Challenge not expired'
-      );
+      await expect(
+        proofOfResidencyOwner.burnFailedChallenges([requester1.address])
+      ).to.be.revertedWith('Challenge not expired');
     });
 
     it('should succeed to challenge a singular address and add to the committer contributions on burn', async () => {
@@ -159,17 +173,17 @@ describe('Proof of Residency: token challenges', () => {
 
       await timeTravelToPastValid();
 
-      await expect(proofOfResidencyOwner.burnTokens([requester1.address])).to.emit(
+      await expect(proofOfResidencyOwner.burnFailedChallenges([requester1.address])).to.emit(
         proofOfResidencyOwner,
         'Transfer'
       );
 
-      // check that the committer treasury is paid for the commitment they made even if burned
-      const originalTreasuryBalance = await treasury.getBalance();
+      await timeTravelToEndOfTimelock();
+
+      // check that the committer is paid for the commitment they made even if burned
+      const originalBalance = await committer.getBalance();
       await proofOfResidencyCommitter.withdraw();
-      expect((await treasury.getBalance()).sub(originalTreasuryBalance)).to.equal(
-        initialPrice.mul(2)
-      );
+      expect((await committer.getBalance()).gt(originalBalance)).to.be.true;
     });
   });
 
@@ -178,6 +192,67 @@ describe('Proof of Residency: token challenges', () => {
       await expect(
         proofOfResidencyOwner.challenge([requester1.address, unaffiliated.address])
       ).to.be.revertedWith('ERC721Enumerable: owner index out of bounds');
+    });
+
+    it('should fail to withdraw committer contributions on burn when timelock not expired', async () => {
+      await proofOfResidencyOwner.challenge([requester1.address]);
+
+      const { hash, v, r, s } = await signCommitment(
+        requester1.address,
+        countryCommitment,
+        secretCommitment,
+
+        proofOfResidencyOwner.address,
+        committer,
+        await proofOfResidencyRequester1.nonces(requester1.address)
+      );
+
+      await expect(
+        proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
+          value: initialPrice
+        })
+      ).to.emit(proofOfResidencyCommitter, 'CommitmentCreated');
+
+      await timeTravelToPastValid();
+
+      await expect(proofOfResidencyOwner.burnFailedChallenges([requester1.address])).to.emit(
+        proofOfResidencyOwner,
+        'Transfer'
+      );
+
+      await expect(proofOfResidencyCommitter.withdraw()).to.be.revertedWith('Timelocked');
+    });
+
+    it('should fail to respond to a challenge when the sender is a reentrant contract', async () => {
+      const tokenId = ethers.BigNumber.from('2000000000000001');
+
+      await expect(proofOfResidencyOwner.challenge([requester1.address])).to.emit(
+        proofOfResidencyOwner,
+        'TokenChallenged'
+      );
+
+      const { hash, v, r, s } = await signCommitment(
+        requester1.address,
+        countryCommitment,
+        secretCommitment,
+
+        proofOfResidencyOwner.address,
+        committer,
+        await proofOfResidencyRequester1.nonces(requester1.address)
+      );
+
+      await expect(
+        proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
+          value: initialPrice
+        })
+      ).to.emit(proofOfResidencyCommitter, 'CommitmentCreated');
+
+      await timeTravelToValid();
+
+      // use reentrant contract here
+      await expect(
+        reentrantTreasuryContract.respondToChallenge(tokenId, countryCommitment, secretCommitment)
+      ).to.be.revertedWith('Commitment incorrect');
     });
 
     it('should fail to respond to a challenge with the wrong country', async () => {

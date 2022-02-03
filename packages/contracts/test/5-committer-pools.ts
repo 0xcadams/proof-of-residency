@@ -4,7 +4,7 @@ import chaiAsPromised from 'chai-as-promised';
 
 import { ProofOfResidency, FailingTreasuryTest, ReentrantTreasuryTest } from '../../web/types';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { signCommitment, timeTravelToValid } from './util';
+import { signCommitment, timeTravelToEndOfTimelock, timeTravelToValid } from './util';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -61,7 +61,7 @@ describe('Proof of Residency: committer pools', () => {
 
   describe('PoR functions correctly (happy paths)', async () => {
     it('should be able to add a committer to the pool who can withdraw', async () => {
-      await proofOfResidencyOwner.addCommitter(unaffiliated.address, requester2.address);
+      await proofOfResidencyOwner.addCommitter(unaffiliated.address);
 
       const { hash, v, r, s } = await signCommitment(
         requester1.address,
@@ -81,6 +81,8 @@ describe('Proof of Residency: committer pools', () => {
 
       await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment);
 
+      await timeTravelToEndOfTimelock();
+
       const originalTreasuryBalance = await treasury.getBalance();
       const originalBalance = await requester2.getBalance();
 
@@ -89,16 +91,14 @@ describe('Proof of Residency: committer pools', () => {
       expect((await treasury.getBalance()).sub(originalTreasuryBalance)).to.equal(
         initialPrice.mul(20).div(100)
       );
-      expect((await requester2.getBalance()).sub(originalBalance)).to.equal(
-        initialPrice.mul(80).div(100)
-      );
+      expect((await unaffiliated.getBalance()).gt(originalBalance)).to.be.true;
     });
 
     it('should be able to add many committers to the pool and choose one randomly', async () => {
       const signers = (await ethers.getSigners()).slice(10, 18);
 
       for (const signer of signers) {
-        await expect(proofOfResidencyOwner.addCommitter(signer.address, signer.address))
+        await expect(proofOfResidencyOwner.addCommitter(signer.address))
           .to.emit(proofOfResidencyOwner, 'CommitterAdded')
           .withArgs(signer.address);
       }
@@ -124,19 +124,80 @@ describe('Proof of Residency: committer pools', () => {
 
       await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment);
 
+      await timeTravelToEndOfTimelock();
+
       // should add to the signer's balance
       const originalRandomSignerBalance = await randomSigner.getBalance();
       await proofOfResidencyOwner.connect(randomSigner).withdraw();
       expect((await randomSigner.getBalance()).gt(originalRandomSignerBalance)).to.be.true;
     });
+
+    it('should be able to remove a committer and have the earnings be assigned to treasury', async () => {
+      const { hash, v, r, s } = await signCommitment(
+        requester1.address,
+        countryCommitment,
+        secretCommitment,
+
+        proofOfResidencyOwner.address,
+        committer,
+        await proofOfResidencyRequester1.nonces(requester1.address)
+      );
+
+      await proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
+        value: initialPrice
+      });
+
+      await timeTravelToValid();
+
+      await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment);
+
+      const originalTreasuryBalance = await proofOfResidencyOwner.committerContributions(
+        treasury.address
+      );
+      await expect(proofOfResidencyOwner.removeCommitter(committer.address, true))
+        .to.emit(proofOfResidencyOwner, 'CommitterRemoved')
+        .withArgs(committer.address, initialPrice, true);
+      expect(
+        (await proofOfResidencyOwner.committerContributions(treasury.address)).value.sub(
+          originalTreasuryBalance.value
+        )
+      ).to.equal(initialPrice);
+    });
+
+    it('should be able to remove a committer when they do not have earnings', async () => {
+      await expect(proofOfResidencyOwner.removeCommitter(committer.address, false)).to.not.emit;
+    });
   });
 
   describe('PoR functions correctly (sad paths)', async () => {
-    it('should fail to add a duplicate committer', async () => {
-      await proofOfResidencyOwner.addCommitter(unaffiliated.address, requester2.address);
+    it('should not be able to remove a committer and force reclaim when they do not have earnings', async () => {
       await expect(
-        proofOfResidencyOwner.addCommitter(unaffiliated.address, requester2.address)
-      ).to.be.revertedWith('Already exists');
+        proofOfResidencyOwner.removeCommitter(committer.address, true)
+      ).to.be.revertedWith('Cannot force or non-0');
+    });
+
+    it('should not be able to remove a committer without forcing when they have earnings', async () => {
+      const { hash, v, r, s } = await signCommitment(
+        requester1.address,
+        countryCommitment,
+        secretCommitment,
+
+        proofOfResidencyOwner.address,
+        committer,
+        await proofOfResidencyRequester1.nonces(requester1.address)
+      );
+
+      await proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
+        value: initialPrice
+      });
+
+      await timeTravelToValid();
+
+      await proofOfResidencyRequester1.mint(countryCommitment, secretCommitment);
+
+      await expect(
+        proofOfResidencyOwner.removeCommitter(committer.address, false)
+      ).to.be.revertedWith('Cannot force or non-0');
     });
   });
 });

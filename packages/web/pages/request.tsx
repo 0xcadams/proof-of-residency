@@ -1,19 +1,21 @@
-import { Box, Button, useDisclosure, useToast } from '@chakra-ui/react';
-import { CoordinateLongitudeLatitude } from 'haversine';
+import { Box, Button, Tooltip, useDisclosure, useToast } from '@chakra-ui/react';
+import haversine, { CoordinateLongitudeLatitude } from 'haversine';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { FiGithub } from 'react-icons/fi';
 import ReactMapboxGl, { Marker } from 'react-mapbox-gl';
-import { useGetCommitmentPeriodIsUpcoming } from 'src/web/hooks';
+
 import { VerifyAddressResponse } from 'types';
 
 import Logo from '../public/logo.svg';
-
-import { AddressModal } from '../src/web/components/AddressModal';
-import { ConfirmModal } from '../src/web/components/ConfirmModal';
-import { InfoModal } from '../src/web/components/InfoModal';
+import { AddressModal } from 'src/web/components/AddressModal';
+import { ConfirmModal } from 'src/web/components/ConfirmModal';
+import { InfoModal } from 'src/web/components/InfoModal';
+import { useGetCommitmentPeriodIsUpcoming, useProviderExists } from 'src/web/hooks';
+import { NextSeo } from 'next-seo';
+import numeral from 'numeral';
 
 const Map = ReactMapboxGl({
   interactive: false,
@@ -49,6 +51,7 @@ const RequestPage = () => {
   const [address, setAddress] = useState<VerifyAddressResponse | null>(null);
 
   const commitmentPeriodIsUpcoming = useGetCommitmentPeriodIsUpcoming();
+  const providerExists = useProviderExists();
 
   const {
     isOpen: isOpenAddressModal,
@@ -104,6 +107,29 @@ const RequestPage = () => {
   }, []);
 
   const onSuccess = (address: VerifyAddressResponse) => {
+    if (address?.latitude && address?.longitude && latLng?.latitude && latLng?.longitude) {
+      // this is silly, but we're checking in-browser since this value can always be spoofed - don't tell anyone!
+      const distance = haversine(
+        { longitude: address.longitude, latitude: address.latitude },
+        { longitude: latLng.longitude, latitude: latLng.latitude }
+      );
+
+      // ten kilometers
+      if (process.env.NODE_ENV !== 'development' && distance > 10) {
+        toast({
+          title: 'Error',
+          description: `You are ${numeral(distance).format(
+            '0,0'
+          )}km away from the address - must be located within 10km.`,
+          status: 'error'
+        });
+
+        setAddress(null);
+
+        return;
+      }
+    }
+
     setAddress({
       ...address
     });
@@ -114,6 +140,8 @@ const RequestPage = () => {
 
   return (
     <>
+      <NextSeo title={`Request | Proof of Residency`} />
+
       <Box cursor="pointer" zIndex={500} position="absolute" left={4} top={4}>
         <Link href="/" passHref>
           <Box align="center">
@@ -130,22 +158,29 @@ const RequestPage = () => {
       </Box>
 
       <Box zIndex={500} position="absolute" right={4} bottom={4}>
-        <Button
-          size="lg"
-          colorScheme="gray"
-          onClick={onOpenInfoModal}
-          mr={2}
-          disabled={Boolean(commitmentPeriodIsUpcoming)}
-        >
+        <Button size="lg" colorScheme="gray" onClick={onOpenInfoModal} mr={2}>
           More Info
         </Button>
-        <Button
-          size="lg"
-          onClick={address ? onOpenConfirmModal : onOpenAddressModal}
-          disabled={!latLng || Boolean(commitmentPeriodIsUpcoming)}
+        <Tooltip
+          label={
+            !providerExists
+              ? 'You must install Metamask to use this app'
+              : !latLng
+              ? 'You must enable geolocation'
+              : commitmentPeriodIsUpcoming
+              ? 'Your letter is on the way!'
+              : undefined
+          }
+          shouldWrapChildren
         >
-          {address ? 'Confirm your Address' : 'Add your Address'}
-        </Button>
+          <Button
+            size="lg"
+            onClick={address ? onOpenConfirmModal : onOpenAddressModal}
+            disabled={!providerExists || !latLng || Boolean(commitmentPeriodIsUpcoming)}
+          >
+            {address ? 'Confirm Address' : 'Claim Address'}
+          </Button>
+        </Tooltip>
       </Box>
       <Map
         style="mapbox://styles/chase-adams-asu/ckwmoa4oo244t14mdno6kg6e7"
@@ -163,7 +198,7 @@ const RequestPage = () => {
         )}
         {address?.longitude && address?.latitude ? (
           <Marker
-            onClick={!commitmentPeriodIsUpcoming ? onOpenConfirmModal : () => {}}
+            onClick={!commitmentPeriodIsUpcoming && providerExists ? onOpenConfirmModal : () => {}}
             style={styles.markerAddress}
             coordinates={[address.longitude, address.latitude]}
           />
@@ -176,7 +211,7 @@ const RequestPage = () => {
           onSuccess={onSuccess}
           isOpen={isOpenAddressModal}
           onClose={() => {
-            setLatLng(null);
+            setAddress(null);
             onCloseAddressModal();
           }}
         />
@@ -187,7 +222,9 @@ const RequestPage = () => {
           geolocation={latLng}
           isOpen={isOpenConfirmModal}
           onClose={async () => {
+            setAddress(null);
             onCloseConfirmModal();
+            onOpenAddressModal();
           }}
           address={address}
         />

@@ -3,9 +3,9 @@ import { verifyUsAddress, verifyIntlAddress } from 'src/api/lob';
 import { AddressComponents, VerifyAddressRequest, VerifyAddressResponse } from 'types';
 import { faker } from '@faker-js/faker';
 
-import iso from 'iso-3166-1';
 import { signAddressEip712 } from 'src/api/ethers';
 import { ethers } from 'ethers';
+import { getIsoCountryForAlpha2 } from 'src/web/token';
 
 const usCountryCodes = ['US', 'AS', 'PR', 'FM', 'GU', 'MH', 'MP', 'PW', 'VI'];
 
@@ -19,7 +19,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<VerifyAddressRe
 
       const name = `${faker.name.firstName()} ${faker.name.lastName()}`;
 
-      const isoCountry = iso.whereAlpha2(body.country);
+      const isoCountry = getIsoCountryForAlpha2(body.country);
 
       if (!isoCountry) {
         return res.status(500).end('Country code not accepted.');
@@ -44,6 +44,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<VerifyAddressRe
           postal: verifyResult.components.zip_code,
           country: body.country,
 
+          deliverability: verifyResult.deliverability,
+
           nonce
         };
 
@@ -57,9 +59,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<VerifyAddressRe
           latitude: verifyResult.components.latitude,
           longitude: verifyResult.components.longitude,
 
-          lastLine: verifyResult.last_line,
-
-          deliverability: verifyResult.deliverability
+          lastLine: verifyResult.last_line
         });
       }
 
@@ -82,20 +82,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<VerifyAddressRe
         postal: verifyResult.components.postal_code,
         country: body.country,
 
+        deliverability: verifyResult.deliverability,
+
         nonce
       };
 
       const signature = await signAddressEip712(address);
 
-      return res.status(200).json({
-        ...address,
-
-        signature,
-
-        lastLine: verifyResult.last_line,
-
-        deliverability: verifyResult.deliverability
-      });
+      return res.status(200).json({ ...address, signature, lastLine: verifyResult.last_line });
     }
 
     res.setHeader('Allow', ['POST']);
