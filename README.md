@@ -68,7 +68,7 @@ contract SomeDAOTest {
 
 This will not increase the size of your contract, it will only add the appropriate function selectors to the compiled bytecode (as long as you don't use the `new` keyword and create a new Proof of Residency contract!)
 
-The API for the Proof of Residency ERC-721 is documented extensively in the contract and in the whitepaper.
+The API for the Proof of Residency ERC-721 is documented extensively in the contract and in the [whitepaper](WHITEPAPER.md).
 
 ### Mainnet/Rinkeby Addresses
 
