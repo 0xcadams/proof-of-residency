@@ -10,6 +10,10 @@ import { UseWalletProvider } from 'use-wallet';
 
 import theme from '../src/web/theme';
 
+// mainnet, rinkeby, local
+const chainId =
+  process.env.VERCEL_ENV === 'production' ? 1 : process.env.VERCEL_ENV === 'preview' ? 4 : 1337;
+
 const App = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
 
@@ -31,7 +35,7 @@ const App = ({ Component, pageProps }: AppProps) => {
     <>
       <DefaultSeo
         title="Proof of Residency"
-        description="Proof of Residency is a proof of personhood protocol built on physical mail."
+        description="A proof of personhood protocol built on physical mail."
         openGraph={{
           type: 'website',
           url: 'https://proofofresidency.xyz',
@@ -46,9 +50,20 @@ const App = ({ Component, pageProps }: AppProps) => {
             }
           ]
         }}
+        twitter={{
+          site: '@proofofres',
+          cardType: 'summary_large_image'
+        }}
       />
       <ChakraProvider resetCSS theme={theme}>
-        <UseWalletProvider connectors={{}}>
+        <UseWalletProvider
+          connectors={{
+            // TODO add to this
+            injected: {
+              chainId: [chainId]
+            }
+          }}
+        >
           <Component {...pageProps} />
         </UseWalletProvider>
       </ChakraProvider>

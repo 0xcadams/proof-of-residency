@@ -18,6 +18,6 @@
     "noFallthroughCasesInSwitch": true,
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "../../../MARKDOWN.md"],
   "exclude": ["node_modules"]
 }

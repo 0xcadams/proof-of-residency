@@ -2,9 +2,9 @@ import { Flex, Text, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import Header from 'src/web/components/Header';
 import LandingImage from '../public/russia.png';
 import Footer from '../src/web/components/Footer';
-import Header from '../src/web/components/Header';
 
 const IndexPage = () => {
   const frameHeight = useBreakpointValue({ base: 300, md: 500 }, 'md');
@@ -49,8 +49,8 @@ const IndexPage = () => {
 
           <Text fontSize="md" mt={8} textAlign="center">
             All of our code is open-source on Github under an MIT license for future projects to
-            build upon. We dedicate 15% of the revenue from this project to be donated to the
-            Make-A-Wish Foundation.
+            build upon. We dedicate 10% of the revenue from this project to be donated to
+            Make-A-Wish®.
           </Text>
         </Flex>
       </Flex>

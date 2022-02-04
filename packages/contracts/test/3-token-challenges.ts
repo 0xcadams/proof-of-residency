@@ -2,7 +2,7 @@ import { ethers } from 'hardhat';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-import { ProofOfResidency } from '../../web/types';
+import { FailingTreasuryTest, ProofOfResidency, ReentrantTreasuryTest } from '../../web/types';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import {
   signCommitment,
@@ -27,6 +27,9 @@ describe('Proof of Residency: token challenges', () => {
   let proofOfResidencyRequester1: ProofOfResidency;
   let proofOfResidencyRequester2: ProofOfResidency;
   let proofOfResidencyUnaffiliated: ProofOfResidency;
+
+  let failingTreasuryContract: FailingTreasuryTest;
+  let reentrantTreasuryContract: ReentrantTreasuryTest;
 
   let owner: SignerWithAddress;
   let committer: SignerWithAddress;
@@ -53,6 +56,12 @@ describe('Proof of Residency: token challenges', () => {
     proofOfResidencyRequester2 = proofOfResidencyOwner.connect(requester2);
 
     proofOfResidencyUnaffiliated = proofOfResidencyOwner.connect(unaffiliated);
+
+    const FailingTreasuryTest = await ethers.getContractFactory('FailingTreasuryTest');
+    failingTreasuryContract = await FailingTreasuryTest.deploy();
+
+    const ReentrantTreasuryTest = await ethers.getContractFactory('ReentrantTreasuryTest');
+    reentrantTreasuryContract = await ReentrantTreasuryTest.deploy(proofOfResidencyOwner.address);
 
     const { hash, v, r, s } = await signCommitment(
       requester1.address,
@@ -212,6 +221,38 @@ describe('Proof of Residency: token challenges', () => {
       );
 
       await expect(proofOfResidencyCommitter.withdraw()).to.be.revertedWith('Timelocked');
+    });
+
+    it('should fail to respond to a challenge when the sender is a reentrant contract', async () => {
+      const tokenId = ethers.BigNumber.from('2000000000000001');
+
+      await expect(proofOfResidencyOwner.challenge([requester1.address])).to.emit(
+        proofOfResidencyOwner,
+        'TokenChallenged'
+      );
+
+      const { hash, v, r, s } = await signCommitment(
+        requester1.address,
+        countryCommitment,
+        secretCommitment,
+
+        proofOfResidencyOwner.address,
+        committer,
+        await proofOfResidencyRequester1.nonces(requester1.address)
+      );
+
+      await expect(
+        proofOfResidencyRequester1.commitAddress(requester1.address, hash, v, r, s, {
+          value: initialPrice
+        })
+      ).to.emit(proofOfResidencyCommitter, 'CommitmentCreated');
+
+      await timeTravelToValid();
+
+      // use reentrant contract here
+      await expect(
+        reentrantTreasuryContract.respondToChallenge(tokenId, countryCommitment, secretCommitment)
+      ).to.be.revertedWith('Commitment incorrect');
     });
 
     it('should fail to respond to a challenge with the wrong country', async () => {

@@ -4,17 +4,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import Footer from '../src/web/components/Footer';
-import Header from '../src/web/components/Header';
 
 // imports from API
 import { getCurrentMintedCount } from 'src/api/ethers';
 
-import { getAllCountries } from 'src/web/token';
-import { Country } from 'iso-3166-1/dist/iso-3166';
+import { CountryIso, getAllCountries } from 'src/web/token';
 import { getPopulationForAlpha3 } from 'src/web/populations';
+import Header from 'src/web/components/Header';
 
 type Details = {
-  country: Country;
+  country: CountryIso;
   image: string;
   minted: number;
   population: number;

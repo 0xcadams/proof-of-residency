@@ -1,4 +1,5 @@
 import { BigNumber } from 'ethers';
+import { VerifyIntlAddressResponse, VerifyUsAddressResponse } from './verify-address';
 
 export type AddressComponents = {
   name: string;
@@ -9,11 +10,16 @@ export type AddressComponents = {
   postal?: string;
   country: string;
 
+  deliverability:
+    | VerifyUsAddressResponse['deliverability']
+    | VerifyIntlAddressResponse['deliverability'];
+
   nonce: BigNumber;
 };
 
 export type SubmitAddressPasswordPayload = {
   hashedPassword: string;
+  walletAddress: string;
   nonce: BigNumber;
 };
 
@@ -23,9 +29,6 @@ export type SubmitAddressRequest = {
 
   addressPayload: AddressComponents;
   addressSignature: string;
-
-  latitude: number;
-  longitude: number;
 };
 
 export type SubmitAddressResponse = {

@@ -17,14 +17,15 @@ import './ERC721NonTransferable.sol';
  * @dev Uses a commit-reveal scheme to commit to a country and have a token issued based on that commitment.
  */
 contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, ReentrancyGuard {
-  /// @notice The timelock period until committers can withdraw (after last activity)
-  uint256 private constant TIMELOCK_WAITING_PERIOD = 1 weeks;
-  /// @notice The tax + donation percentages (15% to MAW, 5% to original team)
+  /// @notice The tax + donation percentages (10% to MAW, 10% to treasury)
   uint256 private constant TAX_AND_DONATION_PERCENT = 20;
   /// @notice The waiting period before minting becomes available
   uint256 private constant COMMITMENT_WAITING_PERIOD = 1 weeks;
   /// @notice The period during which minting is available (after the preminting period)
   uint256 private constant COMMITMENT_PERIOD = 5 weeks;
+  /// @notice The timelock period until committers can withdraw (after last activity)
+  uint256 private constant TIMELOCK_WAITING_PERIOD = 8 weeks;
+
   /// @notice Multiplier for country token IDs
   uint256 private constant LOCATION_MULTIPLIER = 1e15;
 
@@ -88,7 +89,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   /// @notice Event emitted when a committer is added
   event CommitterAdded(address indexed committer);
   /// @notice Event emitted when a committer is removed
-  event CommitterRemoved(address indexed committer, uint256 fundsLost);
+  event CommitterRemoved(address indexed committer, uint256 fundsLost, bool forceReclaim);
 
   /// @notice Event emitted when a token is challenged
   event TokenChallenged(address indexed owner, uint256 indexed tokenId);
@@ -136,43 +137,52 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
    * commitments.
    */
   function addCommitter(address newCommitter) external onlyOwner {
-    require(!_committers[newCommitter], 'Already exists');
     _committers[newCommitter] = true;
 
     emit CommitterAdded(newCommitter);
   }
 
   /**
-   * @notice Removes a committer address and transfers their contributions to be owned
+   * @notice Removes a committer address and optionally transfers their contributions to be owned
    * by the treasury.
    */
-  function removeCommitter(address removedCommitter) external onlyOwner {
-    delete _committers[removedCommitter];
-
+  function removeCommitter(address removedCommitter, bool forceReclaim) external onlyOwner {
     Contribution memory lostContribution = committerContributions[removedCommitter];
-    Contribution storage treasuryContribution = committerContributions[projectTreasury];
+    require(
+      forceReclaim ? lostContribution.value != 0 : lostContribution.value == 0,
+      'Cannot force or non-0'
+    );
 
-    treasuryContribution.value += lostContribution.value;
-    treasuryContribution.lockedUntil = block.timestamp + TIMELOCK_WAITING_PERIOD;
+    if (forceReclaim) {
+      Contribution storage treasuryContribution = committerContributions[projectTreasury];
 
+      treasuryContribution.value += lostContribution.value;
+      treasuryContribution.lockedUntil = block.timestamp + TIMELOCK_WAITING_PERIOD;
+    }
+
+    delete _committers[removedCommitter];
     delete committerContributions[removedCommitter];
 
-    emit CommitterRemoved(removedCommitter, lostContribution.value);
+    emit CommitterRemoved(removedCommitter, lostContribution.value, forceReclaim);
   }
 
   /**
-   * @notice Allows the project treasury to claim expired contribution(s). This allows funds to
+   * @notice Allows the project treasury to reclaim expired contribution(s). This allows funds to
    * not get locked up in the contract indefinitely.
    */
-  function claimExpiredContributions(address[] memory unclaimedAddresses) public onlyOwner {
+  function reclaimExpiredContributions(address[] memory unclaimedAddresses) external onlyOwner {
     uint256 totalAddition = 0;
 
     for (uint256 i = 0; i < unclaimedAddresses.length; i++) {
       Commitment memory existingCommitment = commitments[unclaimedAddresses[i]];
-      require(existingCommitment.validAt + COMMITMENT_PERIOD < block.timestamp, 'Still valid');
+
+      // require that the commitment expired so it can be claimed
+      // slither-disable-next-line timestamp
+      require(existingCommitment.validAt + COMMITMENT_PERIOD <= block.timestamp, 'Still valid');
 
       totalAddition += existingCommitment.value;
 
+      // slither-disable-next-line costly-loop
       delete commitments[unclaimedAddresses[i]];
     }
 
@@ -268,15 +278,23 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     uint8 v,
     bytes32 r,
     bytes32 s
-  ) external payable whenNotPaused nonReentrant {
-    address signatory = _validateSignature(to, commitment, v, r, s);
+  ) external payable whenNotPaused {
+    // Validates a signature which corresponds to one signed by a committer with the
+    // https://eips.ethereum.org/EIPS/eip-712[`eth_signTypedData`] method as part of EIP-712.
+    bytes32 structHash = keccak256(abi.encode(COMMITMENT_TYPEHASH, to, commitment, nonces[to]));
+    bytes32 digest = keccak256(abi.encodePacked('\x19\x01', _domainSeparator, structHash));
+    address signatory = ecrecover(digest, v, r, s);
+
+    // require that the signatory is actually a committer
     require(_committers[signatory], 'Signatory non-committer');
 
     require(msg.value == reservePrice, 'Incorrect value');
 
     Commitment storage existingCommitment = commitments[to];
 
-    bool isExistingExpired = block.timestamp > existingCommitment.validAt + COMMITMENT_PERIOD;
+    // if there is an existing commitment and it hasn't expired yet
+    bool isExistingExpired = existingCommitment.commitment != 0 &&
+      block.timestamp > existingCommitment.validAt + COMMITMENT_PERIOD;
 
     // slither-disable-next-line timestamp
     require(existingCommitment.commitment == 0 || isExistingExpired, 'Existing commitment');
@@ -359,6 +377,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   function withdraw() external nonReentrant {
     Contribution memory contribution = committerContributions[_msgSender()];
     // enforce the timelock for the withdrawal
+    // slither-disable-next-line timestamp
     require(contribution.lockedUntil < block.timestamp, 'Timelocked');
 
     uint256 taxAndDonation = (contribution.value * TAX_AND_DONATION_PERCENT) / 100;
@@ -439,24 +458,6 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
     nonces[_msgSender()] += 1;
 
     delete commitments[_msgSender()];
-  }
-
-  /**
-   * @dev Validates a signature which corresponds to one signed with the
-   * https://eips.ethereum.org/EIPS/eip-712[`eth_signTypedData`] method as part of EIP-712.
-   */
-  function _validateSignature(
-    address to,
-    bytes32 commitment,
-    uint8 v,
-    bytes32 r,
-    bytes32 s
-  ) private view returns (address) {
-    bytes32 structHash = keccak256(abi.encode(COMMITMENT_TYPEHASH, to, commitment, nonces[to]));
-    bytes32 digest = keccak256(abi.encodePacked('\x19\x01', _domainSeparator, structHash));
-    address signatory = ecrecover(digest, v, r, s);
-
-    return signatory;
   }
 
   /**
