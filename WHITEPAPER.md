@@ -1,6 +1,6 @@
 # Proof of Residency Whitepaper
 
-_Last updated: Feb 3, 2022_
+_Last updated: Feb 4, 2022_
 
 ## Motivation
 
@@ -214,7 +214,7 @@ See [Future Goals](#future-goals) for more details on Committer Pools.
 
 ### Withdrawing
 
-A Committer can withdraw their "contributions" amount, after the timelock expires for their earned funds (one week after their latest successful contribution - this could be a long time, and would essentially require a Committer to be inactive to withdraw). Their withdrawal is deducted by the amount of fees associated with payments to the protocol and donations to charity.
+A Committer can withdraw their "contributions" amount, after the timelock expires for their earned funds (eight weeks after their latest successful contribution - this could be a long time, and would require a Committer to be inactive for eight weeks to withdraw). Their withdrawal is deducted by the amount of fees associated with payments to the protocol and donations to charity.
 
 ```solidity
 function withdraw() external nonReentrant { ... }
@@ -232,13 +232,11 @@ function withdraw() external nonReentrant { ... }
 
 5. A requester can leave the website after requesting a Committer signs a commitment and sends a letter. The Committer would lose the cost associated with the mail, and the requester would receive invalid mail. This is initially mitigated by the cost of requesting, since it is initially higher than the actual cost of project maintenance. See [Future Goals](#future-goals) for a solution to this.
 
-6.
-
 ## Future Goals
 
 ### Event-Based Letter Sending
 
-In order to mitigate #5 in [Known Attack Vectors/Tradeoffs](#known-attack-vectorstradeoffs), the sending of letters can be abstracted into an event-based service. It could be as simple as a Redis-based queue which clears after a certain threshold (2 hours) which has a key of requester's `to` address and value of `mnemonic`. The Committers can listen for the `CommitmentCreated(to, signatory, commitment)` event to be emitted, and send letters based on this. The `mnemonic` is not enough information to recreate the `publicKey` used in the commitment and can be safely stored temporarily in a DB, since there is a BIP39 password extension.
+In order to mitigate #5 in [Known Attack Vectors/Tradeoffs](#known-attack-vectorstradeoffs), the sending of letters can be abstracted into an event-based service. It could be as simple as a Redis-based queue which clears after a certain threshold (2 hours) which has a key of requester's `to` address and value of `mnemonic`. The Committers can listen for the `CommitmentCreated(to, signatory, commitment)` event to be emitted, and send letters based on this. The `mnemonic` is not enough information to recreate the `publicKey` used in the commitment and can be safely stored temporarily in a DB, since there is a BIP39 password extension. This can also include a random jitter (on the order of hours) to account for #2 in [Known Attack Vectors/Tradeoffs](#known-attack-vectorstradeoffs).
 
 ### Committer Pool
 
@@ -248,17 +246,23 @@ The proofs of residency would be performed by _randomly selected Committers in a
 
 This reduces the necessity of trust in a single Committer, since collusion between a random Committer and the requester would need to exist to issue false commitments. The likelihood of collusion would decrease substantially with the size of the Committer pool, and the desired pool size would be precalculated before launch of this initiative. If false commitments did begin appearing, there is a mechanism for the community to remove Committers and challenge tokens they've historically issued.
 
+This solves #1 in [Known Attack Vectors/Tradeoffs](#known-attack-vectorstradeoffs).
+
+A Committer can exit the Committer Pool by being inactive for 8 weeks and withdrawing their funds from the contract. This gives the DAO time to review the commitments and ensure that fraud has not been introduced before the Committer exits the pool.
+
 ### DAO Governance
 
-1. A DAO will be formed with all participants having a vote based on their ERC721 `PORP` token (and possibly an ERC-20 token).
+1. A DAO will be formed with all participants having a vote based on their ERC721 `PORP` token (and likely an ERC-20 token to enable quadratic voting).
 
-2. The Committer Pool EOA accounts will be voted on by the DAO, and could be removed by the DAO if they behave poorly. There is a financial incentive for the Committer to continue to provide honest commitments.
+2. The Committer Pool EOA accounts will be voted on by the DAO, and could be removed by the DAO if they behave poorly. There is a financial incentive for the Committer to continue to provide honest commitments, since their funds will be reclaimed if they are removed as a Committer.
 
 3. The newly minted tokens and their corresponding hashed physical addresses would be monitored by the community. In cases of fraud, a vote by the DAO community would remove a Committer account and burn all of the tokens it issued. This is an extreme disincentive for a Committer to issue fraudulent commitments.
 
-### Token Challenges
+### Token Challenges/Committer Removals
 
-The community would be responsible for challenging tokens to ensure that the community is kept free of fraudulent activity. The challenge process is documented above.
+The community would be responsible for challenging tokens to ensure that the community is kept free of fraudulent activity. The challenge process is documented above and is a solution to #3 in [Known Attack Vectors/Tradeoffs](#known-attack-vectorstradeoffs).
+
+However, this comes with another process which can be handled off-chain - the community can manage token challenges depending on data from Committers, and if a Committer is involved with a number of failed challenges, they can be removed as a Committer. There is a financial and social incentive for the community to be diligent and timely about these challenges, since any unclaimed Committer funds (which are always timelocked for eight weeks from the latest commitment activity) will be transferred to the project treasury, to be managed by the DAO. This gives the DAO **two weeks** after the token challenges have expired (six weeks) to determine whether the challenged commitments have been overwhelmingly falsified, and reclaim the Committer's contributions and burn the associated tokens before the Committer can remove their funds.
 
 ### Metadata Hardening
 

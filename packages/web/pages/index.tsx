@@ -49,8 +49,8 @@ const IndexPage = () => {
 
           <Text fontSize="md" mt={8} textAlign="center">
             All of our code is open-source on Github under an MIT license for future projects to
-            build upon. We dedicate 15% of the revenue from this project to be donated to the
-            Make-A-Wish Foundation.
+            build upon. We dedicate 10% of the revenue from this project to be donated to
+            Make-A-Wish®.
           </Text>
         </Flex>
       </Flex>
