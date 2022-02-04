@@ -1,6 +1,6 @@
 {
   "name": "@proof-of-residency/contracts",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "description": "The Solidity smart contracts for Proof of Residency.",
   "main": "index.js",
   "license": "MIT",
@@ -28,8 +28,8 @@
     "deploy:rinkeby": "yarn run -T hardhat run --network rinkeby scripts/initial-deploy.ts",
     "deploy:local": "yarn run -T hardhat run --network localhost scripts/initial-deploy.ts",
     "time-travel:local": "yarn run -T hardhat run --network localhost scripts/time-travel.ts",
-    "lerna-publish": "lerna publish from-package",
-    "lerna-version": "lerna version",
+    "lerna-publish": "yarn run -T lerna publish from-package",
+    "lerna-version": "yarn run -T lerna version",
     "lint": "yarn run -T solhint 'contracts/**/*.sol' && yarn run -T prettier --list-different 'contracts/**/*.sol' && yarn run -T eslint . --ext .ts",
     "size": "yarn run -T hardhat size-contracts",
     "start": "yarn run -T hardhat node",

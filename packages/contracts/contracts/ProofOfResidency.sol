@@ -17,14 +17,15 @@ import './ERC721NonTransferable.sol';
  * @dev Uses a commit-reveal scheme to commit to a country and have a token issued based on that commitment.
  */
 contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, ReentrancyGuard {
-  /// @notice The timelock period until committers can withdraw (after last activity)
-  uint256 private constant TIMELOCK_WAITING_PERIOD = 1 weeks;
-  /// @notice The tax + donation percentages (15% to MAW, 5% to original team)
+  /// @notice The tax + donation percentages (10% to MAW, 10% to treasury)
   uint256 private constant TAX_AND_DONATION_PERCENT = 20;
   /// @notice The waiting period before minting becomes available
   uint256 private constant COMMITMENT_WAITING_PERIOD = 1 weeks;
   /// @notice The period during which minting is available (after the preminting period)
   uint256 private constant COMMITMENT_PERIOD = 5 weeks;
+  /// @notice The timelock period until committers can withdraw (after last activity)
+  uint256 private constant TIMELOCK_WAITING_PERIOD = 8 weeks;
+
   /// @notice Multiplier for country token IDs
   uint256 private constant LOCATION_MULTIPLIER = 1e15;
 
