@@ -2,23 +2,25 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { BigNumber } from 'ethers';
 import { ethers } from 'hardhat';
 
-const timeTravel = async (days: number) => {
+const timeTravelInDays = async (days: number) => {
   // skip forward x days
   await ethers.provider.send('evm_increaseTime', [days * 24 * 60 * 60]);
   await ethers.provider.send('evm_mine', []);
 };
 
+const timeTravelInWeeks = async (weeks: number) => timeTravelInDays(7 * weeks);
+
 // 3 days
-export const timeTravelToBeforeValid = async () => timeTravel(3);
+export const timeTravelToBeforeValid = async () => timeTravelInDays(3);
 
 // 1 week
-export const timeTravelToValid = async () => timeTravel(7);
+export const timeTravelToValid = async () => timeTravelInWeeks(1);
 
-// 6 weeks
-export const timeTravelToPastValid = async () => timeTravel(7 * 6 + 1);
+// 6 weeks and 1 day
+export const timeTravelToPastValid = async () => timeTravelInDays(7 * 6 + 1);
 
-// 1 week
-export const timeTravelToEndOfTimelock = async () => timeTravel(7);
+// 8 weeks
+export const timeTravelToEndOfTimelock = async () => timeTravelInWeeks(8);
 
 export const getEip712Domain = async (contractAddress: string, chainId: number) => ({
   name: 'Proof of Residency Protocol',
