@@ -1,6 +1,6 @@
 {
   "name": "@proof-of-residency/web",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "The decentralized app and API for Proof of Residency.",
   "private": true,
   "license": "MIT",
