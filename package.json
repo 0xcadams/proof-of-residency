@@ -8,7 +8,7 @@
     "deploy:local": "lerna run deploy:local --parallel --stream",
     "lint": "lerna run lint --parallel",
     "lint:commit": "yarn lint",
-    "postinstall": "simple-git-hooks",
+    "prepare": "simple-git-hooks",
     "start": "lerna run start --parallel --stream"
   },
   "devDependencies": {
