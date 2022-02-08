@@ -54,8 +54,8 @@ const config: HardhatUserConfig = {
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
     },
     arbitrum: {
-      url: `https://arbitrum-mainnet.infura.io/v3/${INFURA_PROJECT_ID}`
-      // accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
+      url: `https://arbitrum-mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
     },
     mainnet: {
       url: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`
@@ -77,6 +77,7 @@ const config: HardhatUserConfig = {
   gasReporter: {
     currency: 'USD',
     coinmarketcap: '181841aa-db2a-4825-8359-f0dcce4d0db5'
+    // gasPriceApi: 'https://api.arbiscan.io/api?module=proxy&action=eth_gasPrice'
   }
 };
 
