@@ -4,9 +4,8 @@ async function main() {
   const baseUri = 'https://generator.proofofresidency.xyz/api/';
   const initialPrice = ethers.utils.parseEther('0.008');
 
-  // change these
   const committer = '0x615b1012097Db45fc4d7458125B03B148F71de97';
-  const treasury = '0x615b1012097Db45fc4d7458125B03B148F71de97';
+  const treasury = '0x5962Ba5b211D2Bff7c27988C61224671AE5E0587';
 
   const ProofOfResidency = await ethers.getContractFactory('ProofOfResidency');
   const proofOfResidencyOwner = await ProofOfResidency.deploy(
