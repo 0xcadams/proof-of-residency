@@ -73,19 +73,19 @@ describe('Proof of Residency: dao dependency', () => {
 
   describe('Test DAO functions correctly (happy paths)', async () => {
     it('should succeed to join DAO for a real human', async () => {
-      await expect(await someDaoRequester1.canJoinDao()).to.be.true;
+      await expect(await someDaoRequester1.joinDao()).to.be.true;
     });
   });
 
   describe('Test DAO functions correctly (sad paths)', async () => {
     it('should fail to join DAO for an unverified human', async () => {
-      await expect(someDaoUnaffiliated.canJoinDao()).to.be.revertedWith('Not allowed!');
+      await expect(someDaoUnaffiliated.joinDao()).to.be.revertedWith('Not allowed!');
     });
 
     it('should fail to join DAO for a human who is pending a challenge', async () => {
       await proofOfResidencyOwner.challenge([requester1.address]);
 
-      await expect(someDaoRequester1.canJoinDao()).to.be.revertedWith('Not allowed!');
+      await expect(someDaoRequester1.joinDao()).to.be.revertedWith('Not allowed!');
     });
   });
 });

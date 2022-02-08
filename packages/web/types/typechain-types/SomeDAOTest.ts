@@ -17,15 +17,12 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export interface SomeDAOTestInterface extends utils.Interface {
   contractName: "SomeDAOTest";
   functions: {
-    "canJoinDao()": FunctionFragment;
+    "joinDao()": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "canJoinDao",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "joinDao", values?: undefined): string;
 
-  decodeFunctionResult(functionFragment: "canJoinDao", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "joinDao", data: BytesLike): Result;
 
   events: {};
 }
@@ -58,22 +55,22 @@ export interface SomeDAOTest extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    canJoinDao(overrides?: CallOverrides): Promise<[boolean]>;
+    joinDao(overrides?: CallOverrides): Promise<[boolean]>;
   };
 
-  canJoinDao(overrides?: CallOverrides): Promise<boolean>;
+  joinDao(overrides?: CallOverrides): Promise<boolean>;
 
   callStatic: {
-    canJoinDao(overrides?: CallOverrides): Promise<boolean>;
+    joinDao(overrides?: CallOverrides): Promise<boolean>;
   };
 
   filters: {};
 
   estimateGas: {
-    canJoinDao(overrides?: CallOverrides): Promise<BigNumber>;
+    joinDao(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    canJoinDao(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    joinDao(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

@@ -10,7 +10,7 @@ contract SomeDAOTest {
     _proofOfResidency = ProofOfResidency(proofOfResidencyAddress);
   }
 
-  function canJoinDao() external view returns (bool) {
+  function joinDao() external view returns (bool) {
     require(isSenderHuman() && !doesSenderHaveOutstandingTokenChallenge(), 'Not allowed!');
 
     return true;

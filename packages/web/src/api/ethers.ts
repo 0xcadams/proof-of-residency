@@ -2,9 +2,9 @@ import { BigNumber, ethers } from 'ethers';
 import { getCountryAndTokenNumber } from 'src/web/token';
 import { AddressComponents, ProofOfResidency__factory as ProofOfResidencyFactory } from 'types';
 
-if (!process.env.PRIVATE_KEY || !process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) {
+if (!process.env.PRIVATE_KEY || !process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS) {
   throw new Error(
-    'Must define process.env.PRIVATE_KEY and process.env.NEXT_PUBLIC_CONTRACT_ADDRESS'
+    'Must define process.env.PRIVATE_KEY and process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS'
   );
 }
 
@@ -23,7 +23,7 @@ const provider = ethers.getDefaultProvider(
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
 const proofOfResidency = ProofOfResidencyFactory.connect(
-  process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+  process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS,
   wallet
 );
 
@@ -49,7 +49,7 @@ export const hashAndSignCommitmentEip712 = async (
   );
 
   const domain = await getEip712Domain(
-    process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '',
+    process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS ?? '',
     await wallet.getChainId()
   );
 
@@ -88,7 +88,7 @@ const mailingAddressTypes = {
 
 export const signAddressEip712 = async (address: AddressComponents) => {
   const domain = await getEip712Domain(
-    process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '',
+    process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS ?? '',
     await wallet.getChainId()
   );
 
@@ -102,7 +102,7 @@ export const validateMailingAddressSignature = async (
   signature: string
 ): Promise<string> => {
   const domain = await getEip712Domain(
-    process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '',
+    process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS ?? '',
     await wallet.getChainId()
   );
 
@@ -126,7 +126,7 @@ export const validatePasswordSignature = async (
   signature: string
 ): Promise<string> => {
   const domain = await getEip712Domain(
-    process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '',
+    process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS ?? '',
     await wallet.getChainId()
   );
 

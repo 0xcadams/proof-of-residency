@@ -49,7 +49,7 @@ contract SomeDAOTest {
     _proofOfResidency = ProofOfResidency(proofOfResidencyAddress);
   }
 
-  function canJoinDao() external view returns (bool) {
+  function joinDao() external view returns (bool) {
     require(isSenderHuman() && !doesSenderHaveOutstandingTokenChallenge(), 'Not allowed!');
 
     return true;
@@ -70,9 +70,13 @@ This will not increase the size of your contract, it will only add the appropria
 
 The API for the Proof of Residency ERC-721 is documented extensively in the contract and in the [whitepaper](WHITEPAPER.md).
 
-### Mainnet/Rinkeby Addresses
+### Contract Addresses
 
-Coming soon (TODO)...
+- [ ] **Mainnet:** Coming soon...
+- [ ] **Arbitrum:** Coming soon...
+
+- [x] **Rinkeby:** [0xe467...199F497](https://rinkeby.etherscan.io/address/0xe467deedb28bf8503195f280a5af6ab77199f497) (subject to change)
+- [x] **Arbitrum Rinkeby:** [0x6f66...a4661B4](https://testnet.arbiscan.io/address/0x6f668f1892c62860c295B052739B3290fa4661B4) (subject to change)
 
 ## Contributing
 

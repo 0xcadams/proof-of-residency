@@ -66,7 +66,7 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   /// @notice Expiration for challenges made for an address
   mapping(address => uint256) private _tokenChallengeExpirations;
 
-  /// @notice The baseURI for the metadata of this contract (extra underscore to avoid clashing with function)
+  /// @notice The baseURI for the metadata of this contract
   string private _metadataBaseUri;
 
   /// @notice The struct to represent commitments to an address

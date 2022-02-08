@@ -43,13 +43,13 @@ const useProofOfResidency = () => {
     if (
       wallet.status === 'connected' &&
       wallet.ethereum &&
-      process.env.NEXT_PUBLIC_CONTRACT_ADDRESS
+      process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS
     ) {
       const provider = new ethers.providers.Web3Provider(wallet.ethereum);
       const signer = provider.getSigner();
 
       const proofOfResidency = ProofOfResidencyFactory.connect(
-        process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+        process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS,
         signer
       );
 
@@ -213,7 +213,7 @@ export const useSignPasswordEip712 = () => {
 
       if (chainId && signer) {
         const domain = await getEip712Domain(
-          process.env.NEXT_PUBLIC_CONTRACT_ADDRESS ?? '',
+          process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS ?? '',
           chainId
         );
 
