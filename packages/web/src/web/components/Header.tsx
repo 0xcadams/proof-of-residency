@@ -41,11 +41,12 @@ const Header = () => {
 
         <Tooltip
           label={
-            !providerExists
-              ? 'You must install Metamask to use this app.'
-              : process.env.NODE_ENV !== 'development'
-              ? 'Coming soon!'
-              : undefined
+            'Coming soon!'
+            // !providerExists
+            //   ? 'You must install Metamask to use this app.'
+            //   : process.env.NODE_ENV !== 'development'
+            //   ? 'Coming soon!'
+            //   : undefined
           }
           shouldWrapChildren
         >
