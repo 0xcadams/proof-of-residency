@@ -1,6 +1,6 @@
 # Proof of Residency Whitepaper
 
-_Last updated: Feb 4, 2022_
+_Last updated: Feb 8, 2022_
 
 ## Motivation
 
@@ -66,19 +66,20 @@ The `mnemonic` (without the `password`) is sent to a Mail Service (in the initia
 
 > Lob is a centralized API which allows physical mail to be sent from an API call. We use this initially as a core piece to our proofs, but acknowledge that the exposure to this service should be reduced. We take steps to mitigate risk and plan to reduce dependency on this service by eventually scaling out the [Committer Pool](#committer-pool).
 
-Also, the mailing address components are hashed and stored in a temporary Redis database, with the key as the hashed mailing address and value as the current timestamp. See [Known Attack Vectors](#known-attack-vectorstradeoffs) for more information on why we do this.
+Also, the mailing address components are hashed alongside a secret salt and stored in a temporary Redis database, with the key as the hashed mailing address and value as the current timestamp. See [Known Attack Vectors](#known-attack-vectorstradeoffs) for more information on why we do this.
 
 ```typescript
 const hashedMailingAddress = ethers.utils.keccak256(
   ethers.utils.defaultAbiCoder.encode(
-    ['string', 'string', 'string', 'string', 'string', 'string'],
+    ['string', 'string', 'string', 'string', 'string', 'string', 'string'],
     [
       body.addressPayload.addressLine1,
       body.addressPayload.addressLine2,
       body.addressPayload.city,
       body.addressPayload.state,
       body.addressPayload.postal,
-      body.addressPayload.country
+      body.addressPayload.country,
+      process.env.HASHED_ADDRESS_SALT
     ]
   )
 );
@@ -86,7 +87,7 @@ await sendLetter(body.addressPayload, keygen.mnemonic, requesterAddress);
 await setRedis(hashedMailingAddress, Date.now());
 ```
 
-The commitment hash is then returned to the dApp, which can then send the signed payload to the smart contract. The contract verifies that the trusted EOA signed the commitment and stores the commitment on-chain. A `nonce` is included in the signature which is always updated from the smart contract upon every state change.
+The signed commitment hash is then returned to the dApp, which sends the signed payload to the smart contract. The contract verifies that the trusted EOA signed the commitment and stores the commitment on-chain. A `nonce` is included in the signature which is always updated from the smart contract upon every state change.
 
 ```solidity
 function commitAddress(
@@ -106,11 +107,11 @@ function commitAddress(
 }
 ```
 
-The requester pays the gas fee as well as a minimal ETH amount to cover the [costs of sending the letter](https://www.lob.com/pricing/print-mail) and development costs of the platform (a variable cost set by the owner/eventual DAO, ideally as low as possible). This also acts as a deterrent to fraud/general laziness, as the user must pay this amount each time they request a commitment.
+The requester pays the gas fee as well as a minimal ETH amount to cover the [costs of sending the letter](https://www.lob.com/pricing/print-mail) and development costs of the platform (a variable cost set by the owner/eventual DAO, ideally as low as possible). This also acts as a deterrent to fraud/forgetfulness, as the user must pay this amount each time they request a commitment.
 
 ### Step Two: Reveal
 
-Once the user receives the letter with the mnemonic, they now have all of the information they need to prove that they reside at the address they requested. In the letter, are instructed to return back to the website and re-enter their country and the remaining BIP39 words (alongside their password which they definitely didn't forget) to regenerate the public key. The public key and country ID are then sent to the smart contract. **There is a required time delay of one week between requesting and minting, for security of the system.** The user is instructed to return if it has not been one week. See [Known Attack Vectors](#known-attack-vectorstradeoffs) for more information.
+Once the user receives the letter with the mnemonic, they now have all of the information they need to prove that they reside at the address they requested. In the letter, they are instructed to return back to the website and re-enter their country and the remaining BIP39 words (alongside their password) to regenerate the public key. The public key and country ID are then sent to the smart contract. **There is a required time delay of one week between requesting and minting, for security of the system.** The user is instructed to return if it has not been one week. See [Known Attack Vectors](#known-attack-vectorstradeoffs) for the reasoning for this requirement.
 
 The inputs are used to reconstruct the original commitment and it is verified to ensure that the public key (`commitment`) is the same as the original value.
 
@@ -132,7 +133,7 @@ function mint(uint16 country, string memory commitment) external whenNotPaused n
 If the commitment is valid, a few things happen:
 
 - A **non-transferable ERC-721 token** is minted with the country information. The requester pays only the gas fees for minting. The metadata is returned by an API, with plans to move to IPFS. The structure of this metadata follows [OpenSea's standards](https://docs.opensea.io/docs/metadata-standards), but is subject to change.
-- The Committer's "contributions" amount is increased by the value originally paid by the requester. **They can withdraw this amount (minus fees) after the timelock expires in one week.**
+- The Committer's "contributions" amount is increased by the value originally paid by the requester. **They can withdraw this amount (minus fees) after the timelock expires in eight weeks.**
 
 The requester now has an ERC-721 associated with their account, with only the country ID as identifiable information! They can now participate in decentralized communities and other downstream projects with increased trust.
 
@@ -142,11 +143,11 @@ There are some ancillary functions which can only be performed by the contract o
 
 ### Adding/Removing Committers
 
-Eventually, when the DAO is created, this will allow the community to scale the commit-reveal scheme. These functions will be used to add/remove from the [Committer Pool](#committer-pool). Until then, this mapping will only contain the original Committer EOA account which is controlled by the founding team.
+Eventually, when the DAO is created, this functionality will allow the community to scale the commit-reveal scheme. These functions will be used to add/remove from the [Committer Pool](#committer-pool). Until then, this mapping will only contain the original Committer EOA account which is controlled by the founding team.
 
 #### Adding a Committer
 
-The contract has functionality to add trusted Committers from the project. They can then sign commitments which can be used to mint tokens.
+The owner can add trusted Committers from the project. They can then sign commitments which can be used to mint tokens.
 
 ```solidity
 function addCommitter(address newCommitter, address newTreasury) external onlyOwner { ... }
@@ -154,15 +155,22 @@ function addCommitter(address newCommitter, address newTreasury) external onlyOw
 
 #### Removing a Committer
 
-Committers can also be removed by the owner. There is a `forceReclaim` boolean which allows the owner to opt-in to forcing the funds to be moved to the project treasury. This would be used in extreme cases, where a Committer was found to be dishonest.
+Committers can also be removed by the owner. There is a `forceReclaim` parameter which allows the owner to opt-in to forcing the funds to be moved to the project treasury. If the Committer has funds, this parameter must be `true`, to deter unintentional reclaim of an exited Committer's funds. Reclaim would be used in extreme cases, where a Committer was found to be dishonest.
 
 ```solidity
-function removeCommitter(address removedCommitter, bool forceReclaim) external onlyOwner { ... }
+function removeCommitter(address removedCommitter, bool forceReclaim) external onlyOwner {
+  Contribution memory lostContribution = committerContributions[removedCommitter];
+  require(
+    forceReclaim ? lostContribution.value != 0 : lostContribution.value == 0,
+    'Cannot force or non-0'
+  );
+  ...
+}
 ```
 
 ### Challenging Tokens
 
-The contract has the ability to issue "challenges" for a given set of wallet addresses. The challenge process will work in a similar way to the original token request - a token ID will be flagged as "challenged" and the requester would have to re-request their proof of residency.
+The owner has the ability to issue "challenges" for a given set of wallet addresses. The challenge process will work in a similar way to the original token request - a token ID will be flagged as "challenged" and the requester would have to re-request their proof of residency.
 
 ```solidity
 function challenge(address[] memory addresses) external onlyOwner { ... }
@@ -180,7 +188,7 @@ function burnFailedChallenges(address[] memory addresses) external onlyOwner {
 }
 ```
 
-This **burns all tokens corresponding to addresses which are input**. This would require every legitimate tokenholder to re-request and pay again - not an ideal scenario. However, it allows fraud to be reversed and maintains the integrity of the system.
+This **burns all tokens corresponding to the addresses which are provided**. This would require every legitimate tokenholder to re-request and pay again - not an ideal scenario. However, it allows fraud to be reversed and maintains the integrity of the system.
 
 There are also public functions for retrieving if a challenge exists or is expired for a given wallet address.
 
@@ -190,7 +198,7 @@ function tokenChallengeExists(address owner) public view returns (bool) { ... }
 function tokenChallengeExpired(address owner) public view returns (bool) { ... }
 ```
 
-This function, as well as the included ERC-721 API, allows a downstream project to know if there is an outstanding challenge for a given user. See the [README](./README.md) for an example DAO using these functions.
+These functions, as well as the included ERC-721 API, allow a downstream project to know if there is an outstanding challenge for a given user. See the [README](./README.md) for an example DAO using these functions.
 
 ### Reclaiming Failed Commitment Funds
 
@@ -199,6 +207,8 @@ The owner of the contract is able to reclaim failed commitment funds, in the cas
 ```solidity
 function reclaimExpiredContributions(address[] memory unclaimedAddresses) external onlyOwner { ... }
 ```
+
+The owner can then proceed to refund the requester or keep the funds, determined on a case-by-case basis.
 
 ### Price Setting
 
@@ -214,7 +224,7 @@ See [Future Goals](#future-goals) for more details on Committer Pools.
 
 ### Withdrawing
 
-A Committer can withdraw their "contributions" amount, after the timelock expires for their earned funds (eight weeks after their latest successful contribution - this could be a long time, and would require a Committer to be inactive for eight weeks to withdraw). Their withdrawal is deducted by the amount of fees associated with payments to the protocol and donations to charity.
+A Committer can withdraw their "contributions" amount, after the timelock expires for their funds (eight weeks after their latest successful contribution - this could be a long time, and would require a Committer to be inactive for eight weeks to withdraw). Their withdrawal is deducted by the amount of fees associated with payments to the protocol and donations to charity.
 
 ```solidity
 function withdraw() external nonReentrant { ... }
@@ -228,35 +238,31 @@ function withdraw() external nonReentrant { ... }
 
 3. A single malicious actor could hypothetically generate `x` requests for `x` wallets with the same physical address (their own). Or, they could even use a family member's/friend's address. They would receive each of these letters and be able to mint `x` Proof of Residency tokens. We do not store mailing addresses on-chain due to security concerns. However, this is mitigated by rate limiting off-chain - the mailing addresses are hashed before being stored in Redis, and requests for signed commitments are initially limited to one every four weeks per mailing address. This can be monitored and evolve off-chain. See [Future Goals](#future-goals) for a solution to this.
 
-4. A malicious actor could verify a wallet address with a proof of residency, and then sell this account to the highest bidder (since the NFTs themselves are non-transferable). However, this would mean that the seller is also in possession of a private key for the account, which would allow them to burn the token at any time and undermines the benefit. Also, the tokens could be challenged at any time, disincentivizing this behavior.
+4. A malicious actor could verify a wallet address with a proof of residency, and then sell the EOA to the highest bidder (since the NFTs themselves are non-transferable). However, this would mean that the seller is also in possession of a private key for the account, which would allow them to burn the token at any time and undermines the benefit. Also, the tokens could be challenged at any time, further disincentivizing this behavior.
 
-5. A requester can leave the website after requesting a Committer signs a commitment and sends a letter. The Committer would lose the cost associated with the mail, and the requester would receive invalid mail. This is initially mitigated by the cost of requesting, since it is initially higher than the actual cost of project maintenance. See [Future Goals](#future-goals) for a solution to this.
+5. A requester can leave the website after requesting that a Committer signs a commitment and sends a letter. The Committer would lose the cost associated with the mail, and the requester would receive invalid mail. This is initially mitigated by the cost of requesting, since it is initially higher than the actual cost of project maintenance. See [Future Goals](#future-goals) for a solution to this.
 
 ## Future Goals
 
-### Event-Based Letter Sending
-
-In order to mitigate #5 in [Known Attack Vectors/Tradeoffs](#known-attack-vectorstradeoffs), the sending of letters can be abstracted into an event-based service. It could be as simple as a Redis-based queue which clears after a certain threshold (2 hours) which has a key of requester's `to` address and value of `mnemonic`. The Committers can listen for the `CommitmentCreated(to, signatory, commitment)` event to be emitted, and send letters based on this. The `mnemonic` is not enough information to recreate the `publicKey` used in the commitment and can be safely stored temporarily in a DB, since there is a BIP39 password extension. This can also include a random jitter (on the order of hours) to account for #2 in [Known Attack Vectors/Tradeoffs](#known-attack-vectorstradeoffs).
-
-### Committer Pool
-
-Since the commit-reveal process is performed off-chain, this allows for the project to scale proofs of residency **independent** of the on-chain code. A Committer Pool is a solution to scaling these proofs securely with community backing.
-
-The proofs of residency would be performed by _randomly selected Committers in a pool_. The pool would be selected, curated, and voted on by the community, then stored on-chain. The Committers are responsible for physically mailing a letter **with/without depending on Lob**. This letter would include a mnemonic, similar to the current system. Once the recipient has received the letter and minted a Proof of Residency token, the Committer is rewarded with a portion of the reservation price paid by the requester.
-
-This reduces the necessity of trust in a single Committer, since collusion between a random Committer and the requester would need to exist to issue false commitments. The likelihood of collusion would decrease substantially with the size of the Committer pool, and the desired pool size would be precalculated before launch of this initiative. If false commitments did begin appearing, there is a mechanism for the community to remove Committers and challenge tokens they've historically issued.
-
-This solves #1 in [Known Attack Vectors/Tradeoffs](#known-attack-vectorstradeoffs).
-
-A Committer can exit the Committer Pool by being inactive for 8 weeks and withdrawing their funds from the contract. This gives the DAO time to review the commitments and ensure that fraud has not been introduced before the Committer exits the pool.
-
 ### DAO Governance
+
+Once there is enough community support, the following steps will happen:
 
 1. A DAO will be formed with all participants having a vote based on their ERC721 `PORP` token (and likely an ERC-20 token to enable quadratic voting).
 
 2. The Committer Pool EOA accounts will be voted on by the DAO, and could be removed by the DAO if they behave poorly. There is a financial incentive for the Committer to continue to provide honest commitments, since their funds will be reclaimed if they are removed as a Committer.
 
-3. The newly minted tokens and their corresponding hashed physical addresses would be monitored by the community. In cases of fraud, a vote by the DAO community would remove a Committer account and burn all of the tokens it issued. This is an extreme disincentive for a Committer to issue fraudulent commitments.
+3. The newly minted tokens would be monitored by the community. In cases of fraud, a vote by the DAO community would remove a Committer account and burn all of the tokens it issued. This is an extreme disincentive for a Committer to issue dishonest commitments.
+
+### Committer Pool
+
+Since the commit-reveal process is performed off-chain, this allows for the project to scale proofs of residency **independent** of the on-chain code. A Committer Pool is a solution to scaling these proofs securely with community backing.
+
+The proofs of residency would be performed by _randomly selected Committers in the pool_. The pool would be selected, curated, and voted on by the community, then stored on-chain. The Committers are responsible for physically mailing a letter **with/without depending on Lob**. This letter would include a mnemonic, similar to the current system. Once the recipient has received the letter and minted a Proof of Residency token, the Committer is rewarded with 80% of the initial reservation price paid by the requester.
+
+This reduces the necessity of trust in a single Committer, since collusion between a random Committer and the requester would need to exist to issue false commitments. The likelihood of collusion would decrease substantially with the size of the Committer pool, and the minimum desired pool size would be precalculated before launch of this initiative. If false commitments did begin appearing, there is a mechanism for the community to remove Committers and challenge tokens they've historically issued. This solves #1 in [Known Attack Vectors/Tradeoffs](#known-attack-vectorstradeoffs).
+
+A Committer can exit the Committer Pool by being inactive for eight weeks and withdrawing their funds from the contract. This gives the DAO time to review the commitments and ensure that the Committer is honest before they withdraw their funds and exit the pool.
 
 ### Token Challenges/Committer Removals
 
@@ -264,6 +270,10 @@ The community would be responsible for challenging tokens to ensure that the com
 
 However, this comes with another process which can be handled off-chain - the community can manage token challenges depending on data from Committers, and if a Committer is involved with a number of failed challenges, they can be removed as a Committer. There is a financial and social incentive for the community to be diligent and timely about these challenges, since any unclaimed Committer funds (which are always timelocked for eight weeks from the latest commitment activity) will be transferred to the project treasury, to be managed by the DAO. This gives the DAO **two weeks** after the token challenges have expired (six weeks) to determine whether the challenged commitments have been overwhelmingly falsified, and reclaim the Committer's contributions and burn the associated tokens before the Committer can remove their funds.
 
+### Event-Based Letter Sending
+
+In order to mitigate #5 in [Known Attack Vectors/Tradeoffs](#known-attack-vectorstradeoffs), the sending of letters can be abstracted into an event-based service. It could be as simple as a Redis-based queue which clears after a certain threshold (2 hours) which has a key of requester's `to` address and value of `mnemonic`. The Committers can listen for the `CommitmentCreated(to, signatory, commitment)` event to be emitted, and send letters based on this. The `mnemonic` is not enough information to recreate the `publicKey` used in the commitment and can be safely stored temporarily in a DB, since there is a BIP39 password extension. This can also include a random jitter (on the order of hours or even days) to account for #2 in [Known Attack Vectors/Tradeoffs](#known-attack-vectorstradeoffs).
+
 ### Metadata Hardening
 
-The current metadata is returned by an API, which presents issues for longevity and trust in the protocol. We would like to move towards storing the metadata in IPFS as each token is minted.
+The current metadata is returned by an API, which presents issues for longevity and trust in the protocol. We would like to move towards storing the metadata in IPFS as each token is minted. This is not mission-critical, since the metadata is only a supplement to the token.

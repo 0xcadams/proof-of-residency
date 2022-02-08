@@ -12,6 +12,7 @@ import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
  *
  * This does not override functions like {approve} or {setApprovalForAll}, since
  * other modules like ERC721Burnable use these to manage burning permissions.
+ *
  * Internal functions will be optimized out by the compiler.
  */
 abstract contract ERC721NonTransferable is ERC721, ERC721Burnable, ERC721Enumerable {
@@ -42,15 +43,15 @@ abstract contract ERC721NonTransferable is ERC721, ERC721Burnable, ERC721Enumera
     revert('ERC721NonTransferable: safeTransferFrom not allowed');
   }
 
+  // The following functions are overrides required by Solidity.
+
   function _beforeTokenTransfer(
     address from,
     address to,
     uint256 tokenId
-  ) internal virtual override(ERC721, ERC721Enumerable) {
+  ) internal override(ERC721, ERC721Enumerable) {
     super._beforeTokenTransfer(from, to, tokenId);
   }
-
-  // The following functions are overrides required by Solidity.
 
   function supportsInterface(bytes4 interfaceId)
     public

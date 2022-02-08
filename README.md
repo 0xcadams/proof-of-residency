@@ -60,6 +60,9 @@ contract SomeDAOTest {
   }
 
   function doesSenderHaveOutstandingTokenChallenge() private view returns (bool) {
+    // this should only be used in specific circumstances - there is a chance that
+    // a malicious actor could push the PoR DAO to challenge an honest user, in order
+    // to disenfranchise them in a downstream vote
     return _proofOfResidency.tokenChallengeExists(msg.sender);
   }
 }
@@ -68,7 +71,7 @@ contract SomeDAOTest {
 
 This will not increase the size of your contract, it will only add the appropriate function selectors to the compiled bytecode (as long as you don't use the `new` keyword and create a new Proof of Residency contract!)
 
-The API for the Proof of Residency ERC-721 is documented extensively in the contract and in the [whitepaper](WHITEPAPER.md).
+The API for the Proof of Residency ERC-721 is documented extensively in the [contract](packages/contracts/contracts/ProofOfResidency.sol) and the [whitepaper](WHITEPAPER.md).
 
 ### Contract Addresses
 

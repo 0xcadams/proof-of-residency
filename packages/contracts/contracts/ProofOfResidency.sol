@@ -473,15 +473,4 @@ contract ProofOfResidency is ERC721NonTransferable, Pausable, Ownable, Reentranc
   function _baseURI() internal view override returns (string memory) {
     return _metadataBaseUri;
   }
-
-  /**
-   * @dev Required by Solidity.
-   */
-  function _beforeTokenTransfer(
-    address from,
-    address to,
-    uint256 tokenId
-  ) internal override(ERC721NonTransferable) whenNotPaused {
-    super._beforeTokenTransfer(from, to, tokenId);
-  }
 }

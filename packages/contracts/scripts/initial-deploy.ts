@@ -1,7 +1,7 @@
 import { ethers, run } from 'hardhat';
 
 async function main() {
-  const baseUri = 'https://generator.proofofresidency.xyz/';
+  const baseUri = 'https://generator.proofofresidency.xyz/api/';
   const initialPrice = ethers.utils.parseEther('0.008');
 
   // change these
