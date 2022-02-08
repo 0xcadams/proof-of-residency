@@ -21,7 +21,11 @@ const useProofOfResidency = () => {
   const toast = useToast();
 
   useEffect(() => {
-    if (wallet.error instanceof ChainUnsupportedError && !toast.isActive('network-toast')) {
+    if (
+      wallet.error instanceof ChainUnsupportedError &&
+      !toast.isActive('network-toast') &&
+      process.env.NODE_ENV === 'development'
+    ) {
       toast({
         id: 'network-toast',
         title: 'Error',
