@@ -15,12 +15,12 @@
     "@chakra-ui/react": "^1.8.1",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11",
+    "@ethersproject/hdnode": "^5.5.0",
     "@faker-js/faker": "^6.0.0-alpha.5",
     "@fontsource/josefin-sans": "^4.5.2",
     "@fontsource/shadows-into-light": "^4.5.1",
     "@turf/turf": "^6.5.0",
     "axios": "^0.25.0",
-    "bip32": "^3.0.1",
     "bip39": "^3.0.4",
     "dayjs": "^1.10.7",
     "ethers": "^5.5.3",
@@ -40,7 +40,6 @@
     "react-mapbox-gl": "^5.1.1",
     "react-markdown": "^8.0.0",
     "redis": "^4.0.2",
-    "tiny-secp256k1": "^2.2.0",
     "use-wallet": "^0.13.4"
   },
   "devDependencies": {

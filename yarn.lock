@@ -4131,6 +4131,7 @@ __metadata:
     "@commitlint/config-conventional": ^16.0.0
     "@emotion/react": ^11.7.1
     "@emotion/styled": ^11
+    "@ethersproject/hdnode": ^5.5.0
     "@faker-js/faker": ^6.0.0-alpha.5
     "@fontsource/josefin-sans": ^4.5.2
     "@fontsource/shadows-into-light": ^4.5.1
@@ -4146,7 +4147,6 @@ __metadata:
     "@types/react": 17.0.38
     "@typescript-eslint/parser": ^5.10.1
     axios: ^0.25.0
-    bip32: ^3.0.1
     bip39: ^3.0.4
     chai: ^4.3.6
     cross-env: ^7.0.3
@@ -4172,7 +4172,6 @@ __metadata:
     react-mapbox-gl: ^5.1.1
     react-markdown: ^8.0.0
     redis: ^4.0.2
-    tiny-secp256k1: ^2.2.0
     typescript: 4.5.5
     use-wallet: ^0.13.4
   languageName: unknown
@@ -6410,13 +6409,6 @@ __metadata:
   version: 16.11.11
   resolution: "@types/node@npm:16.11.11"
   checksum: 1c472bd63f23ca0e4effc96e6e0c693b83b027f613a1f41b6d1bd7791f65ce171a351e0a5c92575cb59e84ad0a930875397bfbbb91a7c925ddbbb558f7461af8
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:10.12.18":
-  version: 10.12.18
-  resolution: "@types/node@npm:10.12.18"
-  checksum: 333cedae77961347d44329d4042ab0b04569366c4659923bbc3434252d01d63a660375b4e64681336e1caf805d2ab141f08ced39b9bd2d01e30608385f46d8c1
   languageName: node
   linkType: hard
 
@@ -8884,20 +8876,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bip32@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "bip32@npm:3.0.1"
-  dependencies:
-    "@types/node": 10.12.18
-    bs58check: ^2.1.1
-    create-hash: ^1.2.0
-    create-hmac: ^1.1.7
-    typeforce: ^1.11.5
-    wif: ^2.0.6
-  checksum: 466402a538a9e74fbef35569f98a88256beac3f12e212b053f3d48a471ac0a1c61ca34746cab64a201a8ce10ca9cf136ddb6ece7ffe66d6865f54ea1ae202ef1
-  languageName: node
-  linkType: hard
-
 "bip39@npm:2.5.0":
   version: 2.5.0
   resolution: "bip39@npm:2.5.0"
@@ -9190,7 +9168,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bs58check@npm:<3.0.0, bs58check@npm:^2.1.1, bs58check@npm:^2.1.2":
+"bs58check@npm:^2.1.2":
   version: 2.1.2
   resolution: "bs58check@npm:2.1.2"
   dependencies:
@@ -24011,15 +23989,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tiny-secp256k1@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "tiny-secp256k1@npm:2.2.0"
-  dependencies:
-    uint8array-tools: 0.0.6
-  checksum: 123ab0b216931bc72ae2f6186d1b8b105e4cd8cc3127057e3c93469c28b4905cab7549a5cef6f8279e12c7866e1d80df5c8f2477c71c258569a2cbb4d6c2f6f4
-  languageName: node
-  linkType: hard
-
 "tiny-warning@npm:^1.0.3":
   version: 1.0.3
   resolution: "tiny-warning@npm:1.0.3"
@@ -24585,13 +24554,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typeforce@npm:^1.11.5":
-  version: 1.18.0
-  resolution: "typeforce@npm:1.18.0"
-  checksum: e3b21e27e76cb05f32285bef7c30a29760e79c622cfe4aa3c179ce49d1c7895b7154c8deedb9fe4599b1fd0428d35860d43e0776da1c04861168f3ad7ed99c70
-  languageName: node
-  linkType: hard
-
 "typescript@npm:4.5.5":
   version: 4.5.5
   resolution: "typescript@npm:4.5.5"
@@ -24732,13 +24694,6 @@ __metadata:
   version: 0.0.6
   resolution: "uid-number@npm:0.0.6"
   checksum: ff17525bb9b17313b839222efa1fe69baf136992cf675e8d1d50e9b1ef4563742968e390a96a57645d99cf8b283866c36ef9747bbf186bbbf2ef601b60ed4443
-  languageName: node
-  linkType: hard
-
-"uint8array-tools@npm:0.0.6":
-  version: 0.0.6
-  resolution: "uint8array-tools@npm:0.0.6"
-  checksum: 303273da841e5d9d7f9be7837c70e5f06ebd963a1a88a84b4051e54fb44b50f1f44d3c89b0d555d1e8955c4207e94baba778bf07889c5d8d9662d16a364a1933
   languageName: node
   linkType: hard
 
@@ -26675,15 +26630,6 @@ __metadata:
   dependencies:
     string-width: ^1.0.2 || 2 || 3 || 4
   checksum: d5fc37cd561f9daee3c80e03b92ed3e84d80dde3365a8767263d03dacfc8fa06b065ffe1df00d8c2a09f731482fcacae745abfbb478d4af36d0a891fad4834d3
-  languageName: node
-  linkType: hard
-
-"wif@npm:^2.0.6":
-  version: 2.0.6
-  resolution: "wif@npm:2.0.6"
-  dependencies:
-    bs58check: <3.0.0
-  checksum: 8c3147ef98d56f394d66f0477f699fba7fc18dd0d1c2c5d0f8408be41acffed589fa82447d80eae5afc9a3cbd943bc3eebb337b9f114955adeaad02a244f4f9a
   languageName: node
   linkType: hard
 

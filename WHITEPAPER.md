@@ -42,9 +42,8 @@ The Committer then generates a securely random BIP39 mnemonic and uses the passw
 ```typescript
 // generates a random mnemonic based on crypto.randomBytes
 const mnemonic: string = bip39.generateMnemonic();
-// uses the mnemonic and the hashed password to generate a seed for a public/private key
-const seedBuffer: Buffer = await bip39.mnemonicToSeed(mnemonic, hashedPassword);
-const { publicKey, privateKey } = bip32.fromSeed(seedBuffer);
+// uses the mnemonic and the hashed password to generate a public/private key
+const node = HDNode.fromMnemonic(mnemonic, password);
 ```
 
 The generated `publicKey` is hashed alongside the wallet address and country ID (as well as a nonce to prevent replay attacks).

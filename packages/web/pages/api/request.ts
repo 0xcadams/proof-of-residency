@@ -15,11 +15,6 @@ import { createClient } from 'redis';
 import { ethers } from 'ethers';
 import { getIsoCountryForAlpha2 } from 'src/web/token';
 
-// this fixes the missing wasm library in nextjs vercel deploy
-export const config = {
-  unstable_includeFiles: ['../../node_modules/tiny-secp256k1/lib/secp256k1.wasm']
-};
-
 const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressResponse | null>) => {
   try {
     const method = req.method;
@@ -117,7 +112,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
       const { commitment, v, r, s } = await hashAndSignCommitmentEip712(
         requesterAddress,
         countryId,
-        keygen.publicKey.toString('hex'),
+        keygen.publicKey,
         nonce
       );
 

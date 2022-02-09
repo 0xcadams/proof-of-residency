@@ -1,9 +1,6 @@
 import { Button, Flex, Heading, Input, Text, Textarea, useToast } from '@chakra-ui/react';
-import BIP32Factory from 'bip32';
 import { ethers } from 'ethers';
-import * as bip39 from 'bip39';
 import React, { useState } from 'react';
-import * as ecc from 'tiny-secp256k1';
 
 import { useRouter } from 'next/router';
 
@@ -20,8 +17,7 @@ import {
 } from 'src/web/hooks';
 import { NextSeo } from 'next-seo';
 import { getIsoCountryForAlpha2 } from 'src/web/token';
-
-const bip32 = BIP32Factory(ecc);
+import { HDNode } from 'ethers/lib/utils';
 
 const MintPage = () => {
   const [mnemonic, setMnemonic] = useState<string>('');
@@ -49,13 +45,9 @@ const MintPage = () => {
           ethers.utils.defaultAbiCoder.encode(['string', 'string'], [walletAddress, password])
         );
 
-        const seedBuffer = await bip39.mnemonicToSeed(mnemonic.trim(), hashedPassword);
-        const node = bip32.fromSeed(seedBuffer);
+        const node = HDNode.fromMnemonic(mnemonic.trim(), hashedPassword);
 
-        const transaction = await mint(
-          Number(isoCountry.numeric),
-          node?.publicKey?.toString('hex') ?? ''
-        );
+        const transaction = await mint(Number(isoCountry.numeric), node?.publicKey ?? '');
 
         const result = await transaction.wait();
 
