@@ -17,7 +17,7 @@ import { getIsoCountryForAlpha2 } from 'src/web/token';
 
 // this fixes the missing wasm library in nextjs vercel deploy
 export const config = {
-  unstable_includeFiles: ['node_modules/tiny-secp256k1/lib/secp256k1.wasm']
+  unstable_includeFiles: ['../../node_modules/tiny-secp256k1/lib/secp256k1.wasm']
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressResponse | null>) => {
