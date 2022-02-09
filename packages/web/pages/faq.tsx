@@ -35,6 +35,17 @@ const FaqPage = () => {
       )
     },
     {
+      q: 'Why is only Arbitrum supported?',
+      a: (
+        <>
+          We are in a public beta phase. In order to reduce gas costs for our early adopters, we
+          have chosen to launch on Arbitrum L2 initially, and add L1 mainnet once we have
+          battle-tested our contracts. We will keep our community up-to-date on the mainnet launch
+          via Twitter and Discord!
+        </>
+      )
+    },
+    {
       q: 'What is the address verification process?',
       a: (
         <>
@@ -112,6 +123,20 @@ const FaqPage = () => {
           </strong>{' '}
           for their minted ERC-721. The token-holder of each piece of art may freely build upon,
           enhance and reuse the works for any purposes without restriction under copyright law.
+        </>
+      )
+    },
+    {
+      q: 'How do I file an issue?',
+      a: (
+        <>
+          Please visit our{' '}
+          <strong>
+            <Link href="https://github.com/proof-of-residency/proof-of-residency/issues">
+              Github issues page
+            </Link>
+          </strong>{' '}
+          to file any issues or requests for features.
         </>
       )
     }

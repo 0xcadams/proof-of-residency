@@ -1,4 +1,13 @@
-import { Box, Button, Tooltip, useDisclosure, useToast } from '@chakra-ui/react';
+import {
+  Badge,
+  Box,
+  Button,
+  Flex,
+  Tooltip,
+  useBreakpointValue,
+  useDisclosure,
+  useToast
+} from '@chakra-ui/react';
 import haversine, { CoordinateLongitudeLatitude } from 'haversine';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Image from 'next/image';
@@ -53,6 +62,8 @@ const styles: { [key: string]: React.CSSProperties } = {
 const RequestPage = () => {
   const [latLng, setLatLng] = useState<CoordinateLongitudeLatitude | null>(null);
   const [address, setAddress] = useState<VerifyAddressResponse | null>(null);
+
+  const isMobile = useBreakpointValue({ base: true, sm: false }, 'sm');
 
   useAutoConnectWallet(true);
 
@@ -149,11 +160,18 @@ const RequestPage = () => {
       <NextSeo title={`Request | Proof of Residency`} />
 
       <Box cursor="pointer" zIndex={500} position="absolute" left={4} top={4}>
-        <Link href="/" passHref>
-          <Box align="center">
+        <Flex align="center" flexDirection="row">
+          <Link href="/" passHref>
             <Image src={Logo} alt="Proof of residency logo" width={48} height={48} />
-          </Box>
-        </Link>
+          </Link>
+          {!isMobile && (
+            <Tooltip label="We are in a beta launch phase - see our FAQ" shouldWrapChildren>
+              <Badge ml={2} size="lg" pt="2px" borderRadius={5}>
+                Arbitrum Beta
+              </Badge>
+            </Tooltip>
+          )}
+        </Flex>
       </Box>
       <Box zIndex={500} position="absolute" right={4} top={4}>
         <Link href="https://github.com/proof-of-residency" passHref>

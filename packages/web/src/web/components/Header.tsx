@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Spacer, Tooltip, useBreakpointValue } from '@chakra-ui/react';
+import { Badge, Box, Button, Flex, Spacer, Tooltip, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -46,6 +46,14 @@ const Header = () => {
             </Flex>
           </Link>
         </Box>
+
+        {!isMobile && (
+          <Tooltip label="We are in a beta launch phase - see our FAQ" shouldWrapChildren>
+            <Badge ml={2} size="lg" pt="2px" borderRadius={5}>
+              Arbitrum Beta
+            </Badge>
+          </Tooltip>
+        )}
 
         <Spacer />
 

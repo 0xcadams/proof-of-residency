@@ -31,9 +31,8 @@ const IndexPage = () => {
           </Text>
 
           <Text fontSize="lg" mt={8} textAlign="center">
-            A privacy-focused, Sybil-resistant proof of personhood protocol which issues
-            non-transferable NFTs based on physical mailing addresses. We perform a reverse Turing
-            test by sending mail with a secret phrase and use a{' '}
+            A privacy-focused proof of personhood protocol which issues non-transferable NFTs based
+            on mailing addresses. We send mail with a secret phrase and use a{' '}
             <strong>
               <Link
                 aria-label="Commitment scheme wiki"
@@ -43,8 +42,8 @@ const IndexPage = () => {
               </Link>
             </strong>{' '}
             to ensure that the recipient resides at the provided address. Privacy is the first
-            priority - your address is kept private and real names are not requested.
-            Decentralization and community ownership is built into the protocol.
+            priority - addresses are kept private and real names are not requested. Decentralization
+            and community ownership is built into the protocol.
           </Text>
 
           <Text fontSize="md" mt={8} textAlign="center">
