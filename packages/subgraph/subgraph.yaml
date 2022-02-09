@@ -27,7 +27,7 @@ dataSources:
         - Unpaused
       abis:
         - name: ProofOfResidency
-          file: ./abis/ProofOfResidency.json
+          file: ../contracts/artifacts/contracts/ProofOfResidency.sol/ProofOfResidency.json
       eventHandlers:
         - event: Approval(indexed address,indexed address,indexed uint256)
           handler: handleApproval
