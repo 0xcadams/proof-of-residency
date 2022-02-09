@@ -132,7 +132,7 @@ const RequestPage = () => {
       );
 
       // ten kilometers
-      if (process.env.NODE_ENV !== 'development' && distance > 10) {
+      if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' && distance > 10) {
         toast({
           title: 'Error',
           description: `You are ${numeral(distance).format(

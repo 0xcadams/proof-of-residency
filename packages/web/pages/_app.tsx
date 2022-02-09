@@ -11,9 +11,9 @@ import { UseWalletProvider } from 'use-wallet';
 import theme from '../src/web/theme';
 
 const chainId =
-  process.env.VERCEL_ENV === 'production'
+  process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
     ? 42161
-    : process.env.VERCEL_ENV === 'preview'
+    : process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
     ? 421611
     : 1337;
 

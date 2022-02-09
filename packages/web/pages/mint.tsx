@@ -37,8 +37,6 @@ const MintPage = () => {
   const commitmentPeriodIsUpcoming = useGetCommitmentPeriodIsUpcoming();
   const isCommitmentReady = useGetCommitmentPeriodIsValid();
 
-  console.log(statusAndChainUnsupported);
-
   const toast = useToast();
   const router = useRouter();
 
