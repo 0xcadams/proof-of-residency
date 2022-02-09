@@ -43,7 +43,7 @@ const config: HardhatUserConfig = {
       // }
     },
     localhost: {
-      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
+      // accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
     },
     rinkeby: {
       url: `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`,

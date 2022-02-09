@@ -53,7 +53,7 @@ type DetailsProps = CountryIso &
   MetadataResponse & {
     tokenId: string;
     owner: TokenOwner;
-    // imagePng: string;
+    imagePng: string;
   };
 
 export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) => {
@@ -86,7 +86,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
 
       image: `https://generator.proofofresidency.xyz/${tokenId}`,
       // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/${tokenId}.html`,
-      // imagePng: `https://generator.proofofresidency.xyz/token/${tokenId}.png`,
+      imagePng: `https://generator.proofofresidency.xyz/tokens/${tokenId}.png`,
       //  `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/token/${tokenId}.png`,
       tokenId,
       owner
@@ -143,17 +143,16 @@ const TokenDetailsPage = (props: DetailsProps) => {
       <NextSeo
         title={`${props.name} | Proof of Residency`}
         description={props.description}
-        // TODO find a way to generate these image PNGs
-        // openGraph={{
-        //   images: [
-        //     {
-        //       url: props.imagePng,
-        //       width: 1000,
-        //       height: 1000,
-        //       alt: props.name
-        //     }
-        //   ]
-        // }}
+        openGraph={{
+          images: [
+            {
+              url: props.imagePng,
+              width: 1000,
+              height: 1000,
+              alt: props.name
+            }
+          ]
+        }}
       />
       <Header />
       <Flex pt="70px" width="100%" direction="column">

@@ -2,28 +2,33 @@ import { BigNumber, ethers } from 'ethers';
 import { getCountryAndTokenNumber } from 'src/web/token';
 import { AddressComponents, ProofOfResidency__factory as ProofOfResidencyFactory } from 'types';
 
-if (!process.env.PRIVATE_KEY || !process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS) {
+if (
+  !process.env.PRIVATE_KEY ||
+  !process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS ||
+  !process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS
+) {
   throw new Error(
-    'Must define process.env.PRIVATE_KEY and process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS'
+    'Must define process.env.PRIVATE_KEY and process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS and process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS'
   );
 }
 
-const provider = ethers.getDefaultProvider(
-  process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' ||
-    process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
-    ? 'rinkeby'
-    : 'http://localhost:8545',
-  {
-    etherscan: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY,
-    infura: process.env.NEXT_PUBLIC_INFURA_PROJECT_ID,
-    alchemy: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY
-  }
-);
+// {
+//   etherscan: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY,
+//   infura: process.env.NEXT_PUBLIC_INFURA_PROJECT_ID,
+//   alchemy: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY
+// }
+
+const provider = process.env.NEXT_PUBLIC_VERCEL_ENV
+  ? new ethers.providers.InfuraProvider(
+      process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview' ? 'arbitrum-rinkeby' : 'arbitrum',
+      process.env.NEXT_PUBLIC_INFURA_PROJECT_ID
+    )
+  : new ethers.providers.JsonRpcProvider('http://localhost:8545');
 
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
 const proofOfResidency = ProofOfResidencyFactory.connect(
-  process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS,
+  process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS,
   wallet
 );
 
@@ -49,7 +54,7 @@ export const hashAndSignCommitmentEip712 = async (
   );
 
   const domain = await getEip712Domain(
-    process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS ?? '',
+    process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS ?? '',
     await wallet.getChainId()
   );
 
@@ -88,7 +93,7 @@ const mailingAddressTypes = {
 
 export const signAddressEip712 = async (address: AddressComponents) => {
   const domain = await getEip712Domain(
-    process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS ?? '',
+    process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS ?? '',
     await wallet.getChainId()
   );
 
@@ -102,7 +107,7 @@ export const validateMailingAddressSignature = async (
   signature: string
 ): Promise<string> => {
   const domain = await getEip712Domain(
-    process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS ?? '',
+    process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS ?? '',
     await wallet.getChainId()
   );
 
@@ -126,7 +131,7 @@ export const validatePasswordSignature = async (
   signature: string
 ): Promise<string> => {
   const domain = await getEip712Domain(
-    process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS ?? '',
+    process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS ?? '',
     await wallet.getChainId()
   );
 

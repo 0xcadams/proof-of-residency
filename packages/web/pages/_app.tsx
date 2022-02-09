@@ -10,9 +10,12 @@ import { UseWalletProvider } from 'use-wallet';
 
 import theme from '../src/web/theme';
 
-// mainnet, rinkeby, local
 const chainId =
-  process.env.VERCEL_ENV === 'production' ? 4 : process.env.VERCEL_ENV === 'preview' ? 4 : 1337;
+  process.env.VERCEL_ENV === 'production'
+    ? 42161
+    : process.env.VERCEL_ENV === 'preview'
+    ? 421611
+    : 1337;
 
 const App = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();

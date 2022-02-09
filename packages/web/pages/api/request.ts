@@ -38,7 +38,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
       };
 
       const setRedis = async (key: string, value: number) => {
-        await client.set(key, value);
+        await client.set(key, value, { PX: 3 * 1e9 });
       };
 
       if (!process.env.HASHED_ADDRESS_SALT) {
@@ -124,7 +124,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
         return res.status(429).end('Too many requests for this address!');
       }
 
-      await sendLetter(body.addressPayload, keygen.mnemonic, requesterAddress);
+      await sendLetter(
+        body.addressPayload,
+        keygen.mnemonic,
+        ethers.utils.keccak256(
+          ethers.utils.defaultAbiCoder.encode(
+            ['string', 'string'],
+            [requesterAddress, process.env.HASHED_ADDRESS_SALT]
+          )
+        )
+      );
 
       await setRedis(hashedMailingAddress, Date.now());
       await setRedis(body.addressSignature, Date.now());

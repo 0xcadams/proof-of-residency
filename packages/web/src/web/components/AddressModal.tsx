@@ -47,7 +47,14 @@ export const AddressModal = (props: {
       };
       const result = await axiosClient.post<VerifyAddressResponse>('/verify', body);
 
-      if (result.status !== 200) {
+      if (result.status === 429) {
+        toast({
+          title: 'Error',
+          description:
+            'There have been too many requests for this address. Please try again later.',
+          status: 'error'
+        });
+      } else if (result.status !== 200) {
         toast({
           title: 'Error',
           description: 'There was a problem with the request, please try again.',

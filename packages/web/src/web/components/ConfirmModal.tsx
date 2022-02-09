@@ -123,6 +123,13 @@ export const ConfirmModal = (props: {
           await router.push('/');
 
           return props.onClose(true);
+        } else if (result.status === 429) {
+          toast({
+            title: 'Error',
+            description:
+              'There have been too many requests for this address. Please try again later.',
+            status: 'error'
+          });
         } else if (result.status === 400) {
           toast({
             title: 'Error',

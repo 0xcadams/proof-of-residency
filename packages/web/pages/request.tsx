@@ -13,7 +13,11 @@ import Logo from '../public/logo.svg';
 import { AddressModal } from 'src/web/components/AddressModal';
 import { ConfirmModal } from 'src/web/components/ConfirmModal';
 import { InfoModal } from 'src/web/components/InfoModal';
-import { useGetCommitmentPeriodIsUpcoming, useProviderExists } from 'src/web/hooks';
+import {
+  useAutoConnectWallet,
+  useGetCommitmentPeriodIsUpcoming,
+  useStatusAndChainUnsupported
+} from 'src/web/hooks';
 import { NextSeo } from 'next-seo';
 import numeral from 'numeral';
 
@@ -50,8 +54,10 @@ const RequestPage = () => {
   const [latLng, setLatLng] = useState<CoordinateLongitudeLatitude | null>(null);
   const [address, setAddress] = useState<VerifyAddressResponse | null>(null);
 
+  useAutoConnectWallet(true);
+
   const commitmentPeriodIsUpcoming = useGetCommitmentPeriodIsUpcoming();
-  const providerExists = useProviderExists();
+  const statusAndChainUnsupported = useStatusAndChainUnsupported();
 
   const {
     isOpen: isOpenAddressModal,
@@ -163,8 +169,12 @@ const RequestPage = () => {
         </Button>
         <Tooltip
           label={
-            !providerExists
-              ? 'You must install Metamask to use this app'
+            statusAndChainUnsupported.chainUnsupported
+              ? 'Connect to Arbitrum to use this app'
+              : statusAndChainUnsupported.noProvider
+              ? 'Install Metamask to use this app'
+              : statusAndChainUnsupported.connectionRejected
+              ? 'Connect your wallet to use this app'
               : !latLng
               ? 'You must enable geolocation'
               : commitmentPeriodIsUpcoming
@@ -176,7 +186,14 @@ const RequestPage = () => {
           <Button
             size="lg"
             onClick={address ? onOpenConfirmModal : onOpenAddressModal}
-            disabled={!providerExists || !latLng || Boolean(commitmentPeriodIsUpcoming)}
+            disabled={
+              statusAndChainUnsupported.status !== 'connected' ||
+              statusAndChainUnsupported.noProvider ||
+              statusAndChainUnsupported.connectionRejected ||
+              statusAndChainUnsupported.noProvider ||
+              !latLng ||
+              Boolean(commitmentPeriodIsUpcoming)
+            }
           >
             {address ? 'Confirm Address' : 'Claim Address'}
           </Button>
@@ -198,7 +215,11 @@ const RequestPage = () => {
         )}
         {address?.longitude && address?.latitude ? (
           <Marker
-            onClick={!commitmentPeriodIsUpcoming && providerExists ? onOpenConfirmModal : () => {}}
+            onClick={
+              !commitmentPeriodIsUpcoming && !statusAndChainUnsupported.noProvider
+                ? onOpenConfirmModal
+                : () => {}
+            }
             style={styles.markerAddress}
             coordinates={[address.longitude, address.latitude]}
           />

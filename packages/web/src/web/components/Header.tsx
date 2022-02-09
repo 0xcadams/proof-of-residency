@@ -1,25 +1,40 @@
-import { Badge, Box, Button, Flex, Spacer, Tooltip, useBreakpointValue } from '@chakra-ui/react';
+import { Box, Button, Flex, Spacer, Tooltip, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React from 'react';
 import { FiGithub } from 'react-icons/fi';
 
 import Logo from '../../../public/logo.svg';
 import {
+  useAutoConnectWallet,
+  useGetCommitmentPeriodIsUpcoming,
   useGetCommitmentPeriodIsValid,
   useHasTokenId,
-  useNetworkName,
-  useProviderExists
+  useStatusAndChainUnsupported
 } from '../hooks';
 
 const Header = () => {
   const isMobile = useBreakpointValue({ base: true, sm: false }, 'sm');
   const buttonSize = isMobile ? 'md' : 'lg';
 
-  const network = useNetworkName();
-  const providerExists = useProviderExists();
+  const router = useRouter();
+
+  const statusAndChainUnsupported = useStatusAndChainUnsupported();
   const commitmentPeriodIsValid = useGetCommitmentPeriodIsValid();
+  const commitmentPeriodIsUpcoming = useGetCommitmentPeriodIsUpcoming();
   const hasTokenId = useHasTokenId();
+
+  const walletAutoConnect = useAutoConnectWallet(false);
+
+  const verbiage =
+    statusAndChainUnsupported.status !== 'connected' || statusAndChainUnsupported.connectionRejected
+      ? 'connect'
+      : hasTokenId
+      ? 'token'
+      : commitmentPeriodIsValid || commitmentPeriodIsUpcoming
+      ? 'mint'
+      : 'request';
 
   return (
     <Flex height="70px" position="absolute" left={0} top={0} right={0} px={4} shadow="sm">
@@ -31,38 +46,32 @@ const Header = () => {
             </Flex>
           </Link>
         </Box>
-        {process.env.NODE_ENV === 'development' && (
-          <Badge fontSize="md" ml={3}>
-            {network ? network : 'Unknown'}
-          </Badge>
-        )}
 
         <Spacer />
 
         <Tooltip
           label={
-            'Coming soon!'
-            // !providerExists
-            //   ? 'You must install Metamask to use this app.'
-            //   : process.env.NODE_ENV !== 'development'
-            //   ? 'Coming soon!'
-            //   : undefined
+            !statusAndChainUnsupported.noProvider ? undefined : 'Install Metamask to use this app'
           }
           shouldWrapChildren
         >
-          <Link
-            href={
-              commitmentPeriodIsValid ? '/mint' : hasTokenId ? `/token/${hasTokenId}` : '/request'
-            }
-            passHref
+          <Button
+            onClick={async () => {
+              if (verbiage === 'connect') {
+                await walletAutoConnect();
+              } else if (verbiage === 'mint') {
+                await router.push('/mint');
+              } else if (verbiage === 'token') {
+                await router.push(`/token/${hasTokenId}`);
+              } else if (verbiage === 'request') {
+                await router.push(`/request`);
+              }
+            }}
+            disabled={statusAndChainUnsupported.noProvider}
+            size={buttonSize}
           >
-            <Button
-              disabled={process.env.NODE_ENV !== 'development' || !providerExists}
-              size={buttonSize}
-            >
-              {hasTokenId ? 'proof' : 'mint'}
-            </Button>
-          </Link>
+            {verbiage}
+          </Button>
         </Tooltip>
         <Link href="/explore" passHref>
           <Button ml={3} variant="outline" size={buttonSize}>

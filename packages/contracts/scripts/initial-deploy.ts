@@ -19,15 +19,13 @@ async function main() {
     `Transaction to deploy the Contract: ${proofOfResidencyOwner.deployTransaction.hash}. Waiting to be mined...`
   );
 
-  await proofOfResidencyOwner.deployed();
+  const deployment = await proofOfResidencyOwner.deployed();
 
   console.log(`--- Deployed to the address: ${proofOfResidencyOwner.address}`);
 
-  const signer = await ethers.getDefaultProvider();
+  const chainId = await deployment.signer.getChainId();
 
-  const network = await signer.getNetwork();
-
-  if (network.chainId !== 1337) {
+  if (chainId !== 1337) {
     console.log(`Waiting for x seconds before verifying contract with Etherscan...`);
 
     await new Promise((r) => setTimeout(r, 90000));

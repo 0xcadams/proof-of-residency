@@ -1,9 +1,9 @@
 import { useToast } from '@chakra-ui/react';
 import { BigNumber, ethers } from 'ethers';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ProofOfResidency, ProofOfResidency__factory as ProofOfResidencyFactory } from 'types';
 
-import { useWallet, ChainUnsupportedError } from 'use-wallet';
+import { ChainUnsupportedError, ConnectionRejectedError, useWallet } from 'use-wallet';
 
 const useProofOfResidency = () => {
   const [proofOfResidency, setProofOfResidency] = useState<{
@@ -18,42 +18,17 @@ const useProofOfResidency = () => {
 
   const wallet = useWallet();
 
-  const toast = useToast();
-
-  useEffect(() => {
-    if (
-      wallet.error instanceof ChainUnsupportedError &&
-      !toast.isActive('network-toast') &&
-      process.env.NODE_ENV === 'development'
-    ) {
-      toast({
-        id: 'network-toast',
-        title: 'Error',
-        description: `You must switch your network to use this app.`,
-        status: 'error'
-      });
-    }
-  }, [wallet.error]);
-
-  useEffect(() => {
-    (async () => {
-      if (wallet.status !== 'connected') {
-        await wallet.connect('injected');
-      }
-    })();
-  }, []);
-
   useEffect(() => {
     if (
       wallet.status === 'connected' &&
       wallet.ethereum &&
-      process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS
+      process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS
     ) {
       const provider = new ethers.providers.Web3Provider(wallet.ethereum);
       const signer = provider.getSigner();
 
       const proofOfResidency = ProofOfResidencyFactory.connect(
-        process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS,
+        process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS,
         signer
       );
 
@@ -64,16 +39,86 @@ const useProofOfResidency = () => {
   return proofOfResidency;
 };
 
+export const useAutoConnectWallet = (autoConnect: boolean) => {
+  const wallet = useWallet();
+
+  const callback = useCallback(async () => {
+    if (wallet.status !== 'connected') {
+      await wallet.connect('injected');
+    }
+  }, [wallet]);
+
+  useEffect(() => {
+    if (autoConnect) {
+      callback();
+    }
+  }, []);
+
+  return callback;
+};
+
+export const useStatusAndChainUnsupported = () => {
+  const wallet = useWallet();
+
+  const toast = useToast();
+
+  const connectionRejected = useMemo(
+    () => wallet.error instanceof ConnectionRejectedError,
+    [wallet.error]
+  );
+
+  const noProvider = useMemo(
+    () => wallet.error?.name === 'NoEthereumProviderError',
+    [wallet.error]
+  );
+
+  const chainUnsupported = useMemo(
+    () => wallet.error instanceof ChainUnsupportedError,
+    [wallet.error]
+  );
+
+  useEffect(() => {
+    if (connectionRejected) {
+      toast({
+        title: 'Error',
+        description: 'You must connect your wallet to use this app.',
+        status: 'error'
+      });
+    }
+  }, [connectionRejected]);
+
+  useEffect(() => {
+    if (noProvider) {
+      toast({
+        title: 'Error',
+        description: 'You must install Metamask to use this app.',
+        status: 'error'
+      });
+    }
+  }, [noProvider]);
+
+  useEffect(() => {
+    if (chainUnsupported) {
+      toast({
+        title: 'Error',
+        description: 'Please switch your wallet network to Arbitrum and try again.',
+        status: 'error'
+      });
+    }
+  }, [chainUnsupported]);
+
+  return {
+    status: wallet.status,
+    connectionRejected,
+    noProvider,
+    chainUnsupported
+  };
+};
+
 export const useNetworkName = () => {
   const wallet = useWallet();
 
   return wallet.networkName;
-};
-
-export const useProviderExists = () => {
-  const { signer } = useProofOfResidency();
-
-  return Boolean(signer);
 };
 
 export const useGetCommitmentPeriodIsValid = () => {
@@ -117,9 +162,13 @@ export const useHasTokenId = () => {
   useEffect(() => {
     (async () => {
       if (walletAddress && proofOfResidency) {
-        const response = await proofOfResidency?.tokenOfOwnerByIndex(walletAddress, 0);
+        try {
+          const response = await proofOfResidency?.tokenOfOwnerByIndex(walletAddress, 0);
 
-        setValue(response.toString());
+          setValue(response.toString());
+        } catch (e) {
+          // fail silently
+        }
       }
     })();
   }, [walletAddress, proofOfResidency]);
@@ -217,7 +266,7 @@ export const useSignPasswordEip712 = () => {
 
       if (chainId && signer) {
         const domain = await getEip712Domain(
-          process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS ?? '',
+          process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS ?? '',
           chainId
         );
 
