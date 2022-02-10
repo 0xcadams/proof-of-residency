@@ -35,6 +35,8 @@ export function handleCommitmentCreated(event: CommitmentCreated): void {
     requester = addRequester(event.params.to.toHex());
   }
 
+  requester.numCommitments = requester.numCommitments.plus(BigInt.fromU64(1));
+
   let contribution = Contribution.load(event.transaction.hash.toHex());
 
   if (!contribution) {
