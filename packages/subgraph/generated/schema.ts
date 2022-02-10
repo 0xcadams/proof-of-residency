@@ -11,31 +11,33 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
-export class ExampleEntity extends Entity {
+export class Commitment extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("count", Value.fromBigInt(BigInt.zero()));
-    this.set("owner", Value.fromBytes(Bytes.empty()));
-    this.set("approved", Value.fromBytes(Bytes.empty()));
+    this.set("committer", Value.fromString(""));
+    this.set("requester", Value.fromString(""));
+    this.set("commitment", Value.fromBytes(Bytes.empty()));
+    this.set("validAt", Value.fromBigInt(BigInt.zero()));
+    this.set("contribution", Value.fromString(""));
   }
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save ExampleEntity entity without an ID");
+    assert(id != null, "Cannot save Commitment entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        "Cannot save ExampleEntity entity with non-string ID. " +
+        "Cannot save Commitment entity with non-string ID. " +
           'Considering using .toHex() to convert the "id" to a string.'
       );
-      store.set("ExampleEntity", id.toString(), this);
+      store.set("Commitment", id.toString(), this);
     }
   }
 
-  static load(id: string): ExampleEntity | null {
-    return changetype<ExampleEntity | null>(store.get("ExampleEntity", id));
+  static load(id: string): Commitment | null {
+    return changetype<Commitment | null>(store.get("Commitment", id));
   }
 
   get id(): string {
@@ -47,30 +49,334 @@ export class ExampleEntity extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get count(): BigInt {
-    let value = this.get("count");
+  get committer(): string {
+    let value = this.get("committer");
+    return value!.toString();
+  }
+
+  set committer(value: string) {
+    this.set("committer", Value.fromString(value));
+  }
+
+  get requester(): string {
+    let value = this.get("requester");
+    return value!.toString();
+  }
+
+  set requester(value: string) {
+    this.set("requester", Value.fromString(value));
+  }
+
+  get commitment(): Bytes {
+    let value = this.get("commitment");
+    return value!.toBytes();
+  }
+
+  set commitment(value: Bytes) {
+    this.set("commitment", Value.fromBytes(value));
+  }
+
+  get validAt(): BigInt {
+    let value = this.get("validAt");
     return value!.toBigInt();
   }
 
-  set count(value: BigInt) {
-    this.set("count", Value.fromBigInt(value));
+  set validAt(value: BigInt) {
+    this.set("validAt", Value.fromBigInt(value));
   }
 
-  get owner(): Bytes {
+  get contribution(): string {
+    let value = this.get("contribution");
+    return value!.toString();
+  }
+
+  set contribution(value: string) {
+    this.set("contribution", Value.fromString(value));
+  }
+}
+
+export class Committer extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("numCommitments", Value.fromBigInt(BigInt.zero()));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Committer entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save Committer entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("Committer", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Committer | null {
+    return changetype<Committer | null>(store.get("Committer", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get numCommitments(): BigInt {
+    let value = this.get("numCommitments");
+    return value!.toBigInt();
+  }
+
+  set numCommitments(value: BigInt) {
+    this.set("numCommitments", Value.fromBigInt(value));
+  }
+
+  get commitments(): Array<string> {
+    let value = this.get("commitments");
+    return value!.toStringArray();
+  }
+
+  set commitments(value: Array<string>) {
+    this.set("commitments", Value.fromStringArray(value));
+  }
+}
+
+export class Contribution extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("value", Value.fromBigInt(BigInt.zero()));
+    this.set("lockedUntil", Value.fromBigInt(BigInt.zero()));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Contribution entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save Contribution entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("Contribution", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Contribution | null {
+    return changetype<Contribution | null>(store.get("Contribution", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get value(): BigInt {
+    let value = this.get("value");
+    return value!.toBigInt();
+  }
+
+  set value(value: BigInt) {
+    this.set("value", Value.fromBigInt(value));
+  }
+
+  get lockedUntil(): BigInt {
+    let value = this.get("lockedUntil");
+    return value!.toBigInt();
+  }
+
+  set lockedUntil(value: BigInt) {
+    this.set("lockedUntil", Value.fromBigInt(value));
+  }
+}
+
+export class Requester extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("numTokens", Value.fromBigInt(BigInt.zero()));
+    this.set("numTokenChallenges", Value.fromBigInt(BigInt.zero()));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Requester entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save Requester entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("Requester", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Requester | null {
+    return changetype<Requester | null>(store.get("Requester", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get commitments(): Array<string> {
+    let value = this.get("commitments");
+    return value!.toStringArray();
+  }
+
+  set commitments(value: Array<string>) {
+    this.set("commitments", Value.fromStringArray(value));
+  }
+
+  get tokens(): Array<string> {
+    let value = this.get("tokens");
+    return value!.toStringArray();
+  }
+
+  set tokens(value: Array<string>) {
+    this.set("tokens", Value.fromStringArray(value));
+  }
+
+  get numTokens(): BigInt {
+    let value = this.get("numTokens");
+    return value!.toBigInt();
+  }
+
+  set numTokens(value: BigInt) {
+    this.set("numTokens", Value.fromBigInt(value));
+  }
+
+  get tokenChallenge(): Array<string> {
+    let value = this.get("tokenChallenge");
+    return value!.toStringArray();
+  }
+
+  set tokenChallenge(value: Array<string>) {
+    this.set("tokenChallenge", Value.fromStringArray(value));
+  }
+
+  get numTokenChallenges(): BigInt {
+    let value = this.get("numTokenChallenges");
+    return value!.toBigInt();
+  }
+
+  set numTokenChallenges(value: BigInt) {
+    this.set("numTokenChallenges", Value.fromBigInt(value));
+  }
+}
+
+export class TokenChallenge extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("owner", Value.fromString(""));
+    this.set("tokenId", Value.fromBigInt(BigInt.zero()));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save TokenChallenge entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save TokenChallenge entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("TokenChallenge", id.toString(), this);
+    }
+  }
+
+  static load(id: string): TokenChallenge | null {
+    return changetype<TokenChallenge | null>(store.get("TokenChallenge", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get owner(): string {
     let value = this.get("owner");
-    return value!.toBytes();
+    return value!.toString();
   }
 
-  set owner(value: Bytes) {
-    this.set("owner", Value.fromBytes(value));
+  set owner(value: string) {
+    this.set("owner", Value.fromString(value));
   }
 
-  get approved(): Bytes {
-    let value = this.get("approved");
-    return value!.toBytes();
+  get tokenId(): BigInt {
+    let value = this.get("tokenId");
+    return value!.toBigInt();
   }
 
-  set approved(value: Bytes) {
-    this.set("approved", Value.fromBytes(value));
+  set tokenId(value: BigInt) {
+    this.set("tokenId", Value.fromBigInt(value));
+  }
+}
+
+export class Token extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("owner", Value.fromString(""));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Token entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        "Cannot save Token entity with non-string ID. " +
+          'Considering using .toHex() to convert the "id" to a string.'
+      );
+      store.set("Token", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Token | null {
+    return changetype<Token | null>(store.get("Token", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get owner(): string {
+    let value = this.get("owner");
+    return value!.toString();
+  }
+
+  set owner(value: string) {
+    this.set("owner", Value.fromString(value));
   }
 }

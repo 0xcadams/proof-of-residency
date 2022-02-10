@@ -87,7 +87,7 @@ The API for the Proof of Residency ERC-721 is documented extensively in the [con
 
 ## Contributing
 
-Clone this repository, then install the dependencies with `yarn install`. The smart contract code is under `packages/contracts` and the web code is under `packages/web`. This repository does not contain the code behind the artwork for each ERC-721.
+Clone this repository, then install the dependencies with `yarn install`. The smart contract code is under [packages/contracts](packages/contracts), NextJS code is under [packages/web](packages/web), and the subgraph is at [packages/subgraph](packages/subgraph). This repository does not contain the code behind the artwork for each ERC-721.
 
 ## License
 

@@ -1,6 +1,42 @@
-type ExampleEntity @entity {
+type Commitment @entity {
   id: ID!
-  count: BigInt!
-  owner: Bytes! # address
-  approved: Bytes! # address
+  committer: Committer!
+  requester: Requester!
+  commitment: Bytes!
+  validAt: BigInt!
+  contribution: Contribution!
+}
+
+type Committer @entity {
+  id: ID!
+  numCommitments: BigInt!
+  commitments: [Commitment!]! @derivedFrom(field: "committer")
+}
+
+type Contribution @entity {
+  id: ID!
+  value: BigInt!
+  lockedUntil: BigInt!
+}
+
+type Requester @entity {
+  id: ID!
+  commitments: [Commitment!]! @derivedFrom(field: "requester")
+
+  tokens: [Token!]! @derivedFrom(field: "owner")
+  numTokens: BigInt!
+
+  tokenChallenge: [TokenChallenge!]! @derivedFrom(field: "owner")
+  numTokenChallenges: BigInt!
+}
+
+type TokenChallenge @entity {
+  id: ID!
+  owner: Requester!
+  tokenId: BigInt!
+}
+
+type Token @entity {
+  id: ID!
+  owner: Requester!
 }
