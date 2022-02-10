@@ -1,84 +1,24 @@
-import { BigInt } from '@graphprotocol/graph-ts';
+import { store, Address, BigInt } from '@graphprotocol/graph-ts';
 import {
   CommitmentCreated,
   CommitterAdded,
   CommitterRemoved,
-  OwnershipTransferred,
-  Paused,
-  PriceChanged,
+  ProofOfResidency,
   TokenChallengeCompleted,
   TokenChallenged,
-  Transfer,
-  Unpaused
+  Transfer
 } from '../generated/ProofOfResidency/ProofOfResidency';
-import { Commitment, Committer, Contribution } from '../generated/schema';
+import {
+  Commitment,
+  Committer,
+  Contribution,
+  Requester,
+  Token,
+  TokenChallenge
+} from '../generated/schema';
 
-// export function handleApproval(event: Approval): void {
-//   // Entities can be loaded from the store using a string ID; this ID
-//   // needs to be unique across all entities of the same type
-//   let entity = ExampleEntity.load(event.transaction.from.toHex());
-
-//   // Entities only exist after they have been saved to the store;
-//   // `null` checks allow to create entities on demand
-//   if (!entity) {
-//     entity = new ExampleEntity(event.transaction.from.toHex());
-
-//     // Entity fields can be set using simple assignments
-//     entity.count = BigInt.fromI32(0);
-//   }
-
-//   // BigInt and BigDecimal math are supported
-//   entity.count = entity.count.plus(BigInt.fromI32(1));
-
-//   // Entity fields can be set based on event parameters
-//   entity.owner = event.params.owner;
-//   entity.approved = event.params.approved;
-
-//   // Entities can be written to the store with `.save()`
-//   entity.save();
-
-//   // Note: If a handler doesn't require existing field values, it is faster
-//   // _not_ to load the entity from the store. Instead, create it fresh with
-//   // `new Entity(...)`, set the fields that should be updated and save the
-//   // entity back to the store. Fields that were not set or unset remain
-//   // unchanged, allowing for partial updates to be applied.
-
-//   // It is also possible to access smart contracts from mappings. For
-//   // example, the contract that has emitted the event can be connected to
-//   // with:
-//   //
-//   // let contract = Contract.bind(event.address)
-//   //
-//   // The following functions can then be called on this contract to access
-//   // state variables and other data:
-//   //
-//   // - contract.balanceOf(...)
-//   // - contract.commitmentPeriodIsUpcoming(...)
-//   // - contract.commitmentPeriodIsValid(...)
-//   // - contract.commitments(...)
-//   // - contract.committerContributions(...)
-//   // - contract.contractURI(...)
-//   // - contract.countryTokenCounts(...)
-//   // - contract.getApproved(...)
-//   // - contract.isApprovedForAll(...)
-//   // - contract.mint(...)
-//   // - contract.name(...)
-//   // - contract.nonces(...)
-//   // - contract.owner(...)
-//   // - contract.ownerOf(...)
-//   // - contract.paused(...)
-//   // - contract.projectTreasury(...)
-//   // - contract.reservePrice(...)
-//   // - contract.respondToChallenge(...)
-//   // - contract.supportsInterface(...)
-//   // - contract.symbol(...)
-//   // - contract.tokenByIndex(...)
-//   // - contract.tokenChallengeExists(...)
-//   // - contract.tokenChallengeExpired(...)
-//   // - contract.tokenOfOwnerByIndex(...)
-//   // - contract.tokenURI(...)
-//   // - contract.totalSupply(...)
-// }
+const ONE = BigInt.fromU32(1);
+const ZERO = BigInt.zero();
 
 // export function handleApprovalForAll(event: ApprovalForAll): void {}
 
@@ -86,18 +26,23 @@ export function handleCommitmentCreated(event: CommitmentCreated): void {
   let committer = Committer.load(event.params.committer.toHex());
 
   if (!committer) {
-    committer = new Committer(event.params.committer.toHex());
-    committer.numCommitments = BigInt.fromI32(0);
+    committer = addCommitter(event.params.committer.toHex());
+  }
+
+  let requester = Requester.load(event.params.to.toHex());
+
+  if (!requester) {
+    requester = addRequester(event.params.to.toHex());
   }
 
   let contribution = Contribution.load(event.transaction.hash.toHex());
 
   if (!contribution) {
     contribution = new Contribution(event.transaction.hash.toHex());
-    // contribution.lockedUntil = event.params.
+    contribution.value = event.transaction.value;
   }
 
-  committer.numCommitments = committer.numCommitments.plus(BigInt.fromI32(1));
+  committer.numCommitments = committer.numCommitments.plus(BigInt.fromU64(1));
 
   let commitment = Commitment.load(event.params.commitment.toHex());
 
@@ -105,27 +50,186 @@ export function handleCommitmentCreated(event: CommitmentCreated): void {
     commitment = new Commitment(event.params.commitment.toHex());
   }
 
-  // commitment.committer = event.params.committer.toHex();
+  requester.save();
+  committer.save();
+  contribution.save();
 
+  commitment.requester = requester.id;
   commitment.committer = committer.id;
+  commitment.contribution = contribution.id;
 
   commitment.save();
 }
 
-export function handleCommitterAdded(event: CommitterAdded): void {}
+export function handleCommitterAdded(event: CommitterAdded): void {
+  let committer = Committer.load(event.params.committer.toHex());
 
-export function handleCommitterRemoved(event: CommitterRemoved): void {}
+  if (!committer) {
+    committer = addCommitter(event.params.committer.toHex());
+  }
 
-export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
+  committer.save();
+}
 
-export function handlePaused(event: Paused): void {}
+export function handleCommitterRemoved(event: CommitterRemoved): void {
+  let committer = Committer.load(event.params.committer.toHex());
 
-export function handlePriceChanged(event: PriceChanged): void {}
+  if (!committer) {
+    committer = addCommitter(event.params.committer.toHex());
+  }
 
-export function handleTokenChallengeCompleted(event: TokenChallengeCompleted): void {}
+  committer.isActive = false;
+  committer.removedAt = event.block.timestamp;
 
-export function handleTokenChallenged(event: TokenChallenged): void {}
+  committer.save();
+}
 
-export function handleTransfer(event: Transfer): void {}
+// export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
 
-export function handleUnpaused(event: Unpaused): void {}
+// export function handlePaused(event: Paused): void {}
+
+// export function handlePriceChanged(event: PriceChanged): void {}
+
+export function handleTokenChallengeCompleted(event: TokenChallengeCompleted): void {
+  let requester = Requester.load(event.params.owner.toHex());
+
+  if (!requester) {
+    requester = addRequester(event.params.owner.toHex());
+  }
+
+  requester.numTokenChallenges = requester.numTokenChallenges.minus(ONE);
+
+  store.remove('TokenChallenge', event.params.tokenId.toHex());
+
+  requester.save();
+}
+
+export function handleTokenChallenged(event: TokenChallenged): void {
+  let requester = Requester.load(event.params.owner.toHex());
+
+  if (!requester) {
+    requester = addRequester(event.params.owner.toHex());
+  }
+
+  requester.numTokenChallenges = requester.numTokenChallenges.plus(ONE);
+
+  let token = Token.load(event.params.tokenId.toHex());
+
+  if (!token) {
+    token = addToken(event.params.tokenId.toHex());
+  }
+
+  let tokenChallenge = TokenChallenge.load(event.params.tokenId.toHex());
+
+  if (!tokenChallenge) {
+    tokenChallenge = addTokenChallenge(event.params.tokenId.toHex());
+    tokenChallenge.owner = requester.id;
+    tokenChallenge.token = token.id;
+  }
+
+  requester.save();
+  token.save();
+
+  tokenChallenge.save();
+}
+
+export function handleTransfer(event: Transfer): void {
+  // burned
+  if (event.params.to.equals(Address.zero())) {
+    let requester = Requester.load(event.params.from.toHex());
+
+    if (!requester) {
+      requester = addRequester(event.params.from.toHex());
+    }
+
+    requester.numTokens.minus(ONE);
+
+    if (TokenChallenge.load(event.params.tokenId.toHex())) {
+      store.remove('TokenChallenge', event.params.tokenId.toHex());
+    }
+
+    store.remove('Token', event.params.tokenId.toHex());
+
+    requester.save();
+  }
+  // minted
+  else if (event.params.from.equals(Address.zero())) {
+    let requester = Requester.load(event.params.to.toHex());
+
+    if (!requester) {
+      requester = addRequester(event.params.to.toHex());
+    }
+
+    let token = Token.load(event.params.tokenId.toHex());
+
+    let contract = ProofOfResidency.bind(event.address);
+
+    if (!token) {
+      token = addToken(event.params.tokenId.toHex());
+      token.mintTime = event.block.timestamp;
+      let metadataURI = contract.try_tokenURI(event.params.tokenId);
+      if (!metadataURI.reverted) {
+        token.tokenURI = normalize(metadataURI.value);
+      } else {
+        token.tokenURI = '';
+      }
+    }
+
+    requester.numTokens.plus(ONE);
+    requester.save();
+
+    token.owner = requester.id;
+    token.save();
+  }
+}
+
+// export function handleUnpaused(event: Unpaused): void {}
+
+function addCommitter(id: string): Committer {
+  const committer = new Committer(id);
+  committer.numCommitments = ZERO;
+  committer.isActive = true;
+  committer.removedAt = ZERO;
+
+  return committer;
+}
+
+function addRequester(id: string): Requester {
+  const requester = new Requester(id);
+  requester.numCommitments = ZERO;
+  requester.numTokens = ZERO;
+  requester.numTokenChallenges = ZERO;
+
+  return requester;
+}
+
+function addToken(id: string): Token {
+  const token = new Token(id);
+
+  return token;
+}
+
+function addTokenChallenge(id: string): TokenChallenge {
+  const tokenChallenge = new TokenChallenge(id);
+
+  return tokenChallenge;
+}
+
+// from https://github.com/wighawag/eip721-subgraph/blob/master/src/mapping.ts
+function normalize(strValue: string): string {
+  if (strValue.length === 1 && strValue.charCodeAt(0) === 0) {
+    return '';
+  }
+  for (let i = 0; i < strValue.length; i++) {
+    if (strValue.charCodeAt(i) === 0) {
+      strValue = setCharAt(strValue, i, '\ufffd'); // graph-node db does not support string with '\u0000'
+    }
+  }
+  return strValue;
+}
+
+// from https://github.com/wighawag/eip721-subgraph/blob/master/src/mapping.ts
+function setCharAt(str: string, index: number, char: string): string {
+  if (index > str.length - 1) return str;
+  return str.substr(0, index) + char + str.substr(index + 1);
+}
