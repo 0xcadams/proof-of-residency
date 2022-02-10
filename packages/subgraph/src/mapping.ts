@@ -229,7 +229,7 @@ function normalize(strValue: string): string {
 }
 
 // from https://github.com/wighawag/eip721-subgraph/blob/master/src/mapping.ts
-function setCharAt(str: string, index: number, char: string): string {
+function setCharAt(str: string, index: i32, char: string): string {
   if (index > str.length - 1) return str;
   return str.substr(0, index) + char + str.substr(index + 1);
 }
