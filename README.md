@@ -21,6 +21,8 @@ Proof of Residency is a Sybil-resistant Proof of Personhood protocol which issue
 
 This stack uses [Hardhat](https://hardhat.org) to orchestrate tasks and [Ethers](https://docs.ethers.io/v5/) for all Ethereum interactions and testing. There are also shared types between the tests and smart contract layer using [Typechain](https://github.com/dethcrypto/TypeChain).
 
+The Proof of Residency subgraph (using The Graph) can be found on their [hosted service](https://thegraph.com/hosted-service/subgraph/proof-of-residency/proof-of-residency).
+
 Please see the [website](https://proofofresidency.xyz) for more information!
 
 ## DAO Integration with Proof of Residency
