@@ -1,0 +1,7 @@
+fragment CommitmentFields on Commitment {
+  id
+  contribution {
+    id
+    value
+  }
+}

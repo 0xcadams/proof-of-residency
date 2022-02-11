@@ -7,3 +7,4 @@ coverage*
 .DS_STORE
 .openzeppelin
 lerna-debug.log
+packages/subgraph/data/

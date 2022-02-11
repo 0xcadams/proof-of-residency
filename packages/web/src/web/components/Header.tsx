@@ -94,7 +94,12 @@ const Header = () => {
 
         {!isMobile && (
           <Link href="https://github.com/proof-of-residency" passHref>
-            <Button ml={3} variant="outline" size={buttonSize}>
+            <Button
+              aria-label="Check out the github code"
+              ml={3}
+              variant="outline"
+              size={buttonSize}
+            >
               <FiGithub size={25} />
             </Button>
           </Link>

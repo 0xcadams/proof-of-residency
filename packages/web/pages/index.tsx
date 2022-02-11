@@ -2,12 +2,18 @@ import { Flex, Text, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import { useGetCommittersQuery, useGetRequesterByIdQuery } from 'src/graphql/generated';
 import Header from 'src/web/components/Header';
+import { useWalletAddress } from 'src/web/hooks';
 import LandingImage from '../public/russia.png';
 import Footer from '../src/web/components/Footer';
 
 const IndexPage = () => {
   const frameHeight = useBreakpointValue({ base: 300, md: 500 }, 'md');
+
+  const walletAddress = useWalletAddress();
+  const committers = useGetRequesterByIdQuery({ variables: { id: walletAddress ?? '' } });
+  const committers2 = useGetCommittersQuery();
 
   return (
     <>
@@ -43,7 +49,7 @@ const IndexPage = () => {
             </strong>{' '}
             to ensure that the recipient resides at the provided address. Privacy is the first
             priority - addresses are kept private and real names are not requested. Decentralization
-            and community ownership is built into the protocol.
+            and community ownership are built into the protocol.
           </Text>
 
           <Text fontSize="md" mt={8} textAlign="center">

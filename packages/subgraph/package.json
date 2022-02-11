@@ -9,15 +9,21 @@
     "url": "git@github.com:proof-of-residency/proof-of-residency.git"
   },
   "scripts": {
-    "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ proof-of-residency",
-    "create-local": "graph create --node http://localhost:8020/ proof-of-residency",
-    "remove-local": "graph remove --node http://localhost:8020/ proof-of-residency",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 proof-of-residency"
+    "codegen": "graph codegen",
+    "run": "docker-compose up",
+    "deploy:arbitrum-one": "yarn prepare:arbitrum-one && graph deploy --product hosted-service proof-of-residency/proof-of-residency",
+    "create:local": "yarn prepare:local && graph create --node http://localhost:8020/ proof-of-residency/proof-of-residency",
+    "remove:local": "graph remove --node http://localhost:8020/ proof-of-residency/proof-of-residency",
+    "deploy:local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 proof-of-residency/proof-of-residency",
+    "prepare:local": "mustache config/local.json subgraph.mustache > subgraph.yaml",
+    "prepare:arbitrum-one": "mustache config/arbitrum-one.json subgraph.mustache > subgraph.yaml"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.26.0",
     "@graphprotocol/graph-ts": "0.24.1"
+  },
+  "devDependencies": {
+    "mustache": "^4.2.0"
   }
 }

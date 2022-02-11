@@ -1,0 +1,11 @@
+query GetCommitters($first: Int) {
+  committers(first: $first) {
+    id
+    isActive
+    removedAt
+    numCommitments
+    commitments {
+      ...CommitmentFields
+    }
+  }
+}
