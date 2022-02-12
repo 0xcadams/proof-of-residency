@@ -17,7 +17,6 @@ import {
   TokenChallenge
 } from '../generated/schema';
 
-const ONE = BigInt.fromU32(1);
 const ZERO = BigInt.zero();
 
 // export function handleApprovalForAll(event: ApprovalForAll): void {}
@@ -35,16 +34,12 @@ export function handleCommitmentCreated(event: CommitmentCreated): void {
     requester = addRequester(event.params.to.toHex());
   }
 
-  requester.numCommitments = requester.numCommitments.plus(BigInt.fromU64(1));
-
   let contribution = Contribution.load(event.transaction.hash.toHex());
 
   if (!contribution) {
     contribution = new Contribution(event.transaction.hash.toHex());
     contribution.value = event.transaction.value;
   }
-
-  committer.numCommitments = committer.numCommitments.plus(BigInt.fromU64(1));
 
   let commitment = Commitment.load(event.params.commitment.toHex());
 
@@ -99,8 +94,6 @@ export function handleTokenChallengeCompleted(event: TokenChallengeCompleted): v
     requester = addRequester(event.params.owner.toHex());
   }
 
-  requester.numTokenChallenges = requester.numTokenChallenges.minus(ONE);
-
   store.remove('TokenChallenge', event.params.tokenId.toHex());
 
   requester.save();
@@ -112,8 +105,6 @@ export function handleTokenChallenged(event: TokenChallenged): void {
   if (!requester) {
     requester = addRequester(event.params.owner.toHex());
   }
-
-  requester.numTokenChallenges = requester.numTokenChallenges.plus(ONE);
 
   let token = Token.load(event.params.tokenId.toHex());
 
@@ -143,8 +134,6 @@ export function handleTransfer(event: Transfer): void {
     if (!requester) {
       requester = addRequester(event.params.from.toHex());
     }
-
-    requester.numTokens.minus(ONE);
 
     if (TokenChallenge.load(event.params.tokenId.toHex())) {
       store.remove('TokenChallenge', event.params.tokenId.toHex());
@@ -177,7 +166,6 @@ export function handleTransfer(event: Transfer): void {
       }
     }
 
-    requester.numTokens.plus(ONE);
     requester.save();
 
     token.owner = requester.id;
@@ -189,7 +177,6 @@ export function handleTransfer(event: Transfer): void {
 
 function addCommitter(id: string): Committer {
   const committer = new Committer(id);
-  committer.numCommitments = ZERO;
   committer.isActive = true;
   committer.removedAt = ZERO;
 
@@ -198,9 +185,6 @@ function addCommitter(id: string): Committer {
 
 function addRequester(id: string): Requester {
   const requester = new Requester(id);
-  requester.numCommitments = ZERO;
-  requester.numTokens = ZERO;
-  requester.numTokenChallenges = ZERO;
 
   return requester;
 }

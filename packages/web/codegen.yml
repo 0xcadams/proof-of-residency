@@ -1,5 +1,6 @@
 overwrite: true
-schema: https://api.thegraph.com/subgraphs/name/proof-of-residency/proof-of-residency
+schema: http://localhost:8000/subgraphs/name/proof-of-residency/proof-of-residency
+# schema: https://api.thegraph.com/subgraphs/name/proof-of-residency/proof-of-residency
 documents: "src/**/*.graphql"
 generates:
   src/graphql/generated/graphql.schema.json:

@@ -98,7 +98,6 @@ export type Committer = {
   readonly commitments: ReadonlyArray<Commitment>;
   readonly id: Scalars['ID'];
   readonly isActive: Scalars['Boolean'];
-  readonly numCommitments: Scalars['BigInt'];
   readonly removedAt: Scalars['BigInt'];
 };
 
@@ -123,14 +122,6 @@ export type Committer_Filter = {
   readonly isActive_in: InputMaybe<ReadonlyArray<Scalars['Boolean']>>;
   readonly isActive_not: InputMaybe<Scalars['Boolean']>;
   readonly isActive_not_in: InputMaybe<ReadonlyArray<Scalars['Boolean']>>;
-  readonly numCommitments: InputMaybe<Scalars['BigInt']>;
-  readonly numCommitments_gt: InputMaybe<Scalars['BigInt']>;
-  readonly numCommitments_gte: InputMaybe<Scalars['BigInt']>;
-  readonly numCommitments_in: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly numCommitments_lt: InputMaybe<Scalars['BigInt']>;
-  readonly numCommitments_lte: InputMaybe<Scalars['BigInt']>;
-  readonly numCommitments_not: InputMaybe<Scalars['BigInt']>;
-  readonly numCommitments_not_in: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
   readonly removedAt: InputMaybe<Scalars['BigInt']>;
   readonly removedAt_gt: InputMaybe<Scalars['BigInt']>;
   readonly removedAt_gte: InputMaybe<Scalars['BigInt']>;
@@ -145,7 +136,6 @@ export enum Committer_OrderBy {
   Commitments = 'commitments',
   Id = 'id',
   IsActive = 'isActive',
-  NumCommitments = 'numCommitments',
   RemovedAt = 'removedAt'
 }
 
@@ -306,9 +296,6 @@ export type Requester = {
   readonly __typename: 'Requester';
   readonly commitments: ReadonlyArray<Commitment>;
   readonly id: Scalars['ID'];
-  readonly numCommitments: Scalars['BigInt'];
-  readonly numTokenChallenges: Scalars['BigInt'];
-  readonly numTokens: Scalars['BigInt'];
   readonly tokenChallenge: ReadonlyArray<TokenChallenge>;
   readonly tokens: ReadonlyArray<Token>;
 };
@@ -346,38 +333,11 @@ export type Requester_Filter = {
   readonly id_lte: InputMaybe<Scalars['ID']>;
   readonly id_not: InputMaybe<Scalars['ID']>;
   readonly id_not_in: InputMaybe<ReadonlyArray<Scalars['ID']>>;
-  readonly numCommitments: InputMaybe<Scalars['BigInt']>;
-  readonly numCommitments_gt: InputMaybe<Scalars['BigInt']>;
-  readonly numCommitments_gte: InputMaybe<Scalars['BigInt']>;
-  readonly numCommitments_in: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly numCommitments_lt: InputMaybe<Scalars['BigInt']>;
-  readonly numCommitments_lte: InputMaybe<Scalars['BigInt']>;
-  readonly numCommitments_not: InputMaybe<Scalars['BigInt']>;
-  readonly numCommitments_not_in: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly numTokenChallenges: InputMaybe<Scalars['BigInt']>;
-  readonly numTokenChallenges_gt: InputMaybe<Scalars['BigInt']>;
-  readonly numTokenChallenges_gte: InputMaybe<Scalars['BigInt']>;
-  readonly numTokenChallenges_in: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly numTokenChallenges_lt: InputMaybe<Scalars['BigInt']>;
-  readonly numTokenChallenges_lte: InputMaybe<Scalars['BigInt']>;
-  readonly numTokenChallenges_not: InputMaybe<Scalars['BigInt']>;
-  readonly numTokenChallenges_not_in: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly numTokens: InputMaybe<Scalars['BigInt']>;
-  readonly numTokens_gt: InputMaybe<Scalars['BigInt']>;
-  readonly numTokens_gte: InputMaybe<Scalars['BigInt']>;
-  readonly numTokens_in: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
-  readonly numTokens_lt: InputMaybe<Scalars['BigInt']>;
-  readonly numTokens_lte: InputMaybe<Scalars['BigInt']>;
-  readonly numTokens_not: InputMaybe<Scalars['BigInt']>;
-  readonly numTokens_not_in: InputMaybe<ReadonlyArray<Scalars['BigInt']>>;
 };
 
 export enum Requester_OrderBy {
   Commitments = 'commitments',
   Id = 'id',
-  NumCommitments = 'numCommitments',
-  NumTokenChallenges = 'numTokenChallenges',
-  NumTokens = 'numTokens',
   TokenChallenge = 'tokenChallenge',
   Tokens = 'tokens'
 }
@@ -657,7 +617,6 @@ export type GetCommittersQuery = {
     readonly id: string;
     readonly isActive: boolean;
     readonly removedAt: BigNumber;
-    readonly numCommitments: BigNumber;
     readonly commitments: ReadonlyArray<{
       readonly __typename: 'Commitment';
       readonly id: string;
@@ -679,9 +638,6 @@ export type GetRequesterByIdQuery = {
   readonly requester: {
     readonly __typename: 'Requester';
     readonly id: string;
-    readonly numCommitments: BigNumber;
-    readonly numTokens: BigNumber;
-    readonly numTokenChallenges: BigNumber;
     readonly commitments: ReadonlyArray<{
       readonly __typename: 'Commitment';
       readonly id: string;
@@ -691,11 +647,30 @@ export type GetRequesterByIdQuery = {
         readonly value: BigNumber;
       };
     }>;
-    readonly tokens: ReadonlyArray<{ readonly __typename: 'Token'; readonly id: string }>;
+    readonly tokens: ReadonlyArray<{
+      readonly __typename: 'Token';
+      readonly id: string;
+      readonly mintTime: BigNumber;
+      readonly tokenURI: string;
+    }>;
     readonly tokenChallenge: ReadonlyArray<{
       readonly __typename: 'TokenChallenge';
       readonly id: string;
     }>;
+  } | null;
+};
+
+export type GetTokenByIdQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+export type GetTokenByIdQuery = {
+  readonly __typename: 'Query';
+  readonly token: {
+    readonly __typename: 'Token';
+    readonly id: string;
+    readonly mintTime: BigNumber;
+    readonly tokenURI: string;
   } | null;
 };
 
@@ -709,6 +684,13 @@ export type CommitmentFieldsFragment = {
   };
 };
 
+export type TokenFieldsFragment = {
+  readonly __typename: 'Token';
+  readonly id: string;
+  readonly mintTime: BigNumber;
+  readonly tokenURI: string;
+};
+
 export const CommitmentFieldsFragmentDoc = gql`
   fragment CommitmentFields on Commitment {
     id
@@ -718,13 +700,19 @@ export const CommitmentFieldsFragmentDoc = gql`
     }
   }
 `;
+export const TokenFieldsFragmentDoc = gql`
+  fragment TokenFields on Token {
+    id
+    mintTime
+    tokenURI
+  }
+`;
 export const GetCommittersDocument = gql`
   query GetCommitters($first: Int) {
     committers(first: $first) {
       id
       isActive
       removedAt
-      numCommitments
       commitments {
         ...CommitmentFields
       }
@@ -777,21 +765,19 @@ export const GetRequesterByIdDocument = gql`
   query GetRequesterById($id: ID!) {
     requester(id: $id) {
       id
-      numCommitments
       commitments {
         ...CommitmentFields
       }
-      numTokens
       tokens {
-        id
+        ...TokenFields
       }
-      numTokenChallenges
       tokenChallenge {
         id
       }
     }
   }
   ${CommitmentFieldsFragmentDoc}
+  ${TokenFieldsFragmentDoc}
 `;
 
 /**
@@ -833,4 +819,53 @@ export type GetRequesterByIdLazyQueryHookResult = ReturnType<typeof useGetReques
 export type GetRequesterByIdQueryResult = Apollo.QueryResult<
   GetRequesterByIdQuery,
   GetRequesterByIdQueryVariables
+>;
+export const GetTokenByIdDocument = gql`
+  query GetTokenById($id: ID!) {
+    token(id: $id) {
+      ...TokenFields
+    }
+  }
+  ${TokenFieldsFragmentDoc}
+`;
+
+/**
+ * __useGetTokenByIdQuery__
+ *
+ * To run a query within a React component, call `useGetTokenByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTokenByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTokenByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetTokenByIdQuery(
+  baseOptions: Apollo.QueryHookOptions<GetTokenByIdQuery, GetTokenByIdQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetTokenByIdQuery, GetTokenByIdQueryVariables>(
+    GetTokenByIdDocument,
+    options
+  );
+}
+export function useGetTokenByIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<GetTokenByIdQuery, GetTokenByIdQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetTokenByIdQuery, GetTokenByIdQueryVariables>(
+    GetTokenByIdDocument,
+    options
+  );
+}
+export type GetTokenByIdQueryHookResult = ReturnType<typeof useGetTokenByIdQuery>;
+export type GetTokenByIdLazyQueryHookResult = ReturnType<typeof useGetTokenByIdLazyQuery>;
+export type GetTokenByIdQueryResult = Apollo.QueryResult<
+  GetTokenByIdQuery,
+  GetTokenByIdQueryVariables
 >;

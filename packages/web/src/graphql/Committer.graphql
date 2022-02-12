@@ -3,7 +3,6 @@ query GetCommitters($first: Int) {
     id
     isActive
     removedAt
-    numCommitments
     commitments {
       ...CommitmentFields
     }

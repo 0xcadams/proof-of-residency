@@ -1,15 +1,12 @@
 query GetRequesterById($id: ID!) {
   requester(id: $id) {
     id
-    numCommitments
     commitments {
       ...CommitmentFields
     }
-    numTokens
     tokens {
-      id
+      ...TokenFields
     }
-    numTokenChallenges
     tokenChallenge {
       id
     }
