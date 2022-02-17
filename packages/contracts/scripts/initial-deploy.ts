@@ -32,7 +32,7 @@ async function main() {
 
   // update the subgraph config with the latest address
   const subgraphConfig = {
-    network: chainId === 1337 ? 'mainnet' : networkName,
+    network: chainId === 1337 ? 'hardhat' : networkName,
     address: proofOfResidencyOwner.address,
     startBlock: (await proofOfResidencyOwner.deployTransaction.wait()).blockNumber
   };

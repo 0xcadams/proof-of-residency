@@ -18,8 +18,8 @@ services:
       postgres_db: graph-node
       ipfs: 'ipfs:5001'
       # See https://github.com/graphprotocol/graph-node/tree/master/docker for instructions for mac/linux
-      # ethereum: 'mainnet:http://host.docker.internal:8545'
-      ethereum: 'mainnet:http://172.18.0.1:8545'
+      ethereum: 'hardhat:http://host.docker.internal:8545'
+      # ethereum: 'hardhat:http://172.18.0.1:8545'
       GRAPH_LOG: info
   ipfs:
     image: ipfs/go-ipfs:v0.4.23
