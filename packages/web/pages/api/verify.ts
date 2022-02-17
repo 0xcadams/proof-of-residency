@@ -17,7 +17,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<VerifyAddressRe
     if (method === 'POST') {
       const nonce = ethers.BigNumber.from(ethers.utils.randomBytes(32));
 
-      const name = `${faker.name.firstName()} ${faker.name.lastName()}`;
+      const name = `${faker.name.firstName()} ${faker.name.lastName()} or Current Resident`;
 
       const isoCountry = getIsoCountryForAlpha2(body.country);
 
