@@ -11,12 +11,12 @@
   "scripts": {
     "build": "graph build",
     "codegen": "graph codegen",
-    "run": "docker-compose up",
+    "start": "docker-compose up --force-recreate --pull",
     "deploy:arbitrum-one": "yarn prepare:arbitrum-one && graph deploy --product hosted-service proof-of-residency/proof-of-residency",
     "create:local": "yarn prepare:local && graph create --node http://localhost:8020/ proof-of-residency/proof-of-residency",
     "remove:local": "graph remove --node http://localhost:8020/ proof-of-residency/proof-of-residency",
-    "deploy:local": "yarn prepare:local && graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 proof-of-residency/proof-of-residency",
-    "prepare:local": "mustache config/local.json subgraph.mustache > subgraph.yaml",
+    "deploy:local": "yarn prepare:local && yarn create:local && graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 proof-of-residency/proof-of-residency",
+    "prepare:local": "mustache config/hardhat.json subgraph.mustache > subgraph.yaml",
     "prepare:arbitrum-one": "mustache config/arbitrum-one.json subgraph.mustache > subgraph.yaml"
   },
   "dependencies": {

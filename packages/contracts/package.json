@@ -27,7 +27,7 @@
     "coverage": "yarn build && yarn run -T hardhat coverage --temp artifacts --solcoverjs ./../../.solcover.js",
     "deploy:mainnet": "yarn run -T hardhat run --network mainnet scripts/initial-deploy.ts",
     "deploy:arbitrum": "yarn run -T hardhat run --network arbitrum scripts/initial-deploy.ts",
-    "deploy:arbrinkeby": "yarn run -T hardhat run --network arbrinkeby scripts/initial-deploy.ts",
+    "deploy:arbitrum-rinkeby": "yarn run -T hardhat run --network arbitrum-rinkeby scripts/initial-deploy.ts",
     "deploy:rinkeby": "yarn run -T hardhat run --network rinkeby scripts/initial-deploy.ts",
     "deploy:local": "yarn run -T hardhat run --network localhost scripts/initial-deploy.ts",
     "time-travel:local": "yarn run -T hardhat run --network localhost scripts/time-travel.ts",

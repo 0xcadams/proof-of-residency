@@ -5,7 +5,6 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "deploy:local": "lerna run deploy:local --parallel --stream",
     "lint": "lerna run lint --parallel",
     "lint:commit": "yarn lint",
     "postinstall": "simple-git-hooks",
