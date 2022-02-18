@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - "main"
-    paths-ignore:
-      - "packages/web/**"
+    paths:
+      - "packages/contracts/**"
   pull_request:
     branches:
       - "*"
