@@ -12,7 +12,7 @@
     "test": "yarn run -T cross-env NODE_ENV=test mocha -r ts-node/register test/**/*.test.ts"
   },
   "dependencies": {
-    "@chakra-ui/react": "^1.8.3",
+    "@chakra-ui/react": "1.8.1",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@ethersproject/hdnode": "^5.5.0",
