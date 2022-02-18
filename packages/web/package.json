@@ -5,11 +5,11 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "build": "dotenv -e ../../.env next build",
-    "serve": "dotenv -e ../../.env next start",
-    "start": "dotenv -e ../../.env next dev",
+    "build": "yarn run -T dotenv -e ../../.env next build",
+    "serve": "yarn run -T dotenv -e ../../.env next start",
+    "start": "yarn run -T dotenv -e ../../.env next dev",
     "lint": "next lint",
-    "test": "cross-env NODE_ENV=test mocha -r ts-node/register test/**/*.test.ts"
+    "test": "yarn run -T cross-env NODE_ENV=test mocha -r ts-node/register test/**/*.test.ts"
   },
   "dependencies": {
     "@chakra-ui/react": "^1.8.3",
