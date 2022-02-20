@@ -60,6 +60,9 @@ const config: HardhatUserConfig = {
     mainnet: {
       url: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`
       // accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
+    },
+    'truffle-dashboard': {
+      url: 'http://localhost:24012/rpc'
     }
   },
   etherscan: {
