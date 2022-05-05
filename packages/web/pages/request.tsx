@@ -164,13 +164,6 @@ const RequestPage = () => {
           <Link href="/" passHref>
             <Image src={Logo} alt="Proof of residency logo" width={48} height={48} />
           </Link>
-          {!isMobile && (
-            <Tooltip label="We are in a beta launch phase - see our FAQ" shouldWrapChildren>
-              <Badge ml={2} size="lg" pt="2px" borderRadius={5}>
-                Arbitrum Beta
-              </Badge>
-            </Tooltip>
-          )}
         </Flex>
       </Box>
       <Box zIndex={500} position="absolute" right={4} top={4}>
