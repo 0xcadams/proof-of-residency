@@ -1,6 +1,6 @@
 {
   "name": "@proof-of-residency/contracts",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "The Solidity smart contracts for Proof of Residency.",
   "main": "index.js",
   "license": "MIT",
