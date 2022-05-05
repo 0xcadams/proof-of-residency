@@ -40,7 +40,7 @@
     "react-mapbox-gl": "^5.1.1",
     "react-markdown": "^8.0.3",
     "redis": "^4.1.0",
-    "use-wallet": "^0.13.6"
+    "use-wallet": "0.13.4"
   },
   "devDependencies": {
     "@types/expect.js": "^0.3.29",

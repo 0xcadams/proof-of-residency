@@ -4735,7 +4735,7 @@ __metadata:
     react-mapbox-gl: ^5.1.1
     react-markdown: ^8.0.3
     redis: ^4.1.0
-    use-wallet: ^0.13.6
+    use-wallet: 0.13.4
   languageName: unknown
   linkType: soft
 
@@ -30795,9 +30795,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-wallet@npm:^0.13.6":
-  version: 0.13.6
-  resolution: "use-wallet@npm:0.13.6"
+"use-wallet@npm:0.13.4":
+  version: 0.13.4
+  resolution: "use-wallet@npm:0.13.4"
   dependencies:
     "@aragon/provided-connector": ^6.0.8
     "@typescript-eslint/parser": ^4.1.0
@@ -30817,7 +30817,7 @@ __metadata:
   peerDependencies:
     react: ^16.13.1 || ^17
     react-dom: ^16.13.1 || ^17
-  checksum: d105a2614de54e12738c9a7fb0869061527b26cda06867b63913f49ae6f64fa2885e796b8dae11f4cb6a3019f6860bf35e8aad3a3bd89051b546e93f20e4b1c9
+  checksum: a2f5705e1c42764903945e7c0a6200c22f71263054df5362cbdb11e11e1b4cff0eb1b4ebea695acf26f26b07fbd7483d3580b4c54ec69a2f18a1ef5a2ecf16ee
   languageName: node
   linkType: hard
 

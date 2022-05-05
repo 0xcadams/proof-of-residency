@@ -3,7 +3,7 @@
     Proof of Residency
   </h1>
 
-  <img src="https://proofofresidency.xyz/bolivia.png" alt="POR" width="100%" />
+  <img src="https://proofofresidency.xyz/804.png" alt="POR" width="100%" />
 
   <br />
 

@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import Header from 'src/web/components/Header';
-import LandingImage from '../public/russia.png';
+import LandingImage from '../public/804.png';
 import Footer from '../src/web/components/Footer';
 
 const IndexPage = () => {
