@@ -1728,7 +1728,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@commitlint/cli@npm:^16.1.0, @commitlint/cli@npm:^16.2.4":
+"@commitlint/cli@npm:^16.2.4":
   version: 16.2.4
   resolution: "@commitlint/cli@npm:16.2.4"
   dependencies:
@@ -1747,7 +1747,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@commitlint/config-conventional@npm:^16.0.0, @commitlint/config-conventional@npm:^16.2.4":
+"@commitlint/config-conventional@npm:^16.2.4":
   version: 16.2.4
   resolution: "@commitlint/config-conventional@npm:16.2.4"
   dependencies:
@@ -5077,8 +5077,6 @@ __metadata:
   dependencies:
     "@apollo/client": ^3.5.8
     "@chakra-ui/react": ^1.8.1
-    "@commitlint/cli": ^16.1.0
-    "@commitlint/config-conventional": ^16.0.0
     "@emotion/react": ^11.9.0
     "@emotion/styled": ^11.8.1
     "@ethersproject/hdnode": ^5.6.0
