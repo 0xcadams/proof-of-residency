@@ -48,14 +48,6 @@ const Header = () => {
           </Link>
         </Box>
 
-        {!isMobile && (
-          <Tooltip label="We are in a beta launch phase - see our FAQ" shouldWrapChildren>
-            <Badge ml={2} size="lg" pt="2px" borderRadius={5}>
-              Arbitrum Beta
-            </Badge>
-          </Tooltip>
-        )}
-
         <Spacer />
 
         <Tooltip

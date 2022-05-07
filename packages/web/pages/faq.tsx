@@ -38,10 +38,10 @@ const FaqPage = () => {
       q: 'Why is only Arbitrum supported?',
       a: (
         <>
-          We are in a public beta phase. In order to reduce gas costs for our early adopters, we
-          have chosen to launch on Arbitrum L2 initially, and add L1 mainnet once we have
-          battle-tested our contracts. We will keep our community up-to-date on the mainnet launch
-          via Twitter and Discord!
+          We are in a public launch phase. In order to reduce gas costs for our early adopters, we
+          have chosen to launch on Arbitrum One initially, and add more Ethereum-based chains once
+          we have battle-tested our contracts. We will keep our community up-to-date on the mainnet
+          launch via Twitter and Discord!
         </>
       )
     },

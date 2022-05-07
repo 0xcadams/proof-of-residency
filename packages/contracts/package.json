@@ -1,6 +1,6 @@
 {
   "name": "@proof-of-residency/contracts",
-  "version": "1.0.1-alpha.0",
+  "version": "1.1.1",
   "description": "The Solidity smart contracts for Proof of Residency.",
   "main": "index.js",
   "license": "MIT",
@@ -30,15 +30,17 @@
     "deploy:arbitrum-rinkeby": "yarn run -T hardhat run --network arbitrum-rinkeby scripts/initial-deploy.ts",
     "deploy:rinkeby": "yarn run -T hardhat run --network rinkeby scripts/initial-deploy.ts",
     "deploy:local": "yarn run -T hardhat run --network localhost scripts/initial-deploy.ts",
+    "deploy:truffle-dashboard": "yarn run -T hardhat run --network truffle-dashboard scripts/initial-deploy.ts",
     "time-travel:local": "yarn run -T hardhat run --network localhost scripts/time-travel.ts",
     "lerna-publish": "rm -rf ../../.git/hooks/ && yarn run -T lerna publish from-package && yarn install",
     "lerna-version": "rm -rf ../../.git/hooks/ && yarn run -T lerna version --sign-git-tag && yarn install",
     "lint": "yarn run -T solhint 'contracts/**/*.sol' && yarn run -T prettier --list-different 'contracts/**/*.sol' && yarn run -T eslint . --ext .ts",
     "size": "yarn run -T hardhat size-contracts",
     "start": "yarn run -T hardhat node",
-    "test": "yarn run -T hardhat test"
+    "test": "yarn run -T hardhat test",
+    "truffle-dashboard": "yarn run -T truffle dashboard"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.5.0"
+    "@openzeppelin/contracts": "^4.6.0"
   }
 }
