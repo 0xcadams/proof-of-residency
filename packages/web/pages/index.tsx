@@ -43,7 +43,7 @@ const IndexPage = () => {
             </strong>{' '}
             to ensure that the recipient resides at the provided address. Privacy is the first
             priority - addresses are kept private and real names are not requested. Decentralization
-            and community ownership is built into the protocol.
+            and community ownership are built into the protocol.
           </Text>
 
           <Text fontSize="md" mt={8} textAlign="center">

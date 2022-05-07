@@ -38,4 +38,7 @@ export type SubmitAddressResponse = {
 
   country: string;
   commitment: string;
+
+  expectedDeliveryDateFormatted: string;
+  expectedDaysUntilDelivery: number;
 };

@@ -1,4 +1,6 @@
 import { ethers, run } from 'hardhat';
+import fs from 'fs';
+import path from 'path';
 
 async function main() {
   const baseUri = 'https://generator.proofofresidency.xyz/api/';
@@ -23,7 +25,23 @@ async function main() {
 
   console.log(`--- Deployed to the address: ${proofOfResidencyOwner.address}`);
 
+  console.log(`Writing subgraph config...`);
+
   const chainId = await deployment.signer.getChainId();
+  const networkName = (await deployment.provider.getNetwork()).name;
+
+  // update the subgraph config with the latest address
+  const subgraphConfig = {
+    network: chainId === 1337 ? 'hardhat' : networkName,
+    address: proofOfResidencyOwner.address,
+    startBlock: (await proofOfResidencyOwner.deployTransaction.wait()).blockNumber
+  };
+
+  const file = path.join(
+    process.cwd(),
+    `../subgraph/config/${chainId !== 1337 ? subgraphConfig.network : 'hardhat'}.json`
+  );
+  fs.writeFileSync(file, JSON.stringify(subgraphConfig, null, 2));
 
   if (chainId !== 1337) {
     console.log(`Waiting for x seconds before verifying contract with Etherscan...`);

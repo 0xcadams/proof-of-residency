@@ -1,6 +1,7 @@
 import lob from 'lob';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { AddressComponents, VerifyIntlAddressResponse, VerifyUsAddressResponse } from 'types';
+import { RequestLetterResponse } from 'types/request-letter';
 
 const Lob = lob(process.env.LOB_API_KEY);
 
@@ -65,9 +66,9 @@ export const sendLetter = (
   mnemonic: string,
   idempotencyKey: string
 ) => {
-  const today = dayjs.default();
+  const today = dayjs();
 
-  return new Promise<VerifyIntlAddressResponse>((resolve, reject) => {
+  return new Promise<RequestLetterResponse>((resolve, reject) => {
     Lob.letters.create(
       {
         to: {

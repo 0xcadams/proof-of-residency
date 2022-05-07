@@ -16,6 +16,8 @@ import {
   Tr,
   useBreakpointValue
 } from '@chakra-ui/react';
+import dayjs from 'dayjs';
+import { BigNumber } from 'ethers';
 
 import { GetStaticPaths, GetStaticPropsContext } from 'next';
 import { NextSeo } from 'next-seo';
@@ -23,6 +25,7 @@ import Link from 'next/link';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
 import { getOwnerOfToken, TokenOwner } from 'src/api/ethers';
+import { useGetTokenByIdQuery } from 'src/graphql/generated';
 import Header from 'src/web/components/Header';
 import {
   CountryIso,
@@ -106,6 +109,10 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
 const TokenDetailsPage = (props: DetailsProps) => {
   const imageHeight = useBreakpointValue({ base: 400, md: 650 }, 'md');
 
+  const token = useGetTokenByIdQuery({
+    variables: { id: BigNumber.from(props.tokenId).toHexString() }
+  });
+
   const tags = [
     {
       name: 'License',
@@ -116,16 +123,16 @@ const TokenDetailsPage = (props: DetailsProps) => {
     //   name: 'Initial Price',
     //   content: `${numeral(props.price).format('0.0')}Ξ`
     // },
-    // ...(props.name
-    //   ? [
-    //       {
-    //         name: 'Total Population',
-    //         content: `${numeral(props.population).format('0,0')}`,
-    //         link: 'https://en.wikipedia.org/wiki/Metropolitan_statistical_area',
-    //         tooltip: 'The population over 18 y.o. in the city in 2020.'
-    //       }
-    //     ]
-    //   : []),
+    ...(token.data?.token?.mintTime
+      ? [
+          {
+            name: 'Total Population',
+            content: `${dayjs(token.data?.token?.mintTime.toNumber()).format('mm/dd/yy')}`,
+            link: 'https://en.wikipedia.org/wiki/Metropolitan_statistical_area',
+            tooltip: 'The population over 18 y.o. in the city in 2020.'
+          }
+        ]
+      : []),
     {
       name: 'Created By',
       content: 'Generative Script',

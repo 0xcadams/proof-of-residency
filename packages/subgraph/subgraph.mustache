@@ -1,0 +1,53 @@
+specVersion: 0.0.2
+description: Proof of Residency
+repository: https://github.com/proof-of-residency/proof-of-residency
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: ProofOfResidency
+    network: {{ network }}
+    source:
+      address: "{{ address }}"
+      abi: ProofOfResidency
+      startBlock: {{ startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Committer
+        - Requester
+        - TokenChallenge
+        - Token
+        - Commitment
+        - Contribution
+      abis:
+        - name: ProofOfResidency
+          file: ../contracts/artifacts/contracts/ProofOfResidency.sol/ProofOfResidency.json
+      eventHandlers:
+        # - event: Approval(indexed address,indexed address,indexed uint256)
+        #   handler: handleApproval
+        # - event: ApprovalForAll(indexed address,indexed address,bool)
+        #   handler: handleApprovalForAll
+        - event: CommitmentCreated(indexed address,indexed address,bytes32)
+          handler: handleCommitmentCreated
+        - event: CommitterAdded(indexed address)
+          handler: handleCommitterAdded
+        - event: CommitterRemoved(indexed address,uint256,bool)
+          handler: handleCommitterRemoved
+        # - event: OwnershipTransferred(indexed address,indexed address)
+        #   handler: handleOwnershipTransferred
+        # - event: Paused(address)
+        #   handler: handlePaused
+        # - event: PriceChanged(indexed uint256)
+        #   handler: handlePriceChanged
+        - event: TokenChallengeCompleted(indexed address,indexed uint256)
+          handler: handleTokenChallengeCompleted
+        - event: TokenChallenged(indexed address,indexed uint256)
+          handler: handleTokenChallenged
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+        # - event: Unpaused(address)
+        #   handler: handleUnpaused
+      file: ./src/mapping.ts

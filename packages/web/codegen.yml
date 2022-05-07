@@ -1,0 +1,31 @@
+overwrite: true
+schema: http://localhost:8000/subgraphs/name/proof-of-residency/proof-of-residency
+# schema: https://api.thegraph.com/subgraphs/name/proof-of-residency/proof-of-residency
+documents: "src/**/*.graphql"
+generates:
+  src/graphql/generated/graphql.schema.json:
+    plugins:
+      - "introspection"
+    config:
+      minify: true
+  src/graphql/generated/index.ts:
+    plugins:
+      - add:
+          content: "import { BigNumber } from 'ethers';"
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+    config:
+      withHooks: true
+      nonOptionalTypename: true
+      immutableTypes: true
+      avoidOptionals: true
+      exportFragmentSpreadSubTypes: true
+
+config:
+  scalars:
+    BigInt: BigNumber
+
+hooks:
+  afterAllFileWrite:
+    - yarn -T run prettier --write

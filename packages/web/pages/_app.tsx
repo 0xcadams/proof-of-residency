@@ -7,8 +7,13 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { trackEvent } from 'src/web/mixpanel';
 import { UseWalletProvider } from 'use-wallet';
+import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink, ApolloLink } from '@apollo/client';
+import { withScalars } from 'apollo-link-scalars';
+import introspectionResult from '../src/graphql/generated/graphql.schema.json';
 
 import theme from '../src/web/theme';
+import { BigNumber } from 'ethers';
+import { buildClientSchema, IntrospectionQuery } from 'graphql';
 
 const chainId =
   process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
@@ -16,6 +21,32 @@ const chainId =
     : process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
     ? 421611
     : 1337;
+
+const typesMap = {
+  BigInt: {
+    serialize: (parsed: unknown): string | null =>
+      parsed instanceof BigNumber ? parsed.toString() : null,
+    parseValue: (raw: unknown): BigNumber | null => {
+      if (!raw) return null;
+
+      if (typeof raw === 'string') {
+        return BigNumber.from(raw);
+      }
+
+      throw new Error('Invalid BigInt passed into parse.');
+    }
+  }
+};
+
+const schema = buildClientSchema(introspectionResult as unknown as IntrospectionQuery);
+
+const client = new ApolloClient({
+  link: ApolloLink.from([
+    withScalars({ schema, typesMap }),
+    new HttpLink({ uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT })
+  ]),
+  cache: new InMemoryCache()
+});
 
 const App = ({ Component, pageProps }: AppProps) => {
   const router = useRouter();
@@ -67,7 +98,9 @@ const App = ({ Component, pageProps }: AppProps) => {
             }
           }}
         >
-          <Component {...pageProps} />
+          <ApolloProvider client={client}>
+            <Component {...pageProps} />
+          </ApolloProvider>
         </UseWalletProvider>
       </ChakraProvider>
     </>

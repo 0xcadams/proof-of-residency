@@ -1,18 +1,14 @@
-import { Badge, Box, Button, Flex, Spacer, Tooltip, useBreakpointValue } from '@chakra-ui/react';
+import { Box, Button, Flex, Spacer, Tooltip, useBreakpointValue } from '@chakra-ui/react';
+import { BigNumber } from 'ethers';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { FiGithub } from 'react-icons/fi';
+import { useGetRequesterByIdQuery } from 'src/graphql/generated';
 
 import Logo from '../../../public/logo.svg';
-import {
-  useAutoConnectWallet,
-  useGetCommitmentPeriodIsUpcoming,
-  useGetCommitmentPeriodIsValid,
-  useHasTokenId,
-  useStatusAndChainUnsupported
-} from '../hooks';
+import { useAutoConnectWallet, useStatusAndChainUnsupported, useWalletAddress } from '../hooks';
 
 const Header = () => {
   const isMobile = useBreakpointValue({ base: true, sm: false }, 'sm');
@@ -20,19 +16,25 @@ const Header = () => {
 
   const router = useRouter();
 
-  const statusAndChainUnsupported = useStatusAndChainUnsupported();
-  const commitmentPeriodIsValid = useGetCommitmentPeriodIsValid();
-  const commitmentPeriodIsUpcoming = useGetCommitmentPeriodIsUpcoming();
-  const hasTokenId = useHasTokenId();
-
   const walletAutoConnect = useAutoConnectWallet(false);
+
+  const walletAddress = useWalletAddress();
+  const me = useGetRequesterByIdQuery({
+    variables: { id: walletAddress?.toLowerCase() ?? '' },
+    pollInterval: 8000
+  });
+
+  const statusAndChainUnsupported = useStatusAndChainUnsupported();
+
+  const hasTokenId = (me.data?.requester?.tokens?.length ?? 0) > 0;
+  const hasCommitment = (me.data?.requester?.commitments.length ?? 0) > 0;
 
   const verbiage =
     statusAndChainUnsupported.status !== 'connected' || statusAndChainUnsupported.connectionRejected
       ? 'connect'
       : hasTokenId
       ? 'token'
-      : commitmentPeriodIsValid || commitmentPeriodIsUpcoming
+      : hasCommitment
       ? 'mint'
       : 'request';
 
@@ -62,7 +64,9 @@ const Header = () => {
               } else if (verbiage === 'mint') {
                 await router.push('/mint');
               } else if (verbiage === 'token') {
-                await router.push(`/token/${hasTokenId}`);
+                await router.push(
+                  `/token/${BigNumber.from(me.data?.requester?.tokens?.[0]?.id).toString()}`
+                );
               } else if (verbiage === 'request') {
                 await router.push(`/request`);
               }
@@ -86,7 +90,12 @@ const Header = () => {
 
         {!isMobile && (
           <Link href="https://github.com/proof-of-residency" passHref>
-            <Button ml={3} variant="outline" size={buttonSize}>
+            <Button
+              aria-label="Check out the github code"
+              ml={3}
+              variant="outline"
+              size={buttonSize}
+            >
               <FiGithub size={25} />
             </Button>
           </Link>

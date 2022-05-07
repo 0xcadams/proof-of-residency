@@ -1,4 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import dayjs from 'dayjs';
+
 import { generatePublicPrivateKey } from 'src/api/bip';
 
 import {
@@ -118,13 +120,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
 
       // require that the address hasn't been requested for 4 weeks
       if (
+        process.env.NODE_ENV !== 'development' &&
         lastRequestHashedMailingAddress &&
         Date.now() - lastRequestHashedMailingAddress <= 2.419 * 1e9
       ) {
         return res.status(429).end('Too many requests for this address!');
       }
 
-      await sendLetter(
+      const sendLetterResponse = await sendLetter(
         body.addressPayload,
         keygen.mnemonic,
         ethers.utils.keccak256(
@@ -141,12 +144,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
       //   await setRedis(req.headers['x-forwarded-for'], Date.now());
       // }
 
+      const expectedDeliveryDate = dayjs(sendLetterResponse.expected_delivery_date);
+
+      const expectedDeliveryDateFormatted = expectedDeliveryDate.format('DD/MM/YYYY');
+      const expectedDaysUntilDelivery = expectedDeliveryDate.diff(dayjs(), 'days');
+
       return res.status(200).json({
         v,
         r,
         s,
         country: countryName,
-        commitment
+        commitment,
+        expectedDeliveryDateFormatted,
+        expectedDaysUntilDelivery
       });
     }
 

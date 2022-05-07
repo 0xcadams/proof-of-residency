@@ -107,9 +107,7 @@ export const ConfirmModal = (props: {
           if (transactionResult.events?.some((event) => event.event === 'CommitmentCreated')) {
             toast({
               title: 'Success',
-              description: `Successfully mailed a letter and committed your country to the blockchain. Please wait ${
-                props.address.country === 'US' ? 'one week' : 'two weeks'
-              } for your letter to arrive.`,
+              description: `Successfully mailed your letter, it is expected to arrive in ${result.data.expectedDaysUntilDelivery} days.`,
               status: 'success'
             });
           } else {
