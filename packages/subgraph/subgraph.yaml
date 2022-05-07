@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: ProofOfResidency
-    network: hardhat
+    network: arbitrum-one
     source:
-      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+      address: "0x6f668f1892c62860c295B052739B3290fa4661B4"
       abi: ProofOfResidency
-      startBlock: 1
+      startBlock: 5660639
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5

@@ -12,7 +12,7 @@
     "build": "graph build",
     "codegen": "graph codegen",
     "start": "docker-compose up --force-recreate",
-    "deploy:arbitrum-one": "yarn prepare:arbitrum-one && graph deploy --product hosted-service proof-of-residency/proof-of-residency",
+    "deploy:arbitrum-one": "yarn prepare:arbitrum-one && graph deploy --product hosted-service proof-of-residency/proof-of-residency --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
     "create:local": "yarn prepare:local && graph create --node http://localhost:8020/ proof-of-residency/proof-of-residency",
     "remove:local": "graph remove --node http://localhost:8020/ proof-of-residency/proof-of-residency",
     "deploy:local": "yarn prepare:local && yarn create:local && graph deploy --node http://localhost:8020/ --ipfs http://localhost:5002 proof-of-residency/proof-of-residency",

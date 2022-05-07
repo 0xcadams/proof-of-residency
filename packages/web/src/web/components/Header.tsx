@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Flex, Spacer, Tooltip, useBreakpointValue } from '@chakra-ui/react';
+import { Box, Button, Flex, Spacer, Tooltip, useBreakpointValue } from '@chakra-ui/react';
 import { BigNumber } from 'ethers';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -20,7 +20,8 @@ const Header = () => {
 
   const walletAddress = useWalletAddress();
   const me = useGetRequesterByIdQuery({
-    variables: { id: walletAddress?.toLowerCase() ?? '' }
+    variables: { id: walletAddress?.toLowerCase() ?? '' },
+    pollInterval: 8000
   });
 
   const statusAndChainUnsupported = useStatusAndChainUnsupported();
