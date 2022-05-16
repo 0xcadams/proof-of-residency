@@ -79,13 +79,16 @@ The API for the Proof of Residency ERC-721 is documented extensively in the [con
 
 #### L1/L2s
 
-- **Mainnet:** Coming soon...
+- **Mainnet:** [0x99C5...84ba0c8](https://etherscan.io/address/0x99C5B95408981C391cf6F1766d9B79f8E84ba0c8)
 - **Arbitrum:** [0x6f66...a4661B4](https://arbiscan.io/address/0x6f668f1892c62860c295B052739B3290fa4661B4)
+- **Optimism:** [0x6f66...a4661b4](https://optimistic.etherscan.io/address/0x6f668f1892c62860c295b052739b3290fa4661b4)
 
 #### Testnets
 
+- **Goerli:** [0x2D05...840418A](https://goerli.etherscan.io/address/0x2D058D72fB57e3CA8DFb7cCc3f107c6Da840418A)
 - **Rinkeby:** [0xDe1e...4d3857f](https://rinkeby.etherscan.io/address/0xDe1eAc02F7967f73479c2c4ef4CAbF8274d3857f)
 - **Arbitrum Rinkeby:** [0xeB52....C27f677](https://testnet.arbiscan.io/address/0xeB528308c07AedEb22353ff4ae70143D5C27f677)
+- **Optimistic Kovan:** [0x6f66...a4661b4](https://kovan-optimistic.etherscan.io/address/0x6f668f1892c62860c295B052739B3290fa4661B4)
 
 ## Contributing
 

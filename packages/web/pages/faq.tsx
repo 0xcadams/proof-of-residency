@@ -35,17 +35,6 @@ const FaqPage = () => {
       )
     },
     {
-      q: 'Why is only Arbitrum supported?',
-      a: (
-        <>
-          We are in a public launch phase. In order to reduce gas costs for our early adopters, we
-          have chosen to launch on Arbitrum One initially, and add more Ethereum-based chains once
-          we have battle-tested our contracts. We will keep our community up-to-date on the mainnet
-          launch via Twitter and Discord!
-        </>
-      )
-    },
-    {
       q: 'What is the address verification process?',
       a: (
         <>
