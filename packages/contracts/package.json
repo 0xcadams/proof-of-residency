@@ -27,7 +27,7 @@
     "coverage": "yarn build && yarn run -T hardhat coverage --temp artifacts --solcoverjs ./../../.solcover.js",
     "deploy:mainnet": "yarn run -T hardhat run --network mainnet scripts/initial-deploy.ts",
     "deploy:arbitrum": "yarn run -T hardhat run --network arbitrum scripts/initial-deploy.ts",
-    "deploy:arbrinkeby": "yarn run -T hardhat run --network arbrinkeby scripts/initial-deploy.ts",
+    "deploy:arbitrum-rinkeby": "yarn run -T hardhat run --network arbitrum-rinkeby scripts/initial-deploy.ts",
     "deploy:goerli": "yarn run -T hardhat run --network goerli scripts/initial-deploy.ts",
     "deploy:optimism": "yarn run -T hardhat run --network optimism scripts/initial-deploy.ts",
     "deploy:optimistic-kovan": "yarn run -T hardhat run --network optimisticKovan scripts/initial-deploy.ts",

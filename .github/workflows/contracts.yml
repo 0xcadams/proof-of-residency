@@ -36,7 +36,7 @@ jobs:
           sudo snap install solc
           pip3 install slither-analyzer
       - name: Install
-        run: yarn --frozen-lockfile
+        run: yarn --immutable
       - name: Build
         run: yarn build
       - name: Run code analysis

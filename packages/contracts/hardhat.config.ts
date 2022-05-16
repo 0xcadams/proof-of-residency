@@ -50,7 +50,7 @@ const config: HardhatUserConfig = {
       url: `https://goerli.infura.io/v3/${INFURA_PROJECT_ID}`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
     },
-    arbrinkeby: {
+    'arbitrum-rinkeby': {
       url: `https://arbitrum-rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
     },

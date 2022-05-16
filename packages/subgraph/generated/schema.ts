@@ -18,7 +18,6 @@ export class Committer extends Entity {
 
     this.set("isActive", Value.fromBoolean(false));
     this.set("removedAt", Value.fromBigInt(BigInt.zero()));
-    this.set("numCommitments", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -73,25 +72,12 @@ export class Committer extends Entity {
   set commitments(value: Array<string>) {
     this.set("commitments", Value.fromStringArray(value));
   }
-
-  get numCommitments(): BigInt {
-    let value = this.get("numCommitments");
-    return value!.toBigInt();
-  }
-
-  set numCommitments(value: BigInt) {
-    this.set("numCommitments", Value.fromBigInt(value));
-  }
 }
 
 export class Requester extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("numCommitments", Value.fromBigInt(BigInt.zero()));
-    this.set("numTokens", Value.fromBigInt(BigInt.zero()));
-    this.set("numTokenChallenges", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -129,15 +115,6 @@ export class Requester extends Entity {
     this.set("commitments", Value.fromStringArray(value));
   }
 
-  get numCommitments(): BigInt {
-    let value = this.get("numCommitments");
-    return value!.toBigInt();
-  }
-
-  set numCommitments(value: BigInt) {
-    this.set("numCommitments", Value.fromBigInt(value));
-  }
-
   get tokens(): Array<string> {
     let value = this.get("tokens");
     return value!.toStringArray();
@@ -147,15 +124,6 @@ export class Requester extends Entity {
     this.set("tokens", Value.fromStringArray(value));
   }
 
-  get numTokens(): BigInt {
-    let value = this.get("numTokens");
-    return value!.toBigInt();
-  }
-
-  set numTokens(value: BigInt) {
-    this.set("numTokens", Value.fromBigInt(value));
-  }
-
   get tokenChallenge(): Array<string> {
     let value = this.get("tokenChallenge");
     return value!.toStringArray();
@@ -163,15 +131,6 @@ export class Requester extends Entity {
 
   set tokenChallenge(value: Array<string>) {
     this.set("tokenChallenge", Value.fromStringArray(value));
-  }
-
-  get numTokenChallenges(): BigInt {
-    let value = this.get("numTokenChallenges");
-    return value!.toBigInt();
-  }
-
-  set numTokenChallenges(value: BigInt) {
-    this.set("numTokenChallenges", Value.fromBigInt(value));
   }
 }
 

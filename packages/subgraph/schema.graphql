@@ -5,20 +5,14 @@ type Committer @entity {
   removedAt: BigInt!
 
   commitments: [Commitment!]! @derivedFrom(field: "committer")
-  numCommitments: BigInt!
 }
 
 type Requester @entity {
   id: ID!
 
   commitments: [Commitment!]! @derivedFrom(field: "requester")
-  numCommitments: BigInt!
-
   tokens: [Token!]! @derivedFrom(field: "owner")
-  numTokens: BigInt!
-
   tokenChallenge: [TokenChallenge!]! @derivedFrom(field: "owner")
-  numTokenChallenges: BigInt!
 }
 
 type TokenChallenge @entity {
