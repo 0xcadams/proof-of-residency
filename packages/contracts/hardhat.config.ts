@@ -17,6 +17,7 @@ const ALCHEMY_API_KEY = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
 const INFURA_PROJECT_ID = process.env.NEXT_PUBLIC_INFURA_PROJECT_ID;
 const ETHERSCAN_API_KEY = process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY;
 const ARBISCAN_API_KEY = process.env.NEXT_PUBLIC_ARBISCAN_API_KEY;
+const OPTIMISTIC_ETHERSCAN_API_KEY = process.env.NEXT_PUBLIC_OPTIMISTIC_ETHERSCAN_API_KEY;
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY || undefined;
 
@@ -45,8 +46,8 @@ const config: HardhatUserConfig = {
     localhost: {
       // accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
     },
-    rinkeby: {
-      url: `https://rinkeby.infura.io/v3/${INFURA_PROJECT_ID}`,
+    goerli: {
+      url: `https://goerli.infura.io/v3/${INFURA_PROJECT_ID}`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
     },
     'arbitrum-rinkeby': {
@@ -55,6 +56,14 @@ const config: HardhatUserConfig = {
     },
     arbitrum: {
       url: `https://arbitrum-mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
+    },
+    optimisticKovan: {
+      url: `https://optimism-kovan.infura.io/v3/${INFURA_PROJECT_ID}`,
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
+    },
+    optimism: {
+      url: `https://optimism-mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
     },
     mainnet: {
@@ -69,9 +78,13 @@ const config: HardhatUserConfig = {
     apiKey: {
       mainnet: ETHERSCAN_API_KEY,
       rinkeby: ETHERSCAN_API_KEY,
+      goerli: ETHERSCAN_API_KEY,
       // Arbitrum
       arbitrumOne: ARBISCAN_API_KEY,
-      arbitrumTestnet: ARBISCAN_API_KEY
+      arbitrumTestnet: ARBISCAN_API_KEY,
+      // optimism
+      optimisticEthereum: OPTIMISTIC_ETHERSCAN_API_KEY,
+      optimisticKovan: OPTIMISTIC_ETHERSCAN_API_KEY
     }
   },
   typechain: {
