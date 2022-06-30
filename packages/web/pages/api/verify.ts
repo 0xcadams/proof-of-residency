@@ -4,7 +4,6 @@ import { AddressComponents, VerifyAddressRequest, VerifyAddressResponse } from '
 import { faker } from '@faker-js/faker';
 
 import { signAddressEip712 } from 'src/api/ethers';
-import { ethers } from 'ethers';
 import { getIsoCountryForAlpha2 } from 'src/web/token';
 import { isValidProofOfResidencyNetwork } from 'src/contracts';
 
@@ -16,7 +15,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<VerifyAddressRe
     const body: VerifyAddressRequest = req.body;
 
     if (method === 'POST') {
-      const nonce = ethers.BigNumber.from(ethers.utils.randomBytes(32));
+      const expiration = new Date().getTime() + 3600000;
 
       const name = `${faker.name.firstName()} ${faker.name.lastName()} or Current Resident`;
 
@@ -50,7 +49,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<VerifyAddressRe
 
           deliverability: verifyResult.deliverability,
 
-          nonce
+          expiration
         };
 
         const signature = await signAddressEip712(address, body.chain);
@@ -88,7 +87,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<VerifyAddressRe
 
         deliverability: verifyResult.deliverability,
 
-        nonce
+        expiration
       };
 
       const signature = await signAddressEip712(address, body.chain);

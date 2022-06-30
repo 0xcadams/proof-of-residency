@@ -1,6 +1,7 @@
 import { useToast } from '@chakra-ui/react';
 import { BigNumber } from 'ethers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { getContractAddressForChain, ProofOfResidencyNetwork } from 'src/contracts';
 import { ProofOfResidency, ProofOfResidency__factory as ProofOfResidencyFactory } from 'types';
 import {
   useAccount,
@@ -15,17 +16,18 @@ const useProofOfResidency = () => {
   const [proofOfResidency, setProofOfResidency] = useState<ProofOfResidency | null>(null);
 
   const { data: signer } = useSigner();
+  const { chain } = useNetwork();
 
   useEffect(() => {
-    if (signer && process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS) {
+    if (signer && chain?.id) {
       const proofOfResidency = ProofOfResidencyFactory.connect(
-        process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS,
+        getContractAddressForChain(chain.id as ProofOfResidencyNetwork),
         signer
       );
 
       setProofOfResidency(proofOfResidency);
     }
-  }, [signer]);
+  }, [signer, chain]);
 
   return proofOfResidency;
 };
@@ -107,9 +109,11 @@ export const useGetCommitmentPeriodIsValid = () => {
 
   useEffect(() => {
     (async () => {
-      const response = await proofOfResidency?.commitmentPeriodIsValid();
+      try {
+        const response = await proofOfResidency?.commitmentPeriodIsValid();
 
-      setValue(response ?? false);
+        setValue(response ?? false);
+      } catch (e) {}
     })();
   }, [proofOfResidency]);
 
@@ -123,9 +127,11 @@ export const useGetCommitmentPeriodIsUpcoming = () => {
 
   useEffect(() => {
     (async () => {
-      const response = await proofOfResidency?.commitmentPeriodIsUpcoming();
+      try {
+        const response = await proofOfResidency?.commitmentPeriodIsUpcoming();
 
-      setValue(response ?? false);
+        setValue(response ?? false);
+      } catch (e) {}
     })();
   }, [proofOfResidency]);
 
@@ -156,9 +162,9 @@ export const useHasTokenId = () => {
 };
 
 export const useWalletAddress = () => {
-  const { data } = useAccount();
+  const { address } = useAccount();
 
-  return data?.address;
+  return address;
 };
 
 export const useCurrentNonce = () => {
@@ -166,19 +172,19 @@ export const useCurrentNonce = () => {
 
   const proofOfResidency = useProofOfResidency();
 
-  const { data: accountData } = useAccount();
+  const address = useWalletAddress();
 
   useEffect(() => {
     (async () => {
-      const response = accountData?.address;
+      try {
+        if (address) {
+          const nonce = await proofOfResidency?.nonces(address);
 
-      if (response) {
-        const nonce = await proofOfResidency?.nonces(response);
-
-        setValue(nonce ?? null);
-      }
+          setValue(nonce ?? null);
+        }
+      } catch (e) {}
     })();
-  }, [accountData, proofOfResidency]);
+  }, [address, proofOfResidency]);
 
   return value;
 };
@@ -207,11 +213,37 @@ export const useMintedCount = async (countryId: BigNumber): Promise<BigNumber | 
   return proofOfResidency?.countryTokenCounts(countryId);
 };
 
-const getEip712Domain = (contractAddress: string, chainId: number) => ({
+export const useHasCommitment = (): boolean | null => {
+  const [hasCommitment, setHasCommitment] = useState<boolean | null>(null);
+
+  const proofOfResidency = useProofOfResidency();
+  const walletAddress = useWalletAddress();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (walletAddress) {
+          const commitment = await proofOfResidency?.commitments(walletAddress);
+
+          const isValueZero = commitment?.value?.isZero() ?? true;
+
+          return setHasCommitment(!isValueZero);
+        }
+        return setHasCommitment(false);
+      } catch (e) {
+        return setHasCommitment(false);
+      }
+    })();
+  }, [walletAddress, proofOfResidency]);
+
+  return hasCommitment;
+};
+
+const getEip712Domain = (chainId: ProofOfResidencyNetwork) => ({
   name: 'Proof of Residency Protocol',
   version: '1',
   chainId,
-  verifyingContract: contractAddress
+  verifyingContract: getContractAddressForChain(chainId)
 });
 
 const passwordTypes = {
@@ -223,20 +255,17 @@ const passwordTypes = {
 };
 
 export const useSignPasswordEip712 = () => {
-  const { activeChain } = useNetwork();
+  const { chain } = useNetwork();
   const { data: signer } = useSigner();
 
   const { signTypedDataAsync } = useSignTypedData();
 
   return useCallback(
     async (walletAddress: string, password: string, nonce: BigNumber) => {
-      const chainId = activeChain?.id ?? 1;
+      const chainId = (chain?.id ?? 1) as ProofOfResidencyNetwork;
 
       if (chainId && signer) {
-        const domain = getEip712Domain(
-          process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS ?? '',
-          chainId
-        );
+        const domain = getEip712Domain(chainId);
 
         const signature = await signTypedDataAsync({
           domain,

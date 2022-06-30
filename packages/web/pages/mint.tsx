@@ -85,7 +85,7 @@ const MintPage = () => {
 
       <Header />
 
-      <Flex minHeight="100vh" pt="70px" width="100%" direction="column" px={4}>
+      <Flex minHeight="90vh" pt="70px" width="100%" direction="column" px={4}>
         <Heading mt={20} size="4xl" textAlign="center">
           Claim Token
         </Heading>

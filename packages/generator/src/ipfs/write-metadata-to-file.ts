@@ -1,10 +1,10 @@
-import { promises as fs } from "fs";
-import path from "path";
-import { contractMetadata, getMetadata } from "../metadata";
-import { getCacheableTokenIds } from "../token";
+import { promises as fs } from 'fs';
+import path from 'path';
+import { contractMetadata, getMetadata } from '../metadata';
+import { getCacheableTokenIds } from '../token';
 
 export const exportMetadata = async () => {
-  await fs.mkdir("metadata-output/", { recursive: true });
+  await fs.mkdir('metadata-output/', { recursive: true });
 
   await Promise.all(
     getCacheableTokenIds().map(async (tokenId) => {
@@ -16,10 +16,9 @@ export const exportMetadata = async () => {
     })
   );
 
-
   const outputFile = path.join(process.cwd(), `metadata-output/contract`);
 
   await fs.writeFile(outputFile, JSON.stringify(contractMetadata, null, 2));
 };
 
-exportMetadata().then(() => console.log("Exported!"));
+exportMetadata().then(() => console.log('Exported!'));

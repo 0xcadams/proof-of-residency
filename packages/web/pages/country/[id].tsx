@@ -5,6 +5,7 @@ import {
   Grid,
   Heading,
   SimpleGrid,
+  Skeleton,
   Tag,
   Text,
   Tooltip
@@ -22,7 +23,7 @@ import {
   getOwnerOfToken,
   TokenOwner
 } from 'src/api/ethers';
-import { ProofOfResidencyNetwork, PROOF_OF_RESIDENCY_CHAINS } from 'src/contracts';
+import { getChainForChainId, PROOF_OF_RESIDENCY_CHAINS } from 'src/contracts';
 import Header from 'src/web/components/Header';
 import { getPopulationForAlpha3 } from 'src/web/populations';
 import {
@@ -33,7 +34,6 @@ import {
   getTokenIdsForCountryAndCount
 } from 'src/web/token';
 import { MetadataResponse } from 'types';
-import { chain } from 'wagmi';
 import Footer from '../../src/web/components/Footer';
 
 type CountryDetailsProps = CountryIso & {
@@ -48,7 +48,7 @@ type CountryDetailsProps = CountryIso & {
     link: string;
     image: string;
     owner: TokenOwner;
-    chain: ProofOfResidencyNetwork;
+    chain: string;
   }[];
 };
 
@@ -117,7 +117,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
               tokenNumber: tokenNumber.toString(),
               link: `/token/${chain}/${tokenId}`,
               image: `https://generator.proofofresidency.xyz/${tokenId}`,
-              chain
+              chain: getChainForChainId(chain)?.name ?? ''
               // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/token/${tokenId}.png`
             };
           }
@@ -152,7 +152,7 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
     {
       name: 'Count Minted',
       content: `${numeral(props.minted).format('0,0')}`,
-      tooltip: 'The number of tokens which have been minted.'
+      tooltip: 'The number of tokens which have been minted across all supported chains.'
     },
     {
       name: 'ISO-3166 ID',
@@ -164,7 +164,7 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
         ? {
             name: '2020 Population',
             content: `${numeral(props.population).format('0.0a')}`,
-            tooltip: 'The total population size in 2020 in the country.'
+            tooltip: 'The total population count in 2020.'
           }
         : {}
     ],
@@ -207,32 +207,23 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
 
         <Divider />
 
-        <Heading size="lg" mt={6} textAlign="center">
+        <Heading fontSize="5xl" mt={6} textAlign="center">
           {props.country}
         </Heading>
 
-        <Grid
-          px={4}
-          // columns={{ base: 1, md: 2 }}
-          // spacing={4}
-          maxWidth={1200}
-          width="100%"
-          mx="auto"
-          flexDirection="column"
-          mt={4}
-        >
+        <Grid px={4} maxWidth={1200} width="100%" mx="auto" flexDirection="column" mt={4}>
           {props.country && (
-            <Text mx="auto" fontSize="xl" textAlign="center" width="100%">
+            <Text maxWidth={600} mx="auto" fontSize="xl" textAlign="center" width="100%">
               {`Art inspired by ${props.country} and its water bodies.`}
             </Text>
           )}
 
-          <Text mt={1} mx="auto" fontSize="md" textAlign="center" width="100%">
+          <Text maxWidth={600} mt={1} mx="auto" fontSize="md" textAlign="center" width="100%">
             Designs for every minted NFT vary.
           </Text>
 
           <SimpleGrid
-            mx={{ base: 2, sm: 'auto' }}
+            mx={{ base: 4, sm: 'auto' }}
             mt={8}
             mb={8}
             spacingX={10}
@@ -268,7 +259,7 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
           {props.tokens.length > 0 && (
             <>
               <Divider />
-              <Heading textAlign="center" mt={4} size="lg">
+              <Heading textAlign="center" mt={4} fontSize="3xl">
                 Minted Tokens
               </Heading>
 
@@ -284,10 +275,10 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
               >
                 {props.tokens.map((token, i) => (
                   <Link key={token.tokenId} href={token.link} passHref>
-                    <Flex cursor="pointer" direction="column">
+                    <Flex align="center" cursor="pointer" direction="column">
                       <Box>
                         <Flex mt={2} mx="auto" position="relative" height={400}>
-                          {/* {typeof window === 'undefined' ? (
+                          {typeof window === 'undefined' ? (
                             <Skeleton height={400} width="100%" />
                           ) : (
                             <iframe
@@ -295,17 +286,17 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
                               allowFullScreen={false}
                               allow="xr-spatial-tracking"
                               src={token.image}
-                              style={{ height: 400, width: '100%' }}
+                              style={{ cursor: 'pointer', height: 400, width: '100%' }}
                             />
-                          )} */}
+                          )}
                         </Flex>
                       </Box>
-                      <Text mt={2} fontWeight="bold">
-                        {chain[token.chain].name}: #{token.tokenNumber}
-                      </Text>
+                      <Heading mt={2} fontSize="2xl">
+                        {token.chain}: #{token.tokenNumber}
+                      </Heading>
                       <Box mt={2}>
-                        <Tag pt="3px" variant="solid" size="lg">
-                          Owned by: {token.owner.content}
+                        <Tag variant="solid" size="md">
+                          Owner: {token.owner.content}
                         </Tag>
                       </Box>
                     </Flex>

@@ -26,11 +26,11 @@ const FaqPage = () => {
       q: 'What is Proof of Residency?',
       a: (
         <>
-          Proof of Residency is a {'"proof of personhood"'} protocol - we send physical mail with a
-          secret phrase and use a <strong>commit-reveal scheme</strong> to prove that the recipient
-          is human and resides at the provided address. The physical address is kept private and
-          names are not requested. The subsequently minted ERC-721 tokens are non-transferable and
-          burnable.
+          Proof of Residency is a permissionless {'"proof of personhood"'} protocol - we send
+          physical mail with a secret phrase and use a <strong>commit-reveal scheme</strong> to
+          prove that the recipient is human and resides at the provided address. The physical
+          address is kept private and names are not requested. The subsequently minted ERC-721
+          tokens are non-transferable and burnable.
         </>
       )
     },
@@ -38,9 +38,8 @@ const FaqPage = () => {
       q: 'What is the address verification process?',
       a: (
         <>
-          We pioneered a novel way of proving humanity - the first step to the process is verifying
-          that you reside at a mailing address you provide. The technical details of the process can
-          be seen on our{' '}
+          The first step is verifying that you reside at a mailing address you provide. The
+          technical details of the process can be seen on our{' '}
           <strong>
             <Link href="https://github.com/0xcadams/proof-of-residency/blob/main/WHITEPAPER.md">
               public Github
@@ -78,6 +77,16 @@ const FaqPage = () => {
       )
     },
     {
+      q: 'What chains are supported?',
+      a: (
+        <>
+          We support L1 Ethereum and are in the process of adding all Ethereum-based rollups.
+          {"We're"} currently live on L1 mainnet and Arbitrum, Optimism, and Polygon. Reach out on
+          Discord if you want to see another Ethereum-based rollup supported!
+        </>
+      )
+    },
+    {
       q: 'Is minting unlimited?',
       a: (
         <>
@@ -92,11 +101,8 @@ const FaqPage = () => {
       a: (
         <>
           We depend on an external service, Lob, to provide mailing address validation. If you are
-          running into trouble with a valid address, please email{' '}
-          <strong>
-            <Link href="mailto:hello@proofofresidency.xyz">hello@proofofresidency.xyz</Link>
-          </strong>
-          {'. We look forward to supporting your address soon!'}
+          running into trouble with a valid address, please reach out on Discord.
+          {'We look forward to supporting your address soon!'}
         </>
       )
     },
@@ -128,6 +134,17 @@ const FaqPage = () => {
           to file any issues or requests for features.
         </>
       )
+    },
+    {
+      q: 'How do the fees get used?',
+      a: (
+        <>
+          The fees are split between the protocol and the Committer who mails the physical letters.
+          The protocol fees are immutably set to 20% of the revenue, and the protocol dedicates 50%
+          of that to be donated to Make-A-Wish®. The remaining 80% is claimable by the Committer to
+          cover operational costs.
+        </>
+      )
     }
   ];
 
@@ -138,11 +155,11 @@ const FaqPage = () => {
       <Header />
 
       <Flex minHeight="100vh" pt="70px" width="100%" direction="column" px={4}>
-        <Heading mt={20} size="4xl" textAlign="center">
+        <Heading mt={10} fontSize="8xl" textAlign="center">
           FAQ
         </Heading>
 
-        <Flex mt={6} mb={2} mx="auto" position="relative" width="100%" height={frameHeight}>
+        <Flex mt={10} mb={2} mx="auto" position="relative" width="100%" height={frameHeight}>
           <Image
             priority
             objectFit="contain"
@@ -174,7 +191,7 @@ const FaqPage = () => {
                     <>
                       <h2>
                         <AccordionButton>
-                          <Heading flex="1" textAlign="left" size="lg" py={2}>
+                          <Heading flex="1" textAlign="left" size="md" py={2}>
                             {faq.q}
                           </Heading>
                           <AccordionIcon />

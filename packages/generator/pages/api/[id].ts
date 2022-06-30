@@ -1,10 +1,6 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest, NextApiResponse } from 'next';
 
-import {
-  MetadataResponse,
-  getMetadata,
-  contractMetadata,
-} from "../../src/metadata";
+import { MetadataResponse, getMetadata, contractMetadata } from '../../src/metadata';
 
 const handler = async (
   req: NextApiRequest,
@@ -13,18 +9,18 @@ const handler = async (
   try {
     const method = req.method;
 
-    if (method === "GET") {
+    if (method === 'GET') {
       const { id } = req.query;
 
+      res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
+
       const metadataOutput =
-        id === "contract"
-          ? contractMetadata
-          : await getMetadata(id?.toString() ?? "0");
+        id === 'contract' ? contractMetadata : await getMetadata(id?.toString() ?? '0');
 
       return res.status(200).json(metadataOutput);
     }
 
-    res.setHeader("Allow", ["GET"]);
+    res.setHeader('Allow', ['GET']);
     return res.status(405).end(`Method ${method} Not Allowed`);
   } catch (err) {
     console.error(err);

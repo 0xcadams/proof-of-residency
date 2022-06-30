@@ -104,6 +104,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
         return res.status(500).end('Mailing address signature was incorrect');
       }
 
+      if (body.addressPayload.expiration < new Date().getTime() - 3600000) {
+        return res.status(500).end('Mailing address request has expired');
+      }
+
       const countryIso = getIsoCountryForAlpha2(body.addressPayload.country);
 
       if (!countryIso) {
@@ -127,7 +131,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
 
       // require that the address hasn't been requested for 4 weeks
       if (
-        process.env.NODE_ENV !== 'development' &&
+        process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' &&
         lastRequestHashedMailingAddress &&
         Date.now() - lastRequestHashedMailingAddress <= 2.419 * 1e9
       ) {

@@ -5,9 +5,7 @@ import { AddressComponents, ProofOfResidency__factory as ProofOfResidencyFactory
 import { chainId } from 'wagmi';
 
 if (!process.env.PRIVATE_KEY) {
-  throw new Error(
-    'Must define process.env.PRIVATE_KEY and process.env.NEXT_PUBLIC_ETHEREUM_CONTRACT_ADDRESS and process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS'
-  );
+  throw new Error('Must define process.env.PRIVATE_KEY');
 }
 
 const l1Provider = new ethers.providers.InfuraProvider(
@@ -30,44 +28,44 @@ const polygonProvider = new ethers.providers.InfuraProvider(
 const offchainWallet = new ethers.Wallet(process.env.PRIVATE_KEY);
 
 const proofOfResidencyL1 = ProofOfResidencyFactory.connect(
-  process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
-    ? getContractAddressForChain('goerli')
-    : getContractAddressForChain('mainnet'),
+  process.env.NEXT_PUBLIC_VERCEL_ENV !== 'production'
+    ? getContractAddressForChain(chainId.goerli)
+    : getContractAddressForChain(chainId.mainnet),
   l1Provider
 );
 const proofOfResidencyArbitrum = ProofOfResidencyFactory.connect(
-  process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
-    ? getContractAddressForChain('arbitrumRinkeby')
-    : getContractAddressForChain('arbitrum'),
+  process.env.NEXT_PUBLIC_VERCEL_ENV !== 'production'
+    ? getContractAddressForChain(chainId.arbitrumRinkeby)
+    : getContractAddressForChain(chainId.arbitrum),
   arbitrumProvider
 );
 const proofOfResidencyOptimism = ProofOfResidencyFactory.connect(
-  process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
-    ? getContractAddressForChain('optimismKovan')
-    : getContractAddressForChain('optimism'),
+  process.env.NEXT_PUBLIC_VERCEL_ENV !== 'production'
+    ? getContractAddressForChain(chainId.optimismKovan)
+    : getContractAddressForChain(chainId.optimism),
   optimismProvider
 );
 const proofOfResidencyPolygon = ProofOfResidencyFactory.connect(
-  process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
-    ? getContractAddressForChain('polygonMumbai')
-    : getContractAddressForChain('polygon'),
+  process.env.NEXT_PUBLIC_VERCEL_ENV !== 'production'
+    ? getContractAddressForChain(chainId.polygonMumbai)
+    : getContractAddressForChain(chainId.polygon),
   polygonProvider
 );
 
 const getProofOfResidencyForChain = (chain: ProofOfResidencyNetwork) =>
-  chain === 'mainnet' || chain === 'goerli'
+  chain === chainId.mainnet || chain === chainId.goerli
     ? proofOfResidencyL1
-    : chain === 'arbitrum' || chain === 'arbitrumRinkeby'
+    : chain === chainId.arbitrum || chain === chainId.arbitrumRinkeby
     ? proofOfResidencyArbitrum
-    : chain === 'optimism' || chain === 'optimismKovan'
+    : chain === chainId.optimism || chain === chainId.optimismKovan
     ? proofOfResidencyOptimism
     : proofOfResidencyPolygon;
 
-const getEip712Domain = (contractAddress: string, chainId: number) => ({
+const getEip712Domain = (chainId: ProofOfResidencyNetwork) => ({
   name: 'Proof of Residency Protocol',
   version: '1',
   chainId,
-  verifyingContract: contractAddress
+  verifyingContract: getContractAddressForChain(chainId)
 });
 
 export const hashAndSignCommitmentEip712 = async (
@@ -85,7 +83,7 @@ export const hashAndSignCommitmentEip712 = async (
     )
   );
 
-  const domain = getEip712Domain(getContractAddressForChain(chain), chainId[chain]);
+  const domain = getEip712Domain(chain);
 
   const types = {
     Commitment: [
@@ -116,7 +114,7 @@ const mailingAddressTypes = {
     { name: 'postal', type: 'string' },
     { name: 'country', type: 'string' },
     { name: 'deliverability', type: 'string' },
-    { name: 'nonce', type: 'uint256' }
+    { name: 'expiration', type: 'uint256' }
   ]
 };
 
@@ -124,10 +122,7 @@ export const signAddressEip712 = async (
   address: AddressComponents,
   chain: ProofOfResidencyNetwork
 ) => {
-  const domain = getEip712Domain(
-    process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS ?? '',
-    chainId[chain]
-  );
+  const domain = getEip712Domain(chain);
 
   const signature = await offchainWallet._signTypedData(domain, mailingAddressTypes, address);
 
@@ -139,10 +134,7 @@ export const validateMailingAddressSignature = async (
   signature: string,
   chain: ProofOfResidencyNetwork
 ): Promise<string> => {
-  const domain = getEip712Domain(
-    process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS ?? '',
-    chainId[chain]
-  );
+  const domain = getEip712Domain(chain);
 
   const address = ethers.utils.verifyTypedData(domain, mailingAddressTypes, payload, signature);
 
@@ -164,10 +156,7 @@ export const validatePasswordSignature = async (
   signature: string,
   chain: ProofOfResidencyNetwork
 ): Promise<string> => {
-  const domain = getEip712Domain(
-    process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS ?? '',
-    chainId[chain]
-  );
+  const domain = getEip712Domain(chain);
 
   const address = ethers.utils.verifyTypedData(
     domain,
@@ -190,10 +179,10 @@ export const getCurrentWalletAddress = (): string => {
 export const getCurrentMintedCount = async (countryId: BigNumber | number) => {
   try {
     const [l1Count, arbitrumCount, optimismCount, polygonCount] = await Promise.all([
-      getProofOfResidencyForChain('mainnet').countryTokenCounts(countryId),
-      getProofOfResidencyForChain('arbitrum').countryTokenCounts(countryId),
-      getProofOfResidencyForChain('optimism').countryTokenCounts(countryId),
-      getProofOfResidencyForChain('polygon').countryTokenCounts(countryId)
+      getProofOfResidencyForChain(chainId.mainnet).countryTokenCounts(countryId),
+      getProofOfResidencyForChain(chainId.arbitrum).countryTokenCounts(countryId),
+      getProofOfResidencyForChain(chainId.optimism).countryTokenCounts(countryId),
+      getProofOfResidencyForChain(chainId.polygon).countryTokenCounts(countryId)
     ]);
 
     return l1Count.add(arbitrumCount).add(optimismCount).add(polygonCount);
@@ -237,13 +226,13 @@ export const getOwnerOfToken = async (
       const owner = await proofOfResidency.ownerOf(BigNumber.from(tokenId));
 
       return {
-        content: owner?.slice(0, 8) || 'None',
+        content: owner?.replace(owner?.slice(6, 38), '...') || 'None',
         link: owner
-          ? chain === 'arbitrum'
+          ? chain === chainId.arbitrum
             ? `https://arbiscan.io/address/${owner}`
-            : chain === 'optimism'
+            : chain === chainId.optimism
             ? `https://optimistic.etherscan.io/address/${owner}`
-            : chain === 'polygon'
+            : chain === chainId.polygon
             ? `https://polygonscan.io/address/${owner}`
             : `https://etherscan.io/address/${owner}`
           : null
@@ -262,10 +251,10 @@ export const getOwnerOfToken = async (
 export const getTokensForOwner = async (owner: string) => {
   try {
     const [l1TokenId, arbitrumTokenId, optimismTokenId, polygonTokenId] = await Promise.allSettled([
-      getProofOfResidencyForChain('mainnet').tokenOfOwnerByIndex(owner, 0),
-      getProofOfResidencyForChain('arbitrum').tokenOfOwnerByIndex(owner, 0),
-      getProofOfResidencyForChain('optimism').tokenOfOwnerByIndex(owner, 0),
-      getProofOfResidencyForChain('polygon').tokenOfOwnerByIndex(owner, 0)
+      getProofOfResidencyForChain(chainId.mainnet).tokenOfOwnerByIndex(owner, 0),
+      getProofOfResidencyForChain(chainId.arbitrum).tokenOfOwnerByIndex(owner, 0),
+      getProofOfResidencyForChain(chainId.optimism).tokenOfOwnerByIndex(owner, 0),
+      getProofOfResidencyForChain(chainId.polygon).tokenOfOwnerByIndex(owner, 0)
     ]);
 
     return {

@@ -35,64 +35,74 @@ export const AddressModal = (props: {
 
   const toast = useToast();
 
-  const { data: network } = useNetwork();
+  const { chain } = useNetwork();
 
   const onSubmit = async () => {
     setIsLoading(true);
 
-    if (primaryLine && city && state && postalCode && country && network?.network) {
-      const body: VerifyAddressRequest = {
-        primaryLine,
-        secondaryLine,
-        city,
-        state,
-        postalCode,
-        country,
+    try {
+      if (primaryLine && city && state && postalCode && country && chain?.network) {
+        const body: VerifyAddressRequest = {
+          primaryLine,
+          secondaryLine,
+          city,
+          state,
+          postalCode,
+          country,
 
-        chain: network?.network as ProofOfResidencyNetwork
-      };
-      const result = await axiosClient.post<VerifyAddressResponse>('/verify', body);
+          chain: chain.id as ProofOfResidencyNetwork
+        };
+        const result = await axiosClient.post<VerifyAddressResponse>('/verify', body);
 
-      if (result.status === 429) {
-        toast({
-          title: 'Error',
-          description:
-            'There have been too many requests for this address. Please try again later.',
-          status: 'error'
-        });
-      } else if (result.status !== 200) {
-        toast({
-          title: 'Error',
-          description: 'There was a problem with the request, please try again.',
-          status: 'error'
-        });
-      } else if (result.data.deliverability === 'deliverable') {
-        props.onSuccess(result.data);
+        if (result.status === 429) {
+          toast({
+            title: 'Error',
+            description:
+              'There have been too many requests for this address. Please try again later.',
+            status: 'error'
+          });
+        } else if (result.status !== 200) {
+          toast({
+            title: 'Error',
+            description: 'There was a problem with the request, please try again.',
+            status: 'error'
+          });
+        } else if (result.data.deliverability === 'deliverable') {
+          props.onSuccess(result.data);
+        } else {
+          toast({
+            title: 'Warning',
+            description:
+              result.data.deliverability === 'deliverable_incorrect_unit'
+                ? 'Incorrect unit for address, please try again.'
+                : result.data.deliverability === 'deliverable_unnecessary_unit'
+                ? 'Unnecessary unit for address, please try again.'
+                : result.data.deliverability === 'deliverable_missing_unit'
+                ? 'Missing unit for address, please try again.'
+                : result.data.deliverability === 'deliverable_missing_info'
+                ? 'Missing information for address, please try again.'
+                : 'Undeliverable address, please try again.',
+            status: 'warning'
+          });
+        }
       } else {
         toast({
-          title: 'Warning',
-          description:
-            result.data.deliverability === 'deliverable_incorrect_unit'
-              ? 'Incorrect unit for address, please try again.'
-              : result.data.deliverability === 'deliverable_unnecessary_unit'
-              ? 'Unnecessary unit for address, please try again.'
-              : result.data.deliverability === 'deliverable_missing_unit'
-              ? 'Missing unit for address, please try again.'
-              : result.data.deliverability === 'deliverable_missing_info'
-              ? 'Missing information for address, please try again.'
-              : 'Undeliverable address, please try again.',
-          status: 'warning'
+          title: 'Error',
+          description: 'There was a problem with the address, please try again.',
+          status: 'error'
         });
       }
-    } else {
+    } catch (e) {
+      console.error(e);
+
       toast({
         title: 'Error',
         description: 'There was a problem with the address, please try again.',
         status: 'error'
       });
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   return (
@@ -111,7 +121,7 @@ export const AddressModal = (props: {
                   whitepaper
                 </Link>
               </strong>{' '}
-              to answer any other questions about our security considerations.
+              for any questions about our security considerations.
             </Text>
 
             <CountrySelect country={country} onChange={(country) => setCountry(country)} />
@@ -175,7 +185,7 @@ export const AddressModal = (props: {
               isLoading={isLoading}
               onClick={onSubmit}
             >
-              Verify Address
+              Submit Address
             </Button>
           </ModalFooter>
         </ModalContent>

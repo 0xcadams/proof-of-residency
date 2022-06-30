@@ -16,7 +16,7 @@ import theme from '../src/web/theme';
 import '@rainbow-me/rainbowkit/styles.css';
 
 import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { configureChains, createClient, WagmiConfig } from 'wagmi';
+import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 
 import { rainbowTheme } from 'src/web/rainbowTheme';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
@@ -24,7 +24,7 @@ import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
 import { allChains } from 'src/contracts';
 
-const { chains, provider } = configureChains(allChains, [
+const { chains, provider } = configureChains(allChains as unknown as Chain[], [
   infuraProvider({ infuraId: process.env.NEXT_PUBLIC_INFURA_PROJECT_ID }),
   alchemyProvider({ alchemyId: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY }),
   publicProvider()

@@ -15,7 +15,7 @@ export type AddressComponents = {
     | VerifyUsAddressResponse['deliverability']
     | VerifyIntlAddressResponse['deliverability'];
 
-  nonce: BigNumber;
+  expiration: number;
 };
 
 export type SubmitAddressPasswordPayload = {

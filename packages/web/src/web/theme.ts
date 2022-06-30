@@ -15,10 +15,19 @@ const breakpoints = createBreakpoints({
   '2xl': '92em'
 });
 
-const components = {
+const components: DeepPartial<Theme['components']> = {
   Button: {
     baseStyle: {
       // pt: '3px'
+    }
+  },
+  Tooltip: {
+    baseStyle: {
+      backgroundColor: 'black',
+      color: 'white',
+      px: 3,
+      py: 2,
+      borderRadius: 8
     }
   }
 };

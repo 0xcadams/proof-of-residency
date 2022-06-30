@@ -1,4 +1,4 @@
-import { Button, Flex } from '@chakra-ui/react';
+import { Button, Flex, Text } from '@chakra-ui/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { FaChevronDown } from 'react-icons/fa';
 import Image from 'next/image';
@@ -44,12 +44,11 @@ export const CustomConnectButton = () => {
                   >
                     {chain.hasIcon && (
                       <Flex
-                        mr={2}
                         style={{
                           background: chain.iconBackground,
                           width: 20,
                           height: 20,
-                          borderRadius: 999,
+                          borderRadius: '100%',
                           overflow: 'hidden'
                         }}
                       >
@@ -63,7 +62,6 @@ export const CustomConnectButton = () => {
                         )}
                       </Flex>
                     )}
-                    {chain.name}
                   </Button>
                   <Button
                     ml={2}
@@ -79,7 +77,7 @@ export const CustomConnectButton = () => {
                           // background: chain.iconBackground,
                           width: 20,
                           height: 20,
-                          borderRadius: 999,
+                          borderRadius: '100%',
                           overflow: 'hidden'
                         }}
                       >
@@ -93,7 +91,7 @@ export const CustomConnectButton = () => {
                         )}
                       </Flex>
                     )}
-                    {account.displayName}
+                    <Text>{account.displayName}</Text>
                   </Button>
                 </Flex>
               );

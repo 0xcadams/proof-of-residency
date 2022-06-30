@@ -1,22 +1,22 @@
-import { promises as fs } from "fs";
-import { GetStaticPaths, GetStaticPropsContext } from "next";
-import dynamic from "next/dynamic";
-import Head from "next/head";
-import path from "path";
-import { ParsedUrlQuery } from "querystring";
-import React, { useMemo, useState } from "react";
-import { P5WrapperProps } from "react-p5-wrapper";
+import { promises as fs } from 'fs';
+import { GetStaticPaths, GetStaticPropsContext } from 'next';
+import dynamic from 'next/dynamic';
+import Head from 'next/head';
+import path from 'path';
+import { ParsedUrlQuery } from 'querystring';
+import React, { useMemo, useState } from 'react';
+import { P5WrapperProps } from 'react-p5-wrapper';
 import {
   colors,
   getCacheableTokenIds,
   getCountryAndTokenNumber,
   getIsoCountryForCountryId,
-  metadata,
-} from "../src/token";
-import { Country } from "../src/types";
+  metadata
+} from '../src/token';
+import { Country } from '../src/types';
 
 const P5Wrapper = dynamic<P5WrapperProps>(
-  () => import("react-p5-wrapper").then((mod) => mod.ReactP5Wrapper),
+  () => import('react-p5-wrapper').then((mod) => mod.ReactP5Wrapper),
   { ssr: false }
 );
 
@@ -28,13 +28,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: getCacheableTokenIds().map((id) => {
       const params: Params = {
-        id,
+        id
       };
 
       return { params };
     }),
 
-    fallback: "blocking",
+    fallback: 'blocking'
   };
 };
 
@@ -45,9 +45,7 @@ type IdPageProps = Country & {
   tokenNumber: number;
 };
 
-export const getStaticProps = async ({
-  params,
-}: GetStaticPropsContext<Params>) => {
+export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) => {
   const id = params?.id?.toString();
 
   if (!id) {
@@ -61,13 +59,8 @@ export const getStaticProps = async ({
       return { notFound: true };
     }
 
-    const file = path.join(
-      process.cwd(),
-      `sources/countries/${countryId.toNumber()}.json`
-    );
-    const countrySource: Country = JSON.parse(
-      (await fs.readFile(file, "utf8")).toString()
-    );
+    const file = path.join(process.cwd(), `sources/countries/${countryId.toNumber()}.json`);
+    const countrySource: Country = JSON.parse((await fs.readFile(file, 'utf8')).toString());
 
     if (!countrySource?.country) {
       return { notFound: true };
@@ -80,11 +73,11 @@ export const getStaticProps = async ({
       colors: meta.colors,
       sI: meta.sI,
       rhI: meta.rhI,
-      tokenNumber: tokenNumber.toNumber(),
+      tokenNumber: tokenNumber.toNumber()
     };
 
     return {
-      props: props,
+      props: props
     };
   } catch (e) {
     console.error(e);
@@ -99,34 +92,15 @@ const IndexPage = (props: IdPageProps) => {
   return (
     <>
       <Head>
-        <title>{`${
-          props.country.country
-        }: #${props.tokenNumber.toString()}`}</title>
+        <title>{`${props.country.country}: #${props.tokenNumber.toString()}`}</title>
         <style>{`body { background-color: ${color.bgg}; }`}</style>
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="/apple-touch-icon.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="32x32"
-          href="/favicon-32x32.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="16x16"
-          href="/favicon-16x16.png"
-        />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#b69ccb" />
         <meta name="msapplication-TileColor" content="#eaddf9" />
         <meta name="theme-color" content="#eaddf9" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1"
-        />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
       </Head>
       <P5Wrapper
         sketch={(p5) => {
@@ -134,9 +108,7 @@ const IndexPage = (props: IdPageProps) => {
           let hydroCoords: { x: number; y: number }[][][];
 
           p5.setup = () => {
-            const dim = Math.floor(
-              Math.min(window.innerWidth, window.innerHeight)
-            );
+            const dim = Math.floor(Math.min(window.innerWidth, window.innerHeight));
 
             p5.createCanvas(dim, dim);
 
@@ -157,7 +129,7 @@ const IndexPage = (props: IdPageProps) => {
                 outer.map((inner) =>
                   inner.map((e) => ({
                     x: e.x * dim * ratio + ((1 - ratio) / 2) * dim,
-                    y: e.y * dim * ratio + ((1 - ratio) / 2) * dim,
+                    y: e.y * dim * ratio + ((1 - ratio) / 2) * dim
                   }))
                 )
               ) ?? [];
@@ -167,7 +139,7 @@ const IndexPage = (props: IdPageProps) => {
                 outer.map((inner) =>
                   inner.map((e) => ({
                     x: e.x * dim * ratio + ((1 - ratio) / 2) * dim,
-                    y: e.y * dim * ratio + ((1 - ratio) / 2) * dim,
+                    y: e.y * dim * ratio + ((1 - ratio) / 2) * dim
                   }))
                 )
               ) ?? [];
@@ -219,12 +191,8 @@ const IndexPage = (props: IdPageProps) => {
                   p5.beginShape();
                   inner.map((coord) => {
                     p5.curveVertex(
-                      coord.x +
-                        0.5 * Math.sin(i * 0.2) +
-                        0.5 * Math.cos(i * 0.2),
-                      coord.y +
-                        0.5 * Math.sin(i * 0.2) +
-                        0.5 * Math.cos(i * 0.2)
+                      coord.x + 0.5 * Math.sin(i * 0.2) + 0.5 * Math.cos(i * 0.2),
+                      coord.y + 0.5 * Math.sin(i * 0.2) + 0.5 * Math.cos(i * 0.2)
                     );
                   });
                   p5.endShape();

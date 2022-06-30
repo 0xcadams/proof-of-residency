@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, SimpleGrid, Tag, Text } from '@chakra-ui/react';
+import { Box, Flex, Heading, SimpleGrid, Tag, Tooltip } from '@chakra-ui/react';
 import { NextSeo } from 'next-seo';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,6 +11,7 @@ import { getCurrentMintedCount } from 'src/api/ethers';
 import { CountryIso, getAllCountries } from 'src/web/token';
 import { getPopulationForAlpha3 } from 'src/web/populations';
 import Header from 'src/web/components/Header';
+import { FaInfoCircle } from 'react-icons/fa';
 
 type Details = {
   country: CountryIso;
@@ -63,7 +64,7 @@ const ExplorePage = (props: ExploreProps) => {
       <Flex pt="70px" width="100%" direction="column">
         <NextSeo title={`Explore | Proof of Residency`} />
 
-        <Heading size="2xl" mt={6} textAlign="center">
+        <Heading fontSize="6xl" mt={6} textAlign="center">
           Explore
         </Heading>
 
@@ -71,7 +72,7 @@ const ExplorePage = (props: ExploreProps) => {
           mx="auto"
           width="100%"
           maxWidth={1200}
-          mt={4}
+          mt={6}
           mb={8}
           columns={{ base: 1, md: 2, lg: 3 }}
           spacing={8}
@@ -92,12 +93,15 @@ const ExplorePage = (props: ExploreProps) => {
                   </Flex>
                 </Box>
                 <Box textAlign="center">
-                  <Text fontWeight="bold">{detail.country.country}</Text>
-                  <Box mt={2}>
-                    <Tag pt="3px" variant="solid" size="lg">
-                      {detail.minted}
-                      {' total minted'}
-                    </Tag>
+                  <Heading fontSize="2xl">{detail.country.country}</Heading>
+                  <Box mt={3}>
+                    <Tooltip label="The amount of NFTs which have been minted across all supported chains">
+                      <Tag variant="solid" size="lg">
+                        {detail.minted}
+                        {' total minted'}
+                        <Box as={FaInfoCircle} ml={1} />
+                      </Tag>
+                    </Tooltip>
                   </Box>
                 </Box>
               </Flex>

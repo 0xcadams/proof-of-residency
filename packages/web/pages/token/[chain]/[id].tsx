@@ -4,6 +4,7 @@ import {
   Flex,
   Heading,
   SimpleGrid,
+  Skeleton,
   Table,
   Tag,
   Tbody,
@@ -18,11 +19,11 @@ import {
 
 import { GetStaticPaths, GetStaticPropsContext } from 'next';
 import { NextSeo } from 'next-seo';
-import Link from 'next/link';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
 import { getOwnerOfToken, TokenOwner } from 'src/api/ethers';
 import {
+  getChainForChainId,
   isValidProofOfResidencyNetwork,
   ProofOfResidencyNetwork,
   PROOF_OF_RESIDENCY_CHAINS
@@ -35,7 +36,6 @@ import {
   getIsoCountryForCountryId
 } from 'src/web/token';
 import { MetadataResponse } from 'types';
-import { chain } from 'wagmi';
 import Footer from '../../../src/web/components/Footer';
 
 interface Params extends ParsedUrlQuery {
@@ -46,7 +46,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: getCacheableTokenIds().flatMap((tokenId) =>
       PROOF_OF_RESIDENCY_CHAINS.map((chain) => {
-        const params: Params = { id: tokenId, chain };
+        const params: Params = { id: tokenId, chain: String(chain) };
 
         return { params };
       })
@@ -59,14 +59,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
 type DetailsProps = CountryIso &
   MetadataResponse & {
     tokenId: string;
-    chain: ProofOfResidencyNetwork;
+    chain: string;
     owner: TokenOwner;
     imagePng: string;
   };
 
 export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) => {
   const tokenId = params?.id;
-  const chain = String(params?.chain) as ProofOfResidencyNetwork;
+  const chain = Number(params?.chain) as ProofOfResidencyNetwork;
 
   if (!tokenId || !isValidProofOfResidencyNetwork(chain) || !process.env.NEXT_PUBLIC_CID_METADATA) {
     return { notFound: true };
@@ -99,7 +99,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
       //  `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/token/${tokenId}.png`,
       tokenId,
       owner,
-      chain
+      chain: getChainForChainId(chain)?.name ?? ''
     };
 
     return {
@@ -141,13 +141,13 @@ const TokenDetailsPage = (props: DetailsProps) => {
     //     ]
     //   : []),
     {
-      name: 'Created By',
-      content: 'Generative Script',
-      tooltip: ''
+      name: 'Artwork',
+      content: 'Generative Script'
     },
     {
       name: 'Chain',
-      content: chain[props.chain].name
+      content: props.chain,
+      tooltip: 'The chain which this NFT was minted on.'
     },
     ...(props.owner.link
       ? [
@@ -178,7 +178,7 @@ const TokenDetailsPage = (props: DetailsProps) => {
       />
       <Header />
       <Flex pt="70px" width="100%" direction="column">
-        {/* {typeof window === 'undefined' ? (
+        {typeof window === 'undefined' ? (
           <Skeleton height={imageHeight} width="100%" />
         ) : (
           <iframe
@@ -188,7 +188,7 @@ const TokenDetailsPage = (props: DetailsProps) => {
             src={props.image}
             style={{ height: imageHeight, width: '100%' }}
           />
-        )} */}
+        )}
 
         <Divider />
 
@@ -221,15 +221,20 @@ const TokenDetailsPage = (props: DetailsProps) => {
                   <Tooltip label={tag.tooltip}>
                     {tag.link ? (
                       <Box cursor="pointer" mt={2}>
-                        <Link href={tag.link} passHref>
-                          <Tag pt="3px" variant="solid" size="lg">
+                        <a
+                          href={tag.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Check out our twitter"
+                        >
+                          <Tag variant="solid" size="lg">
                             {tag.content}
                           </Tag>
-                        </Link>
+                        </a>
                       </Box>
                     ) : (
                       <Box mt={2}>
-                        <Tag pt="3px" variant="solid" size="lg">
+                        <Tag variant="solid" size="lg">
                           {tag.content}
                         </Tag>
                       </Box>

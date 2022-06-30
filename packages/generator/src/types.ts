@@ -1,4 +1,4 @@
-import { MultiPolygon, Polygon } from "@turf/turf";
+import { MultiPolygon, Polygon } from '@turf/turf';
 
 // input files
 type CountryProperties = {
@@ -18,7 +18,7 @@ export type AllCountries = {
 };
 
 export type AllWaterBodies = {
-  type: "GeometryCollection";
+  type: 'GeometryCollection';
   geometries: MultiPolygon[];
 };
 

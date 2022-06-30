@@ -16,16 +16,15 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { FaBars, FaLocationArrow, FaQuestion, FaSearch } from 'react-icons/fa';
 import { ProofOfResidencyNetwork } from 'src/contracts';
 import { GetTokensResponse } from 'types';
-import { useNetwork } from 'wagmi';
+import { chainId, useNetwork } from 'wagmi';
 
 import Logo from '../../../public/logo.svg';
 import { axiosClient } from '../axios';
-import { useWalletAddress } from '../hooks';
+import { useHasCommitment, useWalletAddress } from '../hooks';
 import { CustomConnectButton } from './CustomConnectButton';
 
 const Header = () => {
-  const isMobile = useBreakpointValue({ base: true, sm: false }, 'sm');
-  const buttonSize = isMobile ? 'md' : 'lg';
+  const isMobile = useBreakpointValue({ base: true, md: false }, 'sm');
 
   const [token, setToken] = useState<{
     chain: ProofOfResidencyNetwork;
@@ -33,17 +32,17 @@ const Header = () => {
   } | null>();
 
   const walletAddress = useWalletAddress();
-  const { activeChain } = useNetwork();
+  const { chain } = useNetwork();
 
-  const hasCommitment = false; // (me.data?.requester?.commitments.length ?? 0) > 0;
+  const hasCommitment = useHasCommitment();
 
   const verbiage = useMemo(
-    () => (token?.id ? 'token' : hasCommitment ? 'mint' : 'request'),
+    () => (token?.id ? 'token' : hasCommitment ? 'claim' : 'request'),
     [token, hasCommitment]
   );
   const actionLink = useMemo(
     () =>
-      verbiage === 'mint'
+      verbiage === 'claim'
         ? '/mint'
         : verbiage === 'token' && token?.id && token?.chain
         ? `/token/${token.chain}/${token.id}`
@@ -57,13 +56,13 @@ const Header = () => {
 
       if (result.status === 200) {
         if (result.data.l1) {
-          return setToken({ chain: 'mainnet', id: result.data.l1 });
+          return setToken({ chain: chainId.mainnet, id: result.data.l1 });
         } else if (result.data.arbitrum) {
-          return setToken({ chain: 'arbitrum', id: result.data.arbitrum });
+          return setToken({ chain: chainId.arbitrum, id: result.data.arbitrum });
         } else if (result.data.optimism) {
-          return setToken({ chain: 'optimism', id: result.data.optimism });
+          return setToken({ chain: chainId.optimism, id: result.data.optimism });
         } else if (result.data.polygon) {
-          return setToken({ chain: 'polygon', id: result.data.polygon });
+          return setToken({ chain: chainId.polygon, id: result.data.polygon });
         }
       }
     })();
@@ -82,12 +81,12 @@ const Header = () => {
         {!isMobile && (
           <Flex align="center" ml={4}>
             <Link href="/explore" passHref>
-              <Button variant="ghost" size={buttonSize}>
+              <Button ml={2} variant="ghost">
                 explore
               </Button>
             </Link>
             <Link href="/faq" passHref>
-              <Button ml={1} variant="ghost" size={buttonSize}>
+              <Button ml={2} variant="ghost">
                 faq
               </Button>
             </Link>
@@ -95,9 +94,9 @@ const Header = () => {
         )}
         <Spacer />
         <Flex align="center" ml={{ base: 3, sm: 1 }}>
-          {walletAddress && !activeChain?.unsupported && !isMobile && (
+          {walletAddress && !chain?.unsupported && !isMobile && (
             <Link href={actionLink} passHref>
-              <Button mr={3} variant="solid">
+              <Button isLoading={hasCommitment === null} mr={3} variant="solid">
                 {verbiage}
               </Button>
             </Link>

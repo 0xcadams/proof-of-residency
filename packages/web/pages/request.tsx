@@ -29,6 +29,7 @@ import { useGetCommitmentPeriodIsUpcoming, useStatusAndChainUnsupported } from '
 import { NextSeo } from 'next-seo';
 import numeral from 'numeral';
 import { FaBars, FaSearch, FaQuestion } from 'react-icons/fa';
+import { CustomConnectButton } from 'src/web/components/CustomConnectButton';
 
 const Map = ReactMapboxGl({
   interactive: false,
@@ -84,38 +85,28 @@ const RequestPage = () => {
 
   const toast = useToast();
 
-  const getLocation = () => {
-    if (!navigator.geolocation) {
-      toast({
-        title: 'Error',
-        description: 'Geolocation is not supported by your browser.',
-        status: 'error'
-      });
-    } else {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLatLng({ latitude: position.coords.latitude, longitude: position.coords.longitude });
-
-          toast({
-            title: 'Success',
-            description: 'Geolocation was successful.',
-            status: 'success'
-          });
-        },
-        () => {
-          toast({
-            title: 'Error',
-            description: 'You must enable geolocation in order to use this service.',
-            status: 'error'
-          });
-        }
-      );
-    }
-  };
-
   useEffect(() => {
     if (!commitmentPeriodIsUpcoming) {
-      getLocation();
+      if (!navigator.geolocation) {
+        toast({
+          title: 'Error',
+          description: 'Geolocation is not supported by your browser.',
+          status: 'error'
+        });
+      } else {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setLatLng({ latitude: position.coords.latitude, longitude: position.coords.longitude });
+          },
+          () => {
+            toast({
+              title: 'Error',
+              description: 'You must enable geolocation in order to use this service.',
+              status: 'error'
+            });
+          }
+        );
+      }
     }
   }, []);
 
@@ -163,19 +154,24 @@ const RequestPage = () => {
         </Flex>
       </Box>
       <Box zIndex={500} position="absolute" right={4} top={4}>
-        <Menu>
-          <MenuButton as={IconButton} aria-label="Options" icon={<FaBars />} variant="outline" />
-          <Portal>
-            <MenuList bgColor="black">
-              <Link href="/explore" passHref>
-                <MenuItem icon={<FaSearch />}>explore</MenuItem>
-              </Link>
-              <Link href="/faq" passHref>
-                <MenuItem icon={<FaQuestion />}>faq</MenuItem>
-              </Link>
-            </MenuList>
-          </Portal>
-        </Menu>
+        <Flex>
+          <Box mr={3}>
+            <CustomConnectButton />
+          </Box>
+          <Menu>
+            <MenuButton as={IconButton} aria-label="Options" icon={<FaBars />} variant="outline" />
+            <Portal>
+              <MenuList bgColor="black">
+                <Link href="/explore" passHref>
+                  <MenuItem icon={<FaSearch />}>explore</MenuItem>
+                </Link>
+                <Link href="/faq" passHref>
+                  <MenuItem icon={<FaQuestion />}>faq</MenuItem>
+                </Link>
+              </MenuList>
+            </Portal>
+          </Menu>
+        </Flex>
       </Box>
 
       <Box zIndex={500} position="absolute" right={4} bottom={4}>
