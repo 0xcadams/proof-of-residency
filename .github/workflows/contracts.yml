@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - "main"
-    paths:
-      - "packages/contracts/**"
+    # paths:
+    #   - "packages/contracts/**"
   pull_request:
     branches:
       - "*"
