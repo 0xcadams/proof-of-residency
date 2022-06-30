@@ -6,11 +6,14 @@ import { getCacheableTokenIds } from '../token';
 export const exportMetadata = async () => {
   await fs.mkdir('metadata-output/', { recursive: true });
 
-  await Promise.all(
-    getCacheableTokenIds().map(async (tokenId) => {
-      const metadataOutput = await getMetadata(tokenId);
+  const tokens = await getCacheableTokenIds();
 
-      const outputFile = path.join(process.cwd(), `metadata-output/${tokenId}`);
+  await Promise.all(
+    tokens.map(async ({ id, chain }) => {
+      // TODO map across all chains
+      const metadataOutput = await getMetadata(String(chain), id);
+
+      const outputFile = path.join(process.cwd(), `metadata-output/${chain}/${id}`);
 
       await fs.writeFile(outputFile, JSON.stringify(metadataOutput, null, 2));
     })

@@ -15,7 +15,8 @@ import Link from 'next/link';
 import React, { useEffect, useMemo, useState } from 'react';
 import { FaBars, FaLocationArrow, FaQuestion, FaSearch } from 'react-icons/fa';
 import { ProofOfResidencyNetwork } from 'src/contracts';
-import { GetTokensResponse } from 'types';
+import useSWR from 'swr';
+import { GetTokensForOwnerResponse } from 'types';
 import { chainId, useNetwork } from 'wagmi';
 
 import Logo from '../../../public/logo.svg';
@@ -50,23 +51,19 @@ const Header = () => {
     [verbiage]
   );
 
-  useEffect(() => {
-    (async () => {
-      const result = await axiosClient.get<GetTokensResponse>(`/tokens/${walletAddress}`);
+  const { data } = useSWR<GetTokensForOwnerResponse>(`/tokens/${walletAddress}`);
 
-      if (result.status === 200) {
-        if (result.data.l1) {
-          return setToken({ chain: chainId.mainnet, id: result.data.l1 });
-        } else if (result.data.arbitrum) {
-          return setToken({ chain: chainId.arbitrum, id: result.data.arbitrum });
-        } else if (result.data.optimism) {
-          return setToken({ chain: chainId.optimism, id: result.data.optimism });
-        } else if (result.data.polygon) {
-          return setToken({ chain: chainId.polygon, id: result.data.polygon });
-        }
-      }
-    })();
-  }, [walletAddress]);
+  useEffect(() => {
+    if (data?.l1) {
+      return setToken({ chain: chainId.mainnet, id: data.l1 });
+    } else if (data?.arbitrum) {
+      return setToken({ chain: chainId.arbitrum, id: data.arbitrum });
+    } else if (data?.optimism) {
+      return setToken({ chain: chainId.optimism, id: data.optimism });
+    } else if (data?.polygon) {
+      return setToken({ chain: chainId.polygon, id: data.polygon });
+    }
+  }, [data]);
 
   return (
     <Flex height="70px" position="absolute" left={0} top={0} right={0} px={4} shadow="sm">

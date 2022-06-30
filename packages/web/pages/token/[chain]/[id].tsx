@@ -22,19 +22,14 @@ import { NextSeo } from 'next-seo';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
 import { getOwnerOfToken, TokenOwner } from 'src/api/ethers';
+import { getAllTokens } from 'src/api/subgraph';
 import {
   getChainForChainId,
   isValidProofOfResidencyNetwork,
-  ProofOfResidencyNetwork,
-  PROOF_OF_RESIDENCY_CHAINS
+  ProofOfResidencyNetwork
 } from 'src/contracts';
 import Header from 'src/web/components/Header';
-import {
-  CountryIso,
-  getCacheableTokenIds,
-  getCountryAndTokenNumber,
-  getIsoCountryForCountryId
-} from 'src/web/token';
+import { CountryIso, getCountryAndTokenNumber, getIsoCountryForCountryId } from 'src/web/token';
 import { MetadataResponse } from 'types';
 import Footer from '../../../src/web/components/Footer';
 
@@ -43,16 +38,16 @@ interface Params extends ParsedUrlQuery {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const tokens = await getAllTokens();
+
   return {
-    paths: getCacheableTokenIds().flatMap((tokenId) =>
-      PROOF_OF_RESIDENCY_CHAINS.map((chain) => {
-        const params: Params = { id: tokenId, chain: String(chain) };
+    paths: tokens.map(({ chain, id }) => {
+      const params: Params = { id, chain: String(chain) };
 
-        return { params };
-      })
-    ),
+      return { params };
+    }),
 
-    fallback: 'blocking'
+    fallback: false
   };
 };
 
@@ -62,6 +57,7 @@ type DetailsProps = CountryIso &
     chain: string;
     owner: TokenOwner;
     imagePng: string;
+    metadataUrl: string;
   };
 
 export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) => {
@@ -73,10 +69,9 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
   }
 
   try {
-    const res = await fetch(
-      `https://generator.proofofresidency.xyz/api/${tokenId}`
-      // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_METADATA}/${tokenId}`
-    );
+    const metadataUrl = `https://generator.proofofresidency.xyz/api/${tokenId}`;
+    // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_METADATA}/${tokenId}`
+    const res = await fetch(metadataUrl);
     const meta: MetadataResponse = await res.json();
 
     const { countryId } = getCountryAndTokenNumber(tokenId);
@@ -93,13 +88,14 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
       ...isoCountry,
       ...meta,
 
-      image: `https://generator.proofofresidency.xyz/${tokenId}`,
+      image: `https://generator.proofofresidency.xyz/${chain}/${tokenId}`,
       // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/${tokenId}.html`,
-      imagePng: `https://generator.proofofresidency.xyz/tokens/${tokenId}.png`,
+      imagePng: `https://generator.proofofresidency.xyz/tokens/${chain}/${tokenId}.png`,
       //  `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/token/${tokenId}.png`,
       tokenId,
       owner,
-      chain: getChainForChainId(chain)?.name ?? ''
+      chain: getChainForChainId(chain)?.name ?? '',
+      metadataUrl
     };
 
     return {
@@ -157,7 +153,12 @@ const TokenDetailsPage = (props: DetailsProps) => {
             link: props.owner.link
           }
         ]
-      : [])
+      : []),
+    {
+      name: 'Metadata URL',
+      content: props.tokenId,
+      link: props.metadataUrl
+    }
   ];
 
   return (

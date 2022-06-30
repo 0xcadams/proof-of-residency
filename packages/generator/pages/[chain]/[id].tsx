@@ -4,16 +4,17 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import path from 'path';
 import { ParsedUrlQuery } from 'querystring';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { P5WrapperProps } from 'react-p5-wrapper';
+import { allChains } from 'wagmi';
 import {
   colors,
   getCacheableTokenIds,
   getCountryAndTokenNumber,
   getIsoCountryForCountryId,
   metadata
-} from '../src/token';
-import { Country } from '../src/types';
+} from '../../src/token';
+import { Country } from '../../src/types';
 
 const P5Wrapper = dynamic<P5WrapperProps>(
   () => import('react-p5-wrapper').then((mod) => mod.ReactP5Wrapper),
@@ -25,10 +26,13 @@ interface Params extends ParsedUrlQuery {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  const tokens = await getCacheableTokenIds();
+
   return {
-    paths: getCacheableTokenIds().map((id) => {
+    paths: tokens.map(({ id, chain }) => {
       const params: Params = {
-        id
+        id,
+        chain: String(chain)
       };
 
       return { params };
@@ -47,8 +51,15 @@ type IdPageProps = Country & {
 
 export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) => {
   const id = params?.id?.toString();
+  const chainId = params?.chain?.toString();
 
-  if (!id) {
+  if (!id || !chainId) {
+    return { notFound: true };
+  }
+
+  const chain = allChains.find((c) => c.id === Number(chainId));
+
+  if (!chain) {
     return { notFound: true };
   }
 
@@ -66,7 +77,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
       return { notFound: true };
     }
 
-    const meta = metadata(id);
+    const meta = metadata(chain, id);
 
     const props: IdPageProps = {
       ...countrySource,
@@ -77,7 +88,8 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
     };
 
     return {
-      props: props
+      props: props,
+      revalidate: 1800
     };
   } catch (e) {
     console.error(e);
@@ -86,7 +98,6 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
 };
 
 const IndexPage = (props: IdPageProps) => {
-  const [hasRendered, setHasRendered] = useState<boolean>(false);
   const color = useMemo(() => props.colors, [props]);
 
   return (

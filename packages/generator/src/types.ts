@@ -39,3 +39,8 @@ export type Country = {
     y: number;
   }[][][];
 };
+
+export type GetAllTokensResponse = {
+  chain: number;
+  id: string;
+}[];

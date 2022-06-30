@@ -1,6 +1,7 @@
 import { BigNumber } from 'ethers';
 import iso from 'iso-3166-1';
-import { getPopulationForAlpha3 } from './populations';
+import { Chain } from 'wagmi';
+import { GetAllTokensResponse } from './types';
 
 export const colors = [
   {
@@ -85,12 +86,15 @@ export const colors = [
   }
 ] as const;
 
-export const metadata = (tokenId: string) => {
+export const metadata = (chain: Chain, tokenId: string) => {
   const { tokenNumber } = getCountryAndTokenNumber(tokenId);
-  const colorsIndex = tokenNumber.mod(colors.length);
 
-  const sI = tokenNumber.mod(2).add(2);
-  const rhI = tokenNumber.mod(2).add(1);
+  const combined = BigNumber.from(chain.id).mul(tokenNumber);
+
+  const colorsIndex = combined.mod(colors.length);
+
+  const sI = combined.mod(2).add(2);
+  const rhI = combined.mod(2).add(1);
 
   return {
     colors: colors[colorsIndex.toNumber()] ?? colors[0],
@@ -154,15 +158,9 @@ export const getTokenIdForAllCountries = () =>
     id: BigNumber.from(Number(country.numeric)).mul(1e15).add(7).toString()
   }));
 
-export const getCacheableTokenIds = () =>
-  getAllCountries().flatMap((country) => {
-    // generate the cacheable token IDs from the population size
-    const count = Math.floor(Math.min(getPopulationForAlpha3(country.alpha3) ?? 1e8, 1e8) / 5e5);
+export const getCacheableTokenIds = async () => {
+  const res = await fetch('https://proofofresidency.xyz/api/tokens');
+  const tokens: GetAllTokensResponse = await res.json();
 
-    // floor at 1
-    const tokenCounts = [...Array(count > 0 ? count : 1)].map((_, i) => i + 1);
-
-    return tokenCounts.map((tokenCount) =>
-      BigNumber.from(Number(country.numeric)).mul(1e15).add(tokenCount).toString()
-    );
-  });
+  return tokens;
+};

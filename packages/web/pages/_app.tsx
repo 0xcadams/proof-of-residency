@@ -1,16 +1,11 @@
-import { ApolloClient, ApolloLink, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client';
 import { ChakraProvider } from '@chakra-ui/react';
 import '@fontsource/josefin-sans';
-import { withScalars } from 'apollo-link-scalars';
 import { DefaultSeo } from 'next-seo';
 import { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { trackEvent } from 'src/web/mixpanel';
-import introspectionResult from '../src/graphql/generated/graphql.schema.json';
 
-import { BigNumber } from 'ethers';
-import { buildClientSchema, IntrospectionQuery } from 'graphql';
 import theme from '../src/web/theme';
 
 import '@rainbow-me/rainbowkit/styles.css';
@@ -23,6 +18,8 @@ import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
 import { allChains } from 'src/contracts';
+import { SWRConfig } from 'swr';
+import { fetcher } from 'src/web/axios';
 
 const { chains, provider } = configureChains(allChains as unknown as Chain[], [
   infuraProvider({ infuraId: process.env.NEXT_PUBLIC_INFURA_PROJECT_ID }),
@@ -39,32 +36,6 @@ const wagmiClient = createClient({
   autoConnect: true,
   connectors,
   provider
-});
-
-const typesMap = {
-  BigInt: {
-    serialize: (parsed: unknown): string | null =>
-      parsed instanceof BigNumber ? parsed.toString() : null,
-    parseValue: (raw: unknown): BigNumber | null => {
-      if (!raw) return null;
-
-      if (typeof raw === 'string') {
-        return BigNumber.from(raw);
-      }
-
-      throw new Error('Invalid BigInt passed into parse.');
-    }
-  }
-};
-
-const schema = buildClientSchema(introspectionResult as unknown as IntrospectionQuery);
-
-const client = new ApolloClient({
-  link: ApolloLink.from([
-    withScalars({ schema, typesMap }),
-    new HttpLink({ uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT })
-  ]),
-  cache: new InMemoryCache()
 });
 
 const App = ({ Component, pageProps }: AppProps) => {
@@ -111,9 +82,13 @@ const App = ({ Component, pageProps }: AppProps) => {
       <ChakraProvider resetCSS theme={theme}>
         <WagmiConfig client={wagmiClient}>
           <RainbowKitProvider chains={chains} theme={rainbowTheme}>
-            <ApolloProvider client={client}>
+            <SWRConfig
+              value={{
+                fetcher: fetcher
+              }}
+            >
               <Component {...pageProps} />
-            </ApolloProvider>
+            </SWRConfig>
           </RainbowKitProvider>
         </WagmiConfig>
       </ChakraProvider>

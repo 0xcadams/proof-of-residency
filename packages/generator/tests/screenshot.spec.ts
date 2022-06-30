@@ -1,6 +1,7 @@
 import { Page, test } from '@playwright/test';
 import path from 'path';
 import { getCacheableTokenIds } from '../src/token';
+import { GetAllTokensResponse } from '../src/types';
 
 // Run tests with custom timeout
 test.setTimeout(24 * 60 * 60 * 1000);
@@ -22,7 +23,7 @@ test.setTimeout(24 * 60 * 60 * 1000);
 //   }
 // });
 
-let tokenIds: string[] = [];
+let tokenIds: GetAllTokensResponse;
 let indexOne: number = 0;
 let indexTwo: number = 0;
 let indexThree: number = 0;
@@ -31,7 +32,7 @@ let indexFour: number = 0;
 test.use({ viewport: { width: 2000, height: 2000 } });
 
 test.beforeAll(async () => {
-  tokenIds = getCacheableTokenIds();
+  tokenIds = await getCacheableTokenIds();
 
   console.log(`Generating for ${tokenIds.length} tokens`);
 
@@ -42,8 +43,8 @@ test.beforeAll(async () => {
 });
 
 test.describe.parallel('export token images', () => {
-  const screenshot = async (page: Page, tokenId: string) => {
-    await page.goto(`https://generator.proofofresidency.xyz/${tokenId}`);
+  const screenshot = async (page: Page, chain: number, tokenId: string) => {
+    await page.goto(`https://generator.proofofresidency.xyz/${chain}/${tokenId}`);
     await new Promise((resolve) => setTimeout(resolve, 1500)); // yes, waits are the devil
     await page.screenshot({
       type: 'png',
@@ -52,28 +53,28 @@ test.describe.parallel('export token images', () => {
   };
 
   test('export parallel 1', async ({ page }) => {
-    for (const tokenId of tokenIds.slice(0, indexOne)) {
-      await screenshot(page, tokenId);
+    for (const { id, chain } of tokenIds.slice(0, indexOne)) {
+      await screenshot(page, chain, id);
     }
   });
   test('export parallel 2', async ({ page }) => {
-    for (const tokenId of tokenIds.slice(indexOne, indexTwo)) {
-      await screenshot(page, tokenId);
+    for (const { id, chain } of tokenIds.slice(indexOne, indexTwo)) {
+      await screenshot(page, chain, id);
     }
   });
   test('export parallel 3', async ({ page }) => {
-    for (const tokenId of tokenIds.slice(indexTwo, indexThree)) {
-      await screenshot(page, tokenId);
+    for (const { id, chain } of tokenIds.slice(indexTwo, indexThree)) {
+      await screenshot(page, chain, id);
     }
   });
   test('export parallel 4', async ({ page }) => {
-    for (const tokenId of tokenIds.slice(indexThree, indexFour)) {
-      await screenshot(page, tokenId);
+    for (const { id, chain } of tokenIds.slice(indexThree, indexFour)) {
+      await screenshot(page, chain, id);
     }
   });
   test('export parallel 5', async ({ page }) => {
-    for (const tokenId of tokenIds.slice(indexFour)) {
-      await screenshot(page, tokenId);
+    for (const { id, chain } of tokenIds.slice(indexFour)) {
+      await screenshot(page, chain, id);
     }
   });
 });

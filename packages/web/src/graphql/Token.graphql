@@ -3,3 +3,9 @@ query GetTokenById($id: ID!) {
     ...TokenFields
   }
 }
+
+query GetAllTokens($first: Int, $skip: Int) {
+  tokens(first: $first, skip: $skip) {
+    ...TokenFields
+  }
+}

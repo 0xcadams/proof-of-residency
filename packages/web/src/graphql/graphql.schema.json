@@ -26,6 +26,29 @@
       },
       {
         "kind": "INPUT_OBJECT",
+        "name": "BlockChangedFilter",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "number_gte",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "Int", "ofType": null }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
         "name": "Block_height",
         "description": null,
         "fields": null,
@@ -145,9 +168,25 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "_change_block",
+            "description": "Filter for the block changed event.",
+            "type": { "kind": "INPUT_OBJECT", "name": "BlockChangedFilter", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "committer",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "committer_",
+            "description": null,
+            "type": { "kind": "INPUT_OBJECT", "name": "Committer_filter", "ofType": null },
             "defaultValue": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -161,7 +200,23 @@
             "deprecationReason": null
           },
           {
+            "name": "committer_contains_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "committer_ends_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "committer_ends_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -233,7 +288,23 @@
             "deprecationReason": null
           },
           {
+            "name": "committer_not_contains_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "committer_not_ends_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "committer_not_ends_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -265,7 +336,23 @@
             "deprecationReason": null
           },
           {
+            "name": "committer_not_starts_with_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "committer_starts_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "committer_starts_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -281,6 +368,14 @@
             "deprecationReason": null
           },
           {
+            "name": "contribution_",
+            "description": null,
+            "type": { "kind": "INPUT_OBJECT", "name": "Contribution_filter", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "contribution_contains",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
@@ -289,7 +384,23 @@
             "deprecationReason": null
           },
           {
+            "name": "contribution_contains_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "contribution_ends_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "contribution_ends_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -361,7 +472,23 @@
             "deprecationReason": null
           },
           {
+            "name": "contribution_not_contains_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "contribution_not_ends_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "contribution_not_ends_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -393,7 +520,23 @@
             "deprecationReason": null
           },
           {
+            "name": "contribution_not_starts_with_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "contribution_starts_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "contribution_starts_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -489,6 +632,14 @@
             "deprecationReason": null
           },
           {
+            "name": "requester_",
+            "description": null,
+            "type": { "kind": "INPUT_OBJECT", "name": "Requester_filter", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "requester_contains",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
@@ -497,7 +648,23 @@
             "deprecationReason": null
           },
           {
+            "name": "requester_contains_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "requester_ends_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "requester_ends_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -569,7 +736,23 @@
             "deprecationReason": null
           },
           {
+            "name": "requester_not_contains_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "requester_not_ends_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "requester_not_ends_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -601,7 +784,23 @@
             "deprecationReason": null
           },
           {
+            "name": "requester_not_starts_with_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "requester_starts_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "requester_starts_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -757,6 +956,22 @@
         "description": null,
         "fields": null,
         "inputFields": [
+          {
+            "name": "_change_block",
+            "description": "Filter for the block changed event.",
+            "type": { "kind": "INPUT_OBJECT", "name": "BlockChangedFilter", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "commitments_",
+            "description": null,
+            "type": { "kind": "INPUT_OBJECT", "name": "Commitment_filter", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "id",
             "description": null,
@@ -1042,6 +1257,14 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "_change_block",
+            "description": "Filter for the block changed event.",
+            "type": { "kind": "INPUT_OBJECT", "name": "BlockChangedFilter", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "id",
             "description": null,
             "type": { "kind": "SCALAR", "name": "ID", "ofType": null },
@@ -1242,7 +1465,7 @@
       {
         "kind": "ENUM",
         "name": "OrderDirection",
-        "description": null,
+        "description": "Defines the order direction, either ascending or descending",
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -2225,6 +2448,22 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "_change_block",
+            "description": "Filter for the block changed event.",
+            "type": { "kind": "INPUT_OBJECT", "name": "BlockChangedFilter", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "commitments_",
+            "description": null,
+            "type": { "kind": "INPUT_OBJECT", "name": "Commitment_filter", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "id",
             "description": null,
             "type": { "kind": "SCALAR", "name": "ID", "ofType": null },
@@ -2300,6 +2539,22 @@
                 "ofType": { "kind": "SCALAR", "name": "ID", "ofType": null }
               }
             },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "tokenChallenge_",
+            "description": null,
+            "type": { "kind": "INPUT_OBJECT", "name": "TokenChallenge_filter", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "tokens_",
+            "description": null,
+            "type": { "kind": "INPUT_OBJECT", "name": "Token_filter", "ofType": null },
             "defaultValue": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -3222,6 +3477,14 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "_change_block",
+            "description": "Filter for the block changed event.",
+            "type": { "kind": "INPUT_OBJECT", "name": "BlockChangedFilter", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "id",
             "description": null,
             "type": { "kind": "SCALAR", "name": "ID", "ofType": null },
@@ -3310,6 +3573,14 @@
             "deprecationReason": null
           },
           {
+            "name": "owner_",
+            "description": null,
+            "type": { "kind": "INPUT_OBJECT", "name": "Requester_filter", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "owner_contains",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
@@ -3318,7 +3589,23 @@
             "deprecationReason": null
           },
           {
+            "name": "owner_contains_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "owner_ends_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "owner_ends_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -3390,7 +3677,23 @@
             "deprecationReason": null
           },
           {
+            "name": "owner_not_contains_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "owner_not_ends_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "owner_not_ends_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -3422,7 +3725,23 @@
             "deprecationReason": null
           },
           {
+            "name": "owner_not_starts_with_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "owner_starts_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "owner_starts_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -3438,6 +3757,14 @@
             "deprecationReason": null
           },
           {
+            "name": "token_",
+            "description": null,
+            "type": { "kind": "INPUT_OBJECT", "name": "Token_filter", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "token_contains",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
@@ -3446,7 +3773,23 @@
             "deprecationReason": null
           },
           {
+            "name": "token_contains_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "token_ends_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "token_ends_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -3518,7 +3861,23 @@
             "deprecationReason": null
           },
           {
+            "name": "token_not_contains_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "token_not_ends_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "token_not_ends_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -3550,7 +3909,23 @@
             "deprecationReason": null
           },
           {
+            "name": "token_not_starts_with_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "token_starts_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "token_starts_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -3587,6 +3962,14 @@
         "description": null,
         "fields": null,
         "inputFields": [
+          {
+            "name": "_change_block",
+            "description": "Filter for the block changed event.",
+            "type": { "kind": "INPUT_OBJECT", "name": "BlockChangedFilter", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "id",
             "description": null,
@@ -3756,6 +4139,14 @@
             "deprecationReason": null
           },
           {
+            "name": "owner_",
+            "description": null,
+            "type": { "kind": "INPUT_OBJECT", "name": "Requester_filter", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "owner_contains",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
@@ -3764,7 +4155,23 @@
             "deprecationReason": null
           },
           {
+            "name": "owner_contains_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "owner_ends_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "owner_ends_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -3836,7 +4243,23 @@
             "deprecationReason": null
           },
           {
+            "name": "owner_not_contains_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "owner_not_ends_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "owner_not_ends_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -3868,7 +4291,23 @@
             "deprecationReason": null
           },
           {
+            "name": "owner_not_starts_with_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "owner_starts_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "owner_starts_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -3892,7 +4331,23 @@
             "deprecationReason": null
           },
           {
+            "name": "tokenURI_contains_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "tokenURI_ends_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "tokenURI_ends_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -3964,7 +4419,23 @@
             "deprecationReason": null
           },
           {
+            "name": "tokenURI_not_contains_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "tokenURI_not_ends_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "tokenURI_not_ends_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -3996,7 +4467,23 @@
             "deprecationReason": null
           },
           {
+            "name": "tokenURI_not_starts_with_nocase",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "tokenURI_starts_with",
+            "description": null,
+            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "tokenURI_starts_with_nocase",
             "description": null,
             "type": { "kind": "SCALAR", "name": "String", "ofType": null },
             "defaultValue": null,
@@ -4903,14 +5390,18 @@
       },
       {
         "name": "derivedFrom",
-        "description": null,
+        "description": "creates a virtual field on the entity that may be queried but cannot be set manually through the mappings API.",
         "isRepeatable": false,
         "locations": ["FIELD_DEFINITION"],
         "args": [
           {
             "name": "field",
             "description": null,
-            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "String", "ofType": null }
+            },
             "defaultValue": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -4919,7 +5410,7 @@
       },
       {
         "name": "entity",
-        "description": null,
+        "description": "Marks the GraphQL type as indexable entity.  Each type that should be an entity is required to be annotated with this directive.",
         "isRepeatable": false,
         "locations": ["OBJECT"],
         "args": []
@@ -4986,14 +5477,18 @@
       },
       {
         "name": "subgraphId",
-        "description": null,
+        "description": "Defined a Subgraph ID for an object type",
         "isRepeatable": false,
         "locations": ["OBJECT"],
         "args": [
           {
             "name": "id",
             "description": null,
-            "type": { "kind": "SCALAR", "name": "String", "ofType": null },
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": { "kind": "SCALAR", "name": "String", "ofType": null }
+            },
             "defaultValue": null,
             "isDeprecated": false,
             "deprecationReason": null

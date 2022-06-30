@@ -1,7 +1,6 @@
 import { BigNumber } from 'ethers';
 import iso from 'iso-3166-1';
 import { Country } from 'iso-3166-1/dist/iso-3166';
-import { getPopulationForAlpha3 } from './populations';
 
 export type CountryIso = Country;
 
@@ -64,16 +63,3 @@ export const getTokenIdForAllCountries = () =>
     ...country,
     id: BigNumber.from(Number(country.numeric)).mul(1e15).add(7).toString()
   }));
-
-export const getCacheableTokenIds = () =>
-  getAllCountries().flatMap((country) => {
-    // generate the cacheable token IDs from the population size
-    const count = Math.floor(Math.min(getPopulationForAlpha3(country.alpha3) ?? 1e8, 1e8) / 5e6);
-
-    // floor at 1
-    const tokenCounts = [...Array(count > 0 ? count : 1)].map((_, i) => i + 1);
-
-    return tokenCounts.map((tokenCount) =>
-      BigNumber.from(Number(country.numeric)).mul(1e15).add(tokenCount).toString()
-    );
-  });

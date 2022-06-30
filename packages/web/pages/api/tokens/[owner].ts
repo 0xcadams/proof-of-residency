@@ -2,9 +2,12 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 import { getTokensForOwner } from 'src/api/ethers';
 
-import { GetTokensResponse } from '../../../types';
+import { GetTokensForOwnerResponse } from '../../../types';
 
-const handler = async (req: NextApiRequest, res: NextApiResponse<GetTokensResponse | null>) => {
+const handler = async (
+  req: NextApiRequest,
+  res: NextApiResponse<GetTokensForOwnerResponse | null>
+) => {
   try {
     const method = req.method;
 

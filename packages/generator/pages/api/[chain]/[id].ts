@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { MetadataResponse, getMetadata, contractMetadata } from '../../src/metadata';
+import { MetadataResponse, getMetadata, contractMetadata } from '../../../src/metadata';
 
 const handler = async (
   req: NextApiRequest,
@@ -10,12 +10,14 @@ const handler = async (
     const method = req.method;
 
     if (method === 'GET') {
-      const { id } = req.query;
+      const { id, chain } = req.query;
 
-      res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
+      res.setHeader('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=259200');
 
       const metadataOutput =
-        id === 'contract' ? contractMetadata : await getMetadata(id?.toString() ?? '0');
+        id === 'contract'
+          ? contractMetadata
+          : await getMetadata(chain?.toString() ?? '0', id?.toString() ?? '0');
 
       return res.status(200).json(metadataOutput);
     }
