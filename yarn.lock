@@ -5401,7 +5401,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@proof-of-residency/contracts@^1.1.2, @proof-of-residency/contracts@workspace:packages/contracts":
+"@proof-of-residency/contracts@^1.2.0, @proof-of-residency/contracts@workspace:packages/contracts":
   version: 0.0.0-use.local
   resolution: "@proof-of-residency/contracts@workspace:packages/contracts"
   dependencies:
@@ -5413,7 +5413,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@proof-of-residency/example-dao@workspace:packages/example-dao"
   dependencies:
-    "@proof-of-residency/contracts": ^1.1.2
+    "@proof-of-residency/contracts": ^1.2.0
   languageName: unknown
   linkType: soft
 
