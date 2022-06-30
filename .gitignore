@@ -10,8 +10,8 @@ lerna-debug.log
 
 packages/example-dao/typechain-types/
 
-packages/generator/proof-of-residency-generator/out
-packages/generator/proof-of-residency-generator/metadata-output/
+packages/generator/out
+packages/generator/metadata-output/
 
 packages/subgraph/data/
 subgraph.yaml
