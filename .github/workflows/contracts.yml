@@ -41,7 +41,7 @@ jobs:
         env:
           NEXT_PUBLIC_ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
       - name: Upload to codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           name: contracts # optional
