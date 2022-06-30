@@ -1,81 +1,62 @@
 import { useToast } from '@chakra-ui/react';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber } from 'ethers';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { getContractAddressForChain, ProofOfResidencyNetwork } from 'src/contracts';
 import { ProofOfResidency, ProofOfResidency__factory as ProofOfResidencyFactory } from 'types';
-
-import { ChainUnsupportedError, ConnectionRejectedError, useWallet } from 'use-wallet';
+import {
+  useAccount,
+  useNetwork,
+  useProvider,
+  UserRejectedRequestError,
+  useSigner,
+  useSignTypedData
+} from 'wagmi';
 
 const useProofOfResidency = () => {
-  const [proofOfResidency, setProofOfResidency] = useState<{
-    proofOfResidency: ProofOfResidency | null;
-    signer: ethers.providers.JsonRpcSigner | null;
-    provider: ethers.providers.Web3Provider | null;
-  }>({
-    proofOfResidency: null,
-    signer: null,
-    provider: null
-  });
+  const [proofOfResidency, setProofOfResidency] = useState<ProofOfResidency | null>(null);
 
-  const wallet = useWallet();
+  const { data: signer } = useSigner();
+  const { chain } = useNetwork();
 
   useEffect(() => {
-    if (
-      wallet.status === 'connected' &&
-      wallet.ethereum &&
-      process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS
-    ) {
-      const provider = new ethers.providers.Web3Provider(wallet.ethereum);
-      const signer = provider.getSigner();
-
+    if (signer && chain?.id) {
       const proofOfResidency = ProofOfResidencyFactory.connect(
-        process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS,
+        getContractAddressForChain(chain.id as ProofOfResidencyNetwork),
         signer
       );
 
-      setProofOfResidency({ proofOfResidency, signer, provider });
+      setProofOfResidency(proofOfResidency);
     }
-  }, [wallet.status]);
+  }, [signer, chain]);
 
   return proofOfResidency;
 };
 
-export const useAutoConnectWallet = (autoConnect: boolean) => {
-  const wallet = useWallet();
+//   useEffect(() => {
+//     if (autoConnect) {
+//       callback();
+//     }
+//   }, []);
 
-  const callback = useCallback(async () => {
-    if (wallet.status !== 'connected') {
-      await wallet.connect('injected');
-    }
-  }, [wallet]);
-
-  useEffect(() => {
-    if (autoConnect) {
-      callback();
-    }
-  }, []);
-
-  return callback;
-};
+//   return callback;
+// };
 
 export const useStatusAndChainUnsupported = () => {
-  const wallet = useWallet();
+  const { status, error } = useSigner();
 
   const toast = useToast();
 
-  const connectionRejected = useMemo(
-    () => wallet.error instanceof ConnectionRejectedError,
-    [wallet.error]
-  );
+  const connectionRejected = useMemo(() => error instanceof UserRejectedRequestError, [error]);
 
-  const noProvider = useMemo(
-    () => wallet.error?.name === 'NoEthereumProviderError',
-    [wallet.error]
-  );
+  // const noProvider = useMemo(
+  //   () => wallet.error?.name === 'NoEthereumProviderError',
+  //   [wallet.error]
+  // );
 
-  const chainUnsupported = useMemo(
-    () => wallet.error instanceof ChainUnsupportedError,
-    [wallet.error]
-  );
+  // const chainUnsupported = useMemo(
+  //   () => wallet.error instanceof ChainUnsupportedError,
+  //   [wallet.error]
+  // );
 
   useEffect(() => {
     if (connectionRejected) {
@@ -87,50 +68,52 @@ export const useStatusAndChainUnsupported = () => {
     }
   }, [connectionRejected]);
 
-  useEffect(() => {
-    if (noProvider) {
-      toast({
-        title: 'Error',
-        description: 'You must install Metamask to use this app.',
-        status: 'error'
-      });
-    }
-  }, [noProvider]);
+  // useEffect(() => {
+  //   if (noProvider) {
+  //     toast({
+  //       title: 'Error',
+  //       description: 'You must install Metamask to use this app.',
+  //       status: 'error'
+  //     });
+  //   }
+  // }, [noProvider]);
 
-  useEffect(() => {
-    if (chainUnsupported) {
-      toast({
-        title: 'Error',
-        description: 'Please switch your wallet network to Arbitrum and try again.',
-        status: 'error'
-      });
-    }
-  }, [chainUnsupported]);
+  // useEffect(() => {
+  //   if (chainUnsupported) {
+  //     toast({
+  //       title: 'Error',
+  //       description: 'Please switch your wallet network to Arbitrum and try again.',
+  //       status: 'error'
+  //     });
+  //   }
+  // }, [chainUnsupported]);
 
   return {
-    status: wallet.status,
-    connectionRejected,
-    noProvider,
-    chainUnsupported
+    status: status,
+    connectionRejected
+    // noProvider,
+    // chainUnsupported
   };
 };
 
 export const useNetworkName = () => {
-  const wallet = useWallet();
+  const provider = useProvider();
 
-  return wallet.networkName;
+  return provider?.network?.name;
 };
 
 export const useGetCommitmentPeriodIsValid = () => {
   const [value, setValue] = useState<boolean | null>(null);
 
-  const { proofOfResidency } = useProofOfResidency();
+  const proofOfResidency = useProofOfResidency();
 
   useEffect(() => {
     (async () => {
-      const response = await proofOfResidency?.commitmentPeriodIsValid();
+      try {
+        const response = await proofOfResidency?.commitmentPeriodIsValid();
 
-      setValue(response ?? false);
+        setValue(response ?? false);
+      } catch (e) {}
     })();
   }, [proofOfResidency]);
 
@@ -140,13 +123,15 @@ export const useGetCommitmentPeriodIsValid = () => {
 export const useGetCommitmentPeriodIsUpcoming = () => {
   const [value, setValue] = useState<boolean | null>(null);
 
-  const { proofOfResidency } = useProofOfResidency();
+  const proofOfResidency = useProofOfResidency();
 
   useEffect(() => {
     (async () => {
-      const response = await proofOfResidency?.commitmentPeriodIsUpcoming();
+      try {
+        const response = await proofOfResidency?.commitmentPeriodIsUpcoming();
 
-      setValue(response ?? false);
+        setValue(response ?? false);
+      } catch (e) {}
     })();
   }, [proofOfResidency]);
 
@@ -156,7 +141,7 @@ export const useGetCommitmentPeriodIsUpcoming = () => {
 export const useHasTokenId = () => {
   const [value, setValue] = useState<string | null>(null);
 
-  const { proofOfResidency } = useProofOfResidency();
+  const proofOfResidency = useProofOfResidency();
   const walletAddress = useWalletAddress();
 
   useEffect(() => {
@@ -177,76 +162,88 @@ export const useHasTokenId = () => {
 };
 
 export const useWalletAddress = () => {
-  const [value, setValue] = useState<string | null>(null);
+  const { address } = useAccount();
 
-  const { signer } = useProofOfResidency();
-
-  useEffect(() => {
-    (async () => {
-      const response = await signer?.getAddress();
-
-      setValue(response ?? null);
-    })();
-  }, [signer]);
-
-  return value;
+  return address;
 };
 
 export const useCurrentNonce = () => {
   const [value, setValue] = useState<BigNumber | null>(null);
 
-  const { signer, proofOfResidency } = useProofOfResidency();
+  const proofOfResidency = useProofOfResidency();
+
+  const address = useWalletAddress();
 
   useEffect(() => {
     (async () => {
-      const response = await signer?.getAddress();
+      try {
+        if (address) {
+          const nonce = await proofOfResidency?.nonces(address);
 
-      if (response) {
-        const nonce = await proofOfResidency?.nonces(response);
-
-        setValue(nonce ?? null);
-      }
+          setValue(nonce ?? null);
+        }
+      } catch (e) {}
     })();
-  }, [signer, proofOfResidency]);
+  }, [address, proofOfResidency]);
 
   return value;
 };
 
-export const useSigner = () => {
-  const { signer } = useProofOfResidency();
-
-  return signer;
-};
-
 export const useCommitAddress = () => {
-  const { proofOfResidency } = useProofOfResidency();
+  const proofOfResidency = useProofOfResidency();
 
   return proofOfResidency?.commitAddress;
 };
 
 export const useMint = () => {
-  const { proofOfResidency } = useProofOfResidency();
+  const proofOfResidency = useProofOfResidency();
 
   return proofOfResidency?.mint;
 };
 
 export const useMintPrice = () => {
-  const { proofOfResidency } = useProofOfResidency();
+  const proofOfResidency = useProofOfResidency();
 
   return proofOfResidency?.reservePrice;
 };
 
 export const useMintedCount = async (countryId: BigNumber): Promise<BigNumber | undefined> => {
-  const { proofOfResidency } = useProofOfResidency();
+  const proofOfResidency = useProofOfResidency();
 
   return proofOfResidency?.countryTokenCounts(countryId);
 };
 
-const getEip712Domain = async (contractAddress: string, chainId: number) => ({
+export const useHasCommitment = (): boolean | null => {
+  const [hasCommitment, setHasCommitment] = useState<boolean | null>(null);
+
+  const proofOfResidency = useProofOfResidency();
+  const walletAddress = useWalletAddress();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (walletAddress) {
+          const commitment = await proofOfResidency?.commitments(walletAddress);
+
+          const isValueZero = commitment?.value?.isZero() ?? true;
+
+          return setHasCommitment(!isValueZero);
+        }
+        return setHasCommitment(false);
+      } catch (e) {
+        return setHasCommitment(false);
+      }
+    })();
+  }, [walletAddress, proofOfResidency]);
+
+  return hasCommitment;
+};
+
+const getEip712Domain = (chainId: ProofOfResidencyNetwork) => ({
   name: 'Proof of Residency Protocol',
   version: '1',
   chainId,
-  verifyingContract: contractAddress
+  verifyingContract: getContractAddressForChain(chainId)
 });
 
 const passwordTypes = {
@@ -258,22 +255,26 @@ const passwordTypes = {
 };
 
 export const useSignPasswordEip712 = () => {
-  const { signer } = useProofOfResidency();
+  const { chain } = useNetwork();
+  const { data: signer } = useSigner();
+
+  const { signTypedDataAsync } = useSignTypedData();
 
   return useCallback(
     async (walletAddress: string, password: string, nonce: BigNumber) => {
-      const chainId = await signer?.getChainId();
+      const chainId = (chain?.id ?? 1) as ProofOfResidencyNetwork;
 
       if (chainId && signer) {
-        const domain = await getEip712Domain(
-          process.env.NEXT_PUBLIC_ARBITRUM_CONTRACT_ADDRESS ?? '',
-          chainId
-        );
+        const domain = getEip712Domain(chainId);
 
-        const signature = await signer._signTypedData(domain, passwordTypes, {
-          password,
-          walletAddress,
-          nonce
+        const signature = await signTypedDataAsync({
+          domain,
+          types: passwordTypes,
+          value: {
+            password,
+            walletAddress,
+            nonce
+          }
         });
 
         return signature;

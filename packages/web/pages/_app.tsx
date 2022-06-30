@@ -1,26 +1,45 @@
+import { ApolloClient, ApolloLink, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client';
 import { ChakraProvider } from '@chakra-ui/react';
 import '@fontsource/josefin-sans';
-import '@fontsource/shadows-into-light';
+import { withScalars } from 'apollo-link-scalars';
 import { DefaultSeo } from 'next-seo';
 import { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { trackEvent } from 'src/web/mixpanel';
-import { UseWalletProvider } from 'use-wallet';
-import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink, ApolloLink } from '@apollo/client';
-import { withScalars } from 'apollo-link-scalars';
 import introspectionResult from '../src/graphql/generated/graphql.schema.json';
 
-import theme from '../src/web/theme';
 import { BigNumber } from 'ethers';
 import { buildClientSchema, IntrospectionQuery } from 'graphql';
+import theme from '../src/web/theme';
 
-const chainId =
-  process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
-    ? 42161
-    : process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview'
-    ? 421611
-    : 1337;
+import '@rainbow-me/rainbowkit/styles.css';
+
+import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
+
+import { rainbowTheme } from 'src/web/rainbowTheme';
+import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { infuraProvider } from 'wagmi/providers/infura';
+import { publicProvider } from 'wagmi/providers/public';
+import { allChains } from 'src/contracts';
+
+const { chains, provider } = configureChains(allChains as unknown as Chain[], [
+  infuraProvider({ infuraId: process.env.NEXT_PUBLIC_INFURA_PROJECT_ID }),
+  alchemyProvider({ alchemyId: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY }),
+  publicProvider()
+]);
+
+const { connectors } = getDefaultWallets({
+  appName: 'Proof of Residency',
+  chains
+});
+
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors,
+  provider
+});
 
 const typesMap = {
   BigInt: {
@@ -90,18 +109,13 @@ const App = ({ Component, pageProps }: AppProps) => {
         }}
       />
       <ChakraProvider resetCSS theme={theme}>
-        <UseWalletProvider
-          connectors={{
-            // TODO add to this
-            injected: {
-              chainId: [chainId]
-            }
-          }}
-        >
-          <ApolloProvider client={client}>
-            <Component {...pageProps} />
-          </ApolloProvider>
-        </UseWalletProvider>
+        <WagmiConfig client={wagmiClient}>
+          <RainbowKitProvider chains={chains} theme={rainbowTheme}>
+            <ApolloProvider client={client}>
+              <Component {...pageProps} />
+            </ApolloProvider>
+          </RainbowKitProvider>
+        </WagmiConfig>
       </ChakraProvider>
     </>
   );

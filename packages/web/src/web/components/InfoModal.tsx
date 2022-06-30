@@ -23,7 +23,7 @@ export const InfoModal = (props: { isOpen: boolean; onClose: () => void }) => {
               Proof of Residency is a proof of personhood protocol. In order to receive an NFT to
               your wallet, you must verify your mailing address. We do not keep any information
               associated with your address - please see our{' '}
-              <Link href="https://github.com/proof-of-residency/proof-of-residency/blob/main/WHITEPAPER.md">
+              <Link href="https://github.com/0xcadams/proof-of-residency/blob/main/WHITEPAPER.md">
                 whitepaper and open-source project
               </Link>{' '}
               for more details on how the process preserves privacy.

@@ -15,11 +15,12 @@ export const verifyUsAddress = async (
   return new Promise<VerifyUsAddressResponse>((resolve, reject) => {
     Lob.usVerifications.verify(
       {
-        primary_line: process.env.NODE_ENV === 'development' ? 'deliverable' : primaryLine,
+        primary_line:
+          process.env.NEXT_PUBLIC_VERCEL_ENV !== 'production' ? 'deliverable' : primaryLine,
         secondary_line: secondaryLine,
         city: city,
         state: state,
-        zip_code: process.env.NODE_ENV === 'development' ? '11111' : zipCode
+        zip_code: process.env.NEXT_PUBLIC_VERCEL_ENV !== 'production' ? '11111' : zipCode
       },
       function (err: Error, res: any) {
         if (err) {
@@ -43,7 +44,8 @@ export const verifyIntlAddress = async (
   return new Promise<VerifyIntlAddressResponse>((resolve, reject) => {
     Lob.intlVerifications.verify(
       {
-        primary_line: process.env.NODE_ENV === 'development' ? 'deliverable' : primaryLine,
+        primary_line:
+          process.env.NEXT_PUBLIC_VERCEL_ENV !== 'production' ? 'deliverable' : primaryLine,
         secondary_line: secondaryLine,
         city: city,
         state: state,

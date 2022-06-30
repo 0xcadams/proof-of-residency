@@ -73,7 +73,7 @@ describe('Proof of Residency: commit/reveal scheme', () => {
       .withArgs(requester1.address, committer.address, hash);
   });
 
-  describe('PoR functions correctly (happy paths)', async () => {
+  describe('PORP functions correctly (happy paths)', async () => {
     it('should succeed for public', async () => {
       await timeTravelToValid();
 
@@ -136,7 +136,7 @@ describe('Proof of Residency: commit/reveal scheme', () => {
     });
   });
 
-  describe('PoR functions correctly (sad paths)', async () => {
+  describe('PORP functions correctly (sad paths)', async () => {
     it('should fail to mint when a committer is removed', async () => {
       await timeTravelToValid();
 

@@ -1,6 +1,6 @@
 # Proof of Residency Subgraph
 
-The Proof of Residency subgraph (using The Graph) can be found on their [hosted service](https://thegraph.com/hosted-service/subgraph/proof-of-residency/proof-of-residency).
+The Proof of Residency subgraph(s) (using The Graph) can be found on the [hosted service](https://thegraph.com/hosted-service/dashboard?account=proof-of-residency).
 
 ## Developing Locally
 

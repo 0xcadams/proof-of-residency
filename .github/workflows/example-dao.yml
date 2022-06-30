@@ -1,0 +1,40 @@
+name: example-dao
+
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "packages/example-dao/**"
+  pull_request:
+    branches:
+      - "*"
+
+defaults:
+  run:
+    working-directory: packages/example-dao
+
+jobs:
+  test:
+    name: Test Example DAO Contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: yarn
+      - name: Set up Python
+        uses: actions/setup-python@v2
+      - name: Install dependencies
+        run: |
+          sudo snap install solc
+          pip3 install slither-analyzer
+      - name: Install
+        run: yarn --immutable
+      - name: Build
+        run: yarn build
+      - name: Run code analysis
+        run: yarn run analyze
+      - name: Run tests
+        run: yarn test

@@ -12,6 +12,7 @@ export default class Document extends NextDocument {
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#b69ccb" />
           <meta name="msapplication-TileColor" content="#eaddf9" />
           <meta name="theme-color" content="#eaddf9" />
+          <link rel="stylesheet" href="https://use.typekit.net/dun7veu.css" />
         </Head>
         <body>
           {/* Make Color mode persist when you refresh the page. */}

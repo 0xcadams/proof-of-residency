@@ -10,7 +10,7 @@ async function main() {
   const treasury = '0x5962Ba5b211D2Bff7c27988C61224671AE5E0587';
 
   const ProofOfResidency = await ethers.getContractFactory('ProofOfResidency');
-  const proofOfResidencyOwner = await ProofOfResidency.deploy(
+  const proofOfResidency = await ProofOfResidency.deploy(
     committer,
     treasury,
     baseUri,
@@ -18,12 +18,12 @@ async function main() {
   );
 
   console.log(
-    `Transaction to deploy the Contract: ${proofOfResidencyOwner.deployTransaction.hash}. Waiting to be mined...`
+    `Transaction to deploy the Contract: ${proofOfResidency.deployTransaction.hash}. Waiting to be mined...`
   );
 
-  const deployment = await proofOfResidencyOwner.deployed();
+  const deployment = await proofOfResidency.deployed();
 
-  console.log(`--- Deployed to the address: ${proofOfResidencyOwner.address}`);
+  console.log(`--- Deployed to the address: ${proofOfResidency.address}`);
 
   console.log(`Writing subgraph config...`);
 
@@ -33,8 +33,8 @@ async function main() {
   // update the subgraph config with the latest address
   const subgraphConfig = {
     network: chainId === 1337 ? 'hardhat' : networkName,
-    address: proofOfResidencyOwner.address,
-    startBlock: (await proofOfResidencyOwner.deployTransaction.wait()).blockNumber
+    address: proofOfResidency.address,
+    startBlock: (await proofOfResidency.deployTransaction.wait()).blockNumber
   };
 
   const file = path.join(
@@ -49,7 +49,7 @@ async function main() {
     await new Promise((r) => setTimeout(r, 90000));
 
     await run('verify:verify', {
-      address: proofOfResidencyOwner.address,
+      address: proofOfResidency.address,
       constructorArguments: [committer, treasury, baseUri, initialPrice]
     });
 

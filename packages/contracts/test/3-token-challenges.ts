@@ -87,7 +87,7 @@ describe('Proof of Residency: token challenges', () => {
     );
   });
 
-  describe('PoR functions correctly (happy paths)', async () => {
+  describe('PORP functions correctly (happy paths)', async () => {
     it('should succeed to challenge a singular address and burn their tokens on expiration', async () => {
       const tokenId = ethers.BigNumber.from('2000000000000001');
 
@@ -187,7 +187,7 @@ describe('Proof of Residency: token challenges', () => {
     });
   });
 
-  describe('PoR functions correctly (sad paths)', async () => {
+  describe('PORP functions correctly (sad paths)', async () => {
     it('should fail to challenge a nonexistent address', async () => {
       await expect(
         proofOfResidencyOwner.challenge([requester1.address, unaffiliated.address])

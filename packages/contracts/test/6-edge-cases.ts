@@ -72,7 +72,7 @@ describe('Proof of Residency: edge cases', () => {
       .withArgs(requester1.address, committer.address, hash);
   });
 
-  describe('PoR functions correctly (happy paths)', async () => {
+  describe('PORP functions correctly (happy paths)', async () => {
     it('should initialize token uri', async () => {
       await timeTravelToValid();
 

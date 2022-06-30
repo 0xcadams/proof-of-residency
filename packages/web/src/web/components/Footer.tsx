@@ -1,5 +1,4 @@
 import { Box, Divider, Flex, Spacer, Text } from '@chakra-ui/react';
-import Link from 'next/link';
 import React from 'react';
 import { FaDiscord, FaGithub, FaTwitter } from 'react-icons/fa';
 import { HiOutlineNewspaper } from 'react-icons/hi';
@@ -15,35 +14,47 @@ const Footer = () => {
         <Spacer />
 
         <Box cursor={'pointer'} mr={3}>
-          <Link
-            passHref
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label="Check out our whitepaper"
-            href="https://github.com/proof-of-residency/proof-of-residency/blob/main/WHITEPAPER.md"
+            href="https://github.com/0xcadams/proof-of-residency/blob/main/WHITEPAPER.md"
           >
             <HiOutlineNewspaper size={30} />
-          </Link>
+          </a>
         </Box>
 
         <Box cursor={'pointer'} mr={3}>
-          <Link passHref aria-label="Check out our twitter" href="https://twitter.com/proofofres">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Check out our twitter"
+            href="https://twitter.com/proofofres"
+          >
             <FaTwitter size={30} />
-          </Link>
+          </a>
         </Box>
 
         <Box cursor={'pointer'} mr={3}>
-          <Link aria-label="Join the discord server" passHref href="https://discord.gg/hhQfHqGTPk">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Join the discord server"
+            href="https://discord.gg/hhQfHqGTPk"
+          >
             <FaDiscord size={30} />
-          </Link>
+          </a>
         </Box>
 
         <Box cursor={'pointer'}>
-          <Link
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label="Check out the github code"
-            passHref
-            href="https://github.com/proof-of-residency"
+            href="https://github.com/0xcadams/proof-of-residency"
           >
             <FaGithub size={30} />
-          </Link>
+          </a>
         </Box>
       </Flex>
     </Flex>

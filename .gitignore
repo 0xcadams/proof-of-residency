@@ -7,4 +7,12 @@ coverage*
 .DS_STORE
 .openzeppelin
 lerna-debug.log
+
+packages/example-dao/typechain-types/
+
+packages/generator/out
+packages/generator/metadata-output/
+
 packages/subgraph/data/
+subgraph.yaml
+packages/subgraph/config/hardhat.json

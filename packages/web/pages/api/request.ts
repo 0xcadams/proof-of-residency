@@ -16,6 +16,7 @@ import { sendLetter } from 'src/api/lob';
 import { createClient } from 'redis';
 import { ethers } from 'ethers';
 import { getIsoCountryForAlpha2 } from 'src/web/token';
+import { isValidProofOfResidencyNetwork } from 'src/contracts';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressResponse | null>) => {
   try {
@@ -25,6 +26,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
     if (method === 'POST') {
       if (!body.addressSignature || !body.passwordSignature) {
         return res.status(500).end('Signatures must be supplied');
+      }
+      if (!body.chain || !isValidProofOfResidencyNetwork(body.chain)) {
+        return res.status(500).end('Chain ID must be valid');
       }
 
       const client = createClient({
@@ -85,17 +89,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
         body.passwordPayload.hashedPassword,
         body.passwordPayload.walletAddress,
         body.passwordPayload.nonce,
-        body.passwordSignature
+        body.passwordSignature,
+        body.chain
       );
 
       // ensure that the address was sent from this backend
       const signatureMailAddress = await validateMailingAddressSignature(
         body.addressPayload,
-        body.addressSignature
+        body.addressSignature,
+        body.chain
       );
 
       if (signatureMailAddress !== getCurrentWalletAddress()) {
         return res.status(500).end('Mailing address signature was incorrect');
+      }
+
+      if (body.addressPayload.expiration < new Date().getTime() - 3600000) {
+        return res.status(500).end('Mailing address request has expired');
       }
 
       const countryIso = getIsoCountryForAlpha2(body.addressPayload.country);
@@ -109,18 +119,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<SubmitAddressRe
       const countryId = Number(countryIso.numeric);
       const countryName = countryIso.country;
 
-      const nonce = await getNonceForAddress(requesterAddress);
+      const nonce = await getNonceForAddress(requesterAddress, body.chain);
 
       const { commitment, v, r, s } = await hashAndSignCommitmentEip712(
         requesterAddress,
         countryId,
         keygen.publicKey,
-        nonce
+        nonce,
+        body.chain
       );
 
       // require that the address hasn't been requested for 4 weeks
       if (
-        process.env.NODE_ENV !== 'development' &&
+        process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' &&
         lastRequestHashedMailingAddress &&
         Date.now() - lastRequestHashedMailingAddress <= 2.419 * 1e9
       ) {

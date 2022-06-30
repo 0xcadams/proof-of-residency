@@ -74,7 +74,7 @@ describe('Proof of Residency: non-transferable token', () => {
     );
   });
 
-  describe('PoR functions correctly (happy paths)', async () => {
+  describe('PORP functions correctly (happy paths)', async () => {
     it('should succeed to burn token', async () => {
       await expect(proofOfResidencyRequester1.burn(tokenId))
         .to.emit(proofOfResidencyRequester1, 'Transfer')
@@ -82,7 +82,7 @@ describe('Proof of Residency: non-transferable token', () => {
     });
   });
 
-  describe('PoR functions correctly (sad paths)', async () => {
+  describe('PORP functions correctly (sad paths)', async () => {
     it('should fail to transfer token to another address', async () => {
       await expect(
         proofOfResidencyRequester1.transferFrom(requester1.address, unaffiliated.address, tokenId)

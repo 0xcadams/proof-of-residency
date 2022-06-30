@@ -2,6 +2,7 @@ import {
   Box,
   Divider,
   Flex,
+  Grid,
   Heading,
   SimpleGrid,
   Skeleton,
@@ -16,7 +17,13 @@ import Link from 'next/link';
 import numeral from 'numeral';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
-import { getCurrentMintedCount, getOwnerOfToken, TokenOwner } from 'src/api/ethers';
+import {
+  getCurrentMintedCount,
+  getCurrentMintedCountForChain,
+  getOwnerOfToken,
+  TokenOwner
+} from 'src/api/ethers';
+import { getChainForChainId, PROOF_OF_RESIDENCY_CHAINS } from 'src/contracts';
 import Header from 'src/web/components/Header';
 import { getPopulationForAlpha3 } from 'src/web/populations';
 import {
@@ -41,6 +48,7 @@ type CountryDetailsProps = CountryIso & {
     link: string;
     image: string;
     owner: TokenOwner;
+    chain: string;
   }[];
 };
 
@@ -78,29 +86,42 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
 
     const countryId = Number(isoCountry.numeric);
 
-    const mintedCount = await getCurrentMintedCount(countryId);
+    const mintedCountTotal = await getCurrentMintedCount(countryId);
+
+    const mintedCountries = await Promise.all(
+      PROOF_OF_RESIDENCY_CHAINS.map(async (chain) => {
+        const mintedCount = await getCurrentMintedCountForChain(countryId, chain);
+
+        return { chain, mintedCount };
+      })
+    );
 
     const tokens = await Promise.all(
-      getTokenIdsForCountryAndCount(countryId, mintedCount.toNumber() ?? 0).map(async (tokenId) => {
-        const res = await fetch(
-          `https://generator.proofofresidency.xyz/api/${tokenId}`
-          // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_METADATA}/${tokenId}`
+      mintedCountries.flatMap(({ chain, mintedCount }) => {
+        return getTokenIdsForCountryAndCount(countryId, mintedCount.toNumber() ?? 0).map(
+          async (tokenId) => {
+            const res = await fetch(
+              `https://generator.proofofresidency.xyz/api/${tokenId}`
+              // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_METADATA}/${tokenId}`
+            );
+            const meta: MetadataResponse = await res.json();
+
+            const owner = await getOwnerOfToken(tokenId, chain);
+
+            const { tokenNumber } = getCountryAndTokenNumber(tokenId);
+
+            return {
+              ...meta,
+              owner,
+              tokenId: tokenId,
+              tokenNumber: tokenNumber.toString(),
+              link: `/token/${chain}/${tokenId}`,
+              image: `https://generator.proofofresidency.xyz/${tokenId}`,
+              chain: getChainForChainId(chain)?.name ?? ''
+              // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/token/${tokenId}.png`
+            };
+          }
         );
-        const meta: MetadataResponse = await res.json();
-
-        const owner = await getOwnerOfToken(tokenId);
-
-        const { tokenNumber } = getCountryAndTokenNumber(tokenId);
-
-        return {
-          ...meta,
-          owner,
-          tokenId: tokenId,
-          tokenNumber: tokenNumber.toString(),
-          link: `/token/${tokenId}`,
-          image: `https://generator.proofofresidency.xyz/${tokenId}`
-          // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/token/${tokenId}.png`
-        };
       })
     );
 
@@ -112,7 +133,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
       population: population ?? 0,
       image: `/previews/${countryId}.png`,
       imageLarge: `/previews-large/${countryId}.png`,
-      minted: mintedCount?.toNumber() ?? 0,
+      minted: mintedCountTotal?.toNumber() ?? 0,
       tokens
     };
 
@@ -131,7 +152,7 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
     {
       name: 'Count Minted',
       content: `${numeral(props.minted).format('0,0')}`,
-      tooltip: 'The number of tokens which have been minted.'
+      tooltip: 'The number of tokens which have been minted across all supported chains.'
     },
     {
       name: 'ISO-3166 ID',
@@ -143,7 +164,7 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
         ? {
             name: '2020 Population',
             content: `${numeral(props.population).format('0.0a')}`,
-            tooltip: 'The total population size in 2020 in the country.'
+            tooltip: 'The total population count in 2020.'
           }
         : {}
     ],
@@ -186,32 +207,23 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
 
         <Divider />
 
-        <Heading size="lg" mt={6} textAlign="center">
+        <Heading fontSize="5xl" mt={6} textAlign="center">
           {props.country}
         </Heading>
 
-        <Flex
-          px={4}
-          columns={{ base: 1, md: 2 }}
-          spacing={4}
-          maxWidth={1200}
-          width="100%"
-          mx="auto"
-          flexDirection="column"
-          mt={4}
-        >
+        <Grid px={4} maxWidth={1200} width="100%" mx="auto" flexDirection="column" mt={4}>
           {props.country && (
-            <Text mx="auto" fontSize="xl" textAlign="center" width="100%">
+            <Text maxWidth={600} mx="auto" fontSize="xl" textAlign="center" width="100%">
               {`Art inspired by ${props.country} and its water bodies.`}
             </Text>
           )}
 
-          <Text mt={1} mx="auto" fontSize="md" textAlign="center" width="100%">
+          <Text maxWidth={600} mt={1} mx="auto" fontSize="md" textAlign="center" width="100%">
             Designs for every minted NFT vary.
           </Text>
 
           <SimpleGrid
-            mx={{ base: 2, sm: 'auto' }}
+            mx={{ base: 4, sm: 'auto' }}
             mt={8}
             mb={8}
             spacingX={10}
@@ -227,14 +239,14 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
                   {tag.link ? (
                     <Box cursor="pointer">
                       <Link href={tag.link} passHref>
-                        <Tag mt={1} pt="3px" variant="solid" size="lg">
+                        <Tag mt={1} variant="solid" size="lg">
                           {tag.content}
                         </Tag>
                       </Link>
                     </Box>
                   ) : (
                     <Box mt={1}>
-                      <Tag pt="3px" variant="solid" size="lg">
+                      <Tag variant="solid" size="lg">
                         {tag.content}
                       </Tag>
                     </Box>
@@ -247,13 +259,13 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
           {props.tokens.length > 0 && (
             <>
               <Divider />
-              <Heading textAlign="center" mt={4} size="lg">
+              <Heading textAlign="center" mt={4} fontSize="3xl">
                 Minted Tokens
               </Heading>
 
               <SimpleGrid
                 mx="auto"
-                align="center"
+                alignItems="center"
                 width="100%"
                 maxWidth={1200}
                 mt={4}
@@ -263,7 +275,7 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
               >
                 {props.tokens.map((token, i) => (
                   <Link key={token.tokenId} href={token.link} passHref>
-                    <Flex cursor="pointer" direction="column">
+                    <Flex align="center" cursor="pointer" direction="column">
                       <Box>
                         <Flex mt={2} mx="auto" position="relative" height={400}>
                           {typeof window === 'undefined' ? (
@@ -274,17 +286,17 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
                               allowFullScreen={false}
                               allow="xr-spatial-tracking"
                               src={token.image}
-                              style={{ height: 400, width: '100%' }}
+                              style={{ cursor: 'pointer', height: 400, width: '100%' }}
                             />
                           )}
                         </Flex>
                       </Box>
-                      <Text mt={2} fontWeight="bold">
-                        Token #{token.tokenNumber}
-                      </Text>
+                      <Heading mt={2} fontSize="2xl">
+                        {token.chain}: #{token.tokenNumber}
+                      </Heading>
                       <Box mt={2}>
-                        <Tag pt="3px" variant="solid" size="lg">
-                          Owned by: {token.owner.content}
+                        <Tag variant="solid" size="md">
+                          Owner: {token.owner.content}
                         </Tag>
                       </Box>
                     </Flex>
@@ -293,7 +305,7 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
               </SimpleGrid>
             </>
           )}
-        </Flex>
+        </Grid>
       </Flex>
       <Footer />
     </>

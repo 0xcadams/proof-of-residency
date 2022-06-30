@@ -1,0 +1,53 @@
+---
+name: deploy-ipfs
+
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "packages/contracts/**"
+  pull_request:
+    branches:
+      - "*"
+
+defaults:
+  run:
+    working-directory: packages/contracts
+
+jobs:
+  build:
+    if: ${{ false }} # disable for now
+    runs-on: self-hosted
+    env:
+      IPFS_PATH: "/mnt/data/ipfs/"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: yarn
+      - run: yarn install
+      - run: yarn lint
+      - run: yarn build
+      - run: yarn export
+      - name: ipfs deploy
+        id: ipfs
+        working-directory: out
+        run: echo ::set-output name=hash::$(ipfs add --cid-version 1 -w -r -Q *)
+      - name: ipfs show in ui
+        run: ipfs files cp /ipfs/${{ steps.ipfs.outputs.hash }} /
+      - run: IPFS_ART_CID=${{ steps.ipfs.outputs.hash }} yarn export:metadata
+      - name: ipfs deploy metadata
+        id: ipfs-metadata
+        working-directory: metadata-output
+        run: echo ::set-output name=hash::$(ipfs add --cid-version 1 -w -r -Q *)
+      - name: ipfs show metadata in ui
+        run: ipfs files cp /ipfs/${{ steps.ipfs-metadata.outputs.hash }} /
+      - name: comment ipfs url
+        uses: peter-evans/commit-comment@v1
+        with:
+          body: |
+            Deployed to:
+            * Artwork: [ipfs://${{ steps.ipfs.outputs.hash }}](ipfs://${{ steps.ipfs.outputs.hash }})
+            * Metadata: [ipfs://${{ steps.ipfs-metadata.outputs.hash }}](ipfs://${{ steps.ipfs-metadata.outputs.hash }})

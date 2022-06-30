@@ -1,0 +1,39 @@
+{
+  "name": "@proof-of-residency/generator",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "serve": "next start",
+    "start": "next dev",
+    "export": "next export",
+    "export:metadata": "ts-node src/ipfs/write-metadata-to-file.ts",
+    "generate-from-geojson": "POLYGON_CLIPPING_MAX_QUEUE_SIZE=10000000000 POLYGON_CLIPPING_MAX_SWEEPLINE_SEGMENTS=10000000000 node -r ts-node/register --max-old-space-size=4096 src/geojson/generate-json.ts",
+    "lint": "next lint",
+    "lint:commit": "yarn lint",
+    "screenshots": "npx playwright test"
+  },
+  "dependencies": {
+    "ethers": "^5.6.9",
+    "iso-3166-1": "^2.1.1",
+    "isomorphic-unfetch": "^3.1.0",
+    "next": "12.2.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-p5-wrapper": "^3.3.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.23.0",
+    "@turf/turf": "^6.5.0",
+    "@types/keccak": "^3.0.1",
+    "@types/progress": "^2.0.5",
+    "@types/react": "18.0.14",
+    "@typescript-eslint/eslint-plugin": "^5.30.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint-config-next": "^12.2.0",
+    "node-fetch": "^3.2.6",
+    "prettier": "^2.7.1",
+    "progress": "^2.0.3",
+    "topojson-client": "^3.1.0"
+  }
+}
