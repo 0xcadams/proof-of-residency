@@ -59,7 +59,7 @@ describe('Proof of Residency: committer pools', () => {
     proofOfResidencyUnaffiliated = proofOfResidencyOwner.connect(unaffiliated);
   });
 
-  describe('PoR functions correctly (happy paths)', async () => {
+  describe('PORP functions correctly (happy paths)', async () => {
     it('should be able to add a committer to the pool who can withdraw', async () => {
       await proofOfResidencyOwner.addCommitter(unaffiliated.address);
 
@@ -169,7 +169,7 @@ describe('Proof of Residency: committer pools', () => {
     });
   });
 
-  describe('PoR functions correctly (sad paths)', async () => {
+  describe('PORP functions correctly (sad paths)', async () => {
     it('should not be able to remove a committer and force reclaim when they do not have earnings', async () => {
       await expect(
         proofOfResidencyOwner.removeCommitter(committer.address, true)

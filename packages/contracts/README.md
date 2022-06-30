@@ -55,7 +55,7 @@ contract SomeDAOTest {
 
   function doesSenderHaveOutstandingTokenChallenge() private view returns (bool) {
     // this should only be used in specific circumstances - there is a chance that
-    // a malicious actor could push the PoR DAO to challenge an honest user, in order
+    // a malicious actor could push the PORP DAO to challenge an honest user, in order
     // to disenfranchise them in a downstream vote
     return _proofOfResidency.tokenChallengeExists(msg.sender);
   }

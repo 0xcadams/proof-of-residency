@@ -51,7 +51,7 @@ describe('Proof of Residency: permissions', () => {
     proofOfResidencyUnaffiliated = proofOfResidencyOwner.connect(unaffiliated);
   });
 
-  describe('PoR functions correctly (happy paths)', async () => {
+  describe('PORP functions correctly (happy paths)', async () => {
     it('should succeed for assigning permissions to random person', async () => {
       await proofOfResidencyOwner.addCommitter(unaffiliated.address);
 
@@ -115,7 +115,7 @@ describe('Proof of Residency: permissions', () => {
     });
   });
 
-  describe('PoR functions correctly (sad paths)', async () => {
+  describe('PORP functions correctly (sad paths)', async () => {
     it('should fail for public (no committing role)', async () => {
       const { hash, v, r, s } = await signCommitment(
         requester1.address,

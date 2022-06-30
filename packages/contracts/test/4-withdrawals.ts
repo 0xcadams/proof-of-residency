@@ -64,7 +64,7 @@ describe('Proof of Residency: withdrawals', () => {
     proofOfResidencyUnaffiliated = proofOfResidencyOwner.connect(unaffiliated);
   });
 
-  describe('PoR functions correctly (happy paths)', async () => {
+  describe('PORP functions correctly (happy paths)', async () => {
     it('should be able to withdraw for committer', async () => {
       const { hash, v, r, s } = await signCommitment(
         requester1.address,
@@ -186,7 +186,7 @@ describe('Proof of Residency: withdrawals', () => {
     });
   });
 
-  describe('PoR functions correctly (sad paths)', async () => {
+  describe('PORP functions correctly (sad paths)', async () => {
     it('should fail to withdraw when zero balance for committer', async () => {
       await expect(proofOfResidencyCommitter.withdraw()).to.be.revertedWith('Tax not over 0');
     });
