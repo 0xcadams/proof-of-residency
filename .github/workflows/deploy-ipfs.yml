@@ -45,7 +45,7 @@ jobs:
       - name: ipfs show metadata in ui
         run: ipfs files cp /ipfs/${{ steps.ipfs-metadata.outputs.hash }} /
       - name: comment ipfs url
-        uses: peter-evans/commit-comment@v1
+        uses: peter-evans/commit-comment@v2
         with:
           body: |
             Deployed to:
