@@ -36,5 +36,13 @@ jobs:
         run: yarn build
       - name: Run code analysis
         run: yarn run analyze
-      - name: Run tests
-        run: yarn test
+      - name: Run test coverage
+        run: yarn coverage
+        env:
+          NEXT_PUBLIC_ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
+      - name: Upload to codecov
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          name: contracts # optional
+          fail_ci_if_error: true

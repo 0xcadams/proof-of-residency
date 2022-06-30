@@ -21,7 +21,7 @@
     "@faker-js/faker": "^7.3.0",
     "@fontsource/josefin-sans": "^4.5.9",
     "@fontsource/shadows-into-light": "^4.5.8",
-    "@rainbow-me/rainbowkit": "^0.4.0",
+    "@rainbow-me/rainbowkit": "^0.4.1",
     "@turf/turf": "^6.5.0",
     "apollo-link-scalars": "^4.0.1",
     "axios": "^0.27.2",

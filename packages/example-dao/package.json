@@ -1,19 +1,19 @@
 {
   "name": "@proof-of-residency/example-dao",
   "version": "0.0.1",
-  "description": "A demo project to illustrate how to integrate with the Proof of Residency contract.",
+  "description": "A demo project to illustrate how to integrate with the Proof of Residency contracts.",
   "private": true,
   "license": "MIT",
   "scripts": {
     "analyze": "yarn lint && slither . --filter-paths \"@openzeppelin\"",
     "build": "yarn clean && yarn compile",
-    "clean": "yarn hardhat clean",
-    "compile": "yarn hardhat compile",
-    "coverage": "yarn build && yarn hardhat coverage --temp artifacts",
-    "lint": "solhint 'contracts/**/*.sol' && prettier --list-different 'contracts/**/*.sol'",
-    "size": "yarn hardhat size-contracts",
-    "start": "hardhat node",
-    "test": "yarn hardhat test"
+    "clean": "yarn run -T hardhat clean",
+    "compile": "yarn run -T hardhat compile",
+    "coverage": "yarn build && yarn run -T hardhat coverage --temp artifacts",
+    "lint": "yarn run -T solhint 'contracts/**/*.sol' && yarn run -T prettier --list-different 'contracts/**/*.sol'",
+    "size": "yarn run -T hardhat size-contracts",
+    "start": "yarn run -T hardhat node",
+    "test": "yarn run -T hardhat test"
   },
   "dependencies": {
     "@proof-of-residency/contracts": "file:../contracts"
