@@ -1,4 +1,5 @@
 import { BigNumber } from 'ethers';
+import { ProofOfResidencyNetwork } from 'src/contracts';
 import { VerifyIntlAddressResponse, VerifyUsAddressResponse } from './verify-address';
 
 export type AddressComponents = {
@@ -29,6 +30,8 @@ export type SubmitAddressRequest = {
 
   addressPayload: AddressComponents;
   addressSignature: string;
+
+  chain: ProofOfResidencyNetwork;
 };
 
 export type SubmitAddressResponse = {

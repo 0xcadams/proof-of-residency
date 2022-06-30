@@ -69,7 +69,6 @@ const ExplorePage = (props: ExploreProps) => {
 
         <SimpleGrid
           mx="auto"
-          align="center"
           width="100%"
           maxWidth={1200}
           mt={4}
@@ -92,11 +91,14 @@ const ExplorePage = (props: ExploreProps) => {
                     />
                   </Flex>
                 </Box>
-                <Text fontWeight="bold">{detail.country.country}</Text>
-                <Box mt={2}>
-                  <Tag pt="3px" variant="solid" size="lg">
-                    {detail.minted} minted
-                  </Tag>
+                <Box textAlign="center">
+                  <Text fontWeight="bold">{detail.country.country}</Text>
+                  <Box mt={2}>
+                    <Tag pt="3px" variant="solid" size="lg">
+                      {detail.minted}
+                      {' total minted'}
+                    </Tag>
+                  </Box>
                 </Box>
               </Flex>
             </Link>

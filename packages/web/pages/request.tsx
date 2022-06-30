@@ -1,10 +1,14 @@
 import {
-  Badge,
   Box,
   Button,
   Flex,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Portal,
   Tooltip,
-  useBreakpointValue,
   useDisclosure,
   useToast
 } from '@chakra-ui/react';
@@ -13,7 +17,6 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { FiGithub } from 'react-icons/fi';
 import ReactMapboxGl, { Marker } from 'react-mapbox-gl';
 
 import { VerifyAddressResponse } from 'types';
@@ -22,13 +25,10 @@ import Logo from '../public/logo.svg';
 import { AddressModal } from 'src/web/components/AddressModal';
 import { ConfirmModal } from 'src/web/components/ConfirmModal';
 import { InfoModal } from 'src/web/components/InfoModal';
-import {
-  useAutoConnectWallet,
-  useGetCommitmentPeriodIsUpcoming,
-  useStatusAndChainUnsupported
-} from 'src/web/hooks';
+import { useGetCommitmentPeriodIsUpcoming, useStatusAndChainUnsupported } from 'src/web/hooks';
 import { NextSeo } from 'next-seo';
 import numeral from 'numeral';
+import { FaBars, FaSearch, FaQuestion } from 'react-icons/fa';
 
 const Map = ReactMapboxGl({
   interactive: false,
@@ -62,10 +62,6 @@ const styles: { [key: string]: React.CSSProperties } = {
 const RequestPage = () => {
   const [latLng, setLatLng] = useState<CoordinateLongitudeLatitude | null>(null);
   const [address, setAddress] = useState<VerifyAddressResponse | null>(null);
-
-  const isMobile = useBreakpointValue({ base: true, sm: false }, 'sm');
-
-  useAutoConnectWallet(true);
 
   const commitmentPeriodIsUpcoming = useGetCommitmentPeriodIsUpcoming();
   const statusAndChainUnsupported = useStatusAndChainUnsupported();
@@ -167,11 +163,19 @@ const RequestPage = () => {
         </Flex>
       </Box>
       <Box zIndex={500} position="absolute" right={4} top={4}>
-        <Link href="https://github.com/proof-of-residency" passHref>
-          <Button>
-            <FiGithub />
-          </Button>
-        </Link>
+        <Menu>
+          <MenuButton as={IconButton} aria-label="Options" icon={<FaBars />} variant="outline" />
+          <Portal>
+            <MenuList bgColor="black">
+              <Link href="/explore" passHref>
+                <MenuItem icon={<FaSearch />}>explore</MenuItem>
+              </Link>
+              <Link href="/faq" passHref>
+                <MenuItem icon={<FaQuestion />}>faq</MenuItem>
+              </Link>
+            </MenuList>
+          </Portal>
+        </Menu>
       </Box>
 
       <Box zIndex={500} position="absolute" right={4} bottom={4}>
@@ -180,12 +184,8 @@ const RequestPage = () => {
         </Button>
         <Tooltip
           label={
-            statusAndChainUnsupported.chainUnsupported
-              ? 'Connect to Arbitrum to use this app'
-              : statusAndChainUnsupported.noProvider
-              ? 'Install Metamask to use this app'
-              : statusAndChainUnsupported.connectionRejected
-              ? 'Connect your wallet to use this app'
+            statusAndChainUnsupported.status !== 'success'
+              ? 'Connect to your wallet to use this app'
               : !latLng
               ? 'You must enable geolocation'
               : commitmentPeriodIsUpcoming
@@ -198,10 +198,8 @@ const RequestPage = () => {
             size="lg"
             onClick={address ? onOpenConfirmModal : onOpenAddressModal}
             disabled={
-              statusAndChainUnsupported.status !== 'connected' ||
-              statusAndChainUnsupported.noProvider ||
+              statusAndChainUnsupported.status !== 'success' ||
               statusAndChainUnsupported.connectionRejected ||
-              statusAndChainUnsupported.noProvider ||
               !latLng ||
               Boolean(commitmentPeriodIsUpcoming)
             }
@@ -226,11 +224,7 @@ const RequestPage = () => {
         )}
         {address?.longitude && address?.latitude ? (
           <Marker
-            onClick={
-              !commitmentPeriodIsUpcoming && !statusAndChainUnsupported.noProvider
-                ? onOpenConfirmModal
-                : () => {}
-            }
+            onClick={!commitmentPeriodIsUpcoming ? onOpenConfirmModal : () => {}}
             style={styles.markerAddress}
             coordinates={[address.longitude, address.latitude]}
           />

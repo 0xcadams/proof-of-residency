@@ -30,7 +30,9 @@
     "deploy:arbitrum-rinkeby": "yarn run -T hardhat run --network arbitrum-rinkeby scripts/initial-deploy.ts",
     "deploy:goerli": "yarn run -T hardhat run --network goerli scripts/initial-deploy.ts",
     "deploy:optimism": "yarn run -T hardhat run --network optimism scripts/initial-deploy.ts",
-    "deploy:optimistic-kovan": "yarn run -T hardhat run --network optimisticKovan scripts/initial-deploy.ts",
+    "deploy:optimistic-kovan": "yarn run -T hardhat run --network optimistic-kovan scripts/initial-deploy.ts",
+    "deploy:polygon": "yarn run -T hardhat run --network polygon scripts/initial-deploy.ts",
+    "deploy:polygon-mumbai": "yarn run -T hardhat run --network polygon-mumbai scripts/initial-deploy.ts",
     "deploy:rinkeby": "yarn run -T hardhat run --network rinkeby scripts/initial-deploy.ts",
     "deploy:local": "yarn run -T hardhat run --network localhost scripts/initial-deploy.ts",
     "deploy:truffle-dashboard": "yarn run -T hardhat run --network truffle-dashboard scripts/initial-deploy.ts",
@@ -44,6 +46,6 @@
     "truffle-dashboard": "yarn run -T truffle dashboard"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.6.0"
+    "@openzeppelin/contracts": "^4.7.0"
   }
 }

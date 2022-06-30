@@ -13,11 +13,12 @@ import 'hardhat-gas-reporter';
 
 process.env.REPORT_GAS = 'y';
 
-const ALCHEMY_API_KEY = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
-const INFURA_PROJECT_ID = process.env.NEXT_PUBLIC_INFURA_PROJECT_ID;
-const ETHERSCAN_API_KEY = process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY;
-const ARBISCAN_API_KEY = process.env.NEXT_PUBLIC_ARBISCAN_API_KEY;
-const OPTIMISTIC_ETHERSCAN_API_KEY = process.env.NEXT_PUBLIC_OPTIMISTIC_ETHERSCAN_API_KEY;
+const ALCHEMY_API_KEY = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY ?? '';
+const INFURA_PROJECT_ID = process.env.NEXT_PUBLIC_INFURA_PROJECT_ID ?? '';
+const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY ?? '';
+const ARBISCAN_API_KEY = process.env.ARBISCAN_API_KEY ?? '';
+const OPTIMISTIC_ETHERSCAN_API_KEY = process.env.OPTIMISTIC_ETHERSCAN_API_KEY ?? '';
+const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY ?? '';
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY || undefined;
 
@@ -58,12 +59,20 @@ const config: HardhatUserConfig = {
       url: `https://arbitrum-mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
     },
-    optimisticKovan: {
+    'optimistic-kovan': {
       url: `https://optimism-kovan.infura.io/v3/${INFURA_PROJECT_ID}`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
     },
     optimism: {
       url: `https://optimism-mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
+    },
+    polygon: {
+      url: `https://polygon-mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
+    },
+    'polygon-mumbai': {
+      url: `https://polygon-mumbai.infura.io/v3/${INFURA_PROJECT_ID}`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : undefined
     },
     mainnet: {
@@ -84,7 +93,10 @@ const config: HardhatUserConfig = {
       arbitrumTestnet: ARBISCAN_API_KEY,
       // optimism
       optimisticEthereum: OPTIMISTIC_ETHERSCAN_API_KEY,
-      optimisticKovan: OPTIMISTIC_ETHERSCAN_API_KEY
+      optimisticKovan: OPTIMISTIC_ETHERSCAN_API_KEY,
+      // polygon
+      polygon: POLYGONSCAN_API_KEY,
+      polygonMumbai: POLYGONSCAN_API_KEY
     }
   },
   typechain: {

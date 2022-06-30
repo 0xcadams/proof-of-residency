@@ -28,6 +28,8 @@ import {
 import { ethers } from 'ethers';
 import { CoordinateLongitudeLatitude } from 'haversine';
 import { useRouter } from 'next/router';
+import { useNetwork } from 'wagmi/dist/declarations/src/hooks';
+import { ProofOfResidencyNetwork } from 'src/contracts';
 
 export const ConfirmModal = (props: {
   address: VerifyAddressResponse;
@@ -47,10 +49,12 @@ export const ConfirmModal = (props: {
   const signPasswordEip712 = useSignPasswordEip712();
   const nonce = useCurrentNonce();
 
+  const { data: network } = useNetwork();
+
   const onSubmit = async () => {
     setIsLoading(true);
 
-    if (walletAddress && commitAddress && mintPrice && nonce) {
+    if (walletAddress && commitAddress && mintPrice && nonce && network?.network) {
       try {
         const hashedPassword = ethers.utils.keccak256(
           ethers.utils.defaultAbiCoder.encode(['string', 'string'], [walletAddress, password])
@@ -85,7 +89,9 @@ export const ConfirmModal = (props: {
           addressSignature: props.address.signature,
 
           passwordPayload,
-          passwordSignature: passwordSignature
+          passwordSignature: passwordSignature,
+
+          chain: network?.network as ProofOfResidencyNetwork
         };
 
         const result = await axiosClient.post<SubmitAddressResponse>('/request', body);

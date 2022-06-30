@@ -12,7 +12,6 @@ import {
   useMint,
   useGetCommitmentPeriodIsUpcoming,
   useGetCommitmentPeriodIsValid,
-  useAutoConnectWallet,
   useStatusAndChainUnsupported
 } from 'src/web/hooks';
 import { NextSeo } from 'next-seo';
@@ -23,8 +22,6 @@ const MintPage = () => {
   const [mnemonic, setMnemonic] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [selectedCountry, setSelectedCountry] = useState<string>('');
-
-  useAutoConnectWallet(true);
 
   const walletAddress = useWalletAddress();
   const mint = useMint();
@@ -97,8 +94,8 @@ const MintPage = () => {
           <Text fontSize="xl">Please select your country from the dropdown below.</Text>
 
           <Text maxWidth={700} mt={3} color={'red'} fontSize="sm">
-            {statusAndChainUnsupported.status !== 'connected'
-              ? 'You must have Metamask installed to use this app.'
+            {statusAndChainUnsupported.status !== 'success'
+              ? 'You must connect a wallet to mint.'
               : !isCommitmentReady
               ? 'Your token is not available to be minted. Please wait one week from your original request.'
               : commitmentPeriodIsUpcoming

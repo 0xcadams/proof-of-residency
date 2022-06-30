@@ -2,9 +2,9 @@ import {
   Box,
   Divider,
   Flex,
+  Grid,
   Heading,
   SimpleGrid,
-  Skeleton,
   Tag,
   Text,
   Tooltip
@@ -16,7 +16,13 @@ import Link from 'next/link';
 import numeral from 'numeral';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
-import { getCurrentMintedCount, getOwnerOfToken, TokenOwner } from 'src/api/ethers';
+import {
+  getCurrentMintedCount,
+  getCurrentMintedCountForChain,
+  getOwnerOfToken,
+  TokenOwner
+} from 'src/api/ethers';
+import { ProofOfResidencyNetwork, PROOF_OF_RESIDENCY_CHAINS } from 'src/contracts';
 import Header from 'src/web/components/Header';
 import { getPopulationForAlpha3 } from 'src/web/populations';
 import {
@@ -27,6 +33,7 @@ import {
   getTokenIdsForCountryAndCount
 } from 'src/web/token';
 import { MetadataResponse } from 'types';
+import { chain } from 'wagmi';
 import Footer from '../../src/web/components/Footer';
 
 type CountryDetailsProps = CountryIso & {
@@ -41,6 +48,7 @@ type CountryDetailsProps = CountryIso & {
     link: string;
     image: string;
     owner: TokenOwner;
+    chain: ProofOfResidencyNetwork;
   }[];
 };
 
@@ -78,29 +86,42 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
 
     const countryId = Number(isoCountry.numeric);
 
-    const mintedCount = await getCurrentMintedCount(countryId);
+    const mintedCountTotal = await getCurrentMintedCount(countryId);
+
+    const mintedCountries = await Promise.all(
+      PROOF_OF_RESIDENCY_CHAINS.map(async (chain) => {
+        const mintedCount = await getCurrentMintedCountForChain(countryId, chain);
+
+        return { chain, mintedCount };
+      })
+    );
 
     const tokens = await Promise.all(
-      getTokenIdsForCountryAndCount(countryId, mintedCount.toNumber() ?? 0).map(async (tokenId) => {
-        const res = await fetch(
-          `https://generator.proofofresidency.xyz/api/${tokenId}`
-          // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_METADATA}/${tokenId}`
+      mintedCountries.flatMap(({ chain, mintedCount }) => {
+        return getTokenIdsForCountryAndCount(countryId, mintedCount.toNumber() ?? 0).map(
+          async (tokenId) => {
+            const res = await fetch(
+              `https://generator.proofofresidency.xyz/api/${tokenId}`
+              // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_METADATA}/${tokenId}`
+            );
+            const meta: MetadataResponse = await res.json();
+
+            const owner = await getOwnerOfToken(tokenId, chain);
+
+            const { tokenNumber } = getCountryAndTokenNumber(tokenId);
+
+            return {
+              ...meta,
+              owner,
+              tokenId: tokenId,
+              tokenNumber: tokenNumber.toString(),
+              link: `/token/${chain}/${tokenId}`,
+              image: `https://generator.proofofresidency.xyz/${tokenId}`,
+              chain
+              // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/token/${tokenId}.png`
+            };
+          }
         );
-        const meta: MetadataResponse = await res.json();
-
-        const owner = await getOwnerOfToken(tokenId);
-
-        const { tokenNumber } = getCountryAndTokenNumber(tokenId);
-
-        return {
-          ...meta,
-          owner,
-          tokenId: tokenId,
-          tokenNumber: tokenNumber.toString(),
-          link: `/token/${tokenId}`,
-          image: `https://generator.proofofresidency.xyz/${tokenId}`
-          // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/token/${tokenId}.png`
-        };
       })
     );
 
@@ -112,7 +133,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
       population: population ?? 0,
       image: `/previews/${countryId}.png`,
       imageLarge: `/previews-large/${countryId}.png`,
-      minted: mintedCount?.toNumber() ?? 0,
+      minted: mintedCountTotal?.toNumber() ?? 0,
       tokens
     };
 
@@ -190,10 +211,10 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
           {props.country}
         </Heading>
 
-        <Flex
+        <Grid
           px={4}
-          columns={{ base: 1, md: 2 }}
-          spacing={4}
+          // columns={{ base: 1, md: 2 }}
+          // spacing={4}
           maxWidth={1200}
           width="100%"
           mx="auto"
@@ -227,14 +248,14 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
                   {tag.link ? (
                     <Box cursor="pointer">
                       <Link href={tag.link} passHref>
-                        <Tag mt={1} pt="3px" variant="solid" size="lg">
+                        <Tag mt={1} variant="solid" size="lg">
                           {tag.content}
                         </Tag>
                       </Link>
                     </Box>
                   ) : (
                     <Box mt={1}>
-                      <Tag pt="3px" variant="solid" size="lg">
+                      <Tag variant="solid" size="lg">
                         {tag.content}
                       </Tag>
                     </Box>
@@ -253,7 +274,7 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
 
               <SimpleGrid
                 mx="auto"
-                align="center"
+                alignItems="center"
                 width="100%"
                 maxWidth={1200}
                 mt={4}
@@ -266,7 +287,7 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
                     <Flex cursor="pointer" direction="column">
                       <Box>
                         <Flex mt={2} mx="auto" position="relative" height={400}>
-                          {typeof window === 'undefined' ? (
+                          {/* {typeof window === 'undefined' ? (
                             <Skeleton height={400} width="100%" />
                           ) : (
                             <iframe
@@ -276,11 +297,11 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
                               src={token.image}
                               style={{ height: 400, width: '100%' }}
                             />
-                          )}
+                          )} */}
                         </Flex>
                       </Box>
                       <Text mt={2} fontWeight="bold">
-                        Token #{token.tokenNumber}
+                        {chain[token.chain].name}: #{token.tokenNumber}
                       </Text>
                       <Box mt={2}>
                         <Tag pt="3px" variant="solid" size="lg">
@@ -293,7 +314,7 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
               </SimpleGrid>
             </>
           )}
-        </Flex>
+        </Grid>
       </Flex>
       <Footer />
     </>

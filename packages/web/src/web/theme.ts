@@ -1,10 +1,10 @@
 import { DeepPartial, extendTheme, Theme, withDefaultColorScheme } from '@chakra-ui/react';
 import { createBreakpoints, mode } from '@chakra-ui/theme-tools';
 
-const fonts = {
-  heading: "'Shadows Into Light', sans-serif",
-  body: "'Josefin Sans', sans-serif",
-  mono: "'Josefin Sans', sans-serif"
+export const fonts = {
+  heading: 'solitaire-mvb-pro, sans-serif',
+  body: 'solitaire-mvb-pro, sans-serif',
+  mono: 'solitaire-mvb-pro, sans-serif'
 };
 
 const breakpoints = createBreakpoints({
@@ -18,7 +18,7 @@ const breakpoints = createBreakpoints({
 const components = {
   Button: {
     baseStyle: {
-      pt: '3px'
+      // pt: '3px'
     }
   }
 };

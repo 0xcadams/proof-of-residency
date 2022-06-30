@@ -16,6 +16,8 @@ import { axiosClient } from '../axios';
 import { VerifyAddressRequest, VerifyAddressResponse } from 'types';
 import Link from 'next/link';
 import { CountrySelect } from './CountrySelect';
+import { useNetwork } from 'wagmi';
+import { ProofOfResidencyNetwork } from 'src/contracts';
 
 export const AddressModal = (props: {
   isOpen: boolean;
@@ -33,17 +35,21 @@ export const AddressModal = (props: {
 
   const toast = useToast();
 
+  const { data: network } = useNetwork();
+
   const onSubmit = async () => {
     setIsLoading(true);
 
-    if (primaryLine && city && state && postalCode && country) {
+    if (primaryLine && city && state && postalCode && country && network?.network) {
       const body: VerifyAddressRequest = {
         primaryLine,
         secondaryLine,
         city,
         state,
         postalCode,
-        country
+        country,
+
+        chain: network?.network as ProofOfResidencyNetwork
       };
       const result = await axiosClient.post<VerifyAddressResponse>('/verify', body);
 
@@ -101,7 +107,7 @@ export const AddressModal = (props: {
               You must provide your address so we can mail a letter to validate your personhood.
               Please refer to our{' '}
               <strong>
-                <Link href="https://github.com/proof-of-residency/proof-of-residency/blob/main/WHITEPAPER.md">
+                <Link href="https://github.com/0xcadams/proof-of-residency/blob/main/WHITEPAPER.md">
                   whitepaper
                 </Link>
               </strong>{' '}
@@ -114,7 +120,7 @@ export const AddressModal = (props: {
               <>
                 <FormControl mt={4}>
                   <Input
-                    autocomplete="shipping address-line1"
+                    autoComplete="shipping address-line1"
                     onChange={(e) => setPrimaryLine(e.target.value)}
                     value={primaryLine}
                     placeholder="Primary Line"
@@ -123,7 +129,7 @@ export const AddressModal = (props: {
 
                 <FormControl mt={2}>
                   <Input
-                    autocomplete="shipping address-line2"
+                    autoComplete="shipping address-line2"
                     onChange={(e) => setSecondaryLine(e.target.value)}
                     value={secondaryLine}
                     placeholder={`Secondary Line (optional)`}
@@ -132,7 +138,7 @@ export const AddressModal = (props: {
 
                 <FormControl mt={2}>
                   <Input
-                    autocomplete="shipping locality"
+                    autoComplete="shipping locality"
                     onChange={(e) => setCity(e.target.value)}
                     value={city}
                     placeholder="City"
@@ -141,7 +147,7 @@ export const AddressModal = (props: {
 
                 <FormControl mt={2}>
                   <Input
-                    autocomplete="shipping region"
+                    autoComplete="shipping region"
                     onChange={(e) => setState(e.target.value)}
                     value={state}
                     placeholder={`State${country !== 'US' ? ' (optional)' : ''}`}
@@ -150,7 +156,7 @@ export const AddressModal = (props: {
 
                 <FormControl mt={2}>
                   <Input
-                    autocomplete="shipping postal-code"
+                    autoComplete="shipping postal-code"
                     onChange={(e) => setPostalCode(e.target.value)}
                     value={postalCode}
                     placeholder={`ZIP/Postal Code ${country !== 'US' ? ' (optional)' : ''}`}

@@ -21,7 +21,7 @@ Proof of Residency is a Sybil-resistant Proof of Personhood protocol which issue
 
 This stack uses [Hardhat](https://hardhat.org) to orchestrate tasks and [Ethers](https://docs.ethers.io/v5/) for all Ethereum interactions and testing. There are also shared types between the tests and smart contract layer using [Typechain](https://github.com/dethcrypto/TypeChain).
 
-The Proof of Residency subgraph (using The Graph) can be found on their [hosted service](https://thegraph.com/hosted-service/subgraph/proof-of-residency/proof-of-residency).
+The Proof of Residency subgraph (using The Graph) can be found on their [hosted service](https://thegraph.com/hosted-service/dashboard?account=proof-of-residency).
 
 Please see the [website](https://proofofresidency.xyz) for more information!
 
@@ -82,6 +82,7 @@ The API for the Proof of Residency ERC-721 is documented extensively in the [con
 - **Mainnet:** [0x99C5...84ba0c8](https://etherscan.io/address/0x99C5B95408981C391cf6F1766d9B79f8E84ba0c8)
 - **Arbitrum:** [0x6f66...a4661B4](https://arbiscan.io/address/0x6f668f1892c62860c295B052739B3290fa4661B4)
 - **Optimism:** [0x6f66...a4661b4](https://optimistic.etherscan.io/address/0x6f668f1892c62860c295b052739b3290fa4661b4)
+- **Polygon:** [0xdB1f...9A917B9](https://polygonscan.com/address/0xdB1fc2dd95Bf9374729a85A97F06421D99A917B9)
 
 #### Testnets
 
@@ -89,6 +90,7 @@ The API for the Proof of Residency ERC-721 is documented extensively in the [con
 - **Rinkeby:** [0xDe1e...4d3857f](https://rinkeby.etherscan.io/address/0xDe1eAc02F7967f73479c2c4ef4CAbF8274d3857f)
 - **Arbitrum Rinkeby:** [0xeB52....C27f677](https://testnet.arbiscan.io/address/0xeB528308c07AedEb22353ff4ae70143D5C27f677)
 - **Optimistic Kovan:** [0x6f66...a4661b4](https://kovan-optimistic.etherscan.io/address/0x6f668f1892c62860c295B052739B3290fa4661B4)
+- **Polygon Mumbai:** [0x6f66...a4661b4](https://mumbai.polygonscan.com/address/0x6f668f1892c62860c295b052739b3290fa4661b4)
 
 ## Contributing
 

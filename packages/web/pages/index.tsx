@@ -1,58 +1,81 @@
-import { Flex, Text, useBreakpointValue } from '@chakra-ui/react';
+import { Box, Flex, Heading, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
-import Link from 'next/link';
 import React from 'react';
 import Header from 'src/web/components/Header';
 import LandingImage from '../public/804.png';
 import Footer from '../src/web/components/Footer';
 
 const IndexPage = () => {
-  const frameHeight = useBreakpointValue({ base: 300, md: 500 }, 'md');
+  const frameHeight = useBreakpointValue({ base: 400, md: 600 }, 'md');
+  const headingSize = useBreakpointValue({ base: '6xl', md: '8xl' }, 'md');
 
   return (
     <>
       <Header />
+      <Box mx={4}>
+        <Flex
+          maxWidth={1200}
+          pt="70px"
+          width="100%"
+          mx="auto"
+          zIndex={-1}
+          position="relative"
+          align="center"
+          height={frameHeight}
+          mb={8}
+        >
+          <Heading
+            maxWidth={1000}
+            textTransform="uppercase"
+            fontSize={headingSize}
+            // mt={12}
 
-      <Flex minHeight="90vh" pt="70px" width="100%" direction="column" px={4}>
-        <Flex mt={2} mb={4} mx="auto" position="relative" width="100%" height={frameHeight}>
-          <Image
-            priority
-            objectFit="contain"
-            layout="fill"
-            src={LandingImage}
-            alt="Proof of residency image of russia"
-          />
+            textAlign="start"
+          >
+            Proof of personhood for ethereum
+          </Heading>
+          <Flex
+            // mt={2}
+            // mb={4}
+            zIndex={-2}
+            maxWidth={'100%'}
+            position="absolute"
+            right={0}
+            width={1000}
+            height={'100%'}
+          >
+            <Image
+              priority
+              objectFit="contain"
+              objectPosition="right center"
+              layout="fill"
+              src={LandingImage}
+              alt="Proof of residency image of Ukraine"
+            />
+          </Flex>
+        </Flex>
+        <Flex maxWidth={1200} mx="auto" justify="center" mt="80px">
+          <Flex align="center">
+            {/* <Image src={MailIcon} alt="Proof of residency logo" width={80} height={80} /> */}
+            <Heading ml={6} fontSize="3xl" textAlign="center">
+              The proof of personhood protocol built on physical mail.
+            </Heading>
+          </Flex>
         </Flex>
 
-        <Flex mb={10} flexDirection="column" mx="auto" align="center" width="100%" maxWidth={800}>
-          <Text fontSize="2xl" mt={10} textAlign="center">
-            Proof of Residency is a protocol to support decentralized governance, Universal Basic
-            Income, unique identity, and many other applications.
-          </Text>
-
-          <Text fontSize="lg" mt={8} textAlign="center">
-            A privacy-focused proof of personhood protocol which issues non-transferable NFTs based
-            on mailing addresses. We send mail with a secret phrase and use a{' '}
-            <strong>
-              <Link
-                aria-label="Commitment scheme wiki"
-                href="https://en.wikipedia.org/wiki/Commitment_scheme"
-              >
-                commitment scheme
-              </Link>
-            </strong>{' '}
-            to ensure that the recipient resides at the provided address. Privacy is the first
-            priority - addresses are kept private and real names are not requested. Decentralization
-            and community ownership are built into the protocol.
-          </Text>
-
+        <Flex mb={10} flexDirection="column" mx="auto" align="center" width="100%" maxWidth={1000}>
+          <Heading fontSize="2xl" mt={8} textAlign="center">
+            We send mail with a secret phrase and use a commitment scheme to ensure that the
+            recipient resides at the provided address. Privacy is the first priority - addresses are
+            kept private and real names are not requested.
+          </Heading>
+          {/* 
           <Text fontSize="md" mt={8} textAlign="center">
-            All of our code is open-source on Github under an MIT license for future projects to
-            build upon. We dedicate 10% of the revenue from this project to be donated to
-            Make-A-Wish®.
-          </Text>
+            All of our code is open-source on Github. We dedicate 10% of the revenue from this
+            project to be donated to Make-A-Wish®.
+          </Text> */}
         </Flex>
-      </Flex>
+      </Box>
 
       <Footer />
     </>

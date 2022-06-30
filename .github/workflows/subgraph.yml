@@ -1,0 +1,49 @@
+name: subgraph
+
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "packages/subgraph/**"
+  pull_request:
+    branches:
+      - "*"
+
+defaults:
+  run:
+    working-directory: packages/subgraph
+
+jobs:
+  test:
+    name: Deploy Subgraph
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+          cache: yarn
+      - name: Install
+        run: yarn --immutable
+      - name: Build
+        run: yarn build
+      - name: Deploy to Testnets
+        if: github.ref != 'refs/heads/main'
+        run: |
+          yarn deploy:arbitrum-rinkeby --deploy-key $SUBGRAPH_ACCESS_TOKEN
+          yarn deploy:rinkeby --deploy-key $SUBGRAPH_ACCESS_TOKEN
+          yarn deploy:goerli --deploy-key $SUBGRAPH_ACCESS_TOKEN
+          yarn deploy:polygon-mumbai --deploy-key $SUBGRAPH_ACCESS_TOKEN
+          yarn deploy:optimism-kovan --deploy-key $SUBGRAPH_ACCESS_TOKEN
+        env:
+          SUBGRAPH_ACCESS_TOKEN: ${{ secrets.SUBGRAPH_ACCESS_TOKEN }}
+      - name: Deploy to Mainnets
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          yarn deploy:mainnet --deploy-key $SUBGRAPH_ACCESS_TOKEN
+          yarn deploy:arbitrum-one --deploy-key $SUBGRAPH_ACCESS_TOKEN
+          yarn deploy:optimism --deploy-key $SUBGRAPH_ACCESS_TOKEN
+          yarn deploy:polygon --deploy-key $SUBGRAPH_ACCESS_TOKEN
+        env:
+          SUBGRAPH_ACCESS_TOKEN: ${{ secrets.SUBGRAPH_ACCESS_TOKEN }}

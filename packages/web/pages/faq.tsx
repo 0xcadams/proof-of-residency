@@ -42,7 +42,7 @@ const FaqPage = () => {
           that you reside at a mailing address you provide. The technical details of the process can
           be seen on our{' '}
           <strong>
-            <Link href="https://github.com/proof-of-residency/proof-of-residency/blob/main/WHITEPAPER.md">
+            <Link href="https://github.com/0xcadams/proof-of-residency/blob/main/WHITEPAPER.md">
               public Github
             </Link>
           </strong>{' '}
@@ -121,7 +121,7 @@ const FaqPage = () => {
         <>
           Please visit our{' '}
           <strong>
-            <Link href="https://github.com/proof-of-residency/proof-of-residency/issues">
+            <Link href="https://github.com/0xcadams/proof-of-residency/issues">
               Github issues page
             </Link>
           </strong>{' '}

@@ -1,3 +1,4 @@
+import { ProofOfResidencyNetwork } from 'src/contracts';
 import { AddressComponents } from './submit-address';
 
 export type Components = {
@@ -115,4 +116,6 @@ export type VerifyAddressRequest = {
   state: string;
   postalCode: string;
   country: string;
+
+  chain: ProofOfResidencyNetwork;
 };
