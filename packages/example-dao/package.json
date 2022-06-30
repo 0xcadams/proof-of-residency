@@ -16,6 +16,6 @@
     "test": "yarn run -T hardhat test"
   },
   "dependencies": {
-    "@proof-of-residency/contracts": "file:../contracts"
+    "@proof-of-residency/contracts": "file:../contracts#../contracts::hash=da99c4&locator=%40proof-of-residency%2Fweb%40workspace%3Apackages%2Fweb"
   }
 }
