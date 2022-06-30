@@ -5401,16 +5401,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@proof-of-residency/contracts@file:../contracts#../contracts::hash=da99c4&locator=%40proof-of-residency%2Fweb%40workspace%3Apackages%2Fweb":
-  version: 1.1.1
-  resolution: "@proof-of-residency/contracts@file:../contracts#../contracts::hash=da99c4&locator=%40proof-of-residency%2Fweb%40workspace%3Apackages%2Fweb"
-  dependencies:
-    "@openzeppelin/contracts": ^4.7.0
-  checksum: 144b3decc41d116020e15f1eca307c1fb7f67db08ffbbc41661f9d645967cbd01eb46a6aa844cfdd981c661295e146badbfa7432e18c1adc6e64524073c2076d
-  languageName: node
-  linkType: hard
-
-"@proof-of-residency/contracts@workspace:packages/contracts":
+"@proof-of-residency/contracts@^1.1.1, @proof-of-residency/contracts@workspace:packages/contracts":
   version: 0.0.0-use.local
   resolution: "@proof-of-residency/contracts@workspace:packages/contracts"
   dependencies:
@@ -5422,7 +5413,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@proof-of-residency/example-dao@workspace:packages/example-dao"
   dependencies:
-    "@proof-of-residency/contracts": "file:../contracts#../contracts::hash=da99c4&locator=%40proof-of-residency%2Fweb%40workspace%3Apackages%2Fweb"
+    "@proof-of-residency/contracts": ^1.1.1
   languageName: unknown
   linkType: soft
 
