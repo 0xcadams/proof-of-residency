@@ -5,7 +5,6 @@ import {
   Grid,
   Heading,
   SimpleGrid,
-  Skeleton,
   Tag,
   Text,
   Tooltip
@@ -116,7 +115,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
               tokenId: tokenId,
               tokenNumber: tokenNumber.toString(),
               link: `/token/${chain}/${tokenId}`,
-              image: `https://generator.proofofresidency.xyz/${chain}/${tokenId}`,
+              image: `https://generator.proofofresidency.xyz/token/${chain}/${tokenId}.png`,
               chain: getChainForChainId(chain)?.name ?? ''
               // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/token/${tokenId}.png`
             };
@@ -277,18 +276,14 @@ const CountryDetailsPage = (props: CountryDetailsProps) => {
                   <Link key={token.tokenId} href={token.link} passHref>
                     <Flex align="center" cursor="pointer" direction="column">
                       <Box>
-                        <Flex mt={2} mx="auto" position="relative" height={400}>
-                          {typeof window === 'undefined' ? (
-                            <Skeleton height={400} width="100%" />
-                          ) : (
-                            <iframe
-                              sandbox="allow-scripts allow-downloads"
-                              allowFullScreen={false}
-                              allow="xr-spatial-tracking"
-                              src={token.image}
-                              style={{ cursor: 'pointer', height: 400, width: '100%' }}
-                            />
-                          )}
+                        <Flex mt={2} mx="auto" position="relative" width={400} height={400}>
+                          <Image
+                            objectFit="contain"
+                            layout="fill"
+                            placeholder="empty"
+                            src={token.image}
+                            alt={token.tokenNumber}
+                          />
                         </Flex>
                       </Box>
                       <Heading mt={2} fontSize="2xl">

@@ -91,7 +91,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
 
       image: `https://generator.proofofresidency.xyz/${chain}/${tokenId}`,
       // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/${tokenId}.html`,
-      imagePng: `https://generator.proofofresidency.xyz/tokens/${chain}/${tokenId}.png`,
+      imagePng: `https://generator.proofofresidency.xyz/token/${chain}/${tokenId}.png`,
       //  `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/token/${tokenId}.png`,
       tokenId,
       tokenIdCondensed: `${tokenId.slice(0, 3)}...${tokenId.slice(14)}`,
