@@ -1,6 +1,5 @@
-import { Page, test } from '@playwright/test';
+import { chromium, Page, test } from '@playwright/test';
 import path from 'path';
-import { getCacheableTokenIds } from '../src/token';
 import { GetAllTokensResponse } from '../src/types';
 
 // Run tests with custom timeout
@@ -32,7 +31,17 @@ let indexFour: number = 0;
 test.use({ viewport: { width: 2000, height: 2000 } });
 
 test.beforeAll(async () => {
-  tokenIds = await getCacheableTokenIds();
+  const browser = await chromium.launch();
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  await page.goto('https://proofofresidency.xyz');
+  tokenIds = await page.evaluate(async () => {
+    const res = await fetch('https://proofofresidency.xyz/api/tokens');
+    const tokens: GetAllTokensResponse = await res.json();
+
+    return tokens;
+  });
+  await browser.close();
 
   console.log(`Generating for ${tokenIds.length} tokens`);
 
@@ -45,7 +54,7 @@ test.beforeAll(async () => {
 test.describe.parallel('export token images', () => {
   const screenshot = async (page: Page, chain: number, tokenId: string) => {
     await page.goto(`https://generator.proofofresidency.xyz/${chain}/${tokenId}`);
-    await new Promise((resolve) => setTimeout(resolve, 1500)); // yes, waits are the devil
+    await new Promise((resolve) => setTimeout(resolve, 3000)); // yes, waits are the devil
     await page.screenshot({
       type: 'png',
       path: path.join(process.cwd(), `public/token/${tokenId}.png`)

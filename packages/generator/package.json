@@ -29,7 +29,7 @@
     "@types/keccak": "^3.0.1",
     "@types/progress": "^2.0.5",
     "@types/react": "18.0.14",
-    "@typescript-eslint/eslint-plugin": "^5.30.0",
+    "@typescript-eslint/eslint-plugin": "^5.30.3",
     "cz-conventional-changelog": "^3.3.0",
     "eslint-config-next": "^12.2.0",
     "node-fetch": "^3.2.6",

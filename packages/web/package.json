@@ -63,7 +63,7 @@
     "@types/mixpanel-browser": "^2.38.0",
     "@types/numeral": "^2.0.2",
     "@types/react": "18.0.14",
-    "@typescript-eslint/parser": "^5.30.0",
+    "@typescript-eslint/parser": "^5.30.3",
     "eslint-config-next": "12.2.0"
   }
 }

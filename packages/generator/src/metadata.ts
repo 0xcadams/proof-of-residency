@@ -92,7 +92,7 @@ export const getMetadata = async (chainId: string, tokenId: string) => {
     description: description,
     background_color: meta.colors.bgg.slice(1),
     external_url: `https://proofofresidency.xyz/token/${chainId}/${tokenId}`,
-    image: `https://generator.proofofresidency.xyz/tokens/${chainId}/${tokenId}.png`, // `ipfs://${ipfsArtCid}/token/${tokenId}.png`,
+    image: `https://generator.proofofresidency.xyz/token/${chainId}/${tokenId}.png`, // `ipfs://${ipfsArtCid}/token/${tokenId}.png`,
     animation_url: `https://generator.proofofresidency.xyz/${chainId}/${tokenId}`, // `ipfs://${ipfsArtCid}/${tokenId}.html`,
     tags: ['proof-of-residency-protocol', 'proof-of-personhood', 'identity-protocol'],
     attributes: attributes
