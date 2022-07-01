@@ -2,7 +2,7 @@ name: generate-images
 
 on:
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "*/2 * * * *"
 
 defaults:
   run:
