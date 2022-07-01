@@ -10,4 +10,5 @@ export type GetTokensForOwnerResponse = {
 export type GetAllTokensResponse = {
   chain: number;
   id: string;
+  country: number;
 }[];

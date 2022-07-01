@@ -116,7 +116,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
               tokenId: tokenId,
               tokenNumber: tokenNumber.toString(),
               link: `/token/${chain}/${tokenId}`,
-              image: `https://generator.proofofresidency.xyz/${tokenId}`,
+              image: `https://generator.proofofresidency.xyz/${chain}/${tokenId}`,
               chain: getChainForChainId(chain)?.name ?? ''
               // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/token/${tokenId}.png`
             };

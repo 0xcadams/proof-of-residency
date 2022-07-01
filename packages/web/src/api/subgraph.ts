@@ -159,19 +159,23 @@ export const getAllTokens = async (): Promise<GetAllTokensResponse> => {
     return [
       ...(tokens.l1?.map((t) => ({
         id: BigNumber.from(t.id).toString(),
-        chain: chainId.mainnet
+        chain: chainId.mainnet,
+        country: t.country.toNumber()
       })) ?? []),
       ...(tokens.arbitrum?.map((t) => ({
         id: BigNumber.from(t.id).toString(),
-        chain: chainId.arbitrum
+        chain: chainId.arbitrum,
+        country: t.country.toNumber()
       })) ?? []),
       ...(tokens.optimism?.map((t) => ({
         id: BigNumber.from(t.id).toString(),
-        chain: chainId.optimism
+        chain: chainId.optimism,
+        country: t.country.toNumber()
       })) ?? []),
       ...(tokens.polygon?.map((t) => ({
         id: BigNumber.from(t.id).toString(),
-        chain: chainId.polygon
+        chain: chainId.polygon,
+        country: t.country.toNumber()
       })) ?? [])
     ];
   } catch (e) {
@@ -187,7 +191,7 @@ export const getCurrentMintedCount = async (countryId: BigNumber | number) => {
       GetTokensByCountryQueryVariables,
       TokenFieldsFragment[]
     >({
-      document: GetAllTokensDocument,
+      document: GetTokensByCountryDocument,
       variables: {
         country: BigNumber.from(countryId)
       },
@@ -223,6 +227,7 @@ export const getCurrentMintedCountForChain = async (
   } catch (e) {
     console.error(e);
   }
+
   return BigNumber.from(0);
 };
 

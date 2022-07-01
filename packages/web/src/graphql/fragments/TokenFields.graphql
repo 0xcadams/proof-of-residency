@@ -3,4 +3,5 @@ fragment TokenFields on Token {
 
   mintTime
   tokenURI
+  country
 }

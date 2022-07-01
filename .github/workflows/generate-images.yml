@@ -2,7 +2,7 @@ name: generate-images
 
 on:
   schedule:
-    - cron: "*/2 * * * *"
+    - cron: "*/5 * * * *"
 
 defaults:
   run:
@@ -23,10 +23,8 @@ jobs:
           cache: yarn
       - name: Install
         run: yarn --immutable
-      - name: Build
-        run: yarn build
-      - name: Run code analysis
-        run: npx playwright install-deps chromium
+      - name: Install Playwright
+        run: npx playwright install
       - name: Run screenshots
         run: yarn screenshots
       - uses: stefanzweifel/git-auto-commit-action@v4

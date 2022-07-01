@@ -54,6 +54,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 type DetailsProps = CountryIso &
   MetadataResponse & {
     tokenId: string;
+    tokenIdCondensed: string;
     chain: string;
     owner: TokenOwner;
     imagePng: string;
@@ -93,6 +94,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
       imagePng: `https://generator.proofofresidency.xyz/tokens/${chain}/${tokenId}.png`,
       //  `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/token/${tokenId}.png`,
       tokenId,
+      tokenIdCondensed: `${tokenId.slice(0, 3)}...${tokenId.slice(14)}`,
       owner,
       chain: getChainForChainId(chain)?.name ?? '',
       metadataUrl
@@ -156,7 +158,7 @@ const TokenDetailsPage = (props: DetailsProps) => {
       : []),
     {
       name: 'Metadata URL',
-      content: props.tokenId,
+      content: props.tokenIdCondensed,
       link: props.metadataUrl
     }
   ];

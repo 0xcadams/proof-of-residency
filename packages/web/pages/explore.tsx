@@ -6,7 +6,7 @@ import React from 'react';
 import Footer from '../src/web/components/Footer';
 
 // imports from API
-import { getCurrentMintedCount } from 'src/api/subgraph';
+import { getAllTokens } from 'src/api/subgraph';
 
 import { CountryIso, getAllCountries } from 'src/web/token';
 import { getPopulationForAlpha3 } from 'src/web/populations';
@@ -22,17 +22,19 @@ type Details = {
 
 export const getStaticProps = async () => {
   try {
+    const allTokens = await getAllTokens();
+
     const details = await Promise.all(
       getAllCountries().map(async (country) => {
-        const mintedCount = await getCurrentMintedCount(Number(country.numeric));
-
         const population = getPopulationForAlpha3(country.alpha3);
+
+        const mintedCount = allTokens.filter((t) => t.country === Number(country.numeric)).length;
 
         const props: Details = {
           image: `/previews/${Number(country.numeric)}.png`,
           country,
           population: population ?? 0,
-          minted: mintedCount.toNumber()
+          minted: mintedCount
         };
 
         return props;

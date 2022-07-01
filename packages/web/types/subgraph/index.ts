@@ -717,7 +717,13 @@ export type GetRequesterByIdQuery = {
       id: string;
       contribution: { __typename: 'Contribution'; id: string; value: BigNumber };
     }>;
-    tokens: Array<{ __typename: 'Token'; id: string; mintTime: BigNumber; tokenURI: string }>;
+    tokens: Array<{
+      __typename: 'Token';
+      id: string;
+      mintTime: BigNumber;
+      tokenURI: string;
+      country: BigNumber;
+    }>;
     tokenChallenge: Array<{ __typename: 'TokenChallenge'; id: string }>;
   } | null;
 };
@@ -733,6 +739,7 @@ export type GetTokenByIdQuery = {
     id: string;
     mintTime: BigNumber;
     tokenURI: string;
+    country: BigNumber;
     owner: { __typename: 'Requester'; id: string };
   } | null;
 };
@@ -744,7 +751,13 @@ export type GetAllTokensQueryVariables = Exact<{
 
 export type GetAllTokensQuery = {
   __typename: 'Query';
-  tokens: Array<{ __typename: 'Token'; id: string; mintTime: BigNumber; tokenURI: string }>;
+  tokens: Array<{
+    __typename: 'Token';
+    id: string;
+    mintTime: BigNumber;
+    tokenURI: string;
+    country: BigNumber;
+  }>;
 };
 
 export type GetTokensByCountryQueryVariables = Exact<{
@@ -753,7 +766,13 @@ export type GetTokensByCountryQueryVariables = Exact<{
 
 export type GetTokensByCountryQuery = {
   __typename: 'Query';
-  tokens: Array<{ __typename: 'Token'; id: string; mintTime: BigNumber; tokenURI: string }>;
+  tokens: Array<{
+    __typename: 'Token';
+    id: string;
+    mintTime: BigNumber;
+    tokenURI: string;
+    country: BigNumber;
+  }>;
 };
 
 export type CommitmentFieldsFragment = {
@@ -769,6 +788,7 @@ export type TokenFieldsFragment = {
   id: string;
   mintTime: BigNumber;
   tokenURI: string;
+  country: BigNumber;
 };
 
 export const CommitmentFieldsFragmentDoc = gql`
@@ -790,6 +810,7 @@ export const TokenFieldsFragmentDoc = gql`
     id
     mintTime
     tokenURI
+    country
   }
 `;
 export const GetCommittersDocument = gql`
