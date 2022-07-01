@@ -299,6 +299,22 @@ export class ProofOfResidency__commitmentsResult {
     map.set("value3", ethereum.Value.fromUnsignedBigInt(this.value3));
     return map;
   }
+
+  getValidAt(): BigInt {
+    return this.value0;
+  }
+
+  getCommitment(): Bytes {
+    return this.value1;
+  }
+
+  getCommitter(): Address {
+    return this.value2;
+  }
+
+  getValue(): BigInt {
+    return this.value3;
+  }
 }
 
 export class ProofOfResidency__committerContributionsResult {
@@ -315,6 +331,14 @@ export class ProofOfResidency__committerContributionsResult {
     map.set("value0", ethereum.Value.fromUnsignedBigInt(this.value0));
     map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
     return map;
+  }
+
+  getLockedUntil(): BigInt {
+    return this.value0;
+  }
+
+  getValue(): BigInt {
+    return this.value1;
   }
 }
 

@@ -11,7 +11,7 @@
   "scripts": {
     "build": "graph build",
     "codegen": "graph codegen",
-    "postinstall": "yarn prepare:mainnet",
+    "postinstall": "yarn codegen && yarn prepare:mainnet",
     "start": "docker-compose up --force-recreate",
     "create:local": "yarn prepare:local && graph create --node http://localhost:8020/ proof-of-residency/mainnet",
     "remove:local": "graph remove --node http://localhost:8020/ proof-of-residency/proof-of-residency",

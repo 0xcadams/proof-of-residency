@@ -26,18 +26,17 @@ type Token @entity {
   owner: Requester!
   mintTime: BigInt!
   tokenURI: String!
+  country: BigInt!
 }
 
 type Commitment @entity {
   id: ID!
   committer: Committer!
   requester: Requester!
-  # validAt: BigInt!
   contribution: Contribution!
 }
 
 type Contribution @entity {
   id: ID!
   value: BigInt!
-  # lockedUntil: BigInt!
 }

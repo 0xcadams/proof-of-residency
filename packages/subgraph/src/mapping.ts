@@ -192,6 +192,8 @@ function addRequester(id: string): Requester {
 function addToken(id: string): Token {
   const token = new Token(id);
 
+  token.country = BigInt.fromString(id).div(BigInt.fromString('1000000000000000'));
+
   return token;
 }
 

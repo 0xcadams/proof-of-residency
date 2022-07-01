@@ -499,6 +499,7 @@ export type SubscriptionTokensArgs = {
 
 export type Token = {
   __typename: 'Token';
+  country: Scalars['BigInt'];
   id: Scalars['ID'];
   mintTime: Scalars['BigInt'];
   owner: Requester;
@@ -576,6 +577,14 @@ export enum TokenChallenge_OrderBy {
 export type Token_Filter = {
   /** Filter for the block changed event. */
   _change_block: InputMaybe<BlockChangedFilter>;
+  country: InputMaybe<Scalars['BigInt']>;
+  country_gt: InputMaybe<Scalars['BigInt']>;
+  country_gte: InputMaybe<Scalars['BigInt']>;
+  country_in: InputMaybe<Array<Scalars['BigInt']>>;
+  country_lt: InputMaybe<Scalars['BigInt']>;
+  country_lte: InputMaybe<Scalars['BigInt']>;
+  country_not: InputMaybe<Scalars['BigInt']>;
+  country_not_in: InputMaybe<Array<Scalars['BigInt']>>;
   id: InputMaybe<Scalars['ID']>;
   id_gt: InputMaybe<Scalars['ID']>;
   id_gte: InputMaybe<Scalars['ID']>;
@@ -636,6 +645,7 @@ export type Token_Filter = {
 };
 
 export enum Token_OrderBy {
+  Country = 'country',
   Id = 'id',
   MintTime = 'mintTime',
   Owner = 'owner',
@@ -718,7 +728,13 @@ export type GetTokenByIdQueryVariables = Exact<{
 
 export type GetTokenByIdQuery = {
   __typename: 'Query';
-  token: { __typename: 'Token'; id: string; mintTime: BigNumber; tokenURI: string } | null;
+  token: {
+    __typename: 'Token';
+    id: string;
+    mintTime: BigNumber;
+    tokenURI: string;
+    owner: { __typename: 'Requester'; id: string };
+  } | null;
 };
 
 export type GetAllTokensQueryVariables = Exact<{
@@ -731,11 +747,22 @@ export type GetAllTokensQuery = {
   tokens: Array<{ __typename: 'Token'; id: string; mintTime: BigNumber; tokenURI: string }>;
 };
 
+export type GetTokensByCountryQueryVariables = Exact<{
+  country: Scalars['BigInt'];
+}>;
+
+export type GetTokensByCountryQuery = {
+  __typename: 'Query';
+  tokens: Array<{ __typename: 'Token'; id: string; mintTime: BigNumber; tokenURI: string }>;
+};
+
 export type CommitmentFieldsFragment = {
   __typename: 'Commitment';
   id: string;
   contribution: { __typename: 'Contribution'; id: string; value: BigNumber };
 };
+
+export type RequesterFieldsFragment = { __typename: 'Requester'; id: string };
 
 export type TokenFieldsFragment = {
   __typename: 'Token';
@@ -751,6 +778,11 @@ export const CommitmentFieldsFragmentDoc = gql`
       id
       value
     }
+  }
+`;
+export const RequesterFieldsFragmentDoc = gql`
+  fragment RequesterFields on Requester {
+    id
   }
 `;
 export const TokenFieldsFragmentDoc = gql`
@@ -803,9 +835,13 @@ export const GetTokenByIdDocument = gql`
   query GetTokenById($id: ID!) {
     token(id: $id) {
       ...TokenFields
+      owner {
+        ...RequesterFields
+      }
     }
   }
   ${TokenFieldsFragmentDoc}
+  ${RequesterFieldsFragmentDoc}
 `;
 export type GetTokenByIdQueryResult = Apollo.QueryResult<
   GetTokenByIdQuery,
@@ -822,4 +858,16 @@ export const GetAllTokensDocument = gql`
 export type GetAllTokensQueryResult = Apollo.QueryResult<
   GetAllTokensQuery,
   GetAllTokensQueryVariables
+>;
+export const GetTokensByCountryDocument = gql`
+  query GetTokensByCountry($country: BigInt!) {
+    tokens(where: { country: $country }) {
+      ...TokenFields
+    }
+  }
+  ${TokenFieldsFragmentDoc}
+`;
+export type GetTokensByCountryQueryResult = Apollo.QueryResult<
+  GetTokensByCountryQuery,
+  GetTokensByCountryQueryVariables
 >;
