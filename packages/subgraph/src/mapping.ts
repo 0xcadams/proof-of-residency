@@ -94,7 +94,7 @@ export function handleTokenChallengeCompleted(event: TokenChallengeCompleted): v
     requester = addRequester(event.params.owner.toHex());
   }
 
-  store.remove('TokenChallenge', event.params.tokenId.toHex());
+  store.remove('TokenChallenge', event.params.tokenId.toString());
 
   requester.save();
 }
@@ -106,16 +106,16 @@ export function handleTokenChallenged(event: TokenChallenged): void {
     requester = addRequester(event.params.owner.toHex());
   }
 
-  let token = Token.load(event.params.tokenId.toHex());
+  let token = Token.load(event.params.tokenId.toString());
 
   if (!token) {
-    token = addToken(event.params.tokenId.toHex());
+    token = addToken(event.params.tokenId.toString());
   }
 
-  let tokenChallenge = TokenChallenge.load(event.params.tokenId.toHex());
+  let tokenChallenge = TokenChallenge.load(event.params.tokenId.toString());
 
   if (!tokenChallenge) {
-    tokenChallenge = addTokenChallenge(event.params.tokenId.toHex());
+    tokenChallenge = addTokenChallenge(event.params.tokenId.toString());
     tokenChallenge.owner = requester.id;
     tokenChallenge.token = token.id;
   }
@@ -135,11 +135,11 @@ export function handleTransfer(event: Transfer): void {
       requester = addRequester(event.params.from.toHex());
     }
 
-    if (TokenChallenge.load(event.params.tokenId.toHex())) {
-      store.remove('TokenChallenge', event.params.tokenId.toHex());
+    if (TokenChallenge.load(event.params.tokenId.toString())) {
+      store.remove('TokenChallenge', event.params.tokenId.toString());
     }
 
-    store.remove('Token', event.params.tokenId.toHex());
+    store.remove('Token', event.params.tokenId.toString());
 
     requester.save();
   }
@@ -151,12 +151,12 @@ export function handleTransfer(event: Transfer): void {
       requester = addRequester(event.params.to.toHex());
     }
 
-    let token = Token.load(event.params.tokenId.toHex());
+    let token = Token.load(event.params.tokenId.toString());
 
     let contract = ProofOfResidency.bind(event.address);
 
     if (!token) {
-      token = addToken(event.params.tokenId.toHex());
+      token = addToken(event.params.tokenId.toString());
       token.mintTime = event.block.timestamp;
       let metadataURI = contract.try_tokenURI(event.params.tokenId);
       if (!metadataURI.reverted) {
