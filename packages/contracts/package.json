@@ -47,6 +47,6 @@
     "truffle-dashboard": "yarn run -T truffle dashboard"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "4.6.0"
+    "@openzeppelin/contracts": "4.7.0"
   }
 }
