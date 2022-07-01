@@ -21,7 +21,7 @@ import { GetStaticPaths, GetStaticPropsContext } from 'next';
 import { NextSeo } from 'next-seo';
 import { ParsedUrlQuery } from 'querystring';
 import React from 'react';
-import { getOwnerOfToken, TokenOwner } from 'src/api/ethers';
+import { getOwnerOfToken, TokenOwner } from 'src/api/subgraph';
 import { getAllTokens } from 'src/api/subgraph';
 import {
   getChainForChainId,

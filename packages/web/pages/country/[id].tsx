@@ -22,7 +22,7 @@ import {
   getCurrentMintedCountForChain,
   getOwnerOfToken,
   TokenOwner
-} from 'src/api/ethers';
+} from 'src/api/subgraph';
 import { getChainForChainId, PROOF_OF_RESIDENCY_CHAINS } from 'src/contracts';
 import Header from 'src/web/components/Header';
 import { getPopulationForAlpha3 } from 'src/web/populations';

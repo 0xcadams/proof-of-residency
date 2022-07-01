@@ -20,7 +20,6 @@ import { GetTokensForOwnerResponse } from 'types';
 import { chainId, useNetwork } from 'wagmi';
 
 import Logo from '../../../public/logo.svg';
-import { axiosClient } from '../axios';
 import { useHasCommitment, useWalletAddress } from '../hooks';
 import { CustomConnectButton } from './CustomConnectButton';
 
@@ -54,14 +53,15 @@ const Header = () => {
   const { data } = useSWR<GetTokensForOwnerResponse>(`/tokens/${walletAddress}`);
 
   useEffect(() => {
-    if (data?.l1) {
-      return setToken({ chain: chainId.mainnet, id: data.l1 });
-    } else if (data?.arbitrum) {
-      return setToken({ chain: chainId.arbitrum, id: data.arbitrum });
-    } else if (data?.optimism) {
-      return setToken({ chain: chainId.optimism, id: data.optimism });
-    } else if (data?.polygon) {
-      return setToken({ chain: chainId.polygon, id: data.polygon });
+    // TODO handle multiple tokens at once!
+    if (data?.l1?.length) {
+      return setToken({ chain: chainId.mainnet, id: data.l1[0].id });
+    } else if (data?.arbitrum?.length) {
+      return setToken({ chain: chainId.arbitrum, id: data.arbitrum[0].id });
+    } else if (data?.optimism?.length) {
+      return setToken({ chain: chainId.optimism, id: data.optimism[0].id });
+    } else if (data?.polygon?.length) {
+      return setToken({ chain: chainId.polygon, id: data.polygon[0].id });
     }
   }, [data]);
 

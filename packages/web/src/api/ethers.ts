@@ -1,6 +1,5 @@
 import { BigNumber, ethers } from 'ethers';
 import { getContractAddressForChain, ProofOfResidencyNetwork } from 'src/contracts';
-import { getCountryAndTokenNumber } from 'src/web/token';
 import { AddressComponents, ProofOfResidency__factory as ProofOfResidencyFactory } from 'types';
 import { chainId } from 'wagmi';
 
@@ -176,100 +175,8 @@ export const getCurrentWalletAddress = (): string => {
   return offchainWallet.address;
 };
 
-export const getCurrentMintedCount = async (countryId: BigNumber | number) => {
-  try {
-    const [l1Count, arbitrumCount, optimismCount, polygonCount] = await Promise.all([
-      getProofOfResidencyForChain(chainId.mainnet).countryTokenCounts(countryId),
-      getProofOfResidencyForChain(chainId.arbitrum).countryTokenCounts(countryId),
-      getProofOfResidencyForChain(chainId.optimism).countryTokenCounts(countryId),
-      getProofOfResidencyForChain(chainId.polygon).countryTokenCounts(countryId)
-    ]);
-
-    return l1Count.add(arbitrumCount).add(optimismCount).add(polygonCount);
-  } catch (e) {
-    console.error(e);
-  }
-  return BigNumber.from(0);
-};
-
-export const getCurrentMintedCountForChain = async (
-  countryId: BigNumber | number,
-  chain: ProofOfResidencyNetwork
-) => {
-  try {
-    return getProofOfResidencyForChain(chain).countryTokenCounts(countryId);
-  } catch (e) {
-    console.error(e);
-  }
-  return BigNumber.from(0);
-};
-
 export const getNonceForAddress = async (address: string, chain: ProofOfResidencyNetwork) => {
   const proofOfResidency = getProofOfResidencyForChain(chain);
 
   return proofOfResidency.nonces(address);
-};
-
-export type TokenOwner = { content: string; link: string | null };
-
-export const getOwnerOfToken = async (
-  tokenId: string | BigNumber,
-  chain: ProofOfResidencyNetwork
-): Promise<TokenOwner> => {
-  try {
-    const { countryId, tokenNumber } = getCountryAndTokenNumber(tokenId.toString());
-
-    const count = await getCurrentMintedCount(countryId);
-
-    if (count.gte(tokenNumber)) {
-      const proofOfResidency = getProofOfResidencyForChain(chain);
-      const owner = await proofOfResidency.ownerOf(BigNumber.from(tokenId));
-
-      return {
-        content: owner?.replace(owner?.slice(6, 38), '...') || 'None',
-        link: owner
-          ? chain === chainId.arbitrum
-            ? `https://arbiscan.io/address/${owner}`
-            : chain === chainId.optimism
-            ? `https://optimistic.etherscan.io/address/${owner}`
-            : chain === chainId.polygon
-            ? `https://polygonscan.io/address/${owner}`
-            : `https://etherscan.io/address/${owner}`
-          : null
-      };
-    }
-  } catch (e) {
-    console.error(e);
-  }
-
-  return {
-    content: 'None',
-    link: null
-  };
-};
-
-export const getTokensForOwner = async (owner: string) => {
-  try {
-    const [l1TokenId, arbitrumTokenId, optimismTokenId, polygonTokenId] = await Promise.allSettled([
-      getProofOfResidencyForChain(chainId.mainnet).tokenOfOwnerByIndex(owner, 0),
-      getProofOfResidencyForChain(chainId.arbitrum).tokenOfOwnerByIndex(owner, 0),
-      getProofOfResidencyForChain(chainId.optimism).tokenOfOwnerByIndex(owner, 0),
-      getProofOfResidencyForChain(chainId.polygon).tokenOfOwnerByIndex(owner, 0)
-    ]);
-
-    return {
-      l1: l1TokenId.status === 'fulfilled' ? l1TokenId.value : BigNumber.from(0),
-      arbitrum: arbitrumTokenId.status === 'fulfilled' ? arbitrumTokenId.value : BigNumber.from(0),
-      optimism: optimismTokenId.status === 'fulfilled' ? optimismTokenId.value : BigNumber.from(0),
-      polygon: polygonTokenId.status === 'fulfilled' ? polygonTokenId.value : BigNumber.from(0)
-    };
-  } catch (e) {
-    console.error(e);
-  }
-  return {
-    l1: BigNumber.from(0),
-    arbitrum: BigNumber.from(0),
-    optimism: BigNumber.from(0),
-    polygon: BigNumber.from(0)
-  };
 };

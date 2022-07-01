@@ -6,7 +6,7 @@ import React from 'react';
 import Footer from '../src/web/components/Footer';
 
 // imports from API
-import { getCurrentMintedCount } from 'src/api/ethers';
+import { getCurrentMintedCount } from 'src/api/subgraph';
 
 import { CountryIso, getAllCountries } from 'src/web/token';
 import { getPopulationForAlpha3 } from 'src/web/populations';

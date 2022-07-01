@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-
-import { getTokensForOwner } from 'src/api/ethers';
+import { getTokensForOwner } from 'src/api/subgraph';
 
 import { GetTokensForOwnerResponse } from '../../../types';
 
@@ -19,10 +18,7 @@ const handler = async (
       res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
 
       return res.status(200).json({
-        l1: tokens.l1.eq('0') ? '' : tokens.l1.toString(),
-        arbitrum: tokens.arbitrum.eq('0') ? '' : tokens.arbitrum.toString(),
-        optimism: tokens.optimism.eq('0') ? '' : tokens.optimism.toString(),
-        polygon: tokens.polygon.eq('0') ? '' : tokens.polygon.toString()
+        ...tokens
       });
     }
 

@@ -9,12 +9,23 @@ import { withScalars } from 'apollo-link-scalars';
 import { BigNumber } from 'ethers';
 
 import { buildClientSchema, DocumentNode, IntrospectionQuery } from 'graphql';
+import { ProofOfResidencyNetwork } from 'src/contracts';
+import { getCountryAndTokenNumber } from 'src/web/token';
 import { GetAllTokensResponse } from 'types';
 import {
   GetAllTokensQueryVariables,
   GetAllTokensDocument,
   GetAllTokensQuery,
-  TokenFieldsFragment
+  TokenFieldsFragment,
+  GetTokensByCountryQuery,
+  GetTokensByCountryQueryVariables,
+  GetTokensByCountryDocument,
+  GetTokenByIdQuery,
+  GetTokenByIdQueryVariables,
+  GetTokenByIdDocument,
+  GetRequesterByIdQuery,
+  GetRequesterByIdQueryVariables,
+  GetRequesterByIdDocument
 } from 'types/subgraph';
 import { chainId } from 'wagmi';
 
@@ -61,6 +72,15 @@ const optimismClient = apolloClientForChain(
 const polygonClient = apolloClientForChain(
   process.env.NEXT_PUBLIC_VERCEL_ENV !== 'production' ? 'polygon-mumbai' : 'polygon'
 );
+
+const getClientForChain = (chain: ProofOfResidencyNetwork) =>
+  chain === chainId.mainnet || chain === chainId.goerli
+    ? l1Client
+    : chain === chainId.arbitrum || chain === chainId.arbitrumRinkeby
+    ? arbitrumClient
+    : chain === chainId.optimism || chain === chainId.optimismKovan
+    ? optimismClient
+    : polygonClient;
 
 type QueryHandlerProps<T, V, R = string, D = DocumentNode> = {
   document: D;
@@ -158,4 +178,124 @@ export const getAllTokens = async (): Promise<GetAllTokensResponse> => {
     console.error(e);
   }
   return [];
+};
+
+export const getCurrentMintedCount = async (countryId: BigNumber | number) => {
+  try {
+    const tokens = await queryHandler<
+      GetTokensByCountryQuery,
+      GetTokensByCountryQueryVariables,
+      TokenFieldsFragment[]
+    >({
+      document: GetAllTokensDocument,
+      variables: {
+        country: BigNumber.from(countryId)
+      },
+      mapResponseToValue: (r) => r.data.tokens
+    });
+
+    return BigNumber.from(tokens.l1?.length ?? 0)
+      .add(tokens.arbitrum?.length ?? 0)
+      .add(tokens.optimism?.length ?? 0)
+      .add(tokens.polygon?.length ?? 0);
+  } catch (e) {
+    console.error(e);
+  }
+  return BigNumber.from(0);
+};
+
+export const getCurrentMintedCountForChain = async (
+  countryId: BigNumber | number,
+  chain: ProofOfResidencyNetwork
+) => {
+  try {
+    const response = await getClientForChain(chain).query<
+      GetTokensByCountryQuery,
+      GetTokensByCountryQueryVariables
+    >({
+      query: GetTokensByCountryDocument,
+      variables: {
+        country: BigNumber.from(countryId)
+      }
+    });
+
+    return BigNumber.from(response?.data?.tokens?.length ?? 0);
+  } catch (e) {
+    console.error(e);
+  }
+  return BigNumber.from(0);
+};
+
+export type TokenOwner = { content: string; link: string | null };
+
+export const getOwnerOfToken = async (
+  tokenId: string | BigNumber,
+  chain: ProofOfResidencyNetwork
+): Promise<TokenOwner> => {
+  try {
+    const { countryId, tokenNumber } = getCountryAndTokenNumber(tokenId.toString());
+
+    const count = await getCurrentMintedCount(countryId);
+
+    if (count.gte(tokenNumber)) {
+      const response = await getClientForChain(chain).query<
+        GetTokenByIdQuery,
+        GetTokenByIdQueryVariables
+      >({
+        query: GetTokenByIdDocument,
+        variables: {
+          id: tokenId.toString()
+        }
+      });
+
+      const owner = response?.data?.token?.owner?.id ?? null;
+
+      return {
+        content: owner?.replace(owner?.slice(6, 38), '...') || 'None',
+        link: owner
+          ? chain === chainId.arbitrum
+            ? `https://arbiscan.io/address/${owner}`
+            : chain === chainId.optimism
+            ? `https://optimistic.etherscan.io/address/${owner}`
+            : chain === chainId.polygon
+            ? `https://polygonscan.io/address/${owner}`
+            : `https://etherscan.io/address/${owner}`
+          : null
+      };
+    }
+  } catch (e) {
+    console.error(e);
+  }
+
+  return {
+    content: 'None',
+    link: null
+  };
+};
+
+export const getTokensForOwner = async (owner: string) => {
+  try {
+    const tokens = await queryHandler<
+      GetRequesterByIdQuery,
+      GetRequesterByIdQueryVariables,
+      TokenFieldsFragment[]
+    >({
+      document: GetRequesterByIdDocument,
+      variables: {
+        id: owner.toLowerCase()
+      },
+      mapResponseToValue: (r) =>
+        r.data.requester?.tokens?.map((t) => ({ ...t, id: BigNumber.from(t.id).toString() })) ?? []
+    });
+
+    return tokens;
+  } catch (e) {
+    console.error(e);
+  }
+  return {
+    l1: [],
+    arbitrum: [],
+    optimism: [],
+    polygon: []
+  };
 };

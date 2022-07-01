@@ -1,11 +1,20 @@
 query GetTokenById($id: ID!) {
   token(id: $id) {
     ...TokenFields
+    owner {
+      ...RequesterFields
+    }
   }
 }
 
 query GetAllTokens($first: Int, $skip: Int) {
   tokens(first: $first, skip: $skip) {
+    ...TokenFields
+  }
+}
+
+query GetTokensByCountry($country: BigInt!) {
+  tokens(where: { country: $country }) {
     ...TokenFields
   }
 }
