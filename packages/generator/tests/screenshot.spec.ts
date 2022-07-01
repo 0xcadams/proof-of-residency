@@ -1,4 +1,5 @@
 import { chromium, Page, test } from '@playwright/test';
+import fs from 'fs';
 import path from 'path';
 import { GetAllTokensResponse } from '../src/types';
 
@@ -22,11 +23,11 @@ test.setTimeout(24 * 60 * 60 * 1000);
 //   }
 // });
 
-let tokenIds: GetAllTokensResponse;
-let indexOne: number = 0;
-let indexTwo: number = 0;
-let indexThree: number = 0;
-let indexFour: number = 0;
+let tokenIds: {
+  chain: number;
+  id: string;
+  outputFilename: string;
+}[];
 
 test.use({ viewport: { width: 2000, height: 2000 } });
 
@@ -35,55 +36,37 @@ test.beforeAll(async () => {
   const context = await browser.newContext();
   const page = await context.newPage();
   await page.goto('https://proofofresidency.xyz');
-  tokenIds = await page.evaluate(async () => {
-    const res = await fetch('https://proofofresidency.xyz/api/tokens');
-    const tokens: GetAllTokensResponse = await res.json();
+  tokenIds = (
+    await page.evaluate(async () => {
+      const res = await fetch('https://proofofresidency.xyz/api/tokens');
+      const tokens: GetAllTokensResponse = await res.json();
 
-    return tokens;
-  });
+      return tokens;
+    })
+  ).map((t) => ({
+    ...t,
+    outputFilename: path.join(process.cwd(), `public/token/${t.chain}/${t.id}.png`)
+  }));
   await browser.close();
 
-  console.log(`Generating for ${tokenIds.length} tokens`);
+  tokenIds = tokenIds.filter((t) => !fs.existsSync(t.outputFilename));
 
-  indexOne = Math.round(tokenIds.length / 5);
-  indexTwo = Math.round(indexOne * 2);
-  indexThree = Math.round(indexOne * 3);
-  indexFour = Math.round(indexOne * 4);
+  console.log(`Generating for ${tokenIds.length} tokens`);
 });
 
 test.describe.parallel('export token images', () => {
-  const screenshot = async (page: Page, chain: number, tokenId: string) => {
+  const screenshot = async (page: Page, chain: number, tokenId: string, outputFilename: string) => {
     await page.goto(`https://generator.proofofresidency.xyz/${chain}/${tokenId}`);
     await new Promise((resolve) => setTimeout(resolve, 3000)); // yes, waits are the devil
     await page.screenshot({
       type: 'png',
-      path: path.join(process.cwd(), `public/token/${tokenId}.png`)
+      path: outputFilename
     });
   };
 
-  test('export parallel 1', async ({ page }) => {
-    for (const { id, chain } of tokenIds.slice(0, indexOne)) {
-      await screenshot(page, chain, id);
-    }
-  });
-  test('export parallel 2', async ({ page }) => {
-    for (const { id, chain } of tokenIds.slice(indexOne, indexTwo)) {
-      await screenshot(page, chain, id);
-    }
-  });
-  test('export parallel 3', async ({ page }) => {
-    for (const { id, chain } of tokenIds.slice(indexTwo, indexThree)) {
-      await screenshot(page, chain, id);
-    }
-  });
-  test('export parallel 4', async ({ page }) => {
-    for (const { id, chain } of tokenIds.slice(indexThree, indexFour)) {
-      await screenshot(page, chain, id);
-    }
-  });
-  test('export parallel 5', async ({ page }) => {
-    for (const { id, chain } of tokenIds.slice(indexFour)) {
-      await screenshot(page, chain, id);
+  test('export', async ({ page }) => {
+    for (const { id, chain, outputFilename } of tokenIds) {
+      await screenshot(page, chain, id, outputFilename);
     }
   });
 });
