@@ -3,7 +3,8 @@ import fs from 'fs';
 import path from 'path';
 
 async function main() {
-  const baseUri = 'https://generator.proofofresidency.xyz/api/';
+  const chainId = await ethers.getDefaultProvider().network.chainId;
+  const baseUri = `https://generator.proofofresidency.xyz/api/${chainId}/`;
   const initialPrice = ethers.utils.parseEther('0.008');
 
   const committer = '0x615b1012097Db45fc4d7458125B03B148F71de97';
@@ -27,7 +28,6 @@ async function main() {
 
   console.log(`Writing subgraph config...`);
 
-  const chainId = await deployment.signer.getChainId();
   const networkName = (await deployment.provider.getNetwork()).name;
 
   // update the subgraph config with the latest address

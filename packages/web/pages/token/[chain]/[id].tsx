@@ -69,7 +69,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
   }
 
   try {
-    const metadataUrl = `https://generator.proofofresidency.xyz/api/${tokenId}`;
+    const metadataUrl = `https://generator.proofofresidency.xyz/api/${chain}/${tokenId}`;
     // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_METADATA}/${tokenId}`
     const res = await fetch(metadataUrl);
     const meta: MetadataResponse = await res.json();

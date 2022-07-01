@@ -101,7 +101,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
         return getTokenIdsForCountryAndCount(countryId, mintedCount.toNumber() ?? 0).map(
           async (tokenId) => {
             const res = await fetch(
-              `https://generator.proofofresidency.xyz/api/${tokenId}`
+              `https://generator.proofofresidency.xyz/api/${chain}/${tokenId}`
               // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_METADATA}/${tokenId}`
             );
             const meta: MetadataResponse = await res.json();
