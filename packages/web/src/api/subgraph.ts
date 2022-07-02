@@ -9,7 +9,7 @@ import { withScalars } from 'apollo-link-scalars';
 import { BigNumber } from 'ethers';
 
 import { buildClientSchema, DocumentNode, IntrospectionQuery } from 'graphql';
-import { ProofOfResidencyNetwork } from 'src/contracts';
+import { ProofOfResidencyNetwork, shortenEthereumAddress } from 'src/contracts';
 import { getCountryAndTokenNumber } from 'src/web/token';
 import { GetAllTokensResponse } from 'types';
 import {
@@ -264,7 +264,30 @@ export const getCurrentMintedCountForChain = async (
   return BigNumber.from(0);
 };
 
-export type TokenOwner = { content: string; link: string | null };
+export const getTokenByIdAndChain = async (
+  tokenId: string | BigNumber,
+  chain: ProofOfResidencyNetwork
+): Promise<TokenFieldsFragment | null> => {
+  try {
+    const response = await getClientForChain(chain).query<
+      GetTokenByIdQuery,
+      GetTokenByIdQueryVariables
+    >({
+      query: GetTokenByIdDocument,
+      variables: {
+        id: tokenId.toString()
+      }
+    });
+
+    return response.data.token;
+  } catch (e) {
+    console.error(e);
+  }
+
+  return null;
+};
+
+export type TokenOwner = { content: string; link: string | null; owner: string | null };
 
 export const getOwnerOfToken = async (
   tokenId: string | BigNumber,
@@ -289,16 +312,9 @@ export const getOwnerOfToken = async (
       const owner = response?.data?.token?.owner?.id ?? null;
 
       return {
-        content: owner?.replace(owner?.slice(6, 38), '...') || 'None',
-        link: owner
-          ? chain === chainId.arbitrum
-            ? `https://arbiscan.io/address/${owner}`
-            : chain === chainId.optimism
-            ? `https://optimistic.etherscan.io/address/${owner}`
-            : chain === chainId.polygon
-            ? `https://polygonscan.io/address/${owner}`
-            : `https://etherscan.io/address/${owner}`
-          : null
+        content: shortenEthereumAddress(owner),
+        link: owner ? `/user/${owner}` : null,
+        owner: owner ?? null
       };
     }
   } catch (e) {
@@ -306,6 +322,7 @@ export const getOwnerOfToken = async (
   }
 
   return {
+    owner: null,
     content: 'None',
     link: null
   };

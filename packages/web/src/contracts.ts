@@ -41,3 +41,6 @@ export const getContractAddressForChain = (chainId: ProofOfResidencyNetwork) =>
     : process.env.NEXT_PUBLIC_LOCALHOST_CONTRACT_ADDRESS
     ? process.env.NEXT_PUBLIC_LOCALHOST_CONTRACT_ADDRESS
     : '0x6f668f1892c62860c295B052739B3290fa4661B4';
+
+export const shortenEthereumAddress = (address: string | null | undefined) =>
+  address?.replace(address?.slice(6, 38), '...') || 'None';

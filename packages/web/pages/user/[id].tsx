@@ -1,22 +1,13 @@
-import {
-  Box,
-  Divider,
-  Flex,
-  Grid,
-  Heading,
-  SimpleGrid,
-  Tag,
-  Text,
-  Tooltip
-} from '@chakra-ui/react';
+import { Avatar, Box, Divider, Flex, Grid, Heading, SimpleGrid, Tag, Text } from '@chakra-ui/react';
 import { GetStaticPaths, GetStaticPropsContext } from 'next';
 import { NextSeo } from 'next-seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ParsedUrlQuery } from 'querystring';
-import React from 'react';
+import React, { useMemo } from 'react';
+import { getEns } from 'src/api/ethers';
 import { getAllTokenOwners, getTokensForOwner } from 'src/api/subgraph';
-import { getChainForChainId } from 'src/contracts';
+import { getChainForChainId, shortenEthereumAddress } from 'src/contracts';
 import Header from 'src/web/components/Header';
 import { getCountryAndTokenNumber } from 'src/web/token';
 import { MetadataResponse } from 'types';
@@ -33,6 +24,11 @@ type UserDetailsProps = {
     chain: string;
   }[];
   ownerId: string;
+  shortOwnerId: string;
+  ens: {
+    name: string | null;
+    avatar: string | null;
+  };
 };
 
 interface Params extends ParsedUrlQuery {
@@ -51,7 +47,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
       return { params };
     }),
 
-    fallback: false
+    fallback: 'blocking'
   };
 };
 
@@ -64,9 +60,10 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
   }
 
   try {
+    const ens = await getEns(owner);
     const allTokens = await getTokensForOwner(owner);
 
-    if (!allTokens) {
+    if (!allTokens || !ens) {
       console.error('No tokens found');
       return { notFound: true };
     }
@@ -115,7 +112,9 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
 
     const props: UserDetailsProps = {
       ownerId: owner,
-      tokens
+      shortOwnerId: shortenEthereumAddress(owner),
+      tokens,
+      ens
     };
 
     return {
@@ -129,117 +128,46 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
 };
 
 const UserDetailsPage = (props: UserDetailsProps) => {
-  // const tags = [
-  //   {
-  //     name: 'Count Minted',
-  //     content: `${numeral(props.minted).format('0,0')}`,
-  //     tooltip: 'The number of tokens which have been minted across all supported chains.'
-  //   },
-  //   {
-  //     name: 'ISO-3166 ID',
-  //     content: props.alpha3,
-  //     tooltip: 'The ISO-3166 identifier for the country.'
-  //   },
-  //   ...[
-  //     props.population !== 0
-  //       ? {
-  //           name: '2020 Population',
-  //           content: `${numeral(props.population).format('0.0a')}`,
-  //           tooltip: 'The total population count in 2020.'
-  //         }
-  //       : {}
-  //   ],
-  //   {
-  //     name: 'License',
-  //     link: 'https://creativecommons.org/publicdomain/zero/1.0/',
-  //     content: 'CCO: No Rights Reserved'
-  //   }
-  // ];
+  const shortName = useMemo(() => props.ens.name ?? props.shortOwnerId, []);
 
   return (
     <>
       <Header />
-      <Flex pt="70px" width="100%" direction="column">
-        <NextSeo
-          title={`${props.ownerId} | Proof of Residency`}
-          // openGraph={{
-          //   images: [
-          //     {
-          //       url: `https://proofofresidency.xyz${props.image}`,
-          //       width: 1800,
-          //       height: 1800,
-          //       alt: props.country
-          //     }
-          //   ]
-          // }}
-        />
-        <Box>
-          <Flex mx="auto" position="relative" height={600}>
-            {/* <Image
-              priority
-              objectFit="contain"
-              layout="fill"
-              placeholder="empty"
-              src={props.imageLarge}
-              alt={props.country}
-            /> */}
-          </Flex>
-        </Box>
+      <NextSeo
+        title={`${shortName} | Proof of Residency`}
+        openGraph={{
+          images: props.ens.avatar
+            ? [
+                {
+                  url: props.ens.avatar,
+                  alt: shortName
+                }
+              ]
+            : []
+        }}
+      />
+      <Flex px={2} pt="70px" width="100%" direction="column">
+        <Flex justify="center">
+          <Avatar size="2xl" src={props.ens.avatar ?? undefined} />
+        </Flex>
 
-        <Divider />
-
-        <Heading fontSize="5xl" mt={6} textAlign="center">
-          {props.ownerId}
+        <Heading fontSize="5xl" mt={2} textAlign="center">
+          {shortName}
         </Heading>
 
-        <Grid px={4} maxWidth={1200} width="100%" mx="auto" flexDirection="column" mt={4}>
-          {props.country && (
-            <Text maxWidth={600} mx="auto" fontSize="xl" textAlign="center" width="100%">
-              {`Art inspired by ${props.country} and its water bodies.`}
-            </Text>
-          )}
+        <Grid px={4} maxWidth={1200} width="100%" mx="auto" flexDirection="column" mt={3}>
+          <Flex justify="center">
+            <Tag variant="solid" size="lg">
+              {props.tokens.length > 0 ? props.tokens.length : 'No'} PORP
+              {props.tokens.length !== 1 ? 's' : ''}
+              {props.tokens.length === 0 && ' yet'}
+            </Tag>
+          </Flex>
 
-          <Text maxWidth={600} mt={1} mx="auto" fontSize="md" textAlign="center" width="100%">
-            Designs for every minted NFT vary.
-          </Text>
+          <Divider mt={6} />
 
-          <SimpleGrid
-            mx={{ base: 4, sm: 'auto' }}
-            mt={8}
-            mb={8}
-            spacingX={10}
-            spacingY={4}
-            columns={{ base: 1, sm: 2 }}
-          >
-            {tags.map((tag) => (
-              <Flex key={tag.name} direction="column">
-                <Text fontWeight="bold" fontSize="lg">
-                  {tag.name}
-                </Text>
-                <Tooltip label={tag.tooltip}>
-                  {tag.link ? (
-                    <Box cursor="pointer">
-                      <Link href={tag.link} passHref>
-                        <Tag mt={1} variant="solid" size="lg">
-                          {tag.content}
-                        </Tag>
-                      </Link>
-                    </Box>
-                  ) : (
-                    <Box mt={1}>
-                      <Tag variant="solid" size="lg">
-                        {tag.content}
-                      </Tag>
-                    </Box>
-                  )}
-                </Tooltip>
-              </Flex>
-            ))}
-          </SimpleGrid>
-
-          {props.tokens.length > 0 && (
+          {props.tokens.length > 0 ? (
             <>
-              <Divider />
               <Heading textAlign="center" mt={4} fontSize="3xl">
                 Minted Tokens
               </Heading>
@@ -271,16 +199,17 @@ const UserDetailsPage = (props: UserDetailsProps) => {
                       <Heading mt={2} fontSize="2xl">
                         {token.chain}: #{token.tokenNumber}
                       </Heading>
-                      <Box mt={2}>
-                        <Tag variant="solid" size="md">
-                          Owner: {token.owner.content}
-                        </Tag>
-                      </Box>
                     </Flex>
                   </Link>
                 ))}
               </SimpleGrid>
             </>
+          ) : (
+            <Flex minH="50vh" align="center" justify="center">
+              <Text mt={4} mx="auto" fontSize="2xl" textAlign="center" width="100%">
+                User has no tokens.
+              </Text>
+            </Flex>
           )}
         </Grid>
       </Flex>

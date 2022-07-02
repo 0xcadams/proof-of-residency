@@ -16,12 +16,13 @@ import {
   Tr,
   useBreakpointValue
 } from '@chakra-ui/react';
+import dayjs from 'dayjs';
 
 import { GetStaticPaths, GetStaticPropsContext } from 'next';
 import { NextSeo } from 'next-seo';
 import { ParsedUrlQuery } from 'querystring';
-import React from 'react';
-import { getOwnerOfToken, TokenOwner } from 'src/api/subgraph';
+import React, { useMemo } from 'react';
+import { getOwnerOfToken, getTokenByIdAndChain, TokenOwner } from 'src/api/subgraph';
 import { getAllTokens } from 'src/api/subgraph';
 import {
   getChainForChainId,
@@ -32,6 +33,10 @@ import Header from 'src/web/components/Header';
 import { CountryIso, getCountryAndTokenNumber, getIsoCountryForCountryId } from 'src/web/token';
 import { MetadataResponse } from 'types';
 import Footer from '../../../src/web/components/Footer';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import { getEns } from 'src/api/ethers';
+
+dayjs.extend(localizedFormat);
 
 interface Params extends ParsedUrlQuery {
   id: string;
@@ -51,7 +56,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-type DetailsProps = CountryIso &
+type DetailsProps = {
+  burned: boolean;
+  mintTime: number;
+} & CountryIso &
   MetadataResponse & {
     tokenId: string;
     tokenIdCondensed: string;
@@ -59,6 +67,7 @@ type DetailsProps = CountryIso &
     owner: TokenOwner;
     imagePng: string;
     metadataUrl: string;
+    ensName: string;
   };
 
 export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) => {
@@ -84,10 +93,19 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
     }
 
     const owner = await getOwnerOfToken(tokenId, chain);
+    const token = await getTokenByIdAndChain(tokenId, chain);
+    const ens = await getEns(owner.owner ?? '');
+
+    if (!token) {
+      return { notFound: true };
+    }
 
     const props: DetailsProps = {
       ...isoCountry,
       ...meta,
+
+      burned: token.burned,
+      mintTime: token.mintTime.toNumber(),
 
       image: `https://generator.proofofresidency.xyz/${chain}/${tokenId}`,
       // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/${tokenId}.html`,
@@ -97,7 +115,8 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
       tokenIdCondensed: `${tokenId.slice(0, 3)}...${tokenId.slice(14)}`,
       owner,
       chain: getChainForChainId(chain)?.name ?? '',
-      metadataUrl
+      metadataUrl,
+      ensName: ens.name ?? ''
     };
 
     return {
@@ -114,54 +133,53 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
 const TokenDetailsPage = (props: DetailsProps) => {
   const imageHeight = useBreakpointValue({ base: 400, md: 650 }, 'md');
 
-  // const token = useGetTokenByIdQuery({
-  //   variables: { id: BigNumber.from(props.tokenId).toHexString() }
-  // });
+  const tags = useMemo(
+    () => [
+      {
+        name: 'Chain',
+        content: props.chain,
+        tooltip: 'The chain which this NFT was minted on.'
+      },
+      {
+        name: 'Claimed Date',
+        content: `${dayjs.unix(props.mintTime).format('LL')}`,
+        tooltip: 'The calendar day this PORP was claimed by the owner.'
+      },
+      ...(props.owner.link
+        ? [
+            {
+              name: 'Owned By',
+              content: props.ensName || props.owner.content,
+              link: props.owner.link
+            }
+          ]
+        : []),
+      {
+        name: 'Metadata URL',
+        content: props.tokenIdCondensed,
+        link: props.metadataUrl
+      },
+      {
+        name: 'License',
+        link: 'https://creativecommons.org/publicdomain/zero/1.0/',
+        content: 'CCO: No Rights Reserved'
+      },
 
-  const tags = [
-    {
-      name: 'License',
-      link: 'https://creativecommons.org/publicdomain/zero/1.0/',
-      content: 'CCO: No Rights Reserved'
-    },
-    // {
-    //   name: 'Initial Price',
-    //   content: `${numeral(props.price).format('0.0')}Ξ`
-    // },
-    // ...(token.data?.token?.mintTime
-    //   ? [
-    //       {
-    //         name: 'Total Population',
-    //         content: `${dayjs(token.data?.token?.mintTime.toNumber()).format('mm/dd/yy')}`,
-    //         link: 'https://en.wikipedia.org/wiki/Metropolitan_statistical_area',
-    //         tooltip: 'The population over 18 y.o. in the city in 2020.'
-    //       }
-    //     ]
-    //   : []),
-    {
-      name: 'Artwork',
-      content: 'Generative Script'
-    },
-    {
-      name: 'Chain',
-      content: props.chain,
-      tooltip: 'The chain which this NFT was minted on.'
-    },
-    ...(props.owner.link
-      ? [
-          {
-            name: 'Owned By',
-            content: props.owner.content,
-            link: props.owner.link
-          }
-        ]
-      : []),
-    {
-      name: 'Metadata URL',
-      content: props.tokenIdCondensed,
-      link: props.metadataUrl
-    }
-  ];
+      {
+        name: 'Artwork',
+        content: 'Generative Script'
+      },
+      ...(props.burned
+        ? [
+            {
+              name: 'Burned',
+              content: 'True'
+            }
+          ]
+        : [])
+    ],
+    [props]
+  );
 
   return (
     <>
@@ -195,7 +213,7 @@ const TokenDetailsPage = (props: DetailsProps) => {
 
         <Divider />
 
-        <Heading size="lg" mt={6} textAlign="center">
+        <Heading size="xl" mt={6} textAlign="center">
           {props.name}
         </Heading>
 

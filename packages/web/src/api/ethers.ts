@@ -180,3 +180,13 @@ export const getNonceForAddress = async (address: string, chain: ProofOfResidenc
 
   return proofOfResidency.nonces(address);
 };
+
+export const getEns = async (address: string) => {
+  const name = await l1Provider.lookupAddress(address);
+  let avatar: string | null = name ? `https://metadata.ens.domains/mainnet/avatar/${name}` : null;
+
+  return {
+    name,
+    avatar
+  };
+};

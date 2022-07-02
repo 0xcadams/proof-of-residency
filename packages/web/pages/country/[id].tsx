@@ -15,7 +15,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import numeral from 'numeral';
 import { ParsedUrlQuery } from 'querystring';
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   getCurrentMintedCount,
   getCurrentMintedCountForChain,
@@ -147,32 +147,35 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
 };
 
 const CountryDetailsPage = (props: CountryDetailsProps) => {
-  const tags = [
-    {
-      name: 'Count Minted',
-      content: `${numeral(props.minted).format('0,0')}`,
-      tooltip: 'The number of tokens which have been minted across all supported chains.'
-    },
-    {
-      name: 'ISO-3166 ID',
-      content: props.alpha3,
-      tooltip: 'The ISO-3166 identifier for the country.'
-    },
-    ...[
-      props.population !== 0
-        ? {
-            name: '2020 Population',
-            content: `${numeral(props.population).format('0.0a')}`,
-            tooltip: 'The total population count in 2020.'
-          }
-        : {}
+  const tags = useMemo(
+    () => [
+      {
+        name: 'Count Minted',
+        content: `${numeral(props.minted).format('0,0')}`,
+        tooltip: 'The number of tokens which have been minted across all supported chains.'
+      },
+      {
+        name: 'ISO-3166 ID',
+        content: props.alpha3,
+        tooltip: 'The ISO-3166 identifier for the country.'
+      },
+      ...[
+        props.population !== 0
+          ? {
+              name: '2020 Population',
+              content: `${numeral(props.population).format('0.0a')}`,
+              tooltip: 'The total population count in 2020.'
+            }
+          : {}
+      ],
+      {
+        name: 'License',
+        link: 'https://creativecommons.org/publicdomain/zero/1.0/',
+        content: 'CCO: No Rights Reserved'
+      }
     ],
-    {
-      name: 'License',
-      link: 'https://creativecommons.org/publicdomain/zero/1.0/',
-      content: 'CCO: No Rights Reserved'
-    }
-  ];
+    [props]
+  );
 
   return (
     <>
