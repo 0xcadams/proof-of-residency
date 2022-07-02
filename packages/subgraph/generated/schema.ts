@@ -11,6 +11,65 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
+export class Protocol extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Protocol entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Protocol must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Protocol", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Protocol | null {
+    return changetype<Protocol | null>(store.get("Protocol", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get price(): BigInt {
+    let value = this.get("price");
+    return value!.toBigInt();
+  }
+
+  set price(value: BigInt) {
+    this.set("price", Value.fromBigInt(value));
+  }
+
+  get baseUri(): string {
+    let value = this.get("baseUri");
+    return value!.toString();
+  }
+
+  set baseUri(value: string) {
+    this.set("baseUri", Value.fromString(value));
+  }
+
+  get paused(): boolean {
+    let value = this.get("paused");
+    return value!.toBoolean();
+  }
+
+  set paused(value: boolean) {
+    this.set("paused", Value.fromBoolean(value));
+  }
+}
+
 export class Committer extends Entity {
   constructor(id: string) {
     super();
@@ -177,6 +236,15 @@ export class TokenChallenge extends Entity {
   set token(value: string) {
     this.set("token", Value.fromString(value));
   }
+
+  get completed(): boolean {
+    let value = this.get("completed");
+    return value!.toBoolean();
+  }
+
+  set completed(value: boolean) {
+    this.set("completed", Value.fromBoolean(value));
+  }
 }
 
 export class Token extends Entity {
@@ -228,15 +296,6 @@ export class Token extends Entity {
     this.set("mintTime", Value.fromBigInt(value));
   }
 
-  get tokenURI(): string {
-    let value = this.get("tokenURI");
-    return value!.toString();
-  }
-
-  set tokenURI(value: string) {
-    this.set("tokenURI", Value.fromString(value));
-  }
-
   get country(): BigInt {
     let value = this.get("country");
     return value!.toBigInt();
@@ -244,6 +303,24 @@ export class Token extends Entity {
 
   set country(value: BigInt) {
     this.set("country", Value.fromBigInt(value));
+  }
+
+  get number(): BigInt {
+    let value = this.get("number");
+    return value!.toBigInt();
+  }
+
+  set number(value: BigInt) {
+    this.set("number", Value.fromBigInt(value));
+  }
+
+  get burned(): boolean {
+    let value = this.get("burned");
+    return value!.toBoolean();
+  }
+
+  set burned(value: boolean) {
+    this.set("burned", Value.fromBoolean(value));
   }
 }
 
@@ -303,6 +380,15 @@ export class Commitment extends Entity {
 
   set contribution(value: string) {
     this.set("contribution", Value.fromString(value));
+  }
+
+  get completed(): boolean {
+    let value = this.get("completed");
+    return value!.toBoolean();
+  }
+
+  set completed(value: boolean) {
+    this.set("completed", Value.fromBoolean(value));
   }
 }
 

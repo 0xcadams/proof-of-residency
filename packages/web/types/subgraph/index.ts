@@ -31,6 +31,7 @@ export type Block_Height = {
 export type Commitment = {
   __typename: 'Commitment';
   committer: Committer;
+  completed: Scalars['Boolean'];
   contribution: Contribution;
   id: Scalars['ID'];
   requester: Requester;
@@ -60,6 +61,10 @@ export type Commitment_Filter = {
   committer_not_starts_with_nocase: InputMaybe<Scalars['String']>;
   committer_starts_with: InputMaybe<Scalars['String']>;
   committer_starts_with_nocase: InputMaybe<Scalars['String']>;
+  completed: InputMaybe<Scalars['Boolean']>;
+  completed_in: InputMaybe<Array<Scalars['Boolean']>>;
+  completed_not: InputMaybe<Scalars['Boolean']>;
+  completed_not_in: InputMaybe<Array<Scalars['Boolean']>>;
   contribution: InputMaybe<Scalars['String']>;
   contribution_: InputMaybe<Contribution_Filter>;
   contribution_contains: InputMaybe<Scalars['String']>;
@@ -114,6 +119,7 @@ export type Commitment_Filter = {
 
 export enum Commitment_OrderBy {
   Committer = 'committer',
+  Completed = 'completed',
   Contribution = 'contribution',
   Id = 'id',
   Requester = 'requester'
@@ -206,6 +212,66 @@ export enum OrderDirection {
   Desc = 'desc'
 }
 
+export type Protocol = {
+  __typename: 'Protocol';
+  baseUri: Scalars['String'];
+  id: Scalars['ID'];
+  paused: Scalars['Boolean'];
+  price: Scalars['BigInt'];
+};
+
+export type Protocol_Filter = {
+  /** Filter for the block changed event. */
+  _change_block: InputMaybe<BlockChangedFilter>;
+  baseUri: InputMaybe<Scalars['String']>;
+  baseUri_contains: InputMaybe<Scalars['String']>;
+  baseUri_contains_nocase: InputMaybe<Scalars['String']>;
+  baseUri_ends_with: InputMaybe<Scalars['String']>;
+  baseUri_ends_with_nocase: InputMaybe<Scalars['String']>;
+  baseUri_gt: InputMaybe<Scalars['String']>;
+  baseUri_gte: InputMaybe<Scalars['String']>;
+  baseUri_in: InputMaybe<Array<Scalars['String']>>;
+  baseUri_lt: InputMaybe<Scalars['String']>;
+  baseUri_lte: InputMaybe<Scalars['String']>;
+  baseUri_not: InputMaybe<Scalars['String']>;
+  baseUri_not_contains: InputMaybe<Scalars['String']>;
+  baseUri_not_contains_nocase: InputMaybe<Scalars['String']>;
+  baseUri_not_ends_with: InputMaybe<Scalars['String']>;
+  baseUri_not_ends_with_nocase: InputMaybe<Scalars['String']>;
+  baseUri_not_in: InputMaybe<Array<Scalars['String']>>;
+  baseUri_not_starts_with: InputMaybe<Scalars['String']>;
+  baseUri_not_starts_with_nocase: InputMaybe<Scalars['String']>;
+  baseUri_starts_with: InputMaybe<Scalars['String']>;
+  baseUri_starts_with_nocase: InputMaybe<Scalars['String']>;
+  id: InputMaybe<Scalars['ID']>;
+  id_gt: InputMaybe<Scalars['ID']>;
+  id_gte: InputMaybe<Scalars['ID']>;
+  id_in: InputMaybe<Array<Scalars['ID']>>;
+  id_lt: InputMaybe<Scalars['ID']>;
+  id_lte: InputMaybe<Scalars['ID']>;
+  id_not: InputMaybe<Scalars['ID']>;
+  id_not_in: InputMaybe<Array<Scalars['ID']>>;
+  paused: InputMaybe<Scalars['Boolean']>;
+  paused_in: InputMaybe<Array<Scalars['Boolean']>>;
+  paused_not: InputMaybe<Scalars['Boolean']>;
+  paused_not_in: InputMaybe<Array<Scalars['Boolean']>>;
+  price: InputMaybe<Scalars['BigInt']>;
+  price_gt: InputMaybe<Scalars['BigInt']>;
+  price_gte: InputMaybe<Scalars['BigInt']>;
+  price_in: InputMaybe<Array<Scalars['BigInt']>>;
+  price_lt: InputMaybe<Scalars['BigInt']>;
+  price_lte: InputMaybe<Scalars['BigInt']>;
+  price_not: InputMaybe<Scalars['BigInt']>;
+  price_not_in: InputMaybe<Array<Scalars['BigInt']>>;
+};
+
+export enum Protocol_OrderBy {
+  BaseUri = 'baseUri',
+  Id = 'id',
+  Paused = 'paused',
+  Price = 'price'
+}
+
 export type Query = {
   __typename: 'Query';
   /** Access to subgraph metadata */
@@ -216,6 +282,8 @@ export type Query = {
   committers: Array<Committer>;
   contribution: Maybe<Contribution>;
   contributions: Array<Contribution>;
+  protocol: Maybe<Protocol>;
+  protocols: Array<Protocol>;
   requester: Maybe<Requester>;
   requesters: Array<Requester>;
   token: Maybe<Token>;
@@ -274,6 +342,22 @@ export type QueryContributionsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
   subgraphError?: _SubgraphErrorPolicy_;
   where: InputMaybe<Contribution_Filter>;
+};
+
+export type QueryProtocolArgs = {
+  block: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryProtocolsArgs = {
+  block: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy: InputMaybe<Protocol_OrderBy>;
+  orderDirection: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where: InputMaybe<Protocol_Filter>;
 };
 
 export type QueryRequesterArgs = {
@@ -389,6 +473,8 @@ export type Subscription = {
   committers: Array<Committer>;
   contribution: Maybe<Contribution>;
   contributions: Array<Contribution>;
+  protocol: Maybe<Protocol>;
+  protocols: Array<Protocol>;
   requester: Maybe<Requester>;
   requesters: Array<Requester>;
   token: Maybe<Token>;
@@ -449,6 +535,22 @@ export type SubscriptionContributionsArgs = {
   where: InputMaybe<Contribution_Filter>;
 };
 
+export type SubscriptionProtocolArgs = {
+  block: InputMaybe<Block_Height>;
+  id: Scalars['ID'];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionProtocolsArgs = {
+  block: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars['Int']>;
+  orderBy: InputMaybe<Protocol_OrderBy>;
+  orderDirection: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars['Int']>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where: InputMaybe<Protocol_Filter>;
+};
+
 export type SubscriptionRequesterArgs = {
   block: InputMaybe<Block_Height>;
   id: Scalars['ID'];
@@ -499,15 +601,17 @@ export type SubscriptionTokensArgs = {
 
 export type Token = {
   __typename: 'Token';
+  burned: Scalars['Boolean'];
   country: Scalars['BigInt'];
   id: Scalars['ID'];
   mintTime: Scalars['BigInt'];
+  number: Scalars['BigInt'];
   owner: Requester;
-  tokenURI: Scalars['String'];
 };
 
 export type TokenChallenge = {
   __typename: 'TokenChallenge';
+  completed: Scalars['Boolean'];
   id: Scalars['ID'];
   owner: Requester;
   token: Token;
@@ -516,6 +620,10 @@ export type TokenChallenge = {
 export type TokenChallenge_Filter = {
   /** Filter for the block changed event. */
   _change_block: InputMaybe<BlockChangedFilter>;
+  completed: InputMaybe<Scalars['Boolean']>;
+  completed_in: InputMaybe<Array<Scalars['Boolean']>>;
+  completed_not: InputMaybe<Scalars['Boolean']>;
+  completed_not_in: InputMaybe<Array<Scalars['Boolean']>>;
   id: InputMaybe<Scalars['ID']>;
   id_gt: InputMaybe<Scalars['ID']>;
   id_gte: InputMaybe<Scalars['ID']>;
@@ -569,6 +677,7 @@ export type TokenChallenge_Filter = {
 };
 
 export enum TokenChallenge_OrderBy {
+  Completed = 'completed',
   Id = 'id',
   Owner = 'owner',
   Token = 'token'
@@ -577,6 +686,10 @@ export enum TokenChallenge_OrderBy {
 export type Token_Filter = {
   /** Filter for the block changed event. */
   _change_block: InputMaybe<BlockChangedFilter>;
+  burned: InputMaybe<Scalars['Boolean']>;
+  burned_in: InputMaybe<Array<Scalars['Boolean']>>;
+  burned_not: InputMaybe<Scalars['Boolean']>;
+  burned_not_in: InputMaybe<Array<Scalars['Boolean']>>;
   country: InputMaybe<Scalars['BigInt']>;
   country_gt: InputMaybe<Scalars['BigInt']>;
   country_gte: InputMaybe<Scalars['BigInt']>;
@@ -601,6 +714,14 @@ export type Token_Filter = {
   mintTime_lte: InputMaybe<Scalars['BigInt']>;
   mintTime_not: InputMaybe<Scalars['BigInt']>;
   mintTime_not_in: InputMaybe<Array<Scalars['BigInt']>>;
+  number: InputMaybe<Scalars['BigInt']>;
+  number_gt: InputMaybe<Scalars['BigInt']>;
+  number_gte: InputMaybe<Scalars['BigInt']>;
+  number_in: InputMaybe<Array<Scalars['BigInt']>>;
+  number_lt: InputMaybe<Scalars['BigInt']>;
+  number_lte: InputMaybe<Scalars['BigInt']>;
+  number_not: InputMaybe<Scalars['BigInt']>;
+  number_not_in: InputMaybe<Array<Scalars['BigInt']>>;
   owner: InputMaybe<Scalars['String']>;
   owner_: InputMaybe<Requester_Filter>;
   owner_contains: InputMaybe<Scalars['String']>;
@@ -622,34 +743,15 @@ export type Token_Filter = {
   owner_not_starts_with_nocase: InputMaybe<Scalars['String']>;
   owner_starts_with: InputMaybe<Scalars['String']>;
   owner_starts_with_nocase: InputMaybe<Scalars['String']>;
-  tokenURI: InputMaybe<Scalars['String']>;
-  tokenURI_contains: InputMaybe<Scalars['String']>;
-  tokenURI_contains_nocase: InputMaybe<Scalars['String']>;
-  tokenURI_ends_with: InputMaybe<Scalars['String']>;
-  tokenURI_ends_with_nocase: InputMaybe<Scalars['String']>;
-  tokenURI_gt: InputMaybe<Scalars['String']>;
-  tokenURI_gte: InputMaybe<Scalars['String']>;
-  tokenURI_in: InputMaybe<Array<Scalars['String']>>;
-  tokenURI_lt: InputMaybe<Scalars['String']>;
-  tokenURI_lte: InputMaybe<Scalars['String']>;
-  tokenURI_not: InputMaybe<Scalars['String']>;
-  tokenURI_not_contains: InputMaybe<Scalars['String']>;
-  tokenURI_not_contains_nocase: InputMaybe<Scalars['String']>;
-  tokenURI_not_ends_with: InputMaybe<Scalars['String']>;
-  tokenURI_not_ends_with_nocase: InputMaybe<Scalars['String']>;
-  tokenURI_not_in: InputMaybe<Array<Scalars['String']>>;
-  tokenURI_not_starts_with: InputMaybe<Scalars['String']>;
-  tokenURI_not_starts_with_nocase: InputMaybe<Scalars['String']>;
-  tokenURI_starts_with: InputMaybe<Scalars['String']>;
-  tokenURI_starts_with_nocase: InputMaybe<Scalars['String']>;
 };
 
 export enum Token_OrderBy {
+  Burned = 'burned',
   Country = 'country',
   Id = 'id',
   MintTime = 'mintTime',
-  Owner = 'owner',
-  TokenUri = 'tokenURI'
+  Number = 'number',
+  Owner = 'owner'
 }
 
 export type _Block_ = {
@@ -703,6 +805,19 @@ export type GetCommittersQuery = {
   }>;
 };
 
+export type GetProtocolQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetProtocolQuery = {
+  __typename: 'Query';
+  protocol: {
+    __typename: 'Protocol';
+    id: string;
+    price: BigNumber;
+    baseUri: string;
+    paused: boolean;
+  } | null;
+};
+
 export type GetRequesterByIdQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -720,9 +835,10 @@ export type GetRequesterByIdQuery = {
     tokens: Array<{
       __typename: 'Token';
       id: string;
+      burned: boolean;
       mintTime: BigNumber;
-      tokenURI: string;
       country: BigNumber;
+      number: BigNumber;
     }>;
     tokenChallenge: Array<{ __typename: 'TokenChallenge'; id: string }>;
   } | null;
@@ -743,9 +859,10 @@ export type GetAllRequestersQuery = {
     tokens: Array<{
       __typename: 'Token';
       id: string;
+      burned: boolean;
       mintTime: BigNumber;
-      tokenURI: string;
       country: BigNumber;
+      number: BigNumber;
     }>;
     tokenChallenge: Array<{ __typename: 'TokenChallenge'; id: string }>;
   }>;
@@ -760,9 +877,10 @@ export type GetTokenByIdQuery = {
   token: {
     __typename: 'Token';
     id: string;
+    burned: boolean;
     mintTime: BigNumber;
-    tokenURI: string;
     country: BigNumber;
+    number: BigNumber;
     owner: {
       __typename: 'Requester';
       id: string;
@@ -774,9 +892,10 @@ export type GetTokenByIdQuery = {
       tokens: Array<{
         __typename: 'Token';
         id: string;
+        burned: boolean;
         mintTime: BigNumber;
-        tokenURI: string;
         country: BigNumber;
+        number: BigNumber;
       }>;
       tokenChallenge: Array<{ __typename: 'TokenChallenge'; id: string }>;
     };
@@ -793,9 +912,10 @@ export type GetAllTokensQuery = {
   tokens: Array<{
     __typename: 'Token';
     id: string;
+    burned: boolean;
     mintTime: BigNumber;
-    tokenURI: string;
     country: BigNumber;
+    number: BigNumber;
   }>;
 };
 
@@ -808,9 +928,10 @@ export type GetTokensByCountryQuery = {
   tokens: Array<{
     __typename: 'Token';
     id: string;
+    burned: boolean;
     mintTime: BigNumber;
-    tokenURI: string;
     country: BigNumber;
+    number: BigNumber;
   }>;
 };
 
@@ -818,6 +939,14 @@ export type CommitmentFieldsFragment = {
   __typename: 'Commitment';
   id: string;
   contribution: { __typename: 'Contribution'; id: string; value: BigNumber };
+};
+
+export type ProtocolFieldsFragment = {
+  __typename: 'Protocol';
+  id: string;
+  price: BigNumber;
+  baseUri: string;
+  paused: boolean;
 };
 
 export type RequesterFieldsFragment = {
@@ -831,9 +960,10 @@ export type RequesterFieldsFragment = {
   tokens: Array<{
     __typename: 'Token';
     id: string;
+    burned: boolean;
     mintTime: BigNumber;
-    tokenURI: string;
     country: BigNumber;
+    number: BigNumber;
   }>;
   tokenChallenge: Array<{ __typename: 'TokenChallenge'; id: string }>;
 };
@@ -841,11 +971,20 @@ export type RequesterFieldsFragment = {
 export type TokenFieldsFragment = {
   __typename: 'Token';
   id: string;
+  burned: boolean;
   mintTime: BigNumber;
-  tokenURI: string;
   country: BigNumber;
+  number: BigNumber;
 };
 
+export const ProtocolFieldsFragmentDoc = gql`
+  fragment ProtocolFields on Protocol {
+    id
+    price
+    baseUri
+    paused
+  }
+`;
 export const CommitmentFieldsFragmentDoc = gql`
   fragment CommitmentFields on Commitment {
     id
@@ -858,9 +997,10 @@ export const CommitmentFieldsFragmentDoc = gql`
 export const TokenFieldsFragmentDoc = gql`
   fragment TokenFields on Token {
     id
+    burned
     mintTime
-    tokenURI
     country
+    number
   }
 `;
 export const RequesterFieldsFragmentDoc = gql`
@@ -895,6 +1035,18 @@ export const GetCommittersDocument = gql`
 export type GetCommittersQueryResult = Apollo.QueryResult<
   GetCommittersQuery,
   GetCommittersQueryVariables
+>;
+export const GetProtocolDocument = gql`
+  query GetProtocol {
+    protocol(id: "0") {
+      ...ProtocolFields
+    }
+  }
+  ${ProtocolFieldsFragmentDoc}
+`;
+export type GetProtocolQueryResult = Apollo.QueryResult<
+  GetProtocolQuery,
+  GetProtocolQueryVariables
 >;
 export const GetRequesterByIdDocument = gql`
   query GetRequesterById($id: ID!) {

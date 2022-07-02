@@ -1,3 +1,11 @@
+type Protocol @entity {
+  id: ID!
+
+  price: BigInt!
+  baseUri: String!
+  paused: Boolean!
+}
+
 type Committer @entity {
   id: ID!
 
@@ -19,14 +27,19 @@ type TokenChallenge @entity {
   id: ID!
   owner: Requester!
   token: Token!
+
+  completed: Boolean!
 }
 
 type Token @entity {
   id: ID!
   owner: Requester!
   mintTime: BigInt!
-  tokenURI: String!
+
   country: BigInt!
+  number: BigInt!
+
+  burned: Boolean!
 }
 
 type Commitment @entity {
@@ -34,6 +47,8 @@ type Commitment @entity {
   committer: Committer!
   requester: Requester!
   contribution: Contribution!
+
+  completed: Boolean!
 }
 
 type Contribution @entity {

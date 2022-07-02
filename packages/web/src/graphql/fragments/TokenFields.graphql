@@ -1,7 +1,8 @@
 fragment TokenFields on Token {
   id
-
+  burned
   mintTime
-  tokenURI
+
   country
+  number
 }

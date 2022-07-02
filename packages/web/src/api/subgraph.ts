@@ -29,7 +29,11 @@ import {
   GetAllRequestersDocument,
   GetAllRequestersQuery,
   GetAllRequestersQueryVariables,
-  RequesterFieldsFragment
+  RequesterFieldsFragment,
+  GetProtocolQuery,
+  GetProtocolDocument,
+  GetProtocolQueryVariables,
+  ProtocolFieldsFragment
 } from 'types/subgraph';
 import { chainId } from 'wagmi';
 
@@ -61,7 +65,7 @@ const apolloClientForChain = (chain: string) =>
         uri: `https://api.thegraph.com/subgraphs/name/proof-of-residency/${chain}`
       })
     ]),
-    cache: new InMemoryCache({})
+    cache: new InMemoryCache()
   });
 
 const l1Client = apolloClientForChain(
@@ -142,6 +146,31 @@ const queryHandler = async <T, V, R>(props: QueryHandlerProps<T, V, R>) => {
     arbitrum: arbitrumValue,
     optimism: optimismValue,
     polygon: polygonValue
+  };
+};
+
+export const getProtocols = async () => {
+  try {
+    const protocols = await queryHandler<
+      GetProtocolQuery,
+      GetProtocolQueryVariables,
+      ProtocolFieldsFragment | null
+    >({
+      document: GetProtocolDocument,
+      variables: {},
+      mapResponseToValue: (r) => r.data.protocol
+    });
+
+    return protocols;
+  } catch (e) {
+    console.error(e);
+  }
+
+  return {
+    l1: null,
+    arbitrum: null,
+    optimism: null,
+    polygon: null
   };
 };
 

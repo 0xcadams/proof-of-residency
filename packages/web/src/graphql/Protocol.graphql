@@ -1,0 +1,5 @@
+query GetProtocol {
+  protocol(id: "0") {
+    ...ProtocolFields
+  }
+}

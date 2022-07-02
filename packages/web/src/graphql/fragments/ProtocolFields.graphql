@@ -1,0 +1,7 @@
+fragment ProtocolFields on Protocol {
+  id
+
+  price
+  baseUri
+  paused
+}
