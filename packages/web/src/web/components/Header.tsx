@@ -37,23 +37,22 @@ const Header = () => {
   const hasCommitment = useHasCommitment();
 
   const verbiage = useMemo(
-    () => (token?.id ? 'token' : hasCommitment ? 'claim' : 'request'),
+    () => (token ? 'profile' : hasCommitment ? 'claim' : 'request'),
     [token, hasCommitment]
   );
   const actionLink = useMemo(
     () =>
       verbiage === 'claim'
         ? '/mint'
-        : verbiage === 'token' && token?.id && token?.chain
-        ? `/token/${token.chain}/${token.id}`
+        : verbiage === 'profile' && walletAddress
+        ? `/user/${walletAddress.toLowerCase()}`
         : `/request`,
-    [verbiage]
+    [verbiage, walletAddress]
   );
 
   const { data } = useSWR<GetTokensForOwnerResponse>(`/tokens/${walletAddress}`);
 
   useEffect(() => {
-    // TODO handle multiple tokens at once!
     if (data?.l1?.length) {
       return setToken({ chain: chainId.mainnet, id: data.l1[0].id });
     } else if (data?.arbitrum?.length) {

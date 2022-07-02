@@ -9,7 +9,7 @@ import { getEns } from 'src/api/ethers';
 import { getAllTokenOwners, getTokensForOwner } from 'src/api/subgraph';
 import { getChainForChainId, shortenEthereumAddress } from 'src/contracts';
 import Header from 'src/web/components/Header';
-import { getCountryAndTokenNumber } from 'src/web/token';
+import { CountryIso, getCountryAndTokenNumber, getIsoCountryForCountryId } from 'src/web/token';
 import { MetadataResponse } from 'types';
 import { chainId } from 'wagmi';
 import Footer from '../../src/web/components/Footer';
@@ -20,11 +20,14 @@ type UserDetailsProps = {
     tokenNumber: string;
     link: string;
     image: string;
+    country: CountryIso | null;
 
     chain: string;
   }[];
+
   ownerId: string;
   shortOwnerId: string;
+
   ens: {
     name: string | null;
     avatar: string | null;
@@ -95,11 +98,14 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
         );
         const meta: MetadataResponse = await res.json();
 
-        const { tokenNumber } = getCountryAndTokenNumber(token.id);
+        const { countryId, tokenNumber } = getCountryAndTokenNumber(token.id);
+
+        const isoCountry = getIsoCountryForCountryId(countryId.toNumber());
 
         return {
           ...meta,
 
+          country: isoCountry ?? null,
           tokenId: token.id,
           tokenNumber: tokenNumber.toString(),
           link: `/token/${token.chain}/${token.id}`,
@@ -197,8 +203,12 @@ const UserDetailsPage = (props: UserDetailsProps) => {
                         </Flex>
                       </Box>
                       <Heading mt={2} fontSize="2xl">
-                        {token.chain}: #{token.tokenNumber}
+                        {token.country?.country ? `${token.country?.country}: ` : ''}#
+                        {token.tokenNumber}
                       </Heading>
+                      <Tag mt={2} variant="solid" size="lg">
+                        {token.chain}
+                      </Tag>
                     </Flex>
                   </Link>
                 ))}

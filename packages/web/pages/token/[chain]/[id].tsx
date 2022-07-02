@@ -88,7 +88,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
 
     const isoCountry = getIsoCountryForCountryId(countryId.toNumber());
 
-    if (!isoCountry || !process.env.NEXT_PUBLIC_CID_CONTENT) {
+    if (!isoCountry) {
       return { notFound: true };
     }
 
@@ -162,7 +162,7 @@ const TokenDetailsPage = (props: DetailsProps) => {
       {
         name: 'License',
         link: 'https://creativecommons.org/publicdomain/zero/1.0/',
-        content: 'CCO: No Rights Reserved'
+        content: 'CCO'
       },
 
       {
