@@ -66,8 +66,6 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
   try {
     const allTokens = await getTokensForOwner(owner);
 
-    console.log({ allTokens });
-
     if (!allTokens) {
       console.error('No tokens found');
       return { notFound: true };
@@ -95,7 +93,7 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
     const tokens = await Promise.all(
       tokensMapped?.map(async (token) => {
         const res = await fetch(
-          token.tokenURI
+          `https://generator.proofofresidency.xyz/api/${token.chain}/${token.id}`
           // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_METADATA}/${tokenId}`
         );
         const meta: MetadataResponse = await res.json();

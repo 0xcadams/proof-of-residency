@@ -93,15 +93,11 @@ export function handleTransfer(event: Transfer): void {
   else if (event.params.from.equals(Address.zero())) {
     const requester = getOrAddRequester(event.params.to.toHex());
     const token = getOrAddToken(event.params.tokenId.toString());
-    const tokenChallenge = getOrAddTokenChallenge(event.params.tokenId.toString());
 
     token.mintTime = event.block.timestamp;
     token.owner = requester.id;
 
-    tokenChallenge.completed = true;
-
     token.save();
-    tokenChallenge.save();
     requester.save();
   }
 }

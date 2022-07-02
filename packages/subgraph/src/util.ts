@@ -23,8 +23,6 @@ export function getOrAddProtocol(contractAddress: Address): Protocol {
     protocol.baseUri = contract.contractURI().replace('/contract', '');
     protocol.price = contract.reservePrice();
     protocol.paused = false;
-
-    protocol.save();
   }
 
   return protocol;
@@ -36,8 +34,6 @@ export function getOrAddCommitment(id: string): Commitment {
   if (!commitment) {
     commitment = new Commitment(id);
     commitment.completed = false;
-
-    commitment.save();
   }
 
   return commitment;
@@ -48,8 +44,6 @@ export function getOrAddContribution(id: string): Contribution {
 
   if (!contribution) {
     contribution = new Contribution(id);
-
-    contribution.save();
   }
 
   return contribution;
@@ -63,8 +57,6 @@ export function getOrAddCommitter(id: string): Committer {
 
     committer.isActive = true;
     committer.removedAt = ZERO;
-
-    committer.save();
   }
 
   return committer;
@@ -75,8 +67,6 @@ export function getOrAddRequester(id: string): Requester {
 
   if (!requester) {
     requester = new Requester(id);
-
-    requester.save();
   }
 
   return requester;
@@ -90,8 +80,6 @@ export function getOrAddToken(id: string): Token {
     token.country = BigInt.fromString(id).div(BigInt.fromString('1000000000000000'));
     token.number = BigInt.fromString(id).mod(token.country);
     token.burned = false;
-
-    token.save();
   }
 
   return token;
@@ -103,8 +91,6 @@ export function getOrAddTokenChallenge(id: string): TokenChallenge {
   if (!tokenChallenge) {
     tokenChallenge = new TokenChallenge(id);
     tokenChallenge.completed = false;
-
-    tokenChallenge.save();
   }
 
   return tokenChallenge;
