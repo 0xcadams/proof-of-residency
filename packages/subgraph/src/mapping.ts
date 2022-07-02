@@ -153,17 +153,14 @@ export function handleTransfer(event: Transfer): void {
 
     let token = Token.load(event.params.tokenId.toString());
 
-    let contract = ProofOfResidency.bind(event.address);
-
     if (!token) {
+      let contract = ProofOfResidency.bind(event.address);
+
       token = addToken(event.params.tokenId.toString());
       token.mintTime = event.block.timestamp;
-      let metadataURI = contract.try_tokenURI(event.params.tokenId);
-      if (!metadataURI.reverted) {
-        token.tokenURI = normalize(metadataURI.value);
-      } else {
-        token.tokenURI = '';
-      }
+      let metadataURI = contract.tokenURI(event.params.tokenId);
+
+      token.tokenURI = normalize(metadataURI);
     }
 
     requester.save();

@@ -728,6 +728,29 @@ export type GetRequesterByIdQuery = {
   } | null;
 };
 
+export type GetAllRequestersQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetAllRequestersQuery = {
+  __typename: 'Query';
+  requesters: Array<{
+    __typename: 'Requester';
+    id: string;
+    commitments: Array<{
+      __typename: 'Commitment';
+      id: string;
+      contribution: { __typename: 'Contribution'; id: string; value: BigNumber };
+    }>;
+    tokens: Array<{
+      __typename: 'Token';
+      id: string;
+      mintTime: BigNumber;
+      tokenURI: string;
+      country: BigNumber;
+    }>;
+    tokenChallenge: Array<{ __typename: 'TokenChallenge'; id: string }>;
+  }>;
+};
+
 export type GetTokenByIdQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -740,7 +763,23 @@ export type GetTokenByIdQuery = {
     mintTime: BigNumber;
     tokenURI: string;
     country: BigNumber;
-    owner: { __typename: 'Requester'; id: string };
+    owner: {
+      __typename: 'Requester';
+      id: string;
+      commitments: Array<{
+        __typename: 'Commitment';
+        id: string;
+        contribution: { __typename: 'Contribution'; id: string; value: BigNumber };
+      }>;
+      tokens: Array<{
+        __typename: 'Token';
+        id: string;
+        mintTime: BigNumber;
+        tokenURI: string;
+        country: BigNumber;
+      }>;
+      tokenChallenge: Array<{ __typename: 'TokenChallenge'; id: string }>;
+    };
   } | null;
 };
 
@@ -781,7 +820,23 @@ export type CommitmentFieldsFragment = {
   contribution: { __typename: 'Contribution'; id: string; value: BigNumber };
 };
 
-export type RequesterFieldsFragment = { __typename: 'Requester'; id: string };
+export type RequesterFieldsFragment = {
+  __typename: 'Requester';
+  id: string;
+  commitments: Array<{
+    __typename: 'Commitment';
+    id: string;
+    contribution: { __typename: 'Contribution'; id: string; value: BigNumber };
+  }>;
+  tokens: Array<{
+    __typename: 'Token';
+    id: string;
+    mintTime: BigNumber;
+    tokenURI: string;
+    country: BigNumber;
+  }>;
+  tokenChallenge: Array<{ __typename: 'TokenChallenge'; id: string }>;
+};
 
 export type TokenFieldsFragment = {
   __typename: 'Token';
@@ -800,11 +855,6 @@ export const CommitmentFieldsFragmentDoc = gql`
     }
   }
 `;
-export const RequesterFieldsFragmentDoc = gql`
-  fragment RequesterFields on Requester {
-    id
-  }
-`;
 export const TokenFieldsFragmentDoc = gql`
   fragment TokenFields on Token {
     id
@@ -812,6 +862,22 @@ export const TokenFieldsFragmentDoc = gql`
     tokenURI
     country
   }
+`;
+export const RequesterFieldsFragmentDoc = gql`
+  fragment RequesterFields on Requester {
+    id
+    commitments {
+      ...CommitmentFields
+    }
+    tokens {
+      ...TokenFields
+    }
+    tokenChallenge {
+      id
+    }
+  }
+  ${CommitmentFieldsFragmentDoc}
+  ${TokenFieldsFragmentDoc}
 `;
 export const GetCommittersDocument = gql`
   query GetCommitters($first: Int) {
@@ -833,24 +899,26 @@ export type GetCommittersQueryResult = Apollo.QueryResult<
 export const GetRequesterByIdDocument = gql`
   query GetRequesterById($id: ID!) {
     requester(id: $id) {
-      id
-      commitments {
-        ...CommitmentFields
-      }
-      tokens {
-        ...TokenFields
-      }
-      tokenChallenge {
-        id
-      }
+      ...RequesterFields
     }
   }
-  ${CommitmentFieldsFragmentDoc}
-  ${TokenFieldsFragmentDoc}
+  ${RequesterFieldsFragmentDoc}
 `;
 export type GetRequesterByIdQueryResult = Apollo.QueryResult<
   GetRequesterByIdQuery,
   GetRequesterByIdQueryVariables
+>;
+export const GetAllRequestersDocument = gql`
+  query GetAllRequesters {
+    requesters {
+      ...RequesterFields
+    }
+  }
+  ${RequesterFieldsFragmentDoc}
+`;
+export type GetAllRequestersQueryResult = Apollo.QueryResult<
+  GetAllRequestersQuery,
+  GetAllRequestersQueryVariables
 >;
 export const GetTokenByIdDocument = gql`
   query GetTokenById($id: ID!) {

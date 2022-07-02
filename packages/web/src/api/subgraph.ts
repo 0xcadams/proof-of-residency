@@ -25,7 +25,11 @@ import {
   GetTokenByIdDocument,
   GetRequesterByIdQuery,
   GetRequesterByIdQueryVariables,
-  GetRequesterByIdDocument
+  GetRequesterByIdDocument,
+  GetAllRequestersDocument,
+  GetAllRequestersQuery,
+  GetAllRequestersQueryVariables,
+  RequesterFieldsFragment
 } from 'types/subgraph';
 import { chainId } from 'wagmi';
 
@@ -303,4 +307,44 @@ export const getTokensForOwner = async (owner: string) => {
     optimism: [],
     polygon: []
   };
+};
+
+export type GetAllTokenOwnersResponse = (RequesterFieldsFragment & {
+  chain: number;
+})[];
+
+export const getAllTokenOwners = async (): Promise<GetAllTokenOwnersResponse> => {
+  try {
+    const tokens = await queryHandler<
+      GetAllRequestersQuery,
+      GetAllRequestersQueryVariables,
+      RequesterFieldsFragment[]
+    >({
+      document: GetAllRequestersDocument,
+      variables: {},
+      mapResponseToValue: (r) => r.data.requesters
+    });
+
+    return [
+      ...(tokens.l1?.map((t) => ({
+        ...t,
+        chain: chainId.mainnet
+      })) ?? []),
+      ...(tokens.arbitrum?.map((t) => ({
+        ...t,
+        chain: chainId.arbitrum
+      })) ?? []),
+      ...(tokens.optimism?.map((t) => ({
+        ...t,
+        chain: chainId.optimism
+      })) ?? []),
+      ...(tokens.polygon?.map((t) => ({
+        ...t,
+        chain: chainId.polygon
+      })) ?? [])
+    ];
+  } catch (e) {
+    console.error(e);
+  }
+  return [];
 };
