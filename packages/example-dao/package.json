@@ -1,6 +1,6 @@
 {
   "name": "@proof-of-residency/example-dao",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A demo project to illustrate how to integrate with the Proof of Residency contracts.",
   "private": true,
   "license": "MIT",
@@ -19,6 +19,6 @@
     "test": "yarn run -T hardhat test"
   },
   "dependencies": {
-    "@proof-of-residency/contracts": "^1.2.0"
+    "@proof-of-residency/contracts": "^1.2.1"
   }
 }
