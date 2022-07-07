@@ -16,9 +16,6 @@ jobs:
   test:
     name: Test Contracts
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -29,20 +26,10 @@ jobs:
         run: yarn --immutable
       - name: Build
         run: yarn build
-
+      - name: Build
+        run: yarn build
       - name: Run code analysis
-        uses: crytic/slither-action@v0.1.1
-        id: slither
-        continue-on-error: true
-        with:
-          node-version: 16
-          sarif: results.sarif
-          target: packages/contracts
-      - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: ${{ steps.slither.outputs.sarif }}
-
+        run: yarn run analyze
       - name: Run test coverage
         run: yarn coverage
         env:
