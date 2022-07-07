@@ -1,5 +1,5 @@
 {
-  "name": "proof-of-residency",
+  "name": "@proof-of-residency/root",
   "version": "0.0.3",
   "description": "The Proof of Residency NextJS decentralized app/api and Ethereum contracts.",
   "private": true,

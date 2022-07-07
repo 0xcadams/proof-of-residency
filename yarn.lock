@@ -5616,6 +5616,56 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@proof-of-residency/root@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@proof-of-residency/root@workspace:."
+  dependencies:
+    "@commitlint/cli": ^17.0.3
+    "@commitlint/config-conventional": ^17.0.3
+    "@nomiclabs/hardhat-ethers": ^2.0.6
+    "@nomiclabs/hardhat-etherscan": ^3.1.0
+    "@nomiclabs/hardhat-waffle": ^2.0.3
+    "@openzeppelin/test-helpers": ^0.5.15
+    "@typechain/ethers-v5": ^10.1.0
+    "@typechain/hardhat": ^6.1.2
+    "@types/chai": ^4.3.1
+    "@types/chai-as-promised": ^7.1.5
+    "@types/mocha": ^9.1.1
+    "@types/node": ^18.0.3
+    "@typescript-eslint/eslint-plugin": ^5.30.5
+    "@typescript-eslint/parser": ^5.30.5
+    chai: ^4.3.6
+    chai-as-promised: ^7.1.1
+    commitizen: ^4.2.4
+    cross-env: ^7.0.3
+    cz-conventional-changelog: 3.3.0
+    dotenv: ^16.0.1
+    dotenv-cli: ^6.0.0
+    eslint: ^8.19.0
+    eslint-config-prettier: ^8.5.0
+    eslint-plugin-unused-imports: ^2.0.0
+    eslint-utils: ^3.0.0
+    ethereum-waffle: ^3.4.4
+    ethers: ^5.6.9
+    git-cz: ^4.9.0
+    hardhat: ^2.9.9
+    hardhat-contract-sizer: ^2.6.1
+    hardhat-gas-reporter: ^1.0.8
+    lerna: ^5.1.7
+    prettier: ^2.7.1
+    prettier-plugin-solidity: ^1.0.0-dev.21
+    simple-git-hooks: ^2.8.0
+    solc: ^0.8.15
+    solhint: ^3.3.7
+    solhint-plugin-prettier: ^0.0.5
+    solidity-coverage: ^0.7.21
+    truffle: ^5.5.20
+    ts-node: ^10.8.2
+    typechain: ^8.1.0
+    typescript: ^4.7.4
+  languageName: unknown
+  linkType: soft
+
 "@proof-of-residency/subgraph@workspace:packages/subgraph":
   version: 0.0.0-use.local
   resolution: "@proof-of-residency/subgraph@workspace:packages/subgraph"
@@ -25147,56 +25197,6 @@ __metadata:
   checksum: 443a3b39ac916099988ee0161ab4e22edd1fa27e3d39a38d60e48c11ca6df3f5a90bfe44d95af06ed8659c4050b789ffe64c3f9f8e49a4bea1ea19105c98445a
   languageName: node
   linkType: hard
-
-"proof-of-residency@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "proof-of-residency@workspace:."
-  dependencies:
-    "@commitlint/cli": ^17.0.3
-    "@commitlint/config-conventional": ^17.0.3
-    "@nomiclabs/hardhat-ethers": ^2.0.6
-    "@nomiclabs/hardhat-etherscan": ^3.1.0
-    "@nomiclabs/hardhat-waffle": ^2.0.3
-    "@openzeppelin/test-helpers": ^0.5.15
-    "@typechain/ethers-v5": ^10.1.0
-    "@typechain/hardhat": ^6.1.2
-    "@types/chai": ^4.3.1
-    "@types/chai-as-promised": ^7.1.5
-    "@types/mocha": ^9.1.1
-    "@types/node": ^18.0.3
-    "@typescript-eslint/eslint-plugin": ^5.30.5
-    "@typescript-eslint/parser": ^5.30.5
-    chai: ^4.3.6
-    chai-as-promised: ^7.1.1
-    commitizen: ^4.2.4
-    cross-env: ^7.0.3
-    cz-conventional-changelog: 3.3.0
-    dotenv: ^16.0.1
-    dotenv-cli: ^6.0.0
-    eslint: ^8.19.0
-    eslint-config-prettier: ^8.5.0
-    eslint-plugin-unused-imports: ^2.0.0
-    eslint-utils: ^3.0.0
-    ethereum-waffle: ^3.4.4
-    ethers: ^5.6.9
-    git-cz: ^4.9.0
-    hardhat: ^2.9.9
-    hardhat-contract-sizer: ^2.6.1
-    hardhat-gas-reporter: ^1.0.8
-    lerna: ^5.1.7
-    prettier: ^2.7.1
-    prettier-plugin-solidity: ^1.0.0-dev.21
-    simple-git-hooks: ^2.8.0
-    solc: ^0.8.15
-    solhint: ^3.3.7
-    solhint-plugin-prettier: ^0.0.5
-    solidity-coverage: ^0.7.21
-    truffle: ^5.5.20
-    ts-node: ^10.8.2
-    typechain: ^8.1.0
-    typescript: ^4.7.4
-  languageName: unknown
-  linkType: soft
 
 "prop-types@npm:^15.0.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
