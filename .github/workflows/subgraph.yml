@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - "main"
-    paths:
-      - "packages/subgraph/**"
   pull_request:
     branches:
       - "*"

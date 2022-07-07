@@ -5,8 +5,6 @@ on:
   push:
     branches:
       - "main"
-    paths:
-      - "packages/generator/**"
   pull_request:
     branches:
       - "*"
