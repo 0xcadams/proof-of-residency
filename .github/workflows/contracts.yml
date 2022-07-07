@@ -35,13 +35,12 @@ jobs:
         id: slither
         continue-on-error: true
         with:
-          ignore-compile: true
           sarif: results.sarif
+          target: packages/contracts
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: ${{ steps.slither.outputs.sarif }}
-          target: packages/contracts
 
       - name: Run test coverage
         run: yarn coverage
