@@ -37,6 +37,7 @@ jobs:
         id: slither
         continue-on-error: true
         with:
+          node-version: 16
           sarif: results.sarif
           target: packages/example-dao
       - name: Upload SARIF file

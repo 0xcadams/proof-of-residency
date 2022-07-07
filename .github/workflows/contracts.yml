@@ -35,6 +35,7 @@ jobs:
         id: slither
         continue-on-error: true
         with:
+          node-version: 16
           sarif: results.sarif
           target: packages/contracts
       - name: Upload SARIF file
