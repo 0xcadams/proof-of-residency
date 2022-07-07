@@ -5,7 +5,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "analyze": "yarn lint && yarn copy-contracts && slither . --filter-paths \"@openzeppelin\"",
+    "analyze": "yarn lint && yarn copy-contracts && slither .",
     "build": "yarn clean && yarn copy-contracts && yarn compile",
     "clean": "yarn run -T hardhat clean",
     "compile": "yarn run -T hardhat compile",
