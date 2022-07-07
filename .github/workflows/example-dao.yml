@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - "main"
-    # paths:
-    #   - "packages/example-dao/**"
+    paths:
+      - "packages/example-dao/**"
   pull_request:
     branches:
       - "*"

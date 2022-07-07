@@ -5,15 +5,15 @@ on:
   push:
     branches:
       - "main"
-    # paths:
-    #   - "packages/contracts/**"
+    paths:
+      - "packages/generator/**"
   pull_request:
     branches:
       - "*"
 
 defaults:
   run:
-    working-directory: packages/contracts
+    working-directory: packages/generator
 
 jobs:
   build:
