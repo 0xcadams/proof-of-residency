@@ -75,7 +75,7 @@ const App = ({ Component, pageProps }: AppProps) => {
           ]
         }}
         twitter={{
-          site: '@proofofres',
+          site: '@0xporp',
           cardType: 'summary_large_image'
         }}
       />

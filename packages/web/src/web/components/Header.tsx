@@ -37,14 +37,14 @@ const Header = () => {
   const hasCommitment = useHasCommitment();
 
   const verbiage = useMemo(
-    () => (token ? 'profile' : hasCommitment ? 'claim' : 'request'),
+    () => (token ? 'tokens' : hasCommitment ? 'claim' : 'request'),
     [token, hasCommitment]
   );
   const actionLink = useMemo(
     () =>
       verbiage === 'claim'
         ? '/mint'
-        : verbiage === 'profile' && walletAddress
+        : verbiage === 'tokens' && walletAddress
         ? `/user/${walletAddress.toLowerCase()}`
         : `/request`,
     [verbiage, walletAddress]

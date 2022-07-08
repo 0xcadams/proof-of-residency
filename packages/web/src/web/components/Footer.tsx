@@ -29,7 +29,7 @@ const Footer = () => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Check out our twitter"
-            href="https://twitter.com/proofofres"
+            href="https://twitter.com/0xporp"
           >
             <FaTwitter size={30} />
           </a>

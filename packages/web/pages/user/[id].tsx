@@ -169,6 +169,7 @@ const UserDetailsPage = (props: UserDetailsProps) => {
               {props.tokens.length === 0 && ' yet'}
             </Tag>
           </Flex>
+          {/* TODO: add request for more tokens and check for existing token on /request page */}
 
           <Divider mt={6} />
 
