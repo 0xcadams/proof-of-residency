@@ -23,7 +23,7 @@ import { allChains, getChainForChainId, shortenEthereumAddress } from 'src/contr
 import Header from 'src/web/components/Header';
 import { CountryIso, getCountryAndTokenNumber, getIsoCountryForCountryId } from 'src/web/token';
 import { MetadataResponse } from 'types';
-import { chainId, useNetwork } from 'wagmi';
+import { useNetwork } from 'wagmi';
 import Footer from '../../src/web/components/Footer';
 
 type UserDetailsProps = {
@@ -188,8 +188,6 @@ const UserDetailsPage = (props: UserDetailsProps) => {
               </Link>
             </Tooltip>
           </Flex>
-
-          {/* TODO: add request for more tokens and check for existing token on /request page */}
 
           <Divider mt={6} />
 
