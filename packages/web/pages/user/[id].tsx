@@ -1,4 +1,16 @@
-import { Avatar, Box, Divider, Flex, Grid, Heading, SimpleGrid, Tag, Text } from '@chakra-ui/react';
+import {
+  Avatar,
+  Box,
+  Button,
+  Divider,
+  Flex,
+  Grid,
+  Heading,
+  SimpleGrid,
+  Tag,
+  Text,
+  Tooltip
+} from '@chakra-ui/react';
 import { GetStaticPaths, GetStaticPropsContext } from 'next';
 import { NextSeo } from 'next-seo';
 import Image from 'next/image';
@@ -7,11 +19,11 @@ import { ParsedUrlQuery } from 'querystring';
 import React, { useMemo } from 'react';
 import { getEns } from 'src/api/ethers';
 import { getAllTokenOwners, getTokensForOwner } from 'src/api/subgraph';
-import { getChainForChainId, shortenEthereumAddress } from 'src/contracts';
+import { allChains, getChainForChainId, shortenEthereumAddress } from 'src/contracts';
 import Header from 'src/web/components/Header';
 import { CountryIso, getCountryAndTokenNumber, getIsoCountryForCountryId } from 'src/web/token';
 import { MetadataResponse } from 'types';
-import { chainId } from 'wagmi';
+import { chainId, useNetwork } from 'wagmi';
 import Footer from '../../src/web/components/Footer';
 
 type UserDetailsProps = {
@@ -22,7 +34,8 @@ type UserDetailsProps = {
     image: string;
     country: CountryIso | null;
 
-    chain: string;
+    chainName: string;
+    chainId: number;
   }[];
 
   ownerId: string;
@@ -71,27 +84,8 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
       return { notFound: true };
     }
 
-    const tokensMapped = [
-      ...(allTokens.l1?.map((t) => ({
-        ...t,
-        chain: chainId.mainnet
-      })) ?? []),
-      ...(allTokens.arbitrum?.map((t) => ({
-        ...t,
-        chain: chainId.arbitrum
-      })) ?? []),
-      ...(allTokens.optimism?.map((t) => ({
-        ...t,
-        chain: chainId.optimism
-      })) ?? []),
-      ...(allTokens.polygon?.map((t) => ({
-        ...t,
-        chain: chainId.polygon
-      })) ?? [])
-    ];
-
     const tokens = await Promise.all(
-      tokensMapped?.map(async (token) => {
+      allTokens?.map(async (token) => {
         const res = await fetch(
           `https://generator.proofofresidency.xyz/api/${token.chain}/${token.id}`
           // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_METADATA}/${tokenId}`
@@ -110,7 +104,8 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
           tokenNumber: tokenNumber.toString(),
           link: `/token/${token.chain}/${token.id}`,
           image: `https://generator.proofofresidency.xyz/token/${token.chain}/${token.id}.png`,
-          chain: getChainForChainId(token.chain)?.name ?? ''
+          chainName: getChainForChainId(token.chain)?.name ?? '',
+          chainId: token.chain
           // `https://cloudflare-ipfs.com/ipfs/${process.env.NEXT_PUBLIC_CID_CONTENT}/token/${tokenId}.png`
         };
       }) ?? []
@@ -135,6 +130,16 @@ export const getStaticProps = async ({ params }: GetStaticPropsContext<Params>) 
 
 const UserDetailsPage = (props: UserDetailsProps) => {
   const shortName = useMemo(() => props.ens.name ?? props.shortOwnerId, []);
+  const { chain } = useNetwork();
+
+  const hasTokenOnCurrentNetwork = useMemo(
+    () => props.tokens.some((t) => Number(t.chainId) === chain?.id ?? -1),
+    [props.tokens, chain?.id]
+  );
+  const hasAllNetworkTokens = useMemo(
+    () => props.tokens.length === allChains.length,
+    [props.tokens, allChains]
+  );
 
   return (
     <>
@@ -163,12 +168,27 @@ const UserDetailsPage = (props: UserDetailsProps) => {
 
         <Grid px={4} maxWidth={1200} width="100%" mx="auto" flexDirection="column" mt={3}>
           <Flex justify="center">
-            <Tag variant="solid" size="lg">
-              {props.tokens.length > 0 ? props.tokens.length : 'No'} PORP
-              {props.tokens.length !== 1 ? 's' : ''}
-              {props.tokens.length === 0 && ' yet'}
-            </Tag>
+            <Tooltip
+              shouldWrapChildren
+              label={
+                hasAllNetworkTokens
+                  ? 'You have a PORP on every supported network - nice!'
+                  : hasTokenOnCurrentNetwork
+                  ? 'You have a PORP on the current network - please change networks to claim on another chain.'
+                  : undefined
+              }
+            >
+              <Link href={'/request'} passHref>
+                <Button
+                  disabled={props.tokens.some((t) => Number(t.chainId) === chain?.id ?? -1)}
+                  variant="solid"
+                >
+                  Request PORP
+                </Button>
+              </Link>
+            </Tooltip>
           </Flex>
+
           {/* TODO: add request for more tokens and check for existing token on /request page */}
 
           <Divider mt={6} />
@@ -208,7 +228,7 @@ const UserDetailsPage = (props: UserDetailsProps) => {
                         {token.tokenNumber}
                       </Heading>
                       <Tag mt={2} variant="solid" size="lg">
-                        {token.chain}
+                        {token.chainName}
                       </Tag>
                     </Flex>
                   </Link>

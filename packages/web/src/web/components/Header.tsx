@@ -12,12 +12,12 @@ import {
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FaBars, FaLocationArrow, FaQuestion, FaSearch } from 'react-icons/fa';
 import { ProofOfResidencyNetwork } from 'src/contracts';
 import useSWR from 'swr';
 import { GetTokensForOwnerResponse } from 'types';
-import { chainId, useNetwork } from 'wagmi';
+import { useNetwork } from 'wagmi';
 
 import Logo from '../../../public/logo.svg';
 import { useHasCommitment, useWalletAddress } from '../hooks';
@@ -53,14 +53,8 @@ const Header = () => {
   const { data } = useSWR<GetTokensForOwnerResponse>(`/tokens/${walletAddress}`);
 
   useEffect(() => {
-    if (data?.l1?.length) {
-      return setToken({ chain: chainId.mainnet, id: data.l1[0].id });
-    } else if (data?.arbitrum?.length) {
-      return setToken({ chain: chainId.arbitrum, id: data.arbitrum[0].id });
-    } else if (data?.optimism?.length) {
-      return setToken({ chain: chainId.optimism, id: data.optimism[0].id });
-    } else if (data?.polygon?.length) {
-      return setToken({ chain: chainId.polygon, id: data.polygon[0].id });
+    if ((data?.length ?? 0) > 0 && data?.[0]) {
+      return setToken({ chain: data[0].chain, id: data[0].id });
     }
   }, [data]);
 

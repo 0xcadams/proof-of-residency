@@ -17,9 +17,7 @@ const handler = async (
 
       res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
 
-      return res.status(200).json({
-        ...tokens
-      });
+      return res.status(200).json(tokens);
     }
 
     res.setHeader('Allow', ['GET']);

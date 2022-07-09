@@ -343,16 +343,30 @@ export const getTokensForOwner = async (owner: string) => {
         r.data.requester?.tokens?.map((t) => ({ ...t, id: BigNumber.from(t.id).toString() })) ?? []
     });
 
-    return tokens;
+    const tokensMapped = [
+      ...(tokens.l1?.map((t) => ({
+        ...t,
+        chain: chainId.mainnet
+      })) ?? []),
+      ...(tokens.arbitrum?.map((t) => ({
+        ...t,
+        chain: chainId.arbitrum
+      })) ?? []),
+      ...(tokens.optimism?.map((t) => ({
+        ...t,
+        chain: chainId.optimism
+      })) ?? []),
+      ...(tokens.polygon?.map((t) => ({
+        ...t,
+        chain: chainId.polygon
+      })) ?? [])
+    ];
+
+    return tokensMapped;
   } catch (e) {
     console.error(e);
   }
-  return {
-    l1: [],
-    arbitrum: [],
-    optimism: [],
-    polygon: []
-  };
+  return [];
 };
 
 export type GetAllTokenOwnersResponse = (RequesterFieldsFragment & {

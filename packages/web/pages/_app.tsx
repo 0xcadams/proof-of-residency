@@ -59,7 +59,7 @@ const App = ({ Component, pageProps }: AppProps) => {
     <>
       <DefaultSeo
         title="Proof of Residency"
-        description="A proof of personhood protocol built on physical mail."
+        description="The Ethereum proof of personhood protocol built on physical mail."
         openGraph={{
           type: 'website',
           url: 'https://proofofresidency.xyz',

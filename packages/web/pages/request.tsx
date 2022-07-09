@@ -16,20 +16,26 @@ import haversine, { CoordinateLongitudeLatitude } from 'haversine';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import ReactMapboxGl, { Marker } from 'react-mapbox-gl';
 
-import { VerifyAddressResponse } from 'types';
+import { GetTokensForOwnerResponse, VerifyAddressResponse } from 'types';
 
-import Logo from '../public/logo.svg';
-import { AddressModal } from 'src/web/components/AddressModal';
-import { ConfirmModal } from 'src/web/components/ConfirmModal';
-import { InfoModal } from 'src/web/components/InfoModal';
-import { useGetCommitmentPeriodIsUpcoming, useStatusAndChainUnsupported } from 'src/web/hooks';
 import { NextSeo } from 'next-seo';
 import numeral from 'numeral';
-import { FaBars, FaSearch, FaQuestion } from 'react-icons/fa';
+import { FaBars, FaLocationArrow, FaQuestion, FaSearch } from 'react-icons/fa';
+import { AddressModal } from 'src/web/components/AddressModal';
+import { ConfirmModal } from 'src/web/components/ConfirmModal';
 import { CustomConnectButton } from 'src/web/components/CustomConnectButton';
+import { InfoModal } from 'src/web/components/InfoModal';
+import {
+  useGetCommitmentPeriodIsUpcoming,
+  useStatusAndChainUnsupported,
+  useWalletAddress
+} from 'src/web/hooks';
+import useSWR from 'swr';
+import { useNetwork } from 'wagmi';
+import Logo from '../public/logo.svg';
 
 const Map = ReactMapboxGl({
   interactive: false,
@@ -84,6 +90,16 @@ const RequestPage = () => {
   } = useDisclosure();
 
   const toast = useToast();
+
+  const { chain } = useNetwork();
+  const walletAddress = useWalletAddress();
+
+  const { data: allTokens } = useSWR<GetTokensForOwnerResponse>(`/tokens/${walletAddress ?? ''}`);
+
+  const hasTokenOnCurrentNetwork = useMemo(
+    () => (allTokens ?? []).some((t) => t.chain === chain?.id ?? -1),
+    [allTokens, chain?.id]
+  );
 
   useEffect(() => {
     if (!commitmentPeriodIsUpcoming) {
@@ -162,6 +178,11 @@ const RequestPage = () => {
             <MenuButton as={IconButton} aria-label="Options" icon={<FaBars />} variant="outline" />
             <Portal>
               <MenuList bgColor="black">
+                {(allTokens?.length ?? 0) > 0 && walletAddress && (
+                  <Link href={`/user/${walletAddress.toLowerCase()}`} passHref>
+                    <MenuItem icon={<FaLocationArrow />}>tokens</MenuItem>
+                  </Link>
+                )}
                 <Link href="/explore" passHref>
                   <MenuItem icon={<FaSearch />}>explore</MenuItem>
                 </Link>
@@ -180,7 +201,9 @@ const RequestPage = () => {
         </Button>
         <Tooltip
           label={
-            statusAndChainUnsupported.status !== 'success'
+            hasTokenOnCurrentNetwork
+              ? 'You have a PORP on the current network - please switch to claim another'
+              : statusAndChainUnsupported.status !== 'success'
               ? 'Connect to your wallet to use this app'
               : !latLng
               ? 'You must enable geolocation'
@@ -194,6 +217,7 @@ const RequestPage = () => {
             size="lg"
             onClick={address ? onOpenConfirmModal : onOpenAddressModal}
             disabled={
+              hasTokenOnCurrentNetwork ||
               statusAndChainUnsupported.status !== 'success' ||
               statusAndChainUnsupported.connectionRejected ||
               !latLng ||

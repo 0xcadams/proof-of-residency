@@ -1,14 +1,12 @@
+import { ProofOfResidencyNetwork } from 'src/contracts';
 import { TokenFieldsFragment } from './subgraph';
 
-export type GetTokensForOwnerResponse = {
-  l1: TokenFieldsFragment[] | null;
-  arbitrum: TokenFieldsFragment[] | null;
-  optimism: TokenFieldsFragment[] | null;
-  polygon: TokenFieldsFragment[] | null;
-};
+export type GetTokensForOwnerResponse = (TokenFieldsFragment & {
+  chain: ProofOfResidencyNetwork;
+})[];
 
 export type GetAllTokensResponse = {
-  chain: number;
+  chain: ProofOfResidencyNetwork;
   id: string;
   country: number;
 }[];
