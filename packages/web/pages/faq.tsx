@@ -80,7 +80,6 @@ const FaqPage = () => {
       q: 'What chains are supported?',
       a: (
         <>
-          We support L1 Ethereum and are in the process of adding all Ethereum-based rollups.
           {"We're"} currently live on L1 mainnet and Arbitrum, Optimism, and Polygon. Reach out on
           Discord if you want to see another Ethereum-based rollup supported!
         </>
