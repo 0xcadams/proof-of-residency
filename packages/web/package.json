@@ -37,7 +37,7 @@
     "lob": "^6.6.2",
     "mapbox-gl": "^2.9.2",
     "mixpanel-browser": "^2.45.0",
-    "next": "12.2.3",
+    "next": "12.3.0",
     "next-seo": "^5.5.0",
     "numeral": "^2.0.6",
     "react": "18.2.0",
